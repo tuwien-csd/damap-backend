@@ -1,0 +1,11 @@
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.re3data.org/schema/3-0" id="re3data.org">
+    <xs:element name="repository">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element type="xs:string" name="id"/>
+                <xs:element type="xs:string" name="name"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
+
