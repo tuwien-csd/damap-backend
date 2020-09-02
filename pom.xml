@@ -1,20 +1,25 @@
 <?xml version="1.0"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>at.ac.tuwien</groupId>
   <artifactId>dmap-backend</artifactId>
   <version>1.0-SNAPSHOT</version>
+
   <properties>
     <surefire-plugin.version>2.22.0</surefire-plugin.version>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
     <quarkus.version>1.5.2.Final</quarkus.version>
+    <oracle-driver.version>18.3</oracle-driver.version>
+    <mapper-generator.version>0.7</mapper-generator.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.parameters>true</maven.compiler.parameters>
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
   </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -26,11 +31,9 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
   <dependencies>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy</artifactId>
-    </dependency>
+    <!-- Test -->
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5</artifactId>
@@ -40,6 +43,11 @@
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
       <scope>test</scope>
+    </dependency>
+    <!-- Rest -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -57,17 +65,51 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-jaxb</artifactId>
     </dependency>
+    <!-- Authentication -->
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-oidc</artifactId>
     </dependency>
+    <!-- Database -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-hibernate-orm-panache</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-envers</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.oracle.jdbc</groupId>
+      <artifactId>ojdbc8</artifactId>
+      <version>${oracle-driver.version}</version>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.oracle.jdbc</groupId>
+          <artifactId>xmlparserv2</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.oracle.jdbc</groupId>
+          <artifactId>oraclepki</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- Utility -->
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>1.18.10</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>at.ac.tuwien.tiss.util</groupId>
+      <artifactId>mapper-generator</artifactId>
+      <version>${mapper-generator.version}</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
+
   <build>
     <plugins>
       <plugin>
@@ -150,4 +192,16 @@
       </properties>
     </profile>
   </profiles>
+
+  <repositories>
+    <repository>
+      <id>tint</id>
+      <url>https://dev.tiss.tuwien.ac.at/nexus/content/repositories/tint/</url>
+    </repository>
+    <repository>
+      <id>tiss</id>
+      <url>https://dev.tiss.tuwien.ac.at/nexus/content/repositories/tiss</url>
+    </repository>
+  </repositories>
+
 </project>
