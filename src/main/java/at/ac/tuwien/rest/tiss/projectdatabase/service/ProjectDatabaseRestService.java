@@ -19,8 +19,8 @@ public interface ProjectDatabaseRestService {
 
 
     @GET
-    @Path("/projectsearch/v2")
+    @Path("/projectsearch/org-criteria/v2")
     @Produces("application/json")
-    ProjectOverviewList getProjectsByOrgCriteria(@QueryParam("instituteOid") String instituteOid, @QueryParam("projectleaderOid") String projectleaderOid);
+    ProjectOverviewList getProjectsByOrgCriteria(@QueryParam("instituteTid") String instituteId, @QueryParam("projectleaderTid") String projectleaderId);
 
 }

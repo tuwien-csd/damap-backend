@@ -20,11 +20,6 @@ public interface AddressBookService {
     PersonDetails getPersonDetailsById(@PathParam String id);
 
     @GET
-    @Path("/person/v22/oid/{oid}")
-    @Produces("application/json")
-    PersonDetails getPersonDetailsByOid(@PathParam String oid);
-
-    @GET
     @Path("/orgunit/v22/id/{id}")
     @Produces("application/json")
     OrganisationalUnitDetails getOrgDetailsById(@PathParam Long id);

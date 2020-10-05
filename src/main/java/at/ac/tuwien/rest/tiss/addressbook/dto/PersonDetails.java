@@ -20,10 +20,6 @@ public class PersonDetails {
 
     @Getter
     @Setter
-    private Long oid;
-
-    @Getter
-    @Setter
     @JsonbProperty("first_name")
     private String firstName;
 

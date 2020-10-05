@@ -17,7 +17,7 @@ public class Person {
 
     @Getter
     @Setter
-    private String oid;
+    private String id;
 
     @Getter
     @Setter
