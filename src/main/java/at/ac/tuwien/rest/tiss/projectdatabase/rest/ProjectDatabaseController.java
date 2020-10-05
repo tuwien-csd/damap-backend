@@ -40,24 +40,24 @@ public class ProjectDatabaseController {
     }
 
     @GET
-    @Path("/search-projects/{instituteOid}/{projectleaderOid}")
+    @Path("/search-projects/{instituteId}/{projectleaderId}")
     @Produces(MediaType.APPLICATION_JSON)
     public List<ProjectOverview> getProjectsByOrgCriteria(
-            @PathParam("instituteOid") String instituteOid,
-            @PathParam("projectleaderOid") String projectleaderOid
+            @PathParam("instituteId") String instituteId,
+            @PathParam("projectleaderId") String projectleaderId
     ) {
-        log.info(String.format("Get projects for instituteOid=%s and projectLeaderOid=%s", instituteOid, projectleaderOid));
-        return projectDatabaseRestService.getProjectsByOrgCriteria(instituteOid, projectleaderOid).getProject();
+        log.info(String.format("Get projects for instituteId=%s and projectLeaderId=%s", instituteId, projectleaderId));
+        return projectDatabaseRestService.getProjectsByOrgCriteria(instituteId, projectleaderId).getProject();
     }
 
     @GET
-    @Path("/search-projects/{instituteOid}")
+    @Path("/search-projects/{instituteId}")
     @Produces(MediaType.APPLICATION_JSON)
     public ProjectOverviewList getProjectsByOrgCriteria(
-            @PathParam("instituteOid") String instituteOid
+            @PathParam("instituteId") String instituteId
     ) {
-        log.info(String.format("Get projects for instituteOid=%s", instituteOid));
-        return projectDatabaseRestService.getProjectsByOrgCriteria(instituteOid, null);
+        log.info(String.format("Get projects for instituteId=%s", instituteId));
+        return projectDatabaseRestService.getProjectsByOrgCriteria(instituteId, null);
     }
 
 

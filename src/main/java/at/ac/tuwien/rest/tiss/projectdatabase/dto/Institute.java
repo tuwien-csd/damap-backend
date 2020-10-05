@@ -14,7 +14,11 @@ public class Institute {
 
     @Getter
     @Setter
-    private String oid;
+    private String tid;
+
+    @Getter
+    @Setter
+    private String code;
 
     @Getter
     @Setter

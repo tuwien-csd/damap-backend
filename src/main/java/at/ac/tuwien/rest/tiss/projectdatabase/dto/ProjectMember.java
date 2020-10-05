@@ -14,7 +14,7 @@ public class ProjectMember {
 
     @Getter
     @Setter
-    private String oid;
+    private String tid;
 
     @Getter
     @Setter

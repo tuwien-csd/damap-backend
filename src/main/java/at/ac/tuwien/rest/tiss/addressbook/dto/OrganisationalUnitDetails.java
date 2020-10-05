@@ -15,10 +15,6 @@ public class OrganisationalUnitDetails extends OrganisationalUnit {
 
     @Getter
     @Setter
-    private String oid;
-
-    @Getter
-    @Setter
     @JsonbProperty("parent_org_ref")
     private OrganisationalUnit parentOrganisationalUnit;
 

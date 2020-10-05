@@ -33,7 +33,7 @@ public class ProjectDatabaseServiceImpl implements ProjectDatabaseService {
 
         person.getOrganisationalUnits().forEach(orgUnit -> {
             OrganisationalUnitDetails details = addressBookService.getOrgDetailsById(orgUnit.getId());
-            projectDatabaseRestService.getProjectsByOrgCriteria(details.getOid(), person.getOid()).getProject().forEach(projectOverview -> projects.put(projectOverview.getProjectId(), projectOverview));
+            projectDatabaseRestService.getProjectsByOrgCriteria(details.getId().toString(), person.getId()).getProject().forEach(projectOverview -> projects.put(projectOverview.getProjectId(), projectOverview));
         });
 
         return new ArrayList<>(projects.values());
@@ -45,7 +45,7 @@ public class ProjectDatabaseServiceImpl implements ProjectDatabaseService {
         List<ProjectMemberDetails> projectMemberDetailsList = new ArrayList<>();
 
         projectDetails.getInstitutes().getInstitute().forEach(institute -> institute.getProjectMembers().getProjectMember().forEach(projectMember -> {
-            PersonDetails personDetails = addressBookService.getPersonDetailsByOid(projectMember.getOid());
+            PersonDetails personDetails = addressBookService.getPersonDetailsById(projectMember.getTid());
             projectMemberDetailsList.add(ProjectMemberDetails.fromProjectMemberAndPersonDetails(projectMember, personDetails));
         }));
         return projectMemberDetailsList;
