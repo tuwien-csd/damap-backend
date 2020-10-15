@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ProjectDatabaseService {
 
-    List<ProjectOverview> getProjectSuggestionsForPerson(Person person);
+    List<ProjectOverview> getProjectSuggestionsForPerson(String personId);
 
     List<ProjectMemberDetails> getProjectStaff(String projectId);
 }
