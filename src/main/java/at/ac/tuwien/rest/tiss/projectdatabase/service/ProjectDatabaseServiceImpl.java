@@ -1,5 +1,6 @@
 package at.ac.tuwien.rest.tiss.projectdatabase.service;
 
+import at.ac.tuwien.rest.tiss.addressbook.dto.OrganisationalUnit;
 import at.ac.tuwien.rest.tiss.addressbook.dto.OrganisationalUnitDetails;
 import at.ac.tuwien.rest.tiss.addressbook.dto.Person;
 import at.ac.tuwien.rest.tiss.addressbook.dto.PersonDetails;
@@ -28,12 +29,15 @@ public class ProjectDatabaseServiceImpl implements ProjectDatabaseService {
     private ProjectDatabaseRestService projectDatabaseRestService;
 
     @Override
-    public List<ProjectOverview> getProjectSuggestionsForPerson(Person person) {
+    public List<ProjectOverview> getProjectSuggestionsForPerson(String personId) {
+
         Map<String, ProjectOverview> projects = new HashMap<>();
 
-        person.getOrganisationalUnits().forEach(orgUnit -> {
+        PersonDetails personDetails = addressBookService.getPersonDetailsById(personId);
+        personDetails.getEmploymentList().forEach(employment -> {
+            OrganisationalUnit orgUnit = employment.getOrganisationalUnit();
             OrganisationalUnitDetails details = addressBookService.getOrgDetailsById(orgUnit.getId());
-            projectDatabaseRestService.getProjectsByOrgCriteria(details.getId().toString(), person.getId()).getProject().forEach(projectOverview -> projects.put(projectOverview.getProjectId(), projectOverview));
+            projectDatabaseRestService.getProjectsByOrgCriteria(details.getId().toString(), personId).getProject().forEach(projectOverview -> projects.put(projectOverview.getProjectId(), projectOverview));
         });
 
         return new ArrayList<>(projects.values());

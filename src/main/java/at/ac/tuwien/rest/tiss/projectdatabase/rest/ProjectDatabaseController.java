@@ -61,11 +61,22 @@ public class ProjectDatabaseController {
     }
 
 
-    @POST
-    @Path("/suggest-projects")
-    public List<ProjectOverview> getProjectSuggestionsForPerson(@Form Person person) {
-        log.info(String.format("Get project suggestions for person: %s", person));
-        return projectDatabaseService.getProjectSuggestionsForPerson(person);
+    @GET
+    @Path("/search-projectsByPl/{projectLeaderId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ProjectOverviewList getProjectsByPersonIdCriteria(
+            @PathParam("projectLeaderId") String projectLeaderId
+    ) {
+        log.info(String.format("Get projects for projectLeaderId=%s", projectLeaderId));
+        return projectDatabaseRestService.getProjectsByOrgCriteria(null, projectLeaderId);
+    }
+
+
+    @GET
+    @Path("/suggest-projects/{personId}")
+    public List<ProjectOverview> getProjectSuggestionsForPerson(@PathParam("personId") String personId) {
+        log.info(String.format("Get project suggestions for person with id: %s", personId));
+        return projectDatabaseService.getProjectSuggestionsForPerson(personId);
     }
 
 
