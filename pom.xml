@@ -156,6 +156,7 @@
         <configuration>
           <sources>
             <source>src/main/resources/spec/re3dataV3-0.xsd</source>
+            <source>src/main/resources/spec/re3dataV2-2.xsd</source>
             <source>src/main/resources/spec/re3data_index_V1-0.xsd</source>
           </sources>
         </configuration>

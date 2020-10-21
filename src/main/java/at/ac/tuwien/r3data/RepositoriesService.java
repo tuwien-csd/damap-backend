@@ -2,6 +2,7 @@ package at.ac.tuwien.r3data;
 
 import generated.Repository;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.re3data.schema._2_2.Re3Data;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -18,6 +19,10 @@ public class RepositoriesService {
         if(repositories == null)
             repositories = repositoriesRemoteResource.getAll();
         return repositories;
+    }
+
+    public Re3Data getById(String id) {
+        return repositoriesRemoteResource.getById(id);
     }
 
 }
