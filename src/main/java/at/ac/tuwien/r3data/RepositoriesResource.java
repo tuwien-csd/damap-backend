@@ -1,6 +1,8 @@
 package at.ac.tuwien.r3data;
 
 import generated.Repository;
+import org.jboss.resteasy.annotations.jaxrs.PathParam;
+import org.re3data.schema._2_2.Re3Data;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -21,5 +23,9 @@ public class RepositoriesResource {
     public List<Repository> getAll() {
         return repositoriesService.getAll();
     }
+
+    @GET
+    @Path("/{id}")
+    public Re3Data getById(@PathParam String id) { return repositoriesService.getById(id); }
 
 }
