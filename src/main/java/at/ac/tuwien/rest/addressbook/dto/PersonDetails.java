@@ -34,6 +34,10 @@ public class PersonDetails {
 
     @Getter
     @Setter
+    private String orcid;
+
+    @Getter
+    @Setter
     @JsonbProperty("preceding_titles")
     private String precedingTitles;
 
