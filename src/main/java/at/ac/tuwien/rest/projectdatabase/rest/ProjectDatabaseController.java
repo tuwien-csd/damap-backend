@@ -2,7 +2,6 @@ package at.ac.tuwien.rest.projectdatabase.rest;
 
 import at.ac.tuwien.rest.projectdatabase.dto.*;
 import at.ac.tuwien.rest.projectdatabase.service.ProjectDatabaseRestService;
-import at.ac.tuwien.rest.projectdatabase.dto.*;
 import at.ac.tuwien.rest.projectdatabase.service.ProjectDatabaseServiceImpl;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
@@ -81,7 +80,7 @@ public class ProjectDatabaseController {
 
     @GET
     @Path("/project/{id}/staff")
-    public List<ProjectMemberDetails> getProjectMembers(@PathParam("id") String projectId) {
+    public List<DmpProjectMember> getProjectMembers(@PathParam("id") String projectId) {
         log.info(String.format("Get Project Staff for Project ID=%s", projectId));
         return projectDatabaseService.getProjectStaff(projectId);
     }
