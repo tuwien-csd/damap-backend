@@ -1,11 +1,12 @@
 package at.ac.tuwien.rest.projectdatabase.service;
 
+import at.ac.tuwien.rest.addressbook.dto.DmpPerson;
 import at.ac.tuwien.rest.addressbook.dto.OrganisationalUnit;
 import at.ac.tuwien.rest.addressbook.dto.OrganisationalUnitDetails;
 import at.ac.tuwien.rest.addressbook.dto.PersonDetails;
+import at.ac.tuwien.rest.addressbook.service.AddressBookMapperService;
 import at.ac.tuwien.rest.addressbook.service.AddressBookService;
 import at.ac.tuwien.rest.projectdatabase.dto.ProjectDetails;
-import at.ac.tuwien.rest.projectdatabase.dto.ProjectMemberDetails;
 import at.ac.tuwien.rest.projectdatabase.dto.ProjectOverview;
 import at.ac.tuwien.rest.projectdatabase.dto.*;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
@@ -27,6 +28,9 @@ public class ProjectDatabaseServiceImpl implements ProjectDatabaseService {
     private AddressBookService addressBookService;
 
     @Inject
+    private AddressBookMapperService addressBookMapperService;
+
+    @Inject
     @RestClient
     private ProjectDatabaseRestService projectDatabaseRestService;
 
@@ -46,14 +50,15 @@ public class ProjectDatabaseServiceImpl implements ProjectDatabaseService {
     }
 
     @Override
-    public List<ProjectMemberDetails> getProjectStaff(String projectId) {
+    public List<DmpProjectMember> getProjectStaff(String projectId) {
         ProjectDetails projectDetails = projectDatabaseRestService.getProjectDetails(projectId).getProject();
-        List<ProjectMemberDetails> projectMemberDetailsList = new ArrayList<>();
+        List<DmpProjectMember> dmpProjectMemberList = new ArrayList<>();
 
         projectDetails.getInstitutes().getInstitute().forEach(institute -> institute.getProjectMembers().getProjectMember().forEach(projectMember -> {
-            PersonDetails personDetails = addressBookService.getPersonDetailsById(projectMember.getTid());
-            projectMemberDetailsList.add(ProjectMemberDetails.fromProjectMemberAndPersonDetails(projectMember, personDetails));
+            DmpPerson person = addressBookMapperService.getPersonById(projectMember.getTid());
+            dmpProjectMemberList.add(DmpProjectMember.fromProjectMemberAndDmpPerson(projectMember, person));
         }));
-        return projectMemberDetailsList;
+        return dmpProjectMemberList;
+
     }
 }
