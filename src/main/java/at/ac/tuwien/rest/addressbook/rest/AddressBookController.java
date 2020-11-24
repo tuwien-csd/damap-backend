@@ -2,7 +2,6 @@ package at.ac.tuwien.rest.addressbook.rest;
 
 import at.ac.tuwien.rest.addressbook.dto.DmpPerson;
 import at.ac.tuwien.rest.addressbook.dto.OrganisationalUnitDetails;
-import at.ac.tuwien.rest.addressbook.dto.PersonDetails;
 import at.ac.tuwien.rest.addressbook.service.AddressBookMapperServiceImpl;
 import at.ac.tuwien.rest.addressbook.service.AddressBookService;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
@@ -28,13 +27,6 @@ public class AddressBookController {
 
     @GET
     @Path("/person/{id}")
-    public PersonDetails getPersonDetailsById(@PathParam("id") String id) {
-        log.info("Return person details for id=" + id);
-        return addressBookService.getPersonDetailsById(id);
-    }
-
-    @GET
-    @Path("/dmpPerson/{id}")
     public DmpPerson getPersonById(@PathParam("id") String id) {
         log.info("Return person details for id=" + id);
         return addressBookMapperService.getPersonById(id);

@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Damap compatible representation of persons
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DmpPerson {
 
