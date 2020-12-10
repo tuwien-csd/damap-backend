@@ -106,12 +106,6 @@
       <version>1.18.10</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>at.ac.tuwien.tiss.util</groupId>
-      <artifactId>mapper-generator</artifactId>
-      <version>${mapper-generator.version}</version>
-      <scope>provided</scope>
-    </dependency>
   </dependencies>
 
   <build>
