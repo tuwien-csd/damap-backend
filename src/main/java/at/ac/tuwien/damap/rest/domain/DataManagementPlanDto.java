@@ -1,4 +1,4 @@
-package at.ac.tuwien.dmap.rest.domain;
+package at.ac.tuwien.damap.rest.domain;
 
 import lombok.Data;
 

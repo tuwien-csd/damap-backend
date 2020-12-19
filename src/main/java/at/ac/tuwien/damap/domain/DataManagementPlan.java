@@ -1,4 +1,4 @@
-package at.ac.tuwien.dmap.domain;
+package at.ac.tuwien.damap.domain;
 
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
