@@ -1,4 +1,4 @@
-package at.ac.tuwien.dmap;
+package at.ac.tuwien.damap;
 
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;

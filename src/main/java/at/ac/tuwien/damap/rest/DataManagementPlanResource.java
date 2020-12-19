@@ -1,7 +1,7 @@
-package at.ac.tuwien.dmap.rest;
+package at.ac.tuwien.damap.rest;
 
-import at.ac.tuwien.dmap.repo.DataManagementPlanRepo;
-import at.ac.tuwien.dmap.rest.domain.DataManagementPlanDto;
+import at.ac.tuwien.damap.repo.DataManagementPlanRepo;
+import at.ac.tuwien.damap.rest.domain.DataManagementPlanDto;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;

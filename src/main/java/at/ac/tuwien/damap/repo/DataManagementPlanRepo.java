@@ -1,6 +1,6 @@
-package at.ac.tuwien.dmap.repo;
+package at.ac.tuwien.damap.repo;
 
-import at.ac.tuwien.dmap.domain.DataManagementPlan;
+import at.ac.tuwien.damap.domain.DataManagementPlan;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
 import javax.enterprise.context.ApplicationScoped;

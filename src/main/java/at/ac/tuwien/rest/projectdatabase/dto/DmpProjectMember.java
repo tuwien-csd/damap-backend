@@ -19,7 +19,7 @@ public class DmpProjectMember {
     @Setter
     private DmpPerson person;
 
-    public static DmpProjectMember fromProjectMemberAndDmpPerson(ProjectMember projectMember, DmpPerson person) {
+    public static DmpProjectMember fromProjectMemberAndDmpPerson(ProjectMemberDTO projectMember, DmpPerson person) {
         DmpProjectMember pmd = new DmpProjectMember();
         pmd.setRoleInProject(projectMember.getRole());
         pmd.setPerson(person);
