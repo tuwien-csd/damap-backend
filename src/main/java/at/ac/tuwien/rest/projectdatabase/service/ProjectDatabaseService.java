@@ -1,12 +1,13 @@
 package at.ac.tuwien.rest.projectdatabase.service;
 
 import at.ac.tuwien.damap.rest.domain.ProjectDO;
-import at.ac.tuwien.rest.addressbook.dto.DmpPerson;
+import at.ac.tuwien.damap.rest.domain.ProjectMemberDO;
+import at.ac.tuwien.damap.rest.domain.PersonDO;
 import at.ac.tuwien.rest.addressbook.dto.OrganisationalUnit;
 import at.ac.tuwien.rest.addressbook.dto.OrganisationalUnitDetails;
-import at.ac.tuwien.rest.addressbook.dto.PersonDetails;
-import at.ac.tuwien.rest.addressbook.service.AddressBookMapperService;
-import at.ac.tuwien.rest.addressbook.service.AddressBookService;
+import at.ac.tuwien.rest.addressbook.dto.PersonDTO;
+import at.ac.tuwien.rest.addressbook.mapper.PersonDTOMapper;
+import at.ac.tuwien.rest.addressbook.service.AddressBookRestService;
 import at.ac.tuwien.rest.projectdatabase.dto.*;
 import at.ac.tuwien.rest.projectdatabase.mapper.ProjectDTOMapper;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
@@ -25,10 +26,7 @@ public class ProjectDatabaseService {
 
     @Inject
     @RestClient
-    private AddressBookService addressBookService;
-
-    @Inject
-    private AddressBookMapperService addressBookMapperService;
+    private AddressBookRestService addressBookRestService;
 
     @Inject
     @RestClient
@@ -41,10 +39,10 @@ public class ProjectDatabaseService {
     public List<ProjectDO> getProjectSuggestionsForPerson(String personId) {
 
         List<ProjectDO> projects = new ArrayList<>();
-        PersonDetails personDetails = addressBookService.getPersonDetailsById(personId);
-        personDetails.getEmploymentList().forEach(employment -> {
+        PersonDTO personDTO = addressBookRestService.getPersonDetailsById(personId);
+        personDTO.getEmploymentList().forEach(employment -> {
             OrganisationalUnit orgUnit = employment.getOrganisationalUnit();
-            OrganisationalUnitDetails details = addressBookService.getOrgDetailsById(orgUnit.getId());
+            OrganisationalUnitDetails details = addressBookRestService.getOrgDetailsById(orgUnit.getId());
             projectDatabaseRestService.getProjectsByCriteria(details.getId().toString(), personId).forEach(projectDTO -> {
                 ProjectDO projectDO = new ProjectDO();
                 ProjectDTOMapper.mapAtoB(projectDTO, projectDO);
@@ -54,15 +52,20 @@ public class ProjectDatabaseService {
         return projects;
     }
 
-    public List<DmpProjectMember> getProjectStaff(String projectId) {
+    public List<ProjectMemberDO> getProjectStaff(String projectId) {
         ProjectDTO projectDTO  = projectDatabaseRestService.getProjectDetails(projectId);
-        List<DmpProjectMember> dmpProjectMemberList = new ArrayList<>();
+        List<ProjectMemberDO> projectMemberList = new ArrayList<>();
 
         projectDTO.getProjectMembers().forEach(projectMemberDTO -> {
-            DmpPerson person = addressBookMapperService.getPersonById(String.valueOf(projectMemberDTO.getId()));
-            dmpProjectMemberList.add(DmpProjectMember.fromProjectMemberAndDmpPerson(projectMemberDTO, person));
+            PersonDTO personDTO = addressBookRestService.getPersonDetailsById(String.valueOf(projectMemberDTO.getId()));
+            PersonDO personDO = new PersonDO();
+            PersonDTOMapper.mapAtoB(personDTO, personDO);
+            ProjectMemberDO projectMemberDO = new ProjectMemberDO();
+            projectMemberDO.setPerson(personDO);
+            projectMemberDO.setRoleInProject(projectMemberDTO.getRole());
+            projectMemberList.add(projectMemberDO);
         });
-        return dmpProjectMemberList;
+        return projectMemberList;
 
     }
 }

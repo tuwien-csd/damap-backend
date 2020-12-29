@@ -1,7 +1,7 @@
 package at.ac.tuwien.damap.rest;
 
 import at.ac.tuwien.damap.rest.domain.ProjectDO;
-import at.ac.tuwien.rest.projectdatabase.dto.*;
+import at.ac.tuwien.damap.rest.domain.ProjectMemberDO;
 import at.ac.tuwien.rest.projectdatabase.service.ProjectDatabaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public class ProjectResource {
 
     @GET
     @Path("/project-staff/{id}")
-    public List<DmpProjectMember> getProjectMembers(@PathParam("id") String projectId) {
+    public List<ProjectMemberDO> getProjectMembers(@PathParam("id") String projectId) {
         log.info(String.format("Get Project Staff for Project ID=%s", projectId));
         return projectDatabaseService.getProjectStaff(projectId);
     }
