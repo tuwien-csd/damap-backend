@@ -4,7 +4,6 @@ import at.ac.tuwien.damap.rest.domain.ProjectDO;
 import at.ac.tuwien.damap.rest.domain.ProjectMemberDO;
 import at.ac.tuwien.damap.rest.domain.PersonDO;
 import at.ac.tuwien.rest.addressbook.dto.OrganisationalUnit;
-import at.ac.tuwien.rest.addressbook.dto.OrganisationalUnitDetails;
 import at.ac.tuwien.rest.addressbook.dto.PersonDTO;
 import at.ac.tuwien.rest.addressbook.mapper.PersonDTOMapper;
 import at.ac.tuwien.rest.addressbook.service.AddressBookRestService;
@@ -42,8 +41,7 @@ public class ProjectDatabaseService {
         PersonDTO personDTO = addressBookRestService.getPersonDetailsById(personId);
         personDTO.getEmploymentList().forEach(employment -> {
             OrganisationalUnit orgUnit = employment.getOrganisationalUnit();
-            OrganisationalUnitDetails details = addressBookRestService.getOrgDetailsById(orgUnit.getId());
-            projectDatabaseRestService.getProjectsByCriteria(details.getId().toString(), personId).forEach(projectDTO -> {
+            projectDatabaseRestService.getProjectsByCriteria(orgUnit.getId().toString(), personId).forEach(projectDTO -> {
                 ProjectDO projectDO = new ProjectDO();
                 ProjectDTOMapper.mapAtoB(projectDTO, projectDO);
                 projects.add(projectDO);

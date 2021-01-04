@@ -1,6 +1,5 @@
 package at.ac.tuwien.rest.addressbook.service;
 
-import at.ac.tuwien.rest.addressbook.dto.OrganisationalUnitDetails;
 import at.ac.tuwien.rest.addressbook.dto.PersonDTO;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
@@ -17,9 +16,4 @@ public interface AddressBookRestService {
     @Path("/person/v22/id/{id}")
     @Produces("application/json")
     PersonDTO getPersonDetailsById(@PathParam String id);
-
-    @GET
-    @Path("/orgunit/v22/id/{id}")
-    @Produces("application/json")
-    OrganisationalUnitDetails getOrgDetailsById(@PathParam Long id);
 }
