@@ -9,17 +9,10 @@ import javax.json.bind.annotation.JsonbProperty;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class OrganisationalUnit {
+public class EmploymentDTO {
 
-    @JsonbProperty("tiss_id")
-    private Long id;
+    private String function;
 
-    private String code;
-
-    private String number;
-
-    @JsonbProperty("name_en")
-    private String name;
-
-    private String type;
+    @JsonbProperty("org_ref")
+    private OrganisationalUnit organisationalUnit;
 }
