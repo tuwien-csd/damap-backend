@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.json.bind.annotation.JsonbDateFormat;
 import java.util.Date;
 
 @Getter
@@ -14,7 +15,12 @@ public class ProjectDO {
     private long id;
     private String description;
     private String title;
-    private Date start;
-    private Date end;
     private FundingDO funding;
+
+    @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    private Date start;
+
+    @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    private Date end;
+
 }
