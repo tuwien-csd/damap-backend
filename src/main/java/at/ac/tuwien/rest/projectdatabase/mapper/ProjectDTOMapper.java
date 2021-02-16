@@ -1,5 +1,6 @@
 package at.ac.tuwien.rest.projectdatabase.mapper;
 
+import at.ac.tuwien.damap.enums.EIdentifierType;
 import at.ac.tuwien.damap.rest.domain.FundingDO;
 import at.ac.tuwien.damap.rest.domain.IdentifierDO;
 import at.ac.tuwien.damap.rest.domain.ProjectDO;
@@ -42,6 +43,6 @@ public class ProjectDTOMapper {
 
     public static void mapAtoB(IdentifierDTO identifierDTO, IdentifierDO identifierDO){
         identifierDO.setIdentifier(identifierDTO.getIdentifier());
-        identifierDO.setType(identifierDTO.getType());
+        identifierDO.setType(EIdentifierType.valueOf(identifierDTO.getType()));
     }
 }

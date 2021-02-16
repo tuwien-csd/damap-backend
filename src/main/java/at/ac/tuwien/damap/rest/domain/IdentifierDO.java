@@ -1,5 +1,6 @@
 package at.ac.tuwien.damap.rest.domain;
 
+import at.ac.tuwien.damap.enums.EIdentifierType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,5 +11,5 @@ import lombok.Setter;
 public class IdentifierDO {
 
     private String identifier;
-    private String type;
+    private EIdentifierType type;
 }

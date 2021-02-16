@@ -14,7 +14,7 @@ public class PersonDO {
 
     private Long id;
 
-    private PersonIdDO personId;
+    private IdentifierDO personId;
 
     private String firstName;
 

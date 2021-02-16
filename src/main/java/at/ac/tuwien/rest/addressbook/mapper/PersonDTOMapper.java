@@ -1,8 +1,8 @@
 package at.ac.tuwien.rest.addressbook.mapper;
 
-import at.ac.tuwien.damap.enums.PersonIdType;
+import at.ac.tuwien.damap.enums.EIdentifierType;
+import at.ac.tuwien.damap.rest.domain.IdentifierDO;
 import at.ac.tuwien.damap.rest.domain.PersonDO;
-import at.ac.tuwien.damap.rest.domain.PersonIdDO;
 import at.ac.tuwien.rest.addressbook.dto.PersonDTO;
 
 public class PersonDTOMapper {
@@ -14,10 +14,10 @@ public class PersonDTOMapper {
         personDO.setMbox(personDTO.getMainEmail());
 
         if(personDTO.getOrcid() != null) {
-            PersonIdDO personIdDO = new PersonIdDO();
-            personIdDO.setIdentifier(personDTO.getOrcid());
-            personIdDO.setType(PersonIdType.ORCID);
-            personDO.setPersonId(personIdDO);
+            IdentifierDO personIdentifierDO = new IdentifierDO();
+            personIdentifierDO.setIdentifier(personDTO.getOrcid());
+            personIdentifierDO.setType(EIdentifierType.ORCID);
+            personDO.setPersonId(personIdentifierDO);
         }
     }
 }
