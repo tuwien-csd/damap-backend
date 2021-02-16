@@ -1,27 +1,55 @@
 package at.ac.tuwien.damap.rest;
 
-import at.ac.tuwien.damap.repo.DataManagementPlanRepo;
-import at.ac.tuwien.damap.rest.domain.DataManagementPlanDto;
+import at.ac.tuwien.damap.rest.domain.DmpDO;
+import at.ac.tuwien.damap.rest.domain.DmpListItemDO;
+import at.ac.tuwien.damap.rest.service.DmpService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Path("/plans")
 @Produces(MediaType.APPLICATION_JSON)
 public class DataManagementPlanResource {
+    private static final Logger log = LoggerFactory.getLogger(DataManagementPlanResource.class);
 
-    @Inject DataManagementPlanRepo dataManagementPlanRepo;
+    @Inject
+    DmpService dmpService;
 
     @GET
     @Path("/all")
-    @RolesAllowed("user")
-    public List<DataManagementPlanDto> getAll() {
-//        todo mapDataManagementPlanToDataManagementPlanDto(dataManagementPlanRepo.getAll());
-        return null;
+    public List<DmpDO> getAll() {
+        //TODO delete this method, it currently only exists for testing the DB
+        log.info("Return all Dmps");
+        return dmpService.getAll();
     }
+
+    @GET
+    @Path("/dmp-list/{personId}")
+//    @RolesAllowed("user")
+    public List<DmpListItemDO> getDmpListByPersonId(@PathParam("personId") String personId) {
+        log.info("Return dmp list for user id=" + personId);
+        return dmpService.getDmpListByPersonId(personId);
+    }
+
+
+    @GET
+    @Path("/dmp/{id}")
+//    @RolesAllowed("user")
+    public DmpDO getDmpById(@PathParam("id") String id) {
+        log.info("Return dmp with id=" + id);
+        return dmpService.getDmpById(Long.valueOf(id));
+    }
+
+    //TODO save
+//    @POST
+//    @Path("/save-dmp/{dmp}")
+//    public Response saveDmp(@FormParam("dmp") DmpDO dmp) {
+//        log.info("Save dmp =" + dmp);
+//        return null;
+//    }
 }
