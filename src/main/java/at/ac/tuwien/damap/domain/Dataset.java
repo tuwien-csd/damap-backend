@@ -1,10 +1,7 @@
 package at.ac.tuwien.damap.domain;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
@@ -12,7 +9,8 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = "dmp")
+@ToString(exclude = "dmp")
 @Entity
 @Audited
 public class Dataset extends PanacheEntity {
