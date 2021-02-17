@@ -7,10 +7,13 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -94,4 +97,16 @@ public class Dmp extends PanacheEntity {
     @Audited
     @Column(name = "optional_statement")
     private String optionalStatement;
+
+    @NotAudited
+    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
+    private List<Contributor> contributorList = new ArrayList<>();
+
+    @NotAudited
+    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
+    private List<Dataset> datasetList = new ArrayList<>();
+
+    @NotAudited
+    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
+    private List<Host> hostList = new ArrayList<>();
 }

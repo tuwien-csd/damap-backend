@@ -2,17 +2,15 @@ package at.ac.tuwien.damap.domain;
 
 import at.ac.tuwien.damap.enums.EContributorRole;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = "dmp")
+@ToString(exclude = "dmp")
 @Entity
 @Audited
 public class Contributor extends PanacheEntity {
@@ -23,7 +21,7 @@ public class Contributor extends PanacheEntity {
 
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ManyToOne
-    @JoinColumn(name = "dmp_id", nullable = false, updatable = false, insertable = false)
+    @JoinColumn(name = "dmp_id")
     private Dmp dmp;
 
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
