@@ -6,6 +6,8 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -18,7 +20,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Audited
+//@Audited
 @Table
 public class Dmp extends PanacheEntity {
 
@@ -26,25 +28,19 @@ public class Dmp extends PanacheEntity {
     @Setter(AccessLevel.NONE)
     private long version;
 
-    @Audited
     private Date created;
 
-    @Audited
     private Date modified;
 
-    @Audited
     private String title;
 
-    @Audited
     private String description;
 
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "project")
     private Project project;
 
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "contact")
     private Person contact;
 
@@ -52,61 +48,49 @@ public class Dmp extends PanacheEntity {
     @Column(name = "data_kind")
     private EDataKind dataKind;
 
-    @Audited
     @Column(name = "no_data_explanation")
     private String noDataExpalnation;
 
-    @Audited
     private String metadata;
 
-    @Audited
     @Column(name = "data_generation")
     private String dataGeneration;
 
-    @Audited
     private String structure;
 
-    @Audited
     @Column(name = "target_audience")
     private String targetAudience;
 
-    @Audited
     @Column(name = "personal_information")
-    private boolean personalInformation;
+    private Boolean personalInformation;
 
-    @Audited
     @Column(name = "sensitive_data")
-    private boolean sensitiveData;
+    private Boolean sensitiveData;
 
-    @Audited
     @Column(name = "legal_restrictions")
-    private boolean legalRestrictions;
+    private Boolean legalRestrictions;
 
-    @Audited
     @Column(name = "ethical_issues_exist")
-    private boolean ethicalIssuesExist;
+    private Boolean ethicalIssuesExist;
 
-    @Audited
     @Column(name = "committee_approved")
-    private boolean committeeApproved;
+    private Boolean committeeApproved;
 
-    @Audited
     @Column(name = "ethics_report")
     private String ethicsReport;
 
-    @Audited
     @Column(name = "optional_statement")
     private String optionalStatement;
 
-    @NotAudited
-    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<Contributor> contributorList = new ArrayList<>();
 
-    @NotAudited
-    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<Dataset> datasetList = new ArrayList<>();
 
-    @NotAudited
-    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<Host> hostList = new ArrayList<>();
 }

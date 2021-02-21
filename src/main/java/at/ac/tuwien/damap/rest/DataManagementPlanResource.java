@@ -1,12 +1,14 @@
 package at.ac.tuwien.damap.rest;
 
+import at.ac.tuwien.damap.domain.Dmp;
 import at.ac.tuwien.damap.rest.domain.DmpDO;
 import at.ac.tuwien.damap.rest.domain.DmpListItemDO;
+import at.ac.tuwien.damap.rest.service.SaveDmpResponse;
+import at.ac.tuwien.damap.rest.service.SaveDmpWrapper;
 import at.ac.tuwien.damap.rest.service.DmpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -45,11 +47,10 @@ public class DataManagementPlanResource {
         return dmpService.getDmpById(Long.valueOf(id));
     }
 
-    //TODO save
-//    @POST
-//    @Path("/save-dmp/{dmp}")
-//    public Response saveDmp(@FormParam("dmp") DmpDO dmp) {
-//        log.info("Save dmp =" + dmp);
-//        return null;
-//    }
+    @POST
+    @Consumes("application/json")
+    @Path("/save-dmp")
+    public SaveDmpResponse saveDmp(SaveDmpWrapper dmpWrapper){
+        return dmpService.save(dmpWrapper);
+    }
 }

@@ -14,8 +14,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DmpDO {
 
-    private long id;
-    private long version;
+    private Long id;
     private String title;
     @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private Date created;
@@ -31,11 +30,11 @@ public class DmpDO {
     private String dataGeneration;
     private String structure;
     private String targetAudience;
-    private boolean personalInformation;
-    private boolean sensitiveData;
-    private boolean legalRestrictions;
-    private boolean ethicalIssuesExist;
-    private boolean committeeApproved;
+    private Boolean personalInformation;
+    private Boolean sensitiveData;
+    private Boolean legalRestrictions;
+    private Boolean ethicalIssuesExist;
+    private Boolean committeeApproved;
     private String ethicsReport;
     private String optionalStatement;
     private List<DatasetDO> datasets;

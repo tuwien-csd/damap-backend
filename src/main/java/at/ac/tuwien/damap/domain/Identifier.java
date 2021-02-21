@@ -14,7 +14,7 @@ import javax.persistence.Enumerated;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Audited
+//@Audited
 public class Identifier extends PanacheEntity {
 
     private String identifier;

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.json.bind.annotation.JsonbProperty;
+
 /**
  * Damap compatible representation of persons
  */
@@ -12,14 +14,11 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PersonDO {
 
-    private Long id;
-
+    @JsonbProperty("id")
+    private String universityId;
     private IdentifierDO personId;
-
     private String firstName;
-
     private String lastName;
-
     private String mbox;
 
 }

@@ -14,7 +14,7 @@ public class PersonDTO {
 
 
     @JsonbProperty("tiss_id")
-    private Long id;
+    private String id;
 
     @JsonbProperty("first_name")
     private String firstName;

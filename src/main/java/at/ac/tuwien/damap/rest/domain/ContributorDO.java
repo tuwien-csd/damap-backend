@@ -13,9 +13,6 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ContributorDO {
 
-    private Long id;
-
-    private EContributorRole contributorRole;
-
-    private PersonDO personDO;
+    private EContributorRole role;
+    private PersonDO person;
 }

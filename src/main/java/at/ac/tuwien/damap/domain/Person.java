@@ -13,30 +13,26 @@ import javax.persistence.*;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Audited
+//@Audited
 public class Person extends PanacheEntity {
 
     @Version
     @Setter(AccessLevel.NONE)
     private long version;
 
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ManyToOne
+//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id")
     private Identifier personIdentifier;
 
-    @Audited
     @Column(name = "university_id")
-    private Long universityId;
+    private String universityId;
 
-    @Audited
     private String mbox;
 
-    @Audited
     @Column(name = "first_name")
     private String firstName;
 
-    @Audited
     @Column(name = "last_name")
     private String lastName;
 }

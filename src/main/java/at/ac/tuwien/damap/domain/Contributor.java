@@ -6,26 +6,27 @@ import lombok.*;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 
 @Data
 @EqualsAndHashCode(callSuper = true, exclude = "dmp")
 @ToString(exclude = "dmp")
 @Entity
-@Audited
+//@Audited
 public class Contributor extends PanacheEntity {
 
     @Version
     @Setter(AccessLevel.NONE)
     private long version;
 
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ManyToOne
-    @JoinColumn(name = "dmp_id")
+//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @JsonbTransient
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dmp_id", nullable = false, updatable = false)
     private Dmp dmp;
 
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id")
     private Person contributor;
 
