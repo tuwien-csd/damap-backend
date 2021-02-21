@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.json.bind.annotation.JsonbDateFormat;
+import javax.json.bind.annotation.JsonbProperty;
 import java.util.Date;
 
 @Getter
@@ -12,7 +13,8 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ProjectDO {
 
-    private long id;
+    @JsonbProperty("id")
+    private String universityId;
     private String description;
     private String title;
     private FundingDO funding;

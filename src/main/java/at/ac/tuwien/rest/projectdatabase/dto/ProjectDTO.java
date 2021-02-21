@@ -11,7 +11,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ProjectDTO {
 
-    private long id;
+    private String id;
     private String description;
     private String title;
     private String start;

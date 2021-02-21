@@ -8,7 +8,7 @@ import at.ac.tuwien.damap.rest.domain.ProjectDO;
 
 public class DmpListItemDOMapper {
 
-    public static void mapAtoB(Access access, Dmp dmp, DmpListItemDO dmpListItemDO) {
+    public static void mapEntityToDO(Access access, Dmp dmp, DmpListItemDO dmpListItemDO) {
         dmpListItemDO.setId(dmp.id);
         dmpListItemDO.setTitle(dmp.getTitle());
         dmpListItemDO.setCreated(dmp.getCreated());
@@ -16,12 +16,16 @@ public class DmpListItemDOMapper {
         dmpListItemDO.setDescription(dmp.getDescription());
         dmpListItemDO.setAccessType(access.getRole());
 
-        PersonDO contactDO = new PersonDO();
-        PersonDOMapper.mapAtoB(dmp.getContact(), contactDO);
-        dmpListItemDO.setContact(contactDO);
+        if (dmp.getContact() != null) {
+            PersonDO contactDO = new PersonDO();
+            PersonDOMapper.mapEntityToDO(dmp.getContact(), contactDO);
+            dmpListItemDO.setContact(contactDO);
+        }
 
-        ProjectDO projectDO = new ProjectDO();
-        ProjectDOMapper.mapAtoB(dmp.getProject(), projectDO);
-        dmpListItemDO.setProject(projectDO);
+        if (dmp.getProject() != null) {
+            ProjectDO projectDO = new ProjectDO();
+            ProjectDOMapper.mapEntityToDO(dmp.getProject(), projectDO);
+            dmpListItemDO.setProject(projectDO);
+        }
     }
 }

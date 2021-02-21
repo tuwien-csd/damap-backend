@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 public class ProjectDTOMapper {
 
     public static void mapAtoB(ProjectDTO projectDTO, ProjectDO projectDO) {
-        projectDO.setId(projectDTO.getId());
+        projectDO.setUniversityId(projectDTO.getId());
         projectDO.setTitle(projectDTO.getTitle());
         projectDO.setDescription(projectDTO.getDescription());
         try {
@@ -43,6 +43,7 @@ public class ProjectDTOMapper {
 
     public static void mapAtoB(IdentifierDTO identifierDTO, IdentifierDO identifierDO){
         identifierDO.setIdentifier(identifierDTO.getIdentifier());
-        identifierDO.setType(EIdentifierType.valueOf(identifierDTO.getType()));
+        if (identifierDTO.getType() != null)
+            identifierDO.setType(EIdentifierType.valueOf(identifierDTO.getType()));
     }
 }

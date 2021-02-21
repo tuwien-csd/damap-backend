@@ -5,10 +5,15 @@ import at.ac.tuwien.damap.rest.domain.*;
 
 public class HostDOMapper {
 
-    public static void mapAtoB(Host host, HostDO hostDO) {
-        hostDO.setId(host.id);
-        hostDO.setVersion(host.getVersion());
+    public static void mapEntityToDO(Host host, HostDO hostDO) {
+        hostDO.setHostId(host.getHostId());
         hostDO.setName(host.getName());
         hostDO.setDate(host.getDate());
+    }
+
+    public static void mapDOtoEntity(HostDO hostDO, Host host){
+        host.setHostId(hostDO.getHostId());
+        host.setName(hostDO.getName());
+        host.setDate(hostDO.getDate());
     }
 }

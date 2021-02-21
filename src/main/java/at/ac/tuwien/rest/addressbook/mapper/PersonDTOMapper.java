@@ -8,7 +8,7 @@ import at.ac.tuwien.rest.addressbook.dto.PersonDTO;
 public class PersonDTOMapper {
 
     public static void mapAtoB(PersonDTO personDTO, PersonDO personDO){
-        personDO.setId(personDTO.getId());
+        personDO.setUniversityId(personDTO.getId());
         personDO.setFirstName(personDTO.getFirstName());
         personDO.setLastName(personDTO.getLastName());
         personDO.setMbox(personDTO.getMainEmail());

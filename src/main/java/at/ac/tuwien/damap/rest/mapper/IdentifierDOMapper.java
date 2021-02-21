@@ -5,8 +5,15 @@ import at.ac.tuwien.damap.rest.domain.IdentifierDO;
 
 public class IdentifierDOMapper {
 
-    public static void mapAtoB(Identifier identifier, IdentifierDO identifierDO){
+    //TODO possibly make identifier unique?
+
+    public static void mapEntityToDO(Identifier identifier, IdentifierDO identifierDO){
         identifierDO.setIdentifier(identifier.getIdentifier());
         identifierDO.setType(identifier.getIdentifierType());
+    }
+
+    public static void mapDOtoEntity(IdentifierDO identifierDO, Identifier identifier){
+        identifier.setIdentifier(identifierDO.getIdentifier());
+        identifier.setIdentifierType(identifierDO.getType());
     }
 }

@@ -47,7 +47,7 @@ insert into damap.identifier_type values ('FUNDREF');
 
 CREATE TABLE damap.identifier
 (
-    id bigserial NOT NULL,
+    id bigint NOT NULL,
     identifier text,
     type text,
     PRIMARY KEY (id),
@@ -82,7 +82,7 @@ insert into damap.funding_status values ('UNSPECIFIED');
 
 CREATE TABLE damap.funding
 (
-    id bigserial NOT NULL,
+    id bigint NOT NULL,
 	version integer NOT NULL,
     funder_id bigint,
     funding_status text,
@@ -112,10 +112,10 @@ ALTER TABLE damap.funding
 
 CREATE TABLE damap.person
 (
-    id bigserial NOT NULL,
+    id bigint NOT NULL,
 	version integer NOT NULL,
     person_id bigint,
-    university_id bigint,
+    university_id text,
     mbox text,
     first_name text,
     last_name text,
@@ -134,25 +134,19 @@ ALTER TABLE damap.person
 
 CREATE TABLE damap.project
 (
-    id bigserial NOT NULL,
+    id bigint NOT NULL,
 	version integer NOT NULL,
     title text,
     description text,
     funding bigint,
-    start date,
-    "end" date,
-    leader bigint,
+    project_start date,
+    project_end date,
     PRIMARY KEY (id),
     FOREIGN KEY (funding)
         REFERENCES damap.funding (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
         NOT VALID,
-    FOREIGN KEY (leader)
-        REFERENCES damap.person (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
-        NOT VALID
 );
 
 ALTER TABLE damap.project
@@ -178,7 +172,7 @@ insert into damap.data_kind values ('SPECIFY');
 
 CREATE TABLE damap.dmp
 (
-    id bigserial NOT NULL,
+    id bigint NOT NULL,
 	version integer NOT NULL,
     created date,
     modified date,
@@ -235,7 +229,7 @@ ALTER TABLE damap.contributor_role
 
 CREATE TABLE damap.contributor
 (
-    id bigserial NOT NULL,
+    id bigint NOT NULL,
 	version integer NOT NULL,
     dmp_id bigint,
     person_id bigint,
@@ -265,8 +259,9 @@ ALTER TABLE damap.contributor
 
 CREATE TABLE damap.host
 (
-    id bigserial NOT NULL,
+    id bigint NOT NULL,
 	version integer NOT NULL,
+	host_id text,
     dmp_id bigint,
     name text,
     date date,
@@ -285,7 +280,7 @@ ALTER TABLE damap.host
 
 CREATE TABLE damap.dataset
 (
-    id bigserial NOT NULL,
+    id bigint NOT NULL,
 	version integer NOT NULL,
 	dmp_id bigint,
 	host_id bigint,
@@ -335,11 +330,11 @@ insert into damap.function_role values ('GUEST');
 
 CREATE TABLE damap.administration
 (
-    id bigserial NOT NULL,
+    id bigint NOT NULL,
 	version integer NOT NULL,
-    university_id bigint,
+    university_id text,
     role text,
-    "from" date,
+    start date,
     until date,
     PRIMARY KEY (id),
     FOREIGN KEY (role)
@@ -356,13 +351,13 @@ ALTER TABLE damap.administration
 
 CREATE TABLE damap.access
 (
-    id bigserial NOT NULL,
+    id bigint NOT NULL,
 	version integer NOT NULL,
     dmp_id bigint,
-    university_id bigint,
+    university_id text,
     identifier_id bigint,
     role text,
-    "from" date,
+    start date,
     until date,
     PRIMARY KEY (id),
     FOREIGN KEY (dmp_id)
@@ -385,3 +380,9 @@ CREATE TABLE damap.access
 ALTER TABLE damap.access
     OWNER to damap;
 
+
+--------------------------------------------------------------
+-- create id sequence for hibernate
+--------------------------------------------------------------
+
+CREATE SEQUENCE damap.hibernate_sequence INCREMENT 1 START 1 MINVALUE 1;

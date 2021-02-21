@@ -5,27 +5,37 @@ import lombok.*;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
-@EqualsAndHashCode(callSuper = true, exclude = "dmp")
-@ToString(exclude = "dmp")@Entity
-@Audited
+@EqualsAndHashCode(callSuper = true, exclude = {"dmp", "datasetList"})
+@ToString(exclude = {"dmp", "datasetList"})
+@Entity
+//@Audited
 public class Host extends PanacheEntity {
 
     @Version
     @Setter(AccessLevel.NONE)
     private long version;
 
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ManyToOne
+    @Column(name = "host_id")
+    private String hostId;
+
+//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @JsonbTransient
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dmp_id")
     private Dmp dmp;
 
-    @Audited
     private String name;
 
-    @Audited
     private Date date;
+
+    @JsonbTransient
+    @OneToMany(mappedBy = "host", fetch = FetchType.LAZY)
+    private List<Dataset> datasetList = new ArrayList<>();
 }

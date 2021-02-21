@@ -14,25 +14,24 @@ import javax.persistence.*;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Audited
+//@Audited
 public class Funding extends PanacheEntity {
 
     @Version
     @Setter(AccessLevel.NONE)
     private long version;
 
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ManyToOne
+//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "funder_id")
     private Identifier funderIdentifier;
 
-    @Audited
     @Enumerated(EnumType.STRING)
     @Column(name = "funding_status")
     private EFundingState fundingStatus;
 
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ManyToOne
+//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "grant_id")
     private Identifier grantIdentifier;
 }

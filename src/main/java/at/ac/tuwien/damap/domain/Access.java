@@ -15,33 +15,30 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Audited
+//@Audited
 public class Access extends PanacheEntity {
 
     @Version
     @Setter(AccessLevel.NONE)
     private long version;
 
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ManyToOne
-    @JoinColumn(name = "dmp_id")
+//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dmp_id", nullable = false, updatable = false)
     private Dmp dmp;
 
-    @Audited
     @Column(name = "university_id")
-    private long universityId;
+    private String universityId;
 
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ManyToOne
-    @JoinColumn(name = "identifier_id")
+//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "identifier_id", updatable = false)
     private Identifier personIdentifier;
 
     @Enumerated(EnumType.STRING)
     private EFunctionRole role;
 
-    @Audited
-    private Date from;
+    private Date start;
 
-    @Audited
     private Date until;
 }

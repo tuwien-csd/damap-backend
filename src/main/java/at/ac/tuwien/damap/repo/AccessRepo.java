@@ -9,8 +9,8 @@ import java.util.List;
 @ApplicationScoped
 public class AccessRepo implements PanacheRepository<Access> {
 
-    public List<Access> getAllDmpByUniversityId(long universityId) {
+    public List<Access> getAllDmpByUniversityId(String universityId) {
         return find("select access from Access access" +
-                " where university_id = " + universityId).list();
+                " where university_id = '" + universityId + "'").list();
     }
 }

@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import java.util.Date;
 
@@ -12,45 +13,39 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true, exclude = "dmp")
 @ToString(exclude = "dmp")
 @Entity
-@Audited
+//@Audited
 public class Dataset extends PanacheEntity {
 
     @Version
     @Setter(AccessLevel.NONE)
     private long version;
 
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ManyToOne
+//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @JsonbTransient
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dmp_id")
     private Dmp dmp;
 
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ManyToOne
+//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @JsonbTransient
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "host_id")
     private Host host;
 
-    @Audited
     private String title;
 
-    @Audited
     private String type;
 
-    @Audited
     private String size;
 
-    @Audited
     private String comment;
 
-    @Audited
     private boolean publish;
 
-    @Audited
     private String license;
 
-    @Audited
     private Date start;
 
-    @Audited
     @Column(name = "reference_hash")
     private String referenceHash;
 }

@@ -10,15 +10,12 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DatasetDO {
 
-    private long id;
-    private long version;
-    private HostDO host;
     private String title;
     private String type;
     private String size;
     private String comment;
     private boolean publish;
     private String license;
-    private Date start;
+    private Date startDate;
     private String referenceHash;
 }

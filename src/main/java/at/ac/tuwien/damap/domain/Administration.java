@@ -14,23 +14,20 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Audited
+//@Audited
 public class Administration extends PanacheEntity {
 
     @Version
     @Setter(AccessLevel.NONE)
     private long version;
 
-    @Audited
     @Column(name = "university_id")
-    private long universityId;
+    private String universityId;
 
     @Enumerated(EnumType.STRING)
     private EFunctionRole role;
 
-    @Audited
-    private Date from;
+    private Date start;
 
-    @Audited
     private Date until;
 }
