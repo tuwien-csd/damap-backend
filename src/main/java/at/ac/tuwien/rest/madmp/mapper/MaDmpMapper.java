@@ -76,7 +76,8 @@ public class MaDmpMapper {
 
     public static void mapEntityToMaDmp(Identifier identifier, MaDmpIdentifier maDmpIdentifier) {
         maDmpIdentifier.setIdentifier(identifier.getIdentifier());
-        maDmpIdentifier.setIdentifierType(identifier.getIdentifierType());
+        if (identifier.getIdentifierType() != null)
+            maDmpIdentifier.setIdentifierType(identifier.getIdentifierType().toString());
     }
 
     public static void mapEntityToMaDmp(Project project, MaDmpProject maDmpProject) {
@@ -95,7 +96,8 @@ public class MaDmpMapper {
     }
 
     public static void mapEntityToMaDmp(Funding funding, MaDmpFunding maDmpFunding) {
-        maDmpFunding.setFunding_status(funding.getFundingStatus());
+        if (funding.getFundingStatus() != null)
+            maDmpFunding.setFunding_status(funding.getFundingStatus().toString());
 
         if (funding.getFunderIdentifier() != null) {
             MaDmpIdentifier maDmpIdentifier = new MaDmpIdentifier();

@@ -12,5 +12,5 @@ public class MaDmpFunding {
 
     private MaDmpIdentifier funder_id;
     private MaDmpIdentifier grant_id;
-    private EFundingState funding_status;
+    private String funding_status;
 }
