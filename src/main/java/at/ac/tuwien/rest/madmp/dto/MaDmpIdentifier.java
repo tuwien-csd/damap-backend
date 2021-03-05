@@ -12,5 +12,5 @@ import lombok.Setter;
 public class MaDmpIdentifier {
 
     private String identifier;
-    private EIdentifierType identifierType;
+    private String identifierType;
 }
