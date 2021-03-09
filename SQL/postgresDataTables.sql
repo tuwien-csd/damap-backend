@@ -264,7 +264,7 @@ CREATE TABLE damap.host
 	host_id text,
     dmp_id bigint,
     name text,
-    date date,
+    retrieval_date date,
     PRIMARY KEY (id),
     FOREIGN KEY (dmp_id)
         REFERENCES damap.dmp (id) MATCH SIMPLE
