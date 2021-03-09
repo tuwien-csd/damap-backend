@@ -33,6 +33,7 @@ public class Host extends PanacheEntity {
 
     private String name;
 
+    @Column(name = "retrieval_date")
     private Date date;
 
     @JsonbTransient
