@@ -286,11 +286,11 @@ CREATE TABLE damap.dataset
 	host_id bigint,
     title text,
     type text,
-    size text,
-    comment text,
+    data_size text,
+    dataset_comment text,
     publish boolean,
     license text,
-    start date,
+    start_date date,
     reference_hash text,
     PRIMARY KEY (id),
     FOREIGN KEY (dmp_id)
@@ -334,8 +334,8 @@ CREATE TABLE damap.administration
 	version integer NOT NULL,
     university_id text,
     role text,
-    start date,
-    until date,
+    start_date date,
+    until_date date,
     PRIMARY KEY (id),
     FOREIGN KEY (role)
         REFERENCES damap.function_role (role) MATCH SIMPLE
@@ -349,7 +349,7 @@ ALTER TABLE damap.administration
 
 --------------------------------------------------------------
 
-CREATE TABLE damap.access
+CREATE TABLE damap.access_management
 (
     id bigint NOT NULL,
 	version integer NOT NULL,
@@ -357,8 +357,8 @@ CREATE TABLE damap.access
     university_id text,
     identifier_id bigint,
     role text,
-    start date,
-    until date,
+    start_date date,
+    until_date date,
     PRIMARY KEY (id),
     FOREIGN KEY (dmp_id)
         REFERENCES damap.dmp (id) MATCH SIMPLE
@@ -377,7 +377,7 @@ CREATE TABLE damap.access
         NOT VALID
 );
 
-ALTER TABLE damap.access
+ALTER TABLE damap.access_management
     OWNER to damap;
 
 

@@ -36,17 +36,17 @@ public class Dataset extends PanacheEntity {
 
     private String type;
 
-    @JoinColumn(name = "data_size")
+    @Column(name = "data_size")
     private String size;
 
-    @JoinColumn(name = "dataset_comment")
+    @Column(name = "dataset_comment")
     private String comment;
 
     private boolean publish;
 
     private String license;
 
-    @JoinColumn(name = "start_date")
+    @Column(name = "start_date")
     private Date start;
 
     @Column(name = "reference_hash")
