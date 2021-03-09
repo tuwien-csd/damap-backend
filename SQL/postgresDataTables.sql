@@ -146,7 +146,7 @@ CREATE TABLE damap.project
         REFERENCES damap.funding (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
-        NOT VALID,
+        NOT VALID
 );
 
 ALTER TABLE damap.project
