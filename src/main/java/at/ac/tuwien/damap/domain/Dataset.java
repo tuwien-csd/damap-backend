@@ -16,7 +16,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true, exclude = "dmp")
 @ToString(exclude = "dmp")
 @Entity
-//@Audited
+@Audited
 public class Dataset extends PanacheEntity {
 
     @Version

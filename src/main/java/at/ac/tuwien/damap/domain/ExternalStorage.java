@@ -1,6 +1,7 @@
 package at.ac.tuwien.damap.domain;
 
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.persistence.Access;
@@ -11,7 +12,7 @@ import javax.persistence.Access;
 @EqualsAndHashCode(callSuper = true)
 @DiscriminatorValue("EXTERNAL_STORAGE")
 @Access(AccessType.FIELD)
-//@Audited
+@Audited
 @Table(name = "external_storage")
 public class ExternalStorage extends Host {
 
