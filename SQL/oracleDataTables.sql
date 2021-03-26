@@ -150,6 +150,27 @@ CREATE TABLE damap.contributor_role
     PRIMARY KEY (role)
 );
 
+insert into damap.contributor_role values ('DataCollector');
+insert into damap.contributor_role values ('DataCurator');
+insert into damap.contributor_role values ('DataManager');
+insert into damap.contributor_role values ('Distributor');
+insert into damap.contributor_role values ('Editor');
+insert into damap.contributor_role values ('HostingInstitution');
+insert into damap.contributor_role values ('Producer');
+insert into damap.contributor_role values ('ProjectLeader');
+insert into damap.contributor_role values ('ProjectManager');
+insert into damap.contributor_role values ('ProjectMember');
+insert into damap.contributor_role values ('RegistrationAgency');
+insert into damap.contributor_role values ('RegistrationAuthority');
+insert into damap.contributor_role values ('RelatedPerson');
+insert into damap.contributor_role values ('Researcher');
+insert into damap.contributor_role values ('ResearchGroup');
+insert into damap.contributor_role values ('RightsHolder');
+insert into damap.contributor_role values ('Sponsor');
+insert into damap.contributor_role values ('Supervisor');
+insert into damap.contributor_role values ('WorkPackageLeader');
+insert into damap.contributor_role values ('Other');
+
 --------------------------------------------------------------
 
 CREATE TABLE damap.contributor
