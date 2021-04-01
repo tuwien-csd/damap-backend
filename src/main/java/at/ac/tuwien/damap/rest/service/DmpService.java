@@ -6,14 +6,13 @@ import at.ac.tuwien.damap.repo.AccessRepo;
 import at.ac.tuwien.damap.repo.DmpRepo;
 import at.ac.tuwien.damap.rest.domain.DmpDO;
 import at.ac.tuwien.damap.rest.domain.DmpListItemDO;
-import at.ac.tuwien.damap.rest.mapper.ContributorDOMapper;
-import at.ac.tuwien.damap.rest.mapper.DatasetDOMapper;
 import at.ac.tuwien.damap.rest.mapper.DmpDOMapper;
 import at.ac.tuwien.damap.rest.mapper.DmpListItemDOMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,6 +20,7 @@ import java.util.List;
 
 @ApplicationScoped
 public class DmpService {
+    private static final Logger log = LoggerFactory.getLogger(DmpService.class);
 
     @Inject
     DmpRepo dmpRepo;
@@ -72,16 +72,20 @@ public class DmpService {
     }
 
     public long create(SaveDmpWrapper dmpWrapper) {
+        log.info("Creating new DMP");
         Dmp dmp = new Dmp();
         DmpDOMapper.mapDOtoEntity(dmpWrapper.getDmp(), dmp);
+        dmp.setCreated(new Date());
         dmp.persist();
         createAccess(dmp, dmpWrapper.getEdited_by());
         return dmp.id;
     }
 
     public long update(SaveDmpWrapper dmpWrapper) {
+        log.info("Updating DMP with id " + dmpWrapper.getDmp().getId());
         Dmp dmp = dmpRepo.findById(dmpWrapper.getDmp().getId());
         DmpDOMapper.mapDOtoEntity(dmpWrapper.getDmp(), dmp);
+        dmp.setModified(new Date());
         dmp.persist();
         return dmp.id;
     }
