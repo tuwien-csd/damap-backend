@@ -39,7 +39,7 @@ public class MaDmpResource {
         String filename = dmpService.getDefaultFileName(id);
 
         Response.ResponseBuilder response = Response.ok((Object) maDmpService.getById(id));
-        response.header("Access-Control-Expose-Headers, Content-Disposition", "attachment; filename=" + filename + ".json")
+        response.header("Content-Disposition", "attachment; filename=" + filename + ".json")
                 .header("Access-Control-Expose-Headers","Content-Disposition");
         return response.build();
     }
