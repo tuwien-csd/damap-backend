@@ -10,7 +10,8 @@ public class ContributorDOMapper {
 
     public static void mapEntityToDO(Contributor contributor, ContributorDO contributorDO) {
 
-        contributorDO.setRole(contributor.getContributorRole().getRole());
+        if (contributor.getContributorRole() != null)
+            contributorDO.setRole(contributor.getContributorRole().getRole());
 
         if (contributor.getContributor() != null) {
             PersonDO personDO = new PersonDO();
