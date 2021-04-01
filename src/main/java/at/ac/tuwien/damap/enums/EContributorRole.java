@@ -2,6 +2,8 @@ package at.ac.tuwien.damap.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import java.util.HashMap;
+
 public enum EContributorRole {
 
     DataCollector("Data Collector"),
@@ -27,6 +29,8 @@ public enum EContributorRole {
 
     private final String role;
 
+    private static final HashMap<String, EContributorRole> MAP = new HashMap<String, EContributorRole>();
+
     EContributorRole(String role) {
         this.role = role;
     }
@@ -35,4 +39,19 @@ public enum EContributorRole {
     public String toString() {
         return role;
     }
+
+    public String getRole() {
+        return this.role;
+    }
+
+    public static EContributorRole getByRole(String role) {
+        return MAP.get(role);
+    }
+
+    static {
+        for (EContributorRole role : EContributorRole.values()) {
+            MAP.put(role.getRole(), role);
+        }
+    }
+
 }

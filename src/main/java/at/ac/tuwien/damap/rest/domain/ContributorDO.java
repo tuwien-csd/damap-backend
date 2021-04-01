@@ -1,6 +1,5 @@
 package at.ac.tuwien.damap.rest.domain;
 
-import at.ac.tuwien.damap.enums.EContributorRole;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +12,6 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ContributorDO {
 
-    private EContributorRole role;
+    private String role;
     private PersonDO person;
 }
