@@ -1,6 +1,5 @@
 package at.ac.tuwien.damap.rest;
 
-import at.ac.tuwien.damap.domain.Dmp;
 import at.ac.tuwien.damap.rest.domain.DmpDO;
 import at.ac.tuwien.damap.rest.domain.DmpListItemDO;
 import at.ac.tuwien.damap.rest.service.SaveDmpResponse;
