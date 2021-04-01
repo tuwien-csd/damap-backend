@@ -14,8 +14,8 @@ public class MaDmpService {
     @Inject
     DmpRepo dmpRepo;
 
-    public MaDmp getById(String id) {
-        Dmp dmp = dmpRepo.findById(Long.valueOf(id));
+    public MaDmp getById(long id) {
+        Dmp dmp = dmpRepo.findById(id);
         MaDmp maDmp = new MaDmp();
         MaDmpMapper.mapEntityToMaDmp(dmp, maDmp);
         return maDmp;

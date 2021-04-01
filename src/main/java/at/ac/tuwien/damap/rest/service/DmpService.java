@@ -98,4 +98,20 @@ public class DmpService {
         access.setStart(new Date());
         access.persist();
     }
+
+    public String getDefaultFileName(long id){
+        String filename = "My Data Management Plan";
+
+        Dmp dmp = dmpRepo.findById(id);
+        if (dmp != null){
+            if (dmp.getTitle() != null)
+                filename = dmp.getTitle();
+            else if (dmp.getProject() != null){
+                if (dmp.getProject().getTitle() != null)
+                    filename = dmp.getProject().getTitle();
+            }
+        }
+
+        return filename;
+    }
 }
