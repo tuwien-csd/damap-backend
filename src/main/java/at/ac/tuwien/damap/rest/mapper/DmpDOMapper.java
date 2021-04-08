@@ -12,6 +12,8 @@ public class DmpDOMapper {
     public static void mapEntityToDO(Dmp dmp, DmpDO dmpDO) {
         dmpDO.setId(dmp.id);
         dmpDO.setTitle(dmp.getTitle());
+        dmpDO.setCreated(dmp.getCreated());
+        dmpDO.setModified(dmp.getModified());
         dmpDO.setDescription(dmp.getDescription());
 
         if (dmp.getProject() != null) {
@@ -112,8 +114,6 @@ public class DmpDOMapper {
         if (dmpDO.getId() != null)
             dmp.id = dmpDO.getId();
         dmp.setTitle(dmpDO.getTitle());
-        dmp.setCreated(dmpDO.getCreated());
-        dmp.setModified(dmpDO.getModified());
         dmp.setDescription(dmpDO.getDescription());
 
         if (dmpDO.getProject() != null) {
