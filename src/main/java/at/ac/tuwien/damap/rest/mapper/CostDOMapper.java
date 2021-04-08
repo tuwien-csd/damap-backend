@@ -7,11 +7,13 @@ import at.ac.tuwien.damap.rest.domain.CostDO;
 public class CostDOMapper {
 
     public static void mapEntityToDO(Cost cost, CostDO costDO) {
+        costDO.setId(cost.id);
         costDO.setTitle(cost.getTitle());
         costDO.setValue(cost.getValue());
         costDO.setCurrencyCode(cost.getCurrencyCode());
         costDO.setDescription(cost.getDescription());
-        costDO.setType(cost.getType().getValue());
+        if (cost.getType() != null)
+            costDO.setType(cost.getType().getValue());
         costDO.setCustomType(cost.getCustomType());
     }
 
