@@ -15,7 +15,7 @@ public class HostDO {
 
     @JsonbProperty("id")
     private String hostId;
-    private String name;
+    private String title;
     private Date date;
     //referenceHashes
     private List<String> datasets;

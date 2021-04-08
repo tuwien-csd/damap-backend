@@ -126,13 +126,20 @@ CREATE TABLE damap.dmp
     data_generation VARCHAR2(4000 CHAR),
     structure VARCHAR2(4000 CHAR),
     target_audience VARCHAR2(4000 CHAR),
+    tools VARCHAR2(4000 CHAR),
+    restricted_data_access VARCHAR2(4000 CHAR),
     personal_information NUMBER(1,0),
     sensitive_data NUMBER(1,0),
+    sensitive_data_security VARCHAR2(4000 CHAR),
     legal_restrictions NUMBER(1,0),
     ethical_issues_exist NUMBER(1,0),
     committee_approved NUMBER(1,0),
     ethics_report VARCHAR2(4000 CHAR),
-    optional_statement VARCHAR2(4000 CHAR),
+    ethical_compliance_statement VARCHAR2(4000 CHAR),
+    external_storage_info VARCHAR2(4000 CHAR),
+    restricted_access_info VARCHAR2(4000 CHAR),
+    closed_access_info VARCHAR2(4000 CHAR),
+    costs_exist NUMBER(1,0),
     PRIMARY KEY (id),
     FOREIGN KEY (contact)
         REFERENCES damap.person (id),
@@ -191,18 +198,80 @@ CREATE TABLE damap.contributor
 
 --------------------------------------------------------------
 
+CREATE TABLE damap.cost_type
+(
+    type VARCHAR2(255 CHAR) NOT NULL,
+    PRIMARY KEY (type)
+);
+
+insert into damap.cost_type values ('dataAcquisition');
+insert into damap.cost_type values ('database');
+insert into damap.cost_type values ('filebasedStorage');
+insert into damap.cost_type values ('hardwareAndInfrastructure');
+insert into damap.cost_type values ('legalAdvice');
+insert into damap.cost_type values ('personnel');
+insert into damap.cost_type values ('repository');
+insert into damap.cost_type values ('sofwareLicense');
+insert into damap.cost_type values ('training');
+insert into damap.cost_type values ('other');
+
+--------------------------------------------------------------
+
+CREATE TABLE damap.cost
+(
+    id NUMBER(19,0) NOT NULL,
+    version NUMBER(10,0) NOT NULL,
+    dmp_id NUMBER(19,0),
+    title VARCHAR2(255 CHAR),
+    value NUMBER(19,0),
+    currency_code VARCHAR2(255 CHAR),
+    description VARCHAR2(255 CHAR),
+    type VARCHAR2(255 CHAR),
+    custom_type VARCHAR2(255 CHAR),
+    PRIMARY KEY (id),
+    FOREIGN KEY (dmp_id)
+        REFERENCES damap.dmp (id)
+);
+
+--------------------------------------------------------------
+
 CREATE TABLE damap.host
 (
     id NUMBER(19,0) NOT NULL,
     version NUMBER(10,0) NOT NULL,
     host_id VARCHAR2(255 CHAR),
     dmp_id NUMBER(19,0),
-    name VARCHAR2(255 CHAR),
+    title VARCHAR2(255 CHAR),
     retrieval_date DATE,
     PRIMARY KEY (id),
     FOREIGN KEY (dmp_id)
         REFERENCES damap.dmp (id)
 );
+
+--------------------------------------------------------------
+
+CREATE TABLE damap.storage
+(
+    id NUMBER(19,0) NOT NULL,
+    version NUMBER(10,0) NOT NULL,
+    url VARCHAR2(255 CHAR),
+    backup_frequency VARCHAR2(255 CHAR),
+    storage_location VARCHAR2(255 CHAR),
+    backup_location VARCHAR2(255 CHAR),
+    PRIMARY KEY (id)
+);
+
+--------------------------------------------------------------
+
+CREATE TABLE damap.data_access
+(
+    access_type VARCHAR2(255 CHAR) NOT NULL,
+    PRIMARY KEY (access_type)
+);
+
+insert into damap.data_access values ('open');
+insert into damap.data_access values ('restricted');
+insert into damap.data_access values ('closed');
 
 --------------------------------------------------------------
 
@@ -220,11 +289,14 @@ CREATE TABLE damap.dataset
     license VARCHAR2(4000 CHAR),
     start_date DATE,
     reference_hash VARCHAR2(255 CHAR),
+    data_access VARCHAR2(255 CHAR),
     PRIMARY KEY (id),
     FOREIGN KEY (dmp_id)
         REFERENCES damap.dmp (id),
     FOREIGN KEY (host_id)
-        REFERENCES damap.host (id)
+        REFERENCES damap.host (id),
+    FOREIGN KEY (data_access)
+        REFERENCES damap.data_access (access_type)
 );
 
 --------------------------------------------------------------

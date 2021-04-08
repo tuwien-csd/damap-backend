@@ -1,5 +1,6 @@
 package at.ac.tuwien.damap.domain;
 
+import at.ac.tuwien.damap.enums.EDataAccessType;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import lombok.*;
 import org.hibernate.envers.Audited;
@@ -51,4 +52,8 @@ public class Dataset extends PanacheEntity {
 
     @Column(name = "reference_hash")
     private String referenceHash;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "data_access")
+    private EDataAccessType dataAccess;
 }

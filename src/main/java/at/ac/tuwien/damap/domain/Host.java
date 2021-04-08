@@ -15,6 +15,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true, exclude = {"dmp", "datasetList"})
 @ToString(exclude = {"dmp", "datasetList"})
 @Entity
+@Inheritance(strategy=InheritanceType.JOINED)
+@DiscriminatorColumn(name="discriminator", discriminatorType= DiscriminatorType.STRING)
 //@Audited
 public class Host extends PanacheEntity {
 
@@ -31,7 +33,7 @@ public class Host extends PanacheEntity {
     @JoinColumn(name = "dmp_id")
     private Dmp dmp;
 
-    private String name;
+    private String title;
 
     @Column(name = "retrieval_date")
     private Date date;

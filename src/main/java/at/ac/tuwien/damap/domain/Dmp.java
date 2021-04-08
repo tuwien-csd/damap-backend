@@ -1,6 +1,8 @@
 package at.ac.tuwien.damap.domain;
 
 import at.ac.tuwien.damap.enums.EDataKind;
+import at.ac.tuwien.damap.rest.domain.CostDO;
+import at.ac.tuwien.damap.rest.domain.StorageDO;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -61,11 +63,19 @@ public class Dmp extends PanacheEntity {
     @Column(name = "target_audience")
     private String targetAudience;
 
+    private String tools;
+
+    @Column(name = "restricted_data_access")
+    private String restrictedDataAccess;
+
     @Column(name = "personal_information")
     private Boolean personalInformation;
 
     @Column(name = "sensitive_data")
     private Boolean sensitiveData;
+
+    @Column(name = "sensitive_data_security")
+    private String sensitiveDataSecurity;;
 
     @Column(name = "legal_restrictions")
     private Boolean legalRestrictions;
@@ -79,8 +89,8 @@ public class Dmp extends PanacheEntity {
     @Column(name = "ethics_report")
     private String ethicsReport;
 
-    @Column(name = "optional_statement")
-    private String optionalStatement;
+    @Column(name = "ethical_compliance_statement")
+    private String ethicalComplianceStatement;
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)
@@ -93,4 +103,28 @@ public class Dmp extends PanacheEntity {
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<Host> hostList = new ArrayList<>();
+
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)
+//    private List<Storage> storage;
+//
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)
+//    private List<Storage> externalStorage;
+
+    @Column(name = "external_storage_info")
+    private String externalStorageInfo;
+
+    @Column(name = "restricted_access_info")
+    private String restrictedAccessInfo;
+
+    @Column(name = "closed_access_info")
+    private String closedAccessInfo;
+
+    @Column(name = "costs_exist")
+    private Boolean costsExist;
+
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    private List<Cost> costs = new ArrayList<>();
 }
