@@ -299,7 +299,7 @@ public class DmpDOMapper {
         //TODO only remove deleted ones and update existing ones
         // Will be possible once the ID of objects is also used in BE - FE communication #67760
         List<Cost> costList = dmp.getCosts();
-        hostList.clear();
+        costList.clear();
 
         //create new Costs
         dmpDO.getCosts().forEach(costDO -> {
