@@ -226,11 +226,13 @@ CREATE TABLE damap.cost
     value NUMBER(19,0),
     currency_code VARCHAR2(255 CHAR),
     description VARCHAR2(255 CHAR),
-    type VARCHAR2(255 CHAR),
+    cost_type VARCHAR2(255 CHAR),
     custom_type VARCHAR2(255 CHAR),
     PRIMARY KEY (id),
     FOREIGN KEY (dmp_id)
-        REFERENCES damap.dmp (id)
+        REFERENCES damap.dmp (id),
+    FOREIGN KEY (cost_type)
+        REFERENCES damap.cost_type (type)
 );
 
 --------------------------------------------------------------
@@ -243,6 +245,7 @@ CREATE TABLE damap.host
     dmp_id NUMBER(19,0),
     title VARCHAR2(255 CHAR),
     retrieval_date DATE,
+    discriminator VARCHAR2(255 CHAR),
     PRIMARY KEY (id),
     FOREIGN KEY (dmp_id)
         REFERENCES damap.dmp (id)
@@ -250,15 +253,40 @@ CREATE TABLE damap.host
 
 --------------------------------------------------------------
 
-CREATE TABLE damap.storage
+CREATE TABLE damap.external_storage
 (
     id NUMBER(19,0) NOT NULL,
-    version NUMBER(10,0) NOT NULL,
     url VARCHAR2(255 CHAR),
     backup_frequency VARCHAR2(255 CHAR),
     storage_location VARCHAR2(255 CHAR),
     backup_location VARCHAR2(255 CHAR),
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    FOREIGN KEY (id)
+        REFERENCES damap.host (id)
+);
+
+--------------------------------------------------------------
+
+CREATE TABLE damap.repository
+(
+    id NUMBER(19,0) NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (id)
+        REFERENCES damap.host (id)
+);
+
+--------------------------------------------------------------
+
+CREATE TABLE damap.storage
+(
+    id NUMBER(19,0) NOT NULL,
+    url VARCHAR2(255 CHAR),
+    backup_frequency VARCHAR2(255 CHAR),
+    storage_location VARCHAR2(255 CHAR),
+    backup_location VARCHAR2(255 CHAR),
+    PRIMARY KEY (id),
+    FOREIGN KEY (id)
+        REFERENCES damap.host (id)
 );
 
 --------------------------------------------------------------
