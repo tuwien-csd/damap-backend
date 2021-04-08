@@ -240,18 +240,20 @@ public class DmpDOMapper {
 //                host = hostOptional.get();
 //                HostDOMapper.mapDOtoEntity(hostDO, host);
 //            } else {
-            Host host = new Repository();
+            Repository host = new Repository();
             HostDOMapper.mapDOtoEntity(hostDO, host);
             host.setDmp(dmp);
             hostList.add(host);
 //            }
 
             //convert datasetHash to id references from datasdet to hosts
-            dmp.getDatasetList().forEach(dataset -> {
-                if (hostDO.getDatasets().contains(dataset.getReferenceHash())){
-                    dataset.setHost(host);
-                }
-            });
+            if (hostDO.getDatasets() != null) {
+                dmp.getDatasetList().forEach(dataset -> {
+                    if (hostDO.getDatasets().contains(dataset.getReferenceHash())) {
+                        dataset.setHost(host);
+                    }
+                });
+            }
         });
 
         //create Storage objects
@@ -264,11 +266,13 @@ public class DmpDOMapper {
             hostList.add(host);
 
             //convert datasetHash to id references from datasdet to hosts
-            dmp.getDatasetList().forEach(dataset -> {
-                if (hostDO.getDatasets().contains(dataset.getReferenceHash())){
-                    dataset.setHost(host);
-                }
-            });
+            if (hostDO.getDatasets() != null) {
+                dmp.getDatasetList().forEach(dataset -> {
+                    if (hostDO.getDatasets().contains(dataset.getReferenceHash())) {
+                        dataset.setHost(host);
+                    }
+                });
+            }
         });
 
         //create ExternalStorage
@@ -281,11 +285,13 @@ public class DmpDOMapper {
             hostList.add(host);
 
             //convert datasetHash to id references from datasdet to hosts
-            dmp.getDatasetList().forEach(dataset -> {
-                if (hostDO.getDatasets().contains(dataset.getReferenceHash())){
-                    dataset.setHost(host);
-                }
-            });
+            if (hostDO.getDatasets() != null) {
+                dmp.getDatasetList().forEach(dataset -> {
+                    if (hostDO.getDatasets().contains(dataset.getReferenceHash())) {
+                        dataset.setHost(host);
+                    }
+                });
+            }
         });
 
 
