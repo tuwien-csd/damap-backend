@@ -24,31 +24,23 @@ public class DmpDocumentResource {
     @GET
     @Path("/{dmpId}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public void getFWFTemplate(@PathParam("dmpId") long dmpId) throws IOException{
+    public Response getFWFTemplate(@PathParam("dmpId") long dmpId) throws IOException{
         log.info("Return DMP document file for DMP with id=" + dmpId);
 
-        String template = "C:\\Users\\Hardani Maulana\\Downloads\\template.docx";
-        String output = "C:\\Users\\Hardani Maulana\\Downloads\\dmp.docx";
 
-        try {
-            XWPFDocument document = documentConversionService.getFWFTemplate(dmpId, template, output);
+            XWPFDocument document = documentConversionService.getFWFTemplate(dmpId);
 
-//            StreamingOutput streamingOutput = new StreamingOutput() {
-//                @Override
-//                public void write(OutputStream os) throws IOException,
-//                        WebApplicationException {
-//                    document.write(os);
-//                    document.close();
-//                }
-//            };
+            StreamingOutput streamingOutput = new StreamingOutput() {
+                @Override
+                public void write(OutputStream os) throws IOException,
+                        WebApplicationException {
+                    document.write(os);
+                    document.close();
+                }
+            };
 
-//            return Response.ok(streamingOutput)
-//                    .header("Content-Disposition", "attachment;filename=dmp.docx")
-//                    .build();
-        }
-        catch (Exception e) {
-            log.info("Error in document conversion" + dmpId);
-        }
-//        return null;
+            return Response.ok(streamingOutput)
+                    .header("Content-Disposition", "attachment;filename=dmp.docx")
+                    .build();
     }
 }

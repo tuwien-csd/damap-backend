@@ -1,14 +1,12 @@
 package at.ac.tuwien.conversion;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import at.ac.tuwien.damap.domain.Dmp;
+import at.ac.tuwien.damap.repo.DmpRepo;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
@@ -20,52 +18,49 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
-
-//@Inject DmpRepo dmpRepo;
+import javax.inject.Inject;
 
 @ApplicationScoped
 public class DocumentConversionService {
 
     private static final Logger log = LoggerFactory.getLogger(DocumentConversionService.class);
 
-    public XWPFDocument getFWFTemplate(long dmpId, String template, String output) throws IOException {
-        try (XWPFDocument document = new XWPFDocument(
-                Files.newInputStream(Paths.get(template)))
-        ) {
+    @Inject
+    DmpRepo dmpRepo;
 
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("projectname", "PROJECT TEST");
-            map.put("projectacronym", "PROJECT ACR");
-            map.put("projectconame", "Andreas");
-            map.put("projectcoemail", "andreas@email.com");
-            map.put("projectcoorcidId", "12345");
-            map.put("startdate", "01-01-2020");
-            map.put("enddate", "30-04-2021");
+    public XWPFDocument getFWFTemplate(long dmpId) throws IOException {
 
-            List<XWPFParagraph> xwpfParagraphs = document.getParagraphs();
-            replaceInParagraphs(xwpfParagraphs, map);
+//        Dmp dmp = dmpRepo.findById(dmpId);
 
-            List<XWPFTable> tables = document.getTables();
-            for (XWPFTable xwpfTable : tables) {
-                List<XWPFTableRow> tableRows = xwpfTable.getRows();
-                for (XWPFTableRow xwpfTableRow : tableRows) {
-                    List<XWPFTableCell> tableCells = xwpfTableRow
-                            .getTableCells();
-                    for (XWPFTableCell xwpfTableCell : tableCells) {
-                        xwpfParagraphs = xwpfTableCell.getParagraphs();
-                        replaceInParagraphs(xwpfParagraphs, map);
-                    }
+        String template = "..\\src\\template\\template.docx";
+        XWPFDocument document = new XWPFDocument(Files.newInputStream(Paths.get(template)));
+
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("projectname", "PROJECT TEST");
+        map.put("projectacronym", "PROJECT ACR");
+        map.put("projectconame", "Andreas");
+        map.put("projectcoemail", "andreas@email.com");
+        map.put("projectcoorcidId", "12345");
+        map.put("startdate", "01-01-2020");
+        map.put("enddate", "30-04-2021");
+
+        List<XWPFParagraph> xwpfParagraphs = document.getParagraphs();
+        replaceInParagraphs(xwpfParagraphs, map);
+
+        List<XWPFTable> tables = document.getTables();
+        for (XWPFTable xwpfTable : tables) {
+            List<XWPFTableRow> tableRows = xwpfTable.getRows();
+            for (XWPFTableRow xwpfTableRow : tableRows) {
+                List<XWPFTableCell> tableCells = xwpfTableRow
+                        .getTableCells();
+                for (XWPFTableCell xwpfTableCell : tableCells) {
+                    xwpfParagraphs = xwpfTableCell.getParagraphs();
+                    replaceInParagraphs(xwpfParagraphs, map);
                 }
             }
-
-                // save the docs
-            try (FileOutputStream out = new FileOutputStream(output)) {
-                document.write(out);
-                document.close();
-            }
-
-            return document;
         }
+
+        return document;
     }
 
     private void replaceInParagraphs(List<XWPFParagraph> xwpfParagraphs, Map<String, String> replacements) {
