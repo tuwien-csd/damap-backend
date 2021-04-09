@@ -30,19 +30,30 @@ public class DocumentConversionService {
 
     public XWPFDocument getFWFTemplate(long dmpId) throws IOException {
 
-//        Dmp dmp = dmpRepo.findById(dmpId);
+        Dmp dmp = dmpRepo.findById(dmpId);
 
         String template = "..\\src\\template\\template.docx";
         XWPFDocument document = new XWPFDocument(Files.newInputStream(Paths.get(template)));
 
         Map<String, String> map = new HashMap<String, String>();
-        map.put("projectname", "PROJECT TEST");
-        map.put("projectacronym", "PROJECT ACR");
-        map.put("projectconame", "Andreas");
-        map.put("projectcoemail", "andreas@email.com");
-        map.put("projectcoorcidId", "12345");
-        map.put("startdate", "01-01-2020");
-        map.put("enddate", "30-04-2021");
+        if (dmp.getProject() != null) {
+            if (dmp.getProject().getTitle() != null)
+                map.put("projectname", dmp.getProject().getTitle());
+            if (dmp.getProject().getDescription() != null)
+                map.put("projectacronym", dmp.getProject().getDescription());
+            if (dmp.getProject().getStart() != null)
+                map.put("startdate", dmp.getProject().getStart().toString());
+            if (dmp.getProject().getEnd() != null)
+                map.put("enddate", dmp.getProject().getEnd().toString());
+        }
+        if (dmp.getContact() != null) {
+            if (dmp.getContact().getFirstName() != null && dmp.getContact().getFirstName() != null)
+                map.put("projectconame", dmp.getContact().getFirstName() + " " + dmp.getContact().getLastName());
+            if (dmp.getContact().getMbox() != null)
+                map.put("projectcoemail", dmp.getContact().getMbox());
+            if (dmp.getContact().getPersonIdentifier() != null)
+                map.put("projectcoorcidId", dmp.getContact().getPersonIdentifier().getIdentifier());
+        }
 
         List<XWPFParagraph> xwpfParagraphs = document.getParagraphs();
         replaceInParagraphs(xwpfParagraphs, map);
