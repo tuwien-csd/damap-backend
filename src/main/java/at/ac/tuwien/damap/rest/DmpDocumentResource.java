@@ -1,5 +1,6 @@
 package at.ac.tuwien.damap.rest;
 
+import java.net.URISyntaxException;
 import at.ac.tuwien.conversion.DocumentConversionService;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.slf4j.Logger;
@@ -23,21 +24,31 @@ public class DmpDocumentResource {
     @GET
     @Path("/{dmpId}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response getFWFTemplate(@PathParam("dmpId") long dmpId) {
+    public void getFWFTemplate(@PathParam("dmpId") long dmpId) throws IOException{
         log.info("Return DMP document file for DMP with id=" + dmpId);
-        XWPFDocument document = documentConversionService.getFWFTemplate(dmpId);
 
-        StreamingOutput streamingOutput = new StreamingOutput() {
-            @Override
-            public void write(OutputStream os) throws IOException,
-                    WebApplicationException {
-                document.write(os);
-                document.close();
-            }
-        };
+        String template = "C:\\Users\\Hardani Maulana\\Downloads\\template.docx";
+        String output = "C:\\Users\\Hardani Maulana\\Downloads\\dmp.docx";
 
-        return Response.ok(streamingOutput)
-                .header("Content-Disposition", "attachment;filename=dmp.docx")
-                .build();
+        try {
+            XWPFDocument document = documentConversionService.getFWFTemplate(dmpId, template, output);
+
+//            StreamingOutput streamingOutput = new StreamingOutput() {
+//                @Override
+//                public void write(OutputStream os) throws IOException,
+//                        WebApplicationException {
+//                    document.write(os);
+//                    document.close();
+//                }
+//            };
+
+//            return Response.ok(streamingOutput)
+//                    .header("Content-Disposition", "attachment;filename=dmp.docx")
+//                    .build();
+        }
+        catch (Exception e) {
+            log.info("Error in document conversion" + dmpId);
+        }
+//        return null;
     }
 }
