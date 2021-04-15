@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>at.ac.tuwien</groupId>
   <artifactId>dmap-backend</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.5.0</version>
 
   <properties>
     <surefire-plugin.version>2.22.0</surefire-plugin.version>
@@ -107,10 +107,14 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>at.ac.tuwien.tiss.util</groupId>
-      <artifactId>mapper-generator</artifactId>
-      <version>${mapper-generator.version}</version>
-      <scope>provided</scope>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+      <version>5.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.12.0</version>
     </dependency>
   </dependencies>
 

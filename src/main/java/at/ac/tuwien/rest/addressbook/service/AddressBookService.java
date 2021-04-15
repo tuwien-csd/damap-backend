@@ -1,26 +1,29 @@
 package at.ac.tuwien.rest.addressbook.service;
 
-import at.ac.tuwien.rest.addressbook.dto.OrganisationalUnitDetails;
-import at.ac.tuwien.rest.addressbook.dto.PersonDetails;
-import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
-import org.jboss.resteasy.annotations.jaxrs.PathParam;
+import at.ac.tuwien.damap.rest.domain.PersonDO;
+import at.ac.tuwien.rest.addressbook.dto.PersonDTO;
+import at.ac.tuwien.rest.addressbook.mapper.PersonDTOMapper;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
-@Path("/api")
-@RegisterRestClient
-public interface AddressBookService {
+@ApplicationScoped
+public class AddressBookService {
 
+    private static final Logger log = LoggerFactory.getLogger(AddressBookService.class);
 
-    @GET
-    @Path("/person/v22/id/{id}")
-    @Produces("application/json")
-    PersonDetails getPersonDetailsById(@PathParam String id);
+    @Inject
+    @RestClient
+    private AddressBookRestService addressBookRestService;
 
-    @GET
-    @Path("/orgunit/v22/id/{id}")
-    @Produces("application/json")
-    OrganisationalUnitDetails getOrgDetailsById(@PathParam Long id);
+    public PersonDO getPersonById(String id) {
+        PersonDTO personDTO = addressBookRestService.getPersonDetailsById(id);
+        PersonDO personDO = new PersonDO();
+        PersonDTOMapper.mapAtoB(personDTO, personDO);
+
+        return personDO;
+    }
 }
