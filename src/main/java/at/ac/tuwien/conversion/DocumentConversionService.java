@@ -53,6 +53,9 @@ public class DocumentConversionService {
                 map.put("projectcoemail", dmp.getContact().getMbox());
             if (dmp.getContact().getPersonIdentifier() != null)
                 map.put("projectcoorcidId", dmp.getContact().getPersonIdentifier().getIdentifier());
+//            if (dmp.getContact() != null)
+//                map.put("contact", dmp.getContact().getFirstName() + " " + dmp.getContact().getLastName() + ", "
+//                        + dmp.getContact().getMbox() + ", " + dmp.getContact().getPersonIdentifier().getIdentifier());
         }
 
         List<XWPFParagraph> xwpfParagraphs = document.getParagraphs();
@@ -75,6 +78,13 @@ public class DocumentConversionService {
     }
 
     private void replaceInParagraphs(List<XWPFParagraph> xwpfParagraphs, Map<String, String> replacements) {
+
+        /*
+            Each XWPFRun will contain part of a text. These are split weirdly (by Word?).
+            Special characters will usually be separated from strings, but might be connected if several words are within that textblock.
+            Also capitalized letters seem to behave differently and are sometimes separated from the characters following them.
+         */
+
         for (XWPFParagraph xwpfParagraph : xwpfParagraphs) {
             List<XWPFRun> xwpfRuns = xwpfParagraph.getRuns();
             for (XWPFRun xwpfRun : xwpfRuns) {
@@ -84,7 +94,7 @@ public class DocumentConversionService {
                         .entrySet()) {
                     if (xwpfRunText != null
                             && xwpfRunText.contains(entry.getKey())) {
-                        xwpfRunText = xwpfRunText.replaceAll(
+                        xwpfRunText = xwpfRunText.replace(
                                 entry.getKey(), entry.getValue());
                     }
                 }
