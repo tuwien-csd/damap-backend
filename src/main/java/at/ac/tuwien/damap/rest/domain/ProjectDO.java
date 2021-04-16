@@ -13,7 +13,7 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ProjectDO {
 
-    @JsonbProperty("id")
+    private Long id;
     private String universityId;
     private String description;
     private String title;
