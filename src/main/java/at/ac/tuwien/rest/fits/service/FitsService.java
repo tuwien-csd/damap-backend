@@ -1,9 +1,11 @@
 package at.ac.tuwien.rest.fits.service;
 
+import at.ac.tuwien.damap.domain.Dataset;
 import at.ac.tuwien.damap.rest.domain.MultipartBodyDO;
 import at.ac.tuwien.rest.fits.dto.MultipartBodyDTO;
-import at.ac.tuwien.rest.fits.mapper.FitsDTOMapper;
-import edu.harvard.hul.ois.xml.ns.fits.fits_output.Fits;
+import at.ac.tuwien.rest.fits.dto.generated.Fits;
+import at.ac.tuwien.rest.fits.mapper.FitsMapper;
+import at.ac.tuwien.rest.fits.mapper.MultipartBodyMapper;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +22,15 @@ public class FitsService {
     @RestClient
     FitsRestService fitsRestService;
 
-    public Fits analyseFile(MultipartBodyDO data) {
+    public Dataset analyseFile(MultipartBodyDO multipartBodyDO) {
         log.trace("Analyse File");
-        MultipartBodyDTO fitsData = new MultipartBodyDTO();
-        FitsDTOMapper.mapAtoB(data, fitsData);
-        return fitsRestService.analyseFile(fitsData);
+        MultipartBodyDTO multipartBodyDTO = new MultipartBodyDTO();
+        MultipartBodyMapper.mapAtoB(multipartBodyDO, multipartBodyDTO);
+        Fits fits;
+        Dataset dataset = new Dataset();
+        // TODO: Handle JAXB Exceptions
+        fits = fitsRestService.analyseFile(multipartBodyDTO);
+        FitsMapper.mapAtoB(fits, dataset);
+        return dataset;
     }
 }
