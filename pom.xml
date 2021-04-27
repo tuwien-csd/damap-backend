@@ -80,6 +80,22 @@
       <artifactId>hibernate-envers</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.oracle.jdbc</groupId>
+      <artifactId>ojdbc8</artifactId>
+      <version>${oracle-driver.version}</version>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.oracle.jdbc</groupId>
+          <artifactId>xmlparserv2</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.oracle.jdbc</groupId>
+          <artifactId>oraclepki</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-jdbc-postgresql</artifactId>
     </dependency>
@@ -185,5 +201,16 @@
       </properties>
     </profile>
   </profiles>
+
+  <repositories>
+    <repository>
+      <id>tint</id>
+      <url>https://dev.tiss.tuwien.ac.at/nexus/content/repositories/tint/</url>
+    </repository>
+    <repository>
+      <id>tiss</id>
+      <url>https://dev.tiss.tuwien.ac.at/nexus/content/repositories/tiss</url>
+    </repository>
+  </repositories>
 
 </project>
