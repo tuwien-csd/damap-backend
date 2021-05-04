@@ -6,10 +6,9 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.text.SimpleDateFormat;
 
-import at.ac.tuwien.damap.domain.Contributor;
 import at.ac.tuwien.damap.domain.Dmp;
-import at.ac.tuwien.damap.enums.EIdentifierType;
 import at.ac.tuwien.damap.repo.DmpRepo;
+import at.ac.tuwien.damap.domain.Contributor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
@@ -38,16 +37,21 @@ public class DocumentConversionService {
         String template = "..\\src\\template\\template.docx";
         XWPFDocument document = new XWPFDocument(Files.newInputStream(Paths.get(template)));
 
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Map<String, String> map = new HashMap<String, String>();
         if (dmp.getProject() != null) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
             if (dmp.getProject().getTitle() != null)
                 map.put("[projectname]", dmp.getProject().getTitle());
             if (dmp.getProject().getStart() != null)
                 map.put("[startdate]", formatter.format(dmp.getProject().getStart()));
             if (dmp.getProject().getEnd() != null)
                 map.put("[enddate]", formatter.format(dmp.getProject().getEnd()));
+            if (dmp.getProject().getFunding().getGrantIdentifier() != null)
+                map.put("[grantid]", dmp.getProject().getFunding().getGrantIdentifier().getIdentifier());
+        }
+
+        if (dmp.getCreated() != null) {
+            map.put("[datever1]", formatter.format(dmp.getCreated()));
         }
 
         if (dmp.getContact() != null) {
