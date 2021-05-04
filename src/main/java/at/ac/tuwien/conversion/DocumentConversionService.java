@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.text.SimpleDateFormat;
 
+import at.ac.tuwien.damap.domain.Contributor;
 import at.ac.tuwien.damap.domain.Dmp;
+import at.ac.tuwien.damap.enums.EIdentifierType;
 import at.ac.tuwien.damap.repo.DmpRepo;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
@@ -37,25 +40,73 @@ public class DocumentConversionService {
 
         Map<String, String> map = new HashMap<String, String>();
         if (dmp.getProject() != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
             if (dmp.getProject().getTitle() != null)
-                map.put("projectname", dmp.getProject().getTitle());
-            if (dmp.getProject().getDescription() != null)
-                map.put("projectacronym", dmp.getProject().getDescription());
+                map.put("[projectname]", dmp.getProject().getTitle());
             if (dmp.getProject().getStart() != null)
-                map.put("startdate", dmp.getProject().getStart().toString());
+                map.put("[startdate]", formatter.format(dmp.getProject().getStart()));
             if (dmp.getProject().getEnd() != null)
-                map.put("enddate", dmp.getProject().getEnd().toString());
+                map.put("[enddate]", formatter.format(dmp.getProject().getEnd()));
         }
+
         if (dmp.getContact() != null) {
+            //TO DO: add affiliation and ROR (currently not stored in TISS)
+            String contactName = "[contactname]";
+            String contactMail = "[contactmail]";
+            String contactId = "[contactid]";
+
             if (dmp.getContact().getFirstName() != null && dmp.getContact().getFirstName() != null)
-                map.put("projectconame", dmp.getContact().getFirstName() + " " + dmp.getContact().getLastName());
+                contactName = dmp.getContact().getFirstName() + " " + dmp.getContact().getLastName();
             if (dmp.getContact().getMbox() != null)
-                map.put("projectcoemail", dmp.getContact().getMbox());
+                contactMail = dmp.getContact().getMbox();
+            //TO DO: Check if the identifier is ORCID or not
             if (dmp.getContact().getPersonIdentifier() != null)
-                map.put("projectcoorcidId", dmp.getContact().getPersonIdentifier().getIdentifier());
-//            if (dmp.getContact() != null)
-//                map.put("contact", dmp.getContact().getFirstName() + " " + dmp.getContact().getLastName() + ", "
-//                        + dmp.getContact().getMbox() + ", " + dmp.getContact().getPersonIdentifier().getIdentifier());
+                contactId = dmp.getContact().getPersonIdentifier().getIdentifier();
+
+            map.put("[contactname]", contactName);
+            map.put("[contactmail]", contactMail);
+            map.put("[contactid]", contactId);
+        }
+
+        if (dmp.getContributorList() != null) {
+            List<Contributor> contributors = dmp.getContributorList();
+            for(Contributor contributor : contributors) {
+                //TO DO: add affiliation and ROR (currently not stored in TISS)
+                int idx = contributors.indexOf(contributor)+1;
+                String docVar1 = "[contributor"+idx+"name]";
+                String docVar2 = "[contributor"+idx+"mail]";
+                String docVar3 = "[contributor"+idx+"id]";
+                String contributorName = "";
+                String contributorMail = "";
+                String contributorId = "";
+
+                if (contributor.getContributor().getFirstName() != null && contributor.getContributor().getLastName() != null)
+                    contributorName = contributor.getContributor().getFirstName() + " " + contributor.getContributor().getLastName();
+                if (contributor.getContributor().getMbox() != null)
+                    contributorMail = contributor.getContributor().getMbox();
+                if (contributor.getContributor().getPersonIdentifier() != null)
+                    contributorId = contributor.getContributor().getPersonIdentifier().getIdentifier();
+
+                map.put(docVar1, contributorName);
+                map.put(docVar2, contributorMail);
+                map.put(docVar3, contributorId);
+            }
+
+            //Delete unused contributor variables
+            for (int i = contributors.size()+1; i < 6; i++) {
+                String docVar1 = "[contributor"+i+"name], ";
+                String docVar2 = "[contributor"+i+"mail], ";
+                String docVar3 = "[contributor"+i+"id], ";
+                String docVar4 = "[contributor"+i+"affiliation], ";
+                String docVar5 = "[contributor"+i+"ror]";
+
+                map.put(docVar1, "");
+                map.put(docVar2, "");
+                map.put(docVar3, "");
+                map.put(docVar4, "");
+                map.put(docVar5, "");
+            }
         }
 
         List<XWPFParagraph> xwpfParagraphs = document.getParagraphs();
