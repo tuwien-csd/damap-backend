@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.text.SimpleDateFormat;
 
+import at.ac.tuwien.damap.domain.Dataset;
 import at.ac.tuwien.damap.domain.Dmp;
 import at.ac.tuwien.damap.repo.DmpRepo;
 import at.ac.tuwien.damap.domain.Contributor;
@@ -16,16 +17,11 @@ import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 @ApplicationScoped
 public class DocumentConversionService {
-
-    private static final Logger log = LoggerFactory.getLogger(DocumentConversionService.class);
 
     @Inject
     DmpRepo dmpRepo;
@@ -38,7 +34,7 @@ public class DocumentConversionService {
         XWPFDocument document = new XWPFDocument(Files.newInputStream(Paths.get(template)));
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         if (dmp.getProject() != null) {
             if (dmp.getProject().getTitle() != null)
                 map.put("[projectname]", dmp.getProject().getTitle());
@@ -113,6 +109,45 @@ public class DocumentConversionService {
             }
         }
 
+        List<Dataset> datasets = dmp.getDatasetList();
+        for (Dataset dataset : datasets) {
+            int idx = datasets.indexOf(dataset) + 1;
+            String docVar1 = "[dataset" + idx + "name]";
+            String docVar2 = "[dataset" + idx + "type]";
+            String docVar3 = "[dataset" + idx + "format]";
+            String docVar4 = "[dataset" + idx + "vol]";
+            String datasetName = "";
+            String datasetType = "";
+            String datasetFormat = "";
+            String datasetVol = "";
+
+            if (dataset.getTitle() != null)
+                datasetName = dataset.getTitle();
+            if (dataset.getType() != null)
+                datasetType = dataset.getType();
+            if (dataset.getSize() != null)
+                datasetVol = dataset.getSize();
+
+            map.put(docVar1, datasetName);
+            map.put(docVar2, datasetType);
+            map.put(docVar3, datasetFormat);
+            System.out.println(datasetVol);
+            map.put(docVar4, format(Long.parseLong(datasetVol))+"B");
+        }
+
+        //Delete unused contributor variables
+        for (int i = datasets.size() + 1; i < 5; i++) {
+            String docVar1 = "[dataset" + i + "name]";
+            String docVar2 = "[dataset" + i + "type]";
+            String docVar3 = "[dataset" + i + "format]";
+            String docVar4 = "[dataset" + i + "vol]";
+
+            map.put(docVar1, "");
+            map.put(docVar2, "");
+            map.put(docVar3, "");
+            map.put(docVar4, "");
+        }
+
         List<XWPFParagraph> xwpfParagraphs = document.getParagraphs();
         replaceInParagraphs(xwpfParagraphs, map);
 
@@ -156,5 +191,35 @@ public class DocumentConversionService {
                 xwpfRun.setText(xwpfRunText, 0);
             }
         }
+    }
+
+    //Number conversion for data size
+    private static final char[] SUFFIXES = {'K', 'M', 'G', 'T', 'P', 'E' };
+
+    private static String format(long number) {
+        if(number < 1000) {
+            // No need to format this
+            return String.valueOf(number);
+        }
+        // Convert to a string
+        final String string = String.valueOf(number);
+        // The suffix we're using, 1-based
+        final int magnitude = (string.length() - 1) / 3;
+        // The number of digits we must show before the prefix
+        final int digits = (string.length() - 1) % 3 + 1;
+
+        // Build the string
+        char[] value = new char[4];
+        for(int i = 0; i < digits; i++) {
+            value[i] = string.charAt(i);
+        }
+        int valueLength = digits;
+        // Can and should we add a decimal point and an additional number?
+        if(digits == 1 && string.charAt(1) != '0') {
+            value[valueLength++] = '.';
+            value[valueLength++] = string.charAt(1);
+        }
+        value[valueLength++] = SUFFIXES[magnitude - 1];
+        return new String(value, 0, valueLength);
     }
 }
