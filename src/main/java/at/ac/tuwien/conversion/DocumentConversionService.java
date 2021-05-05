@@ -125,14 +125,14 @@ public class DocumentConversionService {
                 datasetName = dataset.getTitle();
             if (dataset.getType() != null)
                 datasetType = dataset.getType();
-            if (dataset.getSize() != null)
-                datasetVol = dataset.getSize();
+            if (dataset.getSize() != null && !dataset.getSize().equals("")) {
+                datasetVol = format(Long.parseLong(dataset.getSize()))+"B";
+            }
 
             map.put(docVar1, datasetName);
             map.put(docVar2, datasetType);
             map.put(docVar3, datasetFormat);
-            System.out.println(datasetVol);
-            map.put(docVar4, format(Long.parseLong(datasetVol))+"B");
+            map.put(docVar4, datasetVol);
         }
 
         //Delete unused contributor variables
