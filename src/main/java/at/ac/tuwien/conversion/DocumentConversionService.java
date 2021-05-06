@@ -70,13 +70,15 @@ public class DocumentConversionService {
         }
 
         if (dmp.getContributorList() != null) {
+            String contributorValue = "";
             List<Contributor> contributors = dmp.getContributorList();
             for(Contributor contributor : contributors) {
                 //TO DO: add affiliation and ROR (currently not stored in TISS)
-                int idx = contributors.indexOf(contributor)+1;
-                String docVar1 = "[contributor"+idx+"name]";
-                String docVar2 = "[contributor"+idx+"mail]";
-                String docVar3 = "[contributor"+idx+"id]";
+
+                if (contributors.indexOf(contributor) != 0) {
+                    contributorValue = contributorValue.concat("\r\n");
+                }
+
                 String contributorName = "";
                 String contributorMail = "";
                 String contributorId = "";
@@ -88,25 +90,12 @@ public class DocumentConversionService {
                 if (contributor.getContributor().getPersonIdentifier() != null)
                     contributorId = contributor.getContributor().getPersonIdentifier().getIdentifier();
 
-                map.put(docVar1, contributorName);
-                map.put(docVar2, contributorMail);
-                map.put(docVar3, contributorId);
+                contributorValue = contributorValue.concat(contributorName + ", " + contributorMail + ", " + contributorId + ", " + "[contributoraffiliation]" + ", " + "[contributorror]");
             }
-
-            //Delete unused contributor variables
-            for (int i = contributors.size()+1; i < 6; i++) {
-                String docVar1 = "[contributor"+i+"name], ";
-                String docVar2 = "[contributor"+i+"mail], ";
-                String docVar3 = "[contributor"+i+"id], ";
-                String docVar4 = "[contributor"+i+"affiliation], ";
-                String docVar5 = "[contributor"+i+"ror]";
-
-                map.put(docVar1, "");
-                map.put(docVar2, "");
-                map.put(docVar3, "");
-                map.put(docVar4, "");
-                map.put(docVar5, "");
-            }
+            map.put("[contributors]", contributorValue);
+        }
+        else {
+            map.put("[contributors]", "");
         }
 
         List<Dataset> datasets = dmp.getDatasetList();
