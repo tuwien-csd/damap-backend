@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Path("/plans")
@@ -49,7 +50,7 @@ public class DataManagementPlanResource {
     @POST
     @Consumes("application/json")
     @Path("/save-dmp")
-    public SaveDmpResponse saveDmp(SaveDmpWrapper dmpWrapper){
-        return dmpService.save(dmpWrapper);
+    public Response saveDmp(SaveDmpWrapper dmpWrapper){
+        return Response.ok(dmpService.save(dmpWrapper)).build();
     }
 }

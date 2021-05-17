@@ -7,6 +7,7 @@ import at.ac.tuwien.damap.rest.domain.*;
 public class DatasetDOMapper {
 
     public static void mapEntityToDO(Dataset dataset, DatasetDO datasetDO) {
+        datasetDO.setId(dataset.id);
         datasetDO.setTitle(dataset.getTitle());
         datasetDO.setType(dataset.getType());
         datasetDO.setSize(dataset.getSize());
@@ -20,6 +21,8 @@ public class DatasetDOMapper {
     }
 
     public static void mapDOtoEntity(DatasetDO datasetDO, Dataset dataset){
+        if (datasetDO.getId() != null)
+            dataset.id = datasetDO.getId();
         dataset.setTitle(datasetDO.getTitle());
         dataset.setType(datasetDO.getType());
         dataset.setSize(datasetDO.getSize());
