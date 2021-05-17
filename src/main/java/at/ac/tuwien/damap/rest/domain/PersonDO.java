@@ -14,7 +14,7 @@ import javax.json.bind.annotation.JsonbProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PersonDO {
 
-    @JsonbProperty("id")
+    private Long id;
     private String universityId;
     private IdentifierDO personId;
     private String firstName;

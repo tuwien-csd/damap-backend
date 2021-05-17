@@ -10,6 +10,7 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FundingDO {
 
+    private Long id;
     private IdentifierDO funder_id;
     private IdentifierDO grant_id;
     private EFundingState funding_status;
