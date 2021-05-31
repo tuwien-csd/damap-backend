@@ -62,13 +62,13 @@ public class DmpService {
     }
 
     @Transactional
-    public SaveDmpResponse save(SaveDmpWrapper dmpWrapper){
+    public DmpDO save(SaveDmpWrapper dmpWrapper){
         long dmpId;
         if (dmpWrapper.getDmp().getId() == null)
             dmpId = create(dmpWrapper);
         else
             dmpId = update(dmpWrapper);
-        return new SaveDmpResponse(dmpId);
+        return getDmpById(dmpId);
     }
 
     public long create(SaveDmpWrapper dmpWrapper) {

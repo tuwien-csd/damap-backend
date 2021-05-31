@@ -10,6 +10,8 @@ public class ContributorDOMapper {
 
     public static void mapEntityToDO(Contributor contributor, ContributorDO contributorDO) {
 
+        contributorDO.setId(contributor.id);
+
         if (contributor.getContributorRole() != null)
             contributorDO.setRole(contributor.getContributorRole().getRole());
 
@@ -22,6 +24,8 @@ public class ContributorDOMapper {
 
     public static void mapDOtoEntity(ContributorDO contributorDO, Contributor contributor){
 
+        if (contributorDO.getId() != null)
+            contributor.id = contributorDO.getId();
         contributor.setContributorRole(EContributorRole.getByRole(contributorDO.getRole()));
 
         if (contributorDO.getPerson() != null) {
