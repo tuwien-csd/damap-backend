@@ -8,6 +8,7 @@ import at.ac.tuwien.damap.rest.domain.PersonDO;
 public class PersonDOMapper {
 
     public static void mapEntityToDO(Person person, PersonDO personDO) {
+        personDO.setId(person.id);
         personDO.setFirstName(person.getFirstName());
         personDO.setLastName(person.getLastName());
         personDO.setMbox(person.getMbox());
@@ -21,6 +22,8 @@ public class PersonDOMapper {
     }
 
     public static void mapDOtoEntity(PersonDO personDO, Person person){
+        if (personDO.getId() != null)
+            person.id = personDO.getId();
         person.setFirstName(personDO.getFirstName());
         person.setLastName(personDO.getLastName());
         person.setMbox(personDO.getMbox());

@@ -162,7 +162,7 @@ public class DmpDOMapper {
         List<Contributor> contributorListToRemove = new ArrayList<>();
         contributorList.forEach(contributor -> {
             Optional<ContributorDO> contributorDOOptional = dmpDO.getContributors().stream().filter(contributorDO ->
-                    contributorDO.getPerson().getUniversityId().equals(contributor.getContributor().getUniversityId())).findFirst();
+                    contributorDO.getId() != null && contributorDO.getId().equals(contributor.id)).findFirst();
             if (contributorDOOptional.isEmpty()) {
                 contributorListToRemove.add(contributor);
             }
@@ -172,7 +172,7 @@ public class DmpDOMapper {
         //update existing Contributor objects and create new ones
         dmpDO.getContributors().forEach(contributorDO -> {
             Optional<Contributor> contributorOptional = contributorList.stream().filter(contributor ->
-                    contributorDO.getPerson().getUniversityId().equals(contributor.getContributor().getUniversityId())).findFirst();
+                    contributorDO.getId() != null && contributorDO.getId().equals(contributor.id)).findFirst();
             if (contributorOptional.isPresent()) {
                 Contributor contributor = contributorOptional.get();
                 ContributorDOMapper.mapDOtoEntity(contributorDO, contributor);
@@ -190,7 +190,7 @@ public class DmpDOMapper {
         List<Dataset> datasetListToRemove = new ArrayList<>();
         datasetList.forEach(dataset -> {
             Optional<DatasetDO> datasetDOOptional = dmpDO.getDatasets().stream().filter(datasetDO ->
-                    datasetDO.getReferenceHash().equals(dataset.getReferenceHash())).findFirst();
+                    datasetDO.getId() != null && datasetDO.getId().equals(dataset.id)).findFirst();
             if (datasetDOOptional.isEmpty()) {
                 datasetListToRemove.add(dataset);
             }
@@ -200,7 +200,7 @@ public class DmpDOMapper {
         //update existing Dataset objects and create new ones
         dmpDO.getDatasets().forEach(datasetDO -> {
             Optional<Dataset> datasetOptional = datasetList.stream().filter(dataset ->
-                    datasetDO.getReferenceHash().equals(dataset.getReferenceHash())).findFirst();
+                    datasetDO.getId() != null && datasetDO.getId().equals(dataset.id)).findFirst();
             if (datasetOptional.isPresent()) {
                 Dataset dataset = datasetOptional.get();
                 DatasetDOMapper.mapDOtoEntity(datasetDO, dataset);
@@ -219,8 +219,8 @@ public class DmpDOMapper {
         List<Host> hostListToRemove = new ArrayList<>();
         hostList.forEach(host -> {
             Optional<HostDO> hostDOOptional = dmpDO.getHosts().stream().filter(hostDO ->
-                    hostDO.getHostId() != null &&
-                            hostDO.getHostId().equals(host.getHostId())).findFirst();
+                    hostDO.getId() != null &&
+                            hostDO.getId().equals(host.id)).findFirst();
             if (Repository.class.isAssignableFrom(host.getClass())) {
                 if (hostDOOptional.isEmpty()) {
                     hostListToRemove.add(host);
@@ -229,8 +229,8 @@ public class DmpDOMapper {
         });
         hostList.forEach(host -> {
             Optional<StorageDO> hostDOOptional = dmpDO.getStorage().stream().filter(hostDO ->
-                    hostDO.getHostId() != null &&
-                            hostDO.getHostId().equals(host.getHostId())).findFirst();
+                    hostDO.getId() != null &&
+                            hostDO.getId().equals(host.id)).findFirst();
             if (Storage.class.isAssignableFrom(host.getClass())) {
                 if (hostDOOptional.isEmpty()) {
                     hostListToRemove.add(host);
@@ -239,8 +239,8 @@ public class DmpDOMapper {
         });
         hostList.forEach(host -> {
             Optional<StorageDO> hostDOOptional = dmpDO.getExternalStorage().stream().filter(hostDO ->
-                    hostDO.getHostId() != null &&
-                            hostDO.getHostId().equals(host.getHostId())).findFirst();
+                    hostDO.getId() != null &&
+                            hostDO.getId().equals(host.id)).findFirst();
             if (ExternalStorage.class.isAssignableFrom(host.getClass())) {
                 if (hostDOOptional.isEmpty()) {
                     hostListToRemove.add(host);
@@ -252,8 +252,8 @@ public class DmpDOMapper {
         //update existing Host objects and create new ones
         dmpDO.getHosts().forEach(hostDO -> {
             Optional<Host> hostOptional = hostList.stream().filter(host ->
-                    hostDO.getHostId() != null &&
-                            hostDO.getHostId().equals(host.getHostId())).findFirst();
+                    hostDO.getId() != null &&
+                            hostDO.getId().equals(host.id)).findFirst();
             Repository host;
             if (hostOptional.isPresent()) {
                 host = (Repository) hostOptional.get();
@@ -278,8 +278,8 @@ public class DmpDOMapper {
         //create Storage objects
         dmpDO.getStorage().forEach(hostDO -> {
             Optional<Host> hostOptional = hostList.stream().filter(host ->
-                    hostDO.getHostId() != null &&
-                            hostDO.getHostId().equals(host.getHostId())).findFirst();
+                    hostDO.getId() != null &&
+                            hostDO.getId().equals(host.id)).findFirst();
             Storage host;
             if (hostOptional.isPresent()) {
                 host = (Storage) hostOptional.get();
@@ -305,8 +305,8 @@ public class DmpDOMapper {
         //create ExternalStorage
         dmpDO.getExternalStorage().forEach(hostDO -> {
             Optional<Host> hostOptional = hostList.stream().filter(host ->
-                    hostDO.getHostId() != null &&
-                        hostDO.getHostId().equals(host.getHostId())).findFirst();
+                    hostDO.getId() != null &&
+                        hostDO.getId().equals(host.id)).findFirst();
             ExternalStorage host;
             if (hostOptional.isPresent()) {
                 host = (ExternalStorage) hostOptional.get();
@@ -331,18 +331,31 @@ public class DmpDOMapper {
         });
 
 
-        //remove all existing Cost objects, as we currently cannot really differentiate between them
-        //TODO only remove deleted ones and update existing ones
-        // Will be possible once the ID of objects is also used in BE - FE communication #67760
+        //remove all existing Cost objects, that are not included in the DO anymore
         List<Cost> costList = dmp.getCosts();
-        costList.clear();
+        List<Cost> costListToRemove = new ArrayList<>();
+        costList.forEach(cost -> {
+            Optional<CostDO> costDOOptional = dmpDO.getCosts().stream().filter(costDO ->
+                    costDO.getId() != null && costDO.getId().equals(cost.id)).findFirst();
+            if (costDOOptional.isEmpty()) {
+                costListToRemove.add(cost);
+            }
+        });
+        costList.removeAll(costListToRemove);
 
-        //create new Costs
+        //update existing Costs objects and create new ones
         dmpDO.getCosts().forEach(costDO -> {
-            Cost cost = new Cost();
-            CostDOMapper.mapDOtoEntity(costDO, cost);
-            cost.setDmp(dmp);
-            costList.add(cost);
+            Optional<Cost> costOptional = costList.stream().filter(cost ->
+                    costDO.getId() != null && costDO.getId().equals(cost.id)).findFirst();
+            if (costOptional.isPresent()) {
+                Cost cost = costOptional.get();
+                CostDOMapper.mapDOtoEntity(costDO, cost);
+            } else {
+                Cost cost = new Cost();
+                CostDOMapper.mapDOtoEntity(costDO, cost);
+                cost.setDmp(dmp);
+                costList.add(cost);
+            }
         });
     }
 }
