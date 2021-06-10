@@ -17,6 +17,8 @@ import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -26,7 +28,7 @@ public class DocumentConversionService {
     @Inject
     DmpRepo dmpRepo;
 
-    public XWPFDocument getFWFTemplate(long dmpId) throws IOException {
+    public XWPFDocument getFWFTemplate(long dmpId) throws Exception {
 
         Dmp dmp = dmpRepo.findById(dmpId);
 
@@ -124,19 +126,6 @@ public class DocumentConversionService {
             map.put(docVar4, datasetVol);
         }
 
-        //Delete unused contributor variables
-        for (int i = datasets.size() + 1; i < 5; i++) {
-            String docVar1 = "[dataset" + i + "name]";
-            String docVar2 = "[dataset" + i + "type]";
-            String docVar3 = "[dataset" + i + "format]";
-            String docVar4 = "[dataset" + i + "vol]";
-
-            map.put(docVar1, "");
-            map.put(docVar2, "");
-            map.put(docVar3, "");
-            map.put(docVar4, "");
-        }
-
         if (datasets.size() == 0) {
             map.put("P1", "");
         }
@@ -149,25 +138,43 @@ public class DocumentConversionService {
         for (XWPFTable xwpfTable : tables) {
             if (xwpfTable.getRow(1) != null) {
                 if (xwpfTable.getRow(1).getCell(1).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[dataset1name]")
-                        && datasets.size() > 1){
+                        && datasets.size() > 1) {
+
                     //dynamic table rows code
-                    for (int i = 2; i < datasets.size()+1; i++) {
-                        xwpfTable.addRow( xwpfTable.getRow( xwpfTable.getRows().size() - 1));
-                        String docVar0 = "P" + i;
-                        String docVar1 = "[dataset" + i + "name]";
-                        String docVar2 = "[dataset" + i + "type]";
-                        String docVar3 = "[dataset" + i + "format]";
-                        String docVar4 = "[dataset" + i + "vol]";
-                        xwpfTable.getRow(xwpfTable.getRows().size() - 1).getCell(0).setText(docVar0);
-                        xwpfTable.getRow(xwpfTable.getRows().size() - 1).getCell(1).setText(docVar1);
-                        xwpfTable.getRow(xwpfTable.getRows().size() - 1).getCell(2).setText(docVar2);
-                        xwpfTable.getRow(xwpfTable.getRows().size() - 1).getCell(3).setText(docVar3);
-                        xwpfTable.getRow(xwpfTable.getRows().size() - 1).getCell(4).setText(docVar4);
+                    //notes: dataset number 2 until the end will be written directly to the table
+                    for (int i = 2; i < datasets.size() + 1; i++) {
+
+                        XWPFTableRow sourceTableRow = xwpfTable.getRow(i);
+                        XWPFTableRow newRow = insertNewTableRow(sourceTableRow, i);
+
+                        ArrayList<String> docVar = new ArrayList<String>();
+                        docVar.add("P" + i);
+                        docVar.add(datasets.get(i - 1).getTitle());
+                        docVar.add(datasets.get(i - 1).getType());
+                        docVar.add("");
+                        docVar.add(format(Long.parseLong(datasets.get(i-1).getSize()))+"B");
+                        docVar.add("");
+
+                        List<XWPFTableCell> cells = newRow.getTableCells();
+
+                        for (XWPFTableCell cell : cells) {
+
+                            for (XWPFParagraph paragraph : cell.getParagraphs()) {
+                                for (XWPFRun run : paragraph.getRuns()) {
+                                    run.setText(docVar.get(cells.indexOf(cell)), 0);
+                                }
+                            }
+                        }
+
+                        boolean weMustCommitTableRows = true;
+
+                        if (weMustCommitTableRows) commitTableRows(xwpfTable);
                     }
                     //end of dynamic table rows code
-                    xwpfTable.removeRow(xwpfTable.getRows().size()-1);
+                    xwpfTable.removeRow(xwpfTable.getRows().size() - 1);
                 }
             }
+
             List<XWPFTableRow> tableRows = xwpfTable.getRows();
             for (XWPFTableRow xwpfTableRow : tableRows) {
                 List<XWPFTableCell> tableCells = xwpfTableRow
@@ -180,6 +187,21 @@ public class DocumentConversionService {
         }
 
         return document;
+    }
+
+    private XWPFTableRow insertNewTableRow(XWPFTableRow sourceTableRow, int pos) throws Exception {
+        XWPFTable table = sourceTableRow.getTable();
+        CTRow newCTRrow = CTRow.Factory.parse(sourceTableRow.getCtRow().newInputStream());
+        XWPFTableRow tableRow = new XWPFTableRow(newCTRrow, table);
+        table.addRow(tableRow, pos);
+        return tableRow;
+    }
+
+    static void commitTableRows(XWPFTable table) {
+        int rowNr = 0;
+        for (XWPFTableRow tableRow : table.getRows()) {
+            table.getCTTbl().setTrArray(rowNr++, tableRow.getCtRow());
+        }
     }
 
     private void replaceInParagraphs(List<XWPFParagraph> xwpfParagraphs, Map<String, String> replacements) {
