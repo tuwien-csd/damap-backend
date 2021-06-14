@@ -27,7 +27,7 @@ public class DmpDocumentResource {
     @GET
     @Path("/{dmpId}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response getFWFTemplate(@PathParam("dmpId") long dmpId) {
+    public Response getFWFTemplate(@PathParam("dmpId") long dmpId) throws Exception {
         log.info("Return DMP document file for DMP with id=" + dmpId);
 
         String filename = dmpService.getDefaultFileName(dmpId);
