@@ -36,7 +36,10 @@ public class DmpDOMapper {
         dmpDO.setTargetAudience(dmp.getTargetAudience());
         dmpDO.setTools(dmp.getTools());
         dmpDO.setRestrictedDataAccess(dmp.getRestrictedDataAccess());
-        dmpDO.setPersonalInformation(dmp.getPersonalInformation());
+        dmpDO.setPersonalData(dmp.getPersonalData());
+        dmpDO.setPersonalDataAccess(dmp.getPersonalDataAccess());
+        dmpDO.setPersonalDataCompliance(dmp.getPersonalDataCompliance());
+        dmpDO.setOtherPersonalDataCompliance(dmp.getOtherPersonalDataCompliance());
         dmpDO.setSensitiveData(dmp.getSensitiveData());
         dmpDO.setSensitiveDataSecurity(dmp.getSensitiveDataSecurity());
         dmpDO.setLegalRestrictions(dmp.getLegalRestrictions());
@@ -142,7 +145,10 @@ public class DmpDOMapper {
         dmp.setTargetAudience(dmpDO.getTargetAudience());
         dmp.setTools(dmpDO.getTools());
         dmp.setRestrictedDataAccess(dmpDO.getRestrictedDataAccess());
-        dmp.setPersonalInformation(dmpDO.getPersonalInformation());
+        dmp.setPersonalData(dmpDO.getPersonalData());
+        dmp.setPersonalDataAccess(dmpDO.getPersonalDataAccess());
+        dmp.setPersonalDataCompliance(dmpDO.getPersonalDataCompliance());
+        dmp.setOtherPersonalDataCompliance(dmpDO.getOtherPersonalDataCompliance());
         dmp.setSensitiveDataSecurity(dmpDO.getSensitiveDataSecurity());
         dmp.setSensitiveData(dmpDO.getSensitiveData());
         dmp.setLegalRestrictions(dmpDO.getLegalRestrictions());

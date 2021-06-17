@@ -68,14 +68,25 @@ public class Dmp extends PanacheEntity {
     @Column(name = "restricted_data_access")
     private String restrictedDataAccess;
 
-    @Column(name = "personal_information")
-    private Boolean personalInformation;
+    @Column(name = "personal_data")
+    private Boolean personalData;
+
+    @Column(name = "personal_data_access")
+    private String personalDataAccess;
+
+    @ElementCollection
+    @CollectionTable(name="personal_data_compliances")
+    @Column(name = "personal_data_compliance")
+    private List<String> personalDataCompliance;
+
+    @Column(name = "other_personal_data_compliance")
+    private String otherPersonalDataCompliance;
 
     @Column(name = "sensitive_data")
     private Boolean sensitiveData;
 
     @Column(name = "sensitive_data_security")
-    private String sensitiveDataSecurity;;
+    private String sensitiveDataSecurity;
 
     @Column(name = "legal_restrictions")
     private Boolean legalRestrictions;

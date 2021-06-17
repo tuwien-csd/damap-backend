@@ -32,7 +32,10 @@ public class DmpDO {
     private String targetAudience;
     private String tools;
     private String restrictedDataAccess;
-    private Boolean personalInformation;
+    private Boolean personalData;
+    private String personalDataAccess;
+    private List<String> personalDataCompliance;
+    private String otherPersonalDataCompliance;
     private Boolean sensitiveData;
     private String sensitiveDataSecurity;
     private Boolean legalRestrictions;
