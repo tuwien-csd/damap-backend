@@ -188,7 +188,9 @@ CREATE TABLE damap.dmp
     target_audience text,
     tools text,
     restricted_data_access text,
-    personal_information boolean,
+    personal_data boolean,
+    personal_data_access text,
+    other_personal_data_compliance text,
     sensitive_data boolean,
     sensitive_data_security text,
     legal_restrictions boolean,
@@ -440,7 +442,9 @@ CREATE TABLE damap.dataset
     type text,
     data_size text,
     dataset_comment text,
-    publish boolean,
+    personal_data boolean,
+    sensitive_data boolean,
+    legal_restrictions boolean,
     license text,
     start_date date,
     reference_hash text,
@@ -464,6 +468,23 @@ CREATE TABLE damap.dataset
 );
 
 ALTER TABLE damap.dataset
+    OWNER to damap;
+
+--------------------------------------------------------------
+
+CREATE TABLE damap.personal_data_compliances
+(
+    dmp_id bigint NOT NULL,
+    personal_data_compliance text,
+    PRIMARY KEY (dmp_id, personal_data_compliance),
+    FOREIGN KEY (dmp_id)
+        REFERENCES damap.dmp (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+);
+
+ALTER TABLE damap.personal_data_compliances
     OWNER to damap;
 
 --------------------------------------------------------------
