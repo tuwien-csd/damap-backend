@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.text.SimpleDateFormat;
 
+import at.ac.tuwien.damap.domain.Cost;
 import at.ac.tuwien.damap.domain.Dataset;
 import at.ac.tuwien.damap.domain.Dmp;
 import at.ac.tuwien.damap.repo.DmpRepo;
@@ -35,6 +36,7 @@ public class DocumentConversionService {
         String template = "..\\src\\template\\template.docx";
         XWPFDocument document = new XWPFDocument(Files.newInputStream(Paths.get(template)));
 
+        //mapping general information
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Map<String, String> map = new HashMap<>();
         if (dmp.getProject() != null) {
@@ -52,6 +54,7 @@ public class DocumentConversionService {
             map.put("[datever1]", formatter.format(dmp.getCreated()));
         }
 
+        //mapping contact information
         if (dmp.getContact() != null) {
             //TO DO: add affiliation and ROR (currently not stored in TISS)
             String contactName = "[contactname]";
@@ -71,6 +74,7 @@ public class DocumentConversionService {
             map.put("[contactid]", contactId);
         }
 
+        //mapping contributor information
         if (dmp.getContributorList() != null) {
             String contributorValue = "";
             List<Contributor> contributors = dmp.getContributorList();
@@ -100,6 +104,7 @@ public class DocumentConversionService {
             map.put("[contributors]", "");
         }
 
+        //mapping dataset information
         List<Dataset> datasets = dmp.getDatasetList();
         for (Dataset dataset : datasets) {
             int idx = datasets.indexOf(dataset) + 1;
@@ -107,10 +112,17 @@ public class DocumentConversionService {
             String docVar2 = "[dataset" + idx + "type]";
             String docVar3 = "[dataset" + idx + "format]";
             String docVar4 = "[dataset" + idx + "vol]";
+            String docVar5 = "[dataset" + idx + "license]";
+            String docVar6 = "[dataset" + idx + "pubdate]";
+            String docVar7 = "[dataset" + idx + "repo]";
+
             String datasetName = "";
             String datasetType = "";
             String datasetFormat = "";
             String datasetVol = "";
+            String datasetLicense = "";
+            String datasetPubdate = "";
+            String datasetRepo = "";
 
             if (dataset.getTitle() != null)
                 datasetName = dataset.getTitle();
@@ -119,17 +131,72 @@ public class DocumentConversionService {
             if (dataset.getSize() != null && !dataset.getSize().equals("")) {
                 datasetVol = format(Long.parseLong(dataset.getSize()))+"B";
             }
+            if (dataset.getLicense() != null)
+                datasetLicense = dataset.getLicense();
+            if (dataset.getStart() != null)
+                datasetPubdate = formatter.format(dataset.getStart());
+            if (dataset.getHost() != null)
+                datasetRepo = dataset.getHost().getTitle();
 
             map.put(docVar1, datasetName);
             map.put(docVar2, datasetType);
             map.put(docVar3, datasetFormat);
             map.put(docVar4, datasetVol);
+            map.put(docVar5, datasetLicense);
+            map.put(docVar6, datasetPubdate);
+            map.put(docVar7, datasetRepo);
         }
 
         if (datasets.size() == 0) {
             map.put("P1", "");
         }
 
+        //mapping cost information
+        Long totalCost = 0L;
+
+        List<Cost> costList = dmp.getCosts();
+        for (Cost cost : costList) {
+            int idx = costList.indexOf(cost) + 1;
+            String docVar1 = "[cost" + idx + "title]";
+            String docVar2 = "[cost" + idx + "type]";
+            String docVar3 = "[cost" + idx + "desc]";
+            String docVar4 = "[cost" + idx + "currency]";
+            String docVar5 = "[cost" + idx + "value]";
+            String costTitle = "";
+            String costType = "";
+            String costDescription = "";
+            String costCurrency = "";
+            String costValue = "";
+            String costCurrencyTotal = "";
+
+            if (cost.getTitle() != null)
+                costTitle = cost.getTitle();
+            if (cost.getType() != null)
+                costType = cost.getType().toString();
+            if (cost.getDescription() != null )
+                costDescription = cost.getDescription();
+            if (cost.getCurrencyCode() != null) {
+                costCurrency = cost.getCurrencyCode();
+                if (costCurrencyTotal.equals("")) {
+                    costCurrencyTotal = costCurrency;
+                    map.put("[costcurrency]", costCurrencyTotal);
+                }
+            }
+            if (cost.getValue() != null) {
+                costValue = cost.getValue().toString();
+                totalCost = totalCost + cost.getValue();
+            }
+
+            map.put(docVar1, costTitle);
+            map.put(docVar2, costType);
+            map.put(docVar3, costDescription);
+            map.put(docVar4, costCurrency);
+            map.put(docVar5, costValue);
+        }
+
+        map.put("[costtotal]", totalCost.toString());
+
+        //variables replacement
         List<XWPFParagraph> xwpfParagraphs = document.getParagraphs();
 
         replaceInParagraphs(xwpfParagraphs, map);
@@ -137,11 +204,12 @@ public class DocumentConversionService {
         List<XWPFTable> tables = document.getTables();
         for (XWPFTable xwpfTable : tables) {
             if (xwpfTable.getRow(1) != null) {
+
+                //dynamic table rows code for dataset
+                //notes: dataset number 2 until the end will be written directly to the table
                 if (xwpfTable.getRow(1).getCell(1).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[dataset1name]")
                         && datasets.size() > 1) {
 
-                    //dynamic table rows code
-                    //notes: dataset number 2 until the end will be written directly to the table
                     for (int i = 2; i < datasets.size() + 1; i++) {
 
                         XWPFTableRow sourceTableRow = xwpfTable.getRow(i);
@@ -172,6 +240,98 @@ public class DocumentConversionService {
                     }
                     //end of dynamic table rows code
                     xwpfTable.removeRow(xwpfTable.getRows().size() - 1);
+                }
+
+
+                //dynamic table rows code for data sharing
+                //notes: cost number 2 until the end will be written directly to the table
+                if (xwpfTable.getRow(1).getCell(1).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[metadata]")
+                        && datasets.size() > 1) {
+/*
+                    for (int i = 2; i < datasets.size() + 1; i++) {
+
+                        XWPFTableRow sourceTableRow = xwpfTable.getRow(i);
+                        XWPFTableRow newRow = insertNewTableRow(sourceTableRow, i);
+
+                        ArrayList<String> docVar = new ArrayList<String>();
+                        docVar.add("" + i);
+                        docVar.add("");
+                        docVar.add("");
+                        if (datasets.get(i).getStart() != null) {
+                            docVar.add(formatter.format(datasets.get(i).getStart()));
+                        }
+                        else {
+                            docVar.add("");
+                        }
+                        if (datasets.get(i).getHost() != null) {
+                            docVar.add(datasets.get(i).getHost().getTitle());
+                        }
+                        else {
+                            docVar.add("");
+                        }
+                        if (datasets.get(i).getLicense() != null) {
+                            docVar.add(datasets.get(i).getLicense());
+                        }
+                        else {
+                            docVar.add("");
+                        }
+                        docVar.add("");
+
+
+                        List<XWPFTableCell> cells = newRow.getTableCells();
+
+                        for (XWPFTableCell cell : cells) {
+
+                            for (XWPFParagraph paragraph : cell.getParagraphs()) {
+                                for (XWPFRun run : paragraph.getRuns()) {
+                                    run.setText(docVar.get(cells.indexOf(cell)), 0);
+                                }
+                            }
+                        }
+
+                        boolean weMustCommitTableRows = true;
+
+                        if (weMustCommitTableRows) commitTableRows(xwpfTable);
+                    }
+                    */
+                    //end of dynamic table rows code
+                    xwpfTable.removeRow(xwpfTable.getRows().size() - 1);
+                }
+
+                //dynamic table rows code for cost
+                //notes: cost number 2 until the end will be written directly to the table
+                if (xwpfTable.getRow(1).getCell(0).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[cost1title]")
+                        && costList.size() > 1) {
+
+                    for (int i = 2; i < costList.size() + 1; i++) {
+
+                        XWPFTableRow sourceTableRow = xwpfTable.getRow(i);
+                        XWPFTableRow newRow = insertNewTableRow(sourceTableRow, i);
+
+                        ArrayList<String> docVar = new ArrayList<String>();
+                        docVar.add(costList.get(i - 1).getTitle());
+                        docVar.add(costList.get(i - 1).getType().toString());
+                        docVar.add(costList.get(i - 1).getDescription());
+                        docVar.add(costList.get(i - 1).getCurrencyCode());
+                        docVar.add(costList.get(i - 1).getValue().toString());
+
+                        List<XWPFTableCell> cells = newRow.getTableCells();
+
+                        for (XWPFTableCell cell : cells) {
+
+                            for (XWPFParagraph paragraph : cell.getParagraphs()) {
+                                for (XWPFRun run : paragraph.getRuns()) {
+                                    run.setText(docVar.get(cells.indexOf(cell)), 0);
+                                }
+                            }
+                        }
+
+                        boolean weMustCommitTableRows = true;
+
+                        if (weMustCommitTableRows) commitTableRows(xwpfTable);
+                    }
+                    //end of dynamic table rows code
+                    xwpfTable.removeRow(xwpfTable.getRows().size() - 2);
                 }
             }
 
