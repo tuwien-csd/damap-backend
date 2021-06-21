@@ -13,11 +13,13 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MaDmpProject {
 
-    private String title;
+    
     private String description;
+    @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    private Date end;
     private List<MaDmpFunding> funding;
     @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private Date start;
-    @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    private Date end;
+    private String title;
+    
 }
