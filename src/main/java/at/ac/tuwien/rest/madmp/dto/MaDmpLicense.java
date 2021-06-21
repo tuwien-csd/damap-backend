@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.net.*;
 import java.util.Date;
 
 @Getter
@@ -12,6 +11,6 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MaDmpLicense {
 
-    private URI license_ref;
+    private String license_ref;
     private Date start_date;
 }
