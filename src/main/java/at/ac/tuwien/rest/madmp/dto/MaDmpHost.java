@@ -19,6 +19,6 @@ public class MaDmpHost {
     private String storage_type;
     private String support_versioning;
     private String title;
-    private URI url;
+    private String url;
     
 }
