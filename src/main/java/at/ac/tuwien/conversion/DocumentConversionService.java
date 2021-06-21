@@ -115,6 +115,7 @@ public class DocumentConversionService {
             String docVar5 = "[dataset" + idx + "license]";
             String docVar6 = "[dataset" + idx + "pubdate]";
             String docVar7 = "[dataset" + idx + "repo]";
+            String docVar8 = "[dataset" + idx + "access]";
 
             String datasetName = "";
             String datasetType = "";
@@ -123,6 +124,7 @@ public class DocumentConversionService {
             String datasetLicense = "";
             String datasetPubdate = "";
             String datasetRepo = "";
+            String datasetAccess = "";
 
             if (dataset.getTitle() != null)
                 datasetName = dataset.getTitle();
@@ -137,6 +139,8 @@ public class DocumentConversionService {
                 datasetPubdate = formatter.format(dataset.getStart());
             if (dataset.getHost() != null)
                 datasetRepo = dataset.getHost().getTitle();
+            if (dataset.getDataAccess() != null)
+                datasetAccess = dataset.getDataAccess().toString();
 
             map.put(docVar1, datasetName);
             map.put(docVar2, datasetType);
@@ -145,6 +149,7 @@ public class DocumentConversionService {
             map.put(docVar5, datasetLicense);
             map.put(docVar6, datasetPubdate);
             map.put(docVar7, datasetRepo);
+            map.put(docVar8, datasetAccess);
         }
 
         if (datasets.size() == 0) {
@@ -245,9 +250,9 @@ public class DocumentConversionService {
 
                 //dynamic table rows code for data sharing
                 //notes: cost number 2 until the end will be written directly to the table
-                if (xwpfTable.getRow(1).getCell(1).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[metadata]")
+                if (xwpfTable.getRow(1).getCell(1).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[dataset1access]")
                         && datasets.size() > 1) {
-/*
+
                     for (int i = 2; i < datasets.size() + 1; i++) {
 
                         XWPFTableRow sourceTableRow = xwpfTable.getRow(i);
@@ -255,28 +260,27 @@ public class DocumentConversionService {
 
                         ArrayList<String> docVar = new ArrayList<String>();
                         docVar.add("" + i);
+                        docVar.add(datasets.get(i - 1).getDataAccess().toString());
                         docVar.add("");
-                        docVar.add("");
-                        if (datasets.get(i).getStart() != null) {
-                            docVar.add(formatter.format(datasets.get(i).getStart()));
+                        if (datasets.get(i - 1).getStart() != null) {
+                            docVar.add(formatter.format(datasets.get(i - 1).getStart()));
                         }
                         else {
                             docVar.add("");
                         }
-                        if (datasets.get(i).getHost() != null) {
-                            docVar.add(datasets.get(i).getHost().getTitle());
-                        }
-                        else {
-                            docVar.add("");
-                        }
-                        if (datasets.get(i).getLicense() != null) {
-                            docVar.add(datasets.get(i).getLicense());
+                        if (datasets.get(i - 1).getHost() != null) {
+                            docVar.add(datasets.get(i - 1).getHost().getTitle());
                         }
                         else {
                             docVar.add("");
                         }
                         docVar.add("");
-
+                        if (datasets.get(i - 1).getLicense() != null) {
+                            docVar.add(datasets.get(i - 1).getLicense());
+                        }
+                        else {
+                            docVar.add("");
+                        }
 
                         List<XWPFTableCell> cells = newRow.getTableCells();
 
@@ -293,7 +297,6 @@ public class DocumentConversionService {
 
                         if (weMustCommitTableRows) commitTableRows(xwpfTable);
                     }
-                    */
                     //end of dynamic table rows code
                     xwpfTable.removeRow(xwpfTable.getRows().size() - 1);
                 }
