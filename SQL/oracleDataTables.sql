@@ -333,13 +333,29 @@ CREATE TABLE damap.dataset
 
 --------------------------------------------------------------
 
-CREATE TABLE damap.personal_data_compliances
+CREATE TABLE damap.compliance_type
+(
+    type VARCHAR2(255 CHAR) NOT NULL,
+    PRIMARY KEY (type)
+);
+
+insert into damap.compliance_type values ('informedConsent');
+insert into damap.compliance_type values ('encryption');
+insert into damap.compliance_type values ('anonymisation');
+insert into damap.compliance_type values ('pseudonymisation');
+insert into damap.compliance_type values ('other');
+
+--------------------------------------------------------------
+
+CREATE TABLE damap.personal_data_compliance_list
 (
     dmp_id NUMBER(19,0) NOT NULL,
-    personal_data_compliance VARCHAR2(255 CHAR),
-    PRIMARY KEY (dmp_id, personal_data_compliance),
+    compliance_type VARCHAR2(255 CHAR),
+    PRIMARY KEY (dmp_id, compliance_type),
     FOREIGN KEY (dmp_id)
-        REFERENCES damap.dmp (id)
+        REFERENCES damap.dmp (id),
+    FOREIGN KEY (compliance_type)
+        REFERENCES damap.compliance_type (type)
 );
 
 --------------------------------------------------------------

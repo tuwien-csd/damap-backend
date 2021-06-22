@@ -469,22 +469,43 @@ CREATE TABLE damap.dataset
 
 ALTER TABLE damap.dataset
     OWNER to damap;
+--------------------------------------------------------------
+
+CREATE TABLE damap.compliance_type
+(
+    type text NOT NULL,
+    PRIMARY KEY (type)
+);
+
+ALTER TABLE damap.compliance_type
+    OWNER to damap;
+
+insert into damap.compliance_type values ('informedConsent');
+insert into damap.compliance_type values ('encryption');
+insert into damap.compliance_type values ('anonymisation');
+insert into damap.compliance_type values ('pseudonymisation');
+insert into damap.compliance_type values ('other');
 
 --------------------------------------------------------------
 
-CREATE TABLE damap.personal_data_compliances
+CREATE TABLE damap.personal_data_compliance_list
 (
     dmp_id bigint NOT NULL,
-    personal_data_compliance text,
-    PRIMARY KEY (dmp_id, personal_data_compliance),
+    compliance_type text,
+    PRIMARY KEY (dmp_id, compliance_type),
     FOREIGN KEY (dmp_id)
         REFERENCES damap.dmp (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    FOREIGN KEY (compliance_type)
+        REFERENCES damap.compliance_type (type) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
         NOT VALID
 );
 
-ALTER TABLE damap.personal_data_compliances
+ALTER TABLE damap.personal_data_compliance_list
     OWNER to damap;
 
 --------------------------------------------------------------

@@ -1,6 +1,7 @@
 package at.ac.tuwien.damap.rest.mapper;
 
 import at.ac.tuwien.damap.domain.*;
+import at.ac.tuwien.damap.enums.EComplianceType;
 import at.ac.tuwien.damap.rest.domain.*;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class DmpDOMapper {
         }
 
         dmpDO.setDataKind(dmp.getDataKind());
-        dmpDO.setNoDataExplanation(dmp.getNoDataExpalnation());
+        dmpDO.setNoDataExplanation(dmp.getNoDataExplanation());
         dmpDO.setMetadata(dmp.getMetadata());
         dmpDO.setDataGeneration(dmp.getDataGeneration());
         dmpDO.setStructure(dmp.getStructure());
@@ -38,7 +39,6 @@ public class DmpDOMapper {
         dmpDO.setRestrictedDataAccess(dmp.getRestrictedDataAccess());
         dmpDO.setPersonalData(dmp.getPersonalData());
         dmpDO.setPersonalDataAccess(dmp.getPersonalDataAccess());
-        dmpDO.setPersonalDataCompliance(dmp.getPersonalDataCompliance());
         dmpDO.setOtherPersonalDataCompliance(dmp.getOtherPersonalDataCompliance());
         dmpDO.setSensitiveData(dmp.getSensitiveData());
         dmpDO.setSensitiveDataSecurity(dmp.getSensitiveDataSecurity());
@@ -59,6 +59,12 @@ public class DmpDOMapper {
             contributorDOList.add(contributorDO);
         });
         dmpDO.setContributors(contributorDOList);
+
+        List<String> personalDataComplianceDOList = new ArrayList<>();
+        dmp.getPersonalDataCompliance().forEach(option -> {
+            personalDataComplianceDOList.add(option.getValue());
+        });
+        dmpDO.setPersonalDataCompliance(personalDataComplianceDOList);
 
         List<DatasetDO> datasetDOList = new ArrayList<>();
         dmp.getDatasetList().forEach(dataset -> {
@@ -82,12 +88,12 @@ public class DmpDOMapper {
                 hostDO = new StorageDO();
                 HostDOMapper.mapEntityToDO(host, hostDO);
                 StorageDOMapper.mapEntityToDO((Storage) host, (StorageDO) hostDO);
-                storageDOList.add( (StorageDO) hostDO);
+                storageDOList.add((StorageDO) hostDO);
             } else if (ExternalStorage.class.isAssignableFrom(host.getClass())) {
                 hostDO = new StorageDO();
                 HostDOMapper.mapEntityToDO(host, hostDO);
                 ExternalStorageDOMapper.mapEntityToDO((ExternalStorage) host, (StorageDO) hostDO);
-                externalStorageDOList.add( (StorageDO) hostDO);
+                externalStorageDOList.add((StorageDO) hostDO);
             }
 
             //add frontend referenceHash list to host
@@ -138,7 +144,7 @@ public class DmpDOMapper {
             dmp.setContact(null);
 
         dmp.setDataKind(dmpDO.getDataKind());
-        dmp.setNoDataExpalnation(dmpDO.getNoDataExplanation());
+        dmp.setNoDataExplanation(dmpDO.getNoDataExplanation());
         dmp.setMetadata(dmpDO.getMetadata());
         dmp.setDataGeneration(dmpDO.getDataGeneration());
         dmp.setStructure(dmpDO.getStructure());
@@ -147,7 +153,6 @@ public class DmpDOMapper {
         dmp.setRestrictedDataAccess(dmpDO.getRestrictedDataAccess());
         dmp.setPersonalData(dmpDO.getPersonalData());
         dmp.setPersonalDataAccess(dmpDO.getPersonalDataAccess());
-        dmp.setPersonalDataCompliance(dmpDO.getPersonalDataCompliance());
         dmp.setOtherPersonalDataCompliance(dmpDO.getOtherPersonalDataCompliance());
         dmp.setSensitiveDataSecurity(dmpDO.getSensitiveDataSecurity());
         dmp.setSensitiveData(dmpDO.getSensitiveData());
@@ -174,6 +179,14 @@ public class DmpDOMapper {
             }
         });
         contributorList.removeAll(contributorListToRemove);
+
+        List<EComplianceType> personalDataComplianceList = new ArrayList<>();
+        dmpDO.getPersonalDataCompliance().forEach(option -> {
+            if (option != null) {
+                personalDataComplianceList.add(EComplianceType.getByValue(option));
+            }
+        });
+        dmp.setPersonalDataCompliance(personalDataComplianceList);
 
         //update existing Contributor objects and create new ones
         dmpDO.getContributors().forEach(contributorDO -> {
@@ -312,7 +325,7 @@ public class DmpDOMapper {
         dmpDO.getExternalStorage().forEach(hostDO -> {
             Optional<Host> hostOptional = hostList.stream().filter(host ->
                     hostDO.getId() != null &&
-                        hostDO.getId().equals(host.id)).findFirst();
+                            hostDO.getId().equals(host.id)).findFirst();
             ExternalStorage host;
             if (hostOptional.isPresent()) {
                 host = (ExternalStorage) hostOptional.get();
