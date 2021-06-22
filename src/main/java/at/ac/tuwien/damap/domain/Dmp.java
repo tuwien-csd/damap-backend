@@ -1,8 +1,7 @@
 package at.ac.tuwien.damap.domain;
 
+import at.ac.tuwien.damap.enums.EComplianceType;
 import at.ac.tuwien.damap.enums.EDataKind;
-import at.ac.tuwien.damap.rest.domain.CostDO;
-import at.ac.tuwien.damap.rest.domain.StorageDO;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -10,9 +9,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -51,7 +47,7 @@ public class Dmp extends PanacheEntity {
     private EDataKind dataKind;
 
     @Column(name = "no_data_explanation")
-    private String noDataExpalnation;
+    private String noDataExplanation;
 
     private String metadata;
 
@@ -74,10 +70,11 @@ public class Dmp extends PanacheEntity {
     @Column(name = "personal_data_access")
     private String personalDataAccess;
 
-    @ElementCollection
-    @CollectionTable(name="personal_data_compliances")
-    @Column(name = "personal_data_compliance")
-    private List<String> personalDataCompliance;
+    @ElementCollection(targetClass = EComplianceType.class, fetch = FetchType.EAGER)
+    @CollectionTable(name="personal_data_compliance_list")
+    @Column(name = "compliance_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private List<EComplianceType> personalDataCompliance;
 
     @Column(name = "other_personal_data_compliance")
     private String otherPersonalDataCompliance;
