@@ -4,15 +4,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * Damap compatible representation of persons
- */
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ContributorDO {
+public class CostDO {
 
     private Long id;
-    private String role;
-    private PersonDO person;
+    private String title;
+    private Long value;
+    private String currencyCode; // controlled vocabulary: ISO 4217
+    private String description;
+    private String type;
+    private String customType;
 }

@@ -11,6 +11,6 @@ import lombok.Setter;
 public class MaDmpFunding {
 
     private MaDmpIdentifier funder_id;
+    private String funding_status;
     private MaDmpIdentifier grant_id;
-    private EFundingState funding_status;
 }

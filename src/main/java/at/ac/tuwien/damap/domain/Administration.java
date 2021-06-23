@@ -27,7 +27,9 @@ public class Administration extends PanacheEntity {
     @Enumerated(EnumType.STRING)
     private EFunctionRole role;
 
+    @Column(name = "start_date")
     private Date start;
 
+    @Column(name = "until_date")
     private Date until;
 }

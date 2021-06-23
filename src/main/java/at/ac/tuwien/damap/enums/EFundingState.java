@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum EFundingState {
 
-    PLANNED("PLANNED"),
-    APPLIED("APPLIED"),
-    GRANTED("GRANTED"),
-    REJECTED("REJECTED"),
-    UNSPECIFIED("UNSPECIFIED");
+    PLANNED("planned"),
+    APPLIED("applied"),
+    GRANTED("granted"),
+    REJECTED("rejected"),
+    UNSPECIFIED("unspecified");
 
     EFundingState(String state) {
         this.state = state;

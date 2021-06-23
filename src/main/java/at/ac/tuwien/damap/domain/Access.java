@@ -16,6 +16,7 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 //@Audited
+@Table(name = "access_management")
 public class Access extends PanacheEntity {
 
     @Version
@@ -38,7 +39,9 @@ public class Access extends PanacheEntity {
     @Enumerated(EnumType.STRING)
     private EFunctionRole role;
 
+    @Column(name = "start_date")
     private Date start;
 
+    @Column(name = "until_date")
     private Date until;
 }

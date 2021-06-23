@@ -6,14 +6,17 @@ import at.ac.tuwien.damap.rest.domain.*;
 public class HostDOMapper {
 
     public static void mapEntityToDO(Host host, HostDO hostDO) {
+        hostDO.setId(host.id);
         hostDO.setHostId(host.getHostId());
-        hostDO.setName(host.getName());
+        hostDO.setTitle(host.getTitle());
         hostDO.setDate(host.getDate());
     }
 
     public static void mapDOtoEntity(HostDO hostDO, Host host){
+        if (hostDO.getId() != null)
+            host.id = hostDO.getId();
         host.setHostId(hostDO.getHostId());
-        host.setName(hostDO.getName());
+        host.setTitle(hostDO.getTitle());
         host.setDate(hostDO.getDate());
     }
 }

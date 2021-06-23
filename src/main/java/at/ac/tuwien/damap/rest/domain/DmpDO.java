@@ -30,13 +30,23 @@ public class DmpDO {
     private String dataGeneration;
     private String structure;
     private String targetAudience;
+    private String tools;
+    private String restrictedDataAccess;
     private Boolean personalInformation;
     private Boolean sensitiveData;
+    private String sensitiveDataSecurity;
     private Boolean legalRestrictions;
     private Boolean ethicalIssuesExist;
     private Boolean committeeApproved;
     private String ethicsReport;
-    private String optionalStatement;
+    private String ethicalComplianceStatement;
     private List<DatasetDO> datasets;
     private List<HostDO> hosts;
+    private List<StorageDO> storage;
+    private List<StorageDO> externalStorage;
+    private String externalStorageInfo;
+    private String restrictedAccessInfo;
+    private String closedAccessInfo;
+    private Boolean costsExist;
+    private List<CostDO> costs;
 }
