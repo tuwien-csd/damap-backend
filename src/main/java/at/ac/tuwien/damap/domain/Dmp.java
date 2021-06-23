@@ -70,9 +70,9 @@ public class Dmp extends PanacheEntity {
     @Column(name = "personal_data_access")
     private String personalDataAccess;
 
-    @ElementCollection(targetClass = EComplianceType.class, fetch = FetchType.EAGER)
+    @ElementCollection(targetClass = EComplianceType.class, fetch = FetchType.LAZY)
     @CollectionTable(name="personal_data_compliance_list")
-    @Column(name = "compliance_type", nullable = false)
+    @Column(name = "compliance_type")
     @Enumerated(EnumType.STRING)
     private List<EComplianceType> personalDataCompliance;
 
