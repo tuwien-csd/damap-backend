@@ -146,7 +146,7 @@ CREATE TABLE damap.project
         REFERENCES damap.funding (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
-        NOT VALID,
+        NOT VALID
 );
 
 ALTER TABLE damap.project
@@ -186,13 +186,20 @@ CREATE TABLE damap.dmp
     data_generation text,
     structure text,
     target_audience text,
+    tools text,
+    restricted_data_access text,
     personal_information boolean,
     sensitive_data boolean,
+    sensitive_data_security text,
     legal_restrictions boolean,
     ethical_issues_exist boolean,
     committee_approved boolean,
     ethics_report text,
-    optional_statement text,
+    ethical_compliance_statement text,
+    external_storage_info text,
+    restricted_access_info text,
+    closed_access_info text,
+    costs_exist boolean,
     PRIMARY KEY (id),
 	FOREIGN KEY (contact)
         REFERENCES damap.person (id) MATCH SIMPLE
@@ -224,6 +231,27 @@ CREATE TABLE damap.contributor_role
 
 ALTER TABLE damap.contributor_role
     OWNER to damap;
+
+insert into damap.contributor_role values ('DataCollector');
+insert into damap.contributor_role values ('DataCurator');
+insert into damap.contributor_role values ('DataManager');
+insert into damap.contributor_role values ('Distributor');
+insert into damap.contributor_role values ('Editor');
+insert into damap.contributor_role values ('HostingInstitution');
+insert into damap.contributor_role values ('Producer');
+insert into damap.contributor_role values ('ProjectLeader');
+insert into damap.contributor_role values ('ProjectManager');
+insert into damap.contributor_role values ('ProjectMember');
+insert into damap.contributor_role values ('RegistrationAgency');
+insert into damap.contributor_role values ('RegistrationAuthority');
+insert into damap.contributor_role values ('RelatedPerson');
+insert into damap.contributor_role values ('Researcher');
+insert into damap.contributor_role values ('ResearchGroup');
+insert into damap.contributor_role values ('RightsHolder');
+insert into damap.contributor_role values ('Sponsor');
+insert into damap.contributor_role values ('Supervisor');
+insert into damap.contributor_role values ('WorkPackageLeader');
+insert into damap.contributor_role values ('Other');
 
 --------------------------------------------------------------
 
@@ -257,14 +285,66 @@ ALTER TABLE damap.contributor
 
 --------------------------------------------------------------
 
+CREATE TABLE damap.cost_type
+(
+    type text NOT NULL,
+    PRIMARY KEY (type)
+);
+
+ALTER TABLE damap.cost_type
+    OWNER to damap;
+
+insert into damap.cost_type values ('dataAcquisition');
+insert into damap.cost_type values ('database');
+insert into damap.cost_type values ('filebasedStorage');
+insert into damap.cost_type values ('hardwareAndInfrastructure');
+insert into damap.cost_type values ('legalAdvice');
+insert into damap.cost_type values ('personnel');
+insert into damap.cost_type values ('repository');
+insert into damap.cost_type values ('sofwareLicense');
+insert into damap.cost_type values ('training');
+insert into damap.cost_type values ('other');
+
+--------------------------------------------------------------
+
+CREATE TABLE damap.cost
+(
+    id bigint NOT NULL,
+	version integer NOT NULL,
+    dmp_id bigint,
+    title text,
+    value bigint,
+    currency_code text,
+    description text,
+    cost_type text,
+    custom_type text,
+    PRIMARY KEY (id),
+    FOREIGN KEY (dmp_id)
+        REFERENCES damap.dmp (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    FOREIGN KEY (cost_type)
+         REFERENCES damap.cost_type (type) MATCH SIMPLE
+         ON UPDATE NO ACTION
+         ON DELETE NO ACTION
+         NOT VALID
+);
+
+ALTER TABLE damap.cost
+    OWNER to damap;
+
+--------------------------------------------------------------
+
 CREATE TABLE damap.host
 (
     id bigint NOT NULL,
 	version integer NOT NULL,
 	host_id text,
     dmp_id bigint,
-    name text,
-    date date,
+    title text,
+    retrieval_date date,
+    discriminator text,
     PRIMARY KEY (id),
     FOREIGN KEY (dmp_id)
         REFERENCES damap.dmp (id) MATCH SIMPLE
@@ -278,6 +358,78 @@ ALTER TABLE damap.host
 
 --------------------------------------------------------------
 
+CREATE TABLE damap.external_storage
+(
+    id bigint NOT NULL,
+	url text,
+	backup_frequency text,
+	storage_location text,
+	backup_location text,
+    PRIMARY KEY (id),
+    FOREIGN KEY (id)
+        REFERENCES damap.host (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+);
+
+ALTER TABLE damap.external_storage
+    OWNER to damap;
+
+--------------------------------------------------------------
+
+CREATE TABLE damap.repository
+(
+    id bigint NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (id)
+        REFERENCES damap.host (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+);
+
+ALTER TABLE damap.repository
+    OWNER to damap;
+
+--------------------------------------------------------------
+
+CREATE TABLE damap.storage
+(
+    id bigint NOT NULL,
+	url text,
+	backup_frequency text,
+	storage_location text,
+	backup_location text,
+    PRIMARY KEY (id),
+    FOREIGN KEY (id)
+        REFERENCES damap.host (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+);
+
+ALTER TABLE damap.storage
+    OWNER to damap;
+
+--------------------------------------------------------------
+
+CREATE TABLE damap.data_access
+(
+    access_type text NOT NULL,
+    PRIMARY KEY (access_type)
+);
+
+ALTER TABLE damap.data_access
+    OWNER to damap;
+
+
+insert into damap.data_access values ('open');
+insert into damap.data_access values ('restricted');
+insert into damap.data_access values ('closed');
+
+--------------------------------------------------------------
+
 CREATE TABLE damap.dataset
 (
     id bigint NOT NULL,
@@ -286,12 +438,13 @@ CREATE TABLE damap.dataset
 	host_id bigint,
     title text,
     type text,
-    size text,
-    comment text,
+    data_size text,
+    dataset_comment text,
     publish boolean,
     license text,
-    start date,
+    start_date date,
     reference_hash text,
+    data_access text,
     PRIMARY KEY (id),
     FOREIGN KEY (dmp_id)
         REFERENCES damap.dmp (id) MATCH SIMPLE
@@ -302,7 +455,12 @@ CREATE TABLE damap.dataset
         REFERENCES damap.host (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
-        NOT VALID
+        NOT VALID,
+    FOREIGN KEY (data_access)
+         REFERENCES damap.data_access (access_type) MATCH SIMPLE
+         ON UPDATE NO ACTION
+         ON DELETE NO ACTION
+         NOT VALID
 );
 
 ALTER TABLE damap.dataset
@@ -334,8 +492,8 @@ CREATE TABLE damap.administration
 	version integer NOT NULL,
     university_id text,
     role text,
-    start date,
-    until date,
+    start_date date,
+    until_date date,
     PRIMARY KEY (id),
     FOREIGN KEY (role)
         REFERENCES damap.function_role (role) MATCH SIMPLE
@@ -349,7 +507,7 @@ ALTER TABLE damap.administration
 
 --------------------------------------------------------------
 
-CREATE TABLE damap.access
+CREATE TABLE damap.access_management
 (
     id bigint NOT NULL,
 	version integer NOT NULL,
@@ -357,8 +515,8 @@ CREATE TABLE damap.access
     university_id text,
     identifier_id bigint,
     role text,
-    start date,
-    until date,
+    start_date date,
+    until_date date,
     PRIMARY KEY (id),
     FOREIGN KEY (dmp_id)
         REFERENCES damap.dmp (id) MATCH SIMPLE
@@ -377,7 +535,7 @@ CREATE TABLE damap.access
         NOT VALID
 );
 
-ALTER TABLE damap.access
+ALTER TABLE damap.access_management
     OWNER to damap;
 
 

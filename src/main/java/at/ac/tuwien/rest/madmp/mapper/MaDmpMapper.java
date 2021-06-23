@@ -76,7 +76,8 @@ public class MaDmpMapper {
 
     public static void mapEntityToMaDmp(Identifier identifier, MaDmpIdentifier maDmpIdentifier) {
         maDmpIdentifier.setIdentifier(identifier.getIdentifier());
-        maDmpIdentifier.setIdentifierType(identifier.getIdentifierType());
+        if (identifier.getIdentifierType() != null)
+            maDmpIdentifier.setIdentifierType(identifier.getIdentifierType().toString());
     }
 
     public static void mapEntityToMaDmp(Project project, MaDmpProject maDmpProject) {
@@ -95,7 +96,8 @@ public class MaDmpMapper {
     }
 
     public static void mapEntityToMaDmp(Funding funding, MaDmpFunding maDmpFunding) {
-        maDmpFunding.setFunding_status(funding.getFundingStatus());
+        if (funding.getFundingStatus() != null)
+            maDmpFunding.setFunding_status(funding.getFundingStatus().toString());
 
         if (funding.getFunderIdentifier() != null) {
             MaDmpIdentifier maDmpIdentifier = new MaDmpIdentifier();
@@ -121,9 +123,14 @@ public class MaDmpMapper {
     }
 
     public static void mapEntityToMaDmp(Dataset dataset, MaDmpDistribution maDmpDistribution) {
-        maDmpDistribution.setLicense(dataset.getLicense());
         maDmpDistribution.setByte_size(dataset.getSize());
 
+        if (dataset.getLicense() != null) {
+            MaDmpLicense maDmpLicense = new MaDmpLicense();
+            //TODO map to license object should include license date
+            maDmpLicense.setLicense_ref(dataset.getLicense());
+            maDmpDistribution.setLicense(maDmpLicense);
+        }
         if (dataset.getHost() != null) {
             MaDmpHost maDmpHost = new MaDmpHost();
             mapEntityToMaDmp(dataset.getHost(), maDmpHost);

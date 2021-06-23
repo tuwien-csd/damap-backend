@@ -14,4 +14,6 @@ public class MaDmpContributor extends MaDmpPerson{
 
     private MaDmpIdentifier contributor_id;
     private List<EContributorRole> role;
+    private String mbox;
+    private String name;
 }

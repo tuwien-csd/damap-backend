@@ -4,15 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * Damap compatible representation of persons
- */
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ContributorDO {
+public class StorageDO extends HostDO {
 
-    private Long id;
-    private String role;
-    private PersonDO person;
+    private String url;
+    private String backupFrequency;
+    private String storageLocation;
+    private String backupLocation;
 }

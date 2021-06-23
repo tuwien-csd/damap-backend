@@ -10,4 +10,8 @@ import lombok.Setter;
 public class MaDmpContact extends MaDmpPerson {
 
     private MaDmpIdentifier contact_id;
+
+    private String mbox;
+    private String name;
+
 }

@@ -7,15 +7,15 @@ import java.util.List;
 
 public enum EIdentifierType {
 
-    ORCID("ORCID"),
-    ISNI("ISNI"),
-    OPENID("OPENID"),
-    OTHER("OTHER"),
-    HANDLE("HANDLE"),
-    DOI("DOI"),
-    ARK("ARK"),
-    URL("URL"),
-    FUNDREF("FUNDREF");
+    ORCID("orcid"),
+    ISNI("isni"),
+    OPENID("openid"),
+    OTHER("other"),
+    HANDLE("handle"),
+    DOI("doi"),
+    ARK("ark"),
+    URL("url"),
+    FUNDREF("fundref");
 
     private final String type;
 

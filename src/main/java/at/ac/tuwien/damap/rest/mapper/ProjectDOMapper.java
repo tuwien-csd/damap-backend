@@ -10,6 +10,7 @@ import at.ac.tuwien.damap.rest.domain.ProjectDO;
 public class ProjectDOMapper {
 
     public static void mapEntityToDO(Project project, ProjectDO projectDO) {
+        projectDO.setId(project.id);
         projectDO.setTitle(project.getTitle());
         projectDO.setDescription(project.getDescription());
         projectDO.setStart(project.getStart());
@@ -23,6 +24,7 @@ public class ProjectDOMapper {
     }
 
     public static void mapEntityToDO(Funding funding, FundingDO fundingDO) {
+        fundingDO.setId(funding.id);
         fundingDO.setFunding_status(funding.getFundingStatus());
 
         if (funding.getFunderIdentifier() != null) {
@@ -40,7 +42,8 @@ public class ProjectDOMapper {
 
 
     public static void mapDOtoEntity(ProjectDO projectDO, Project project){
-
+        if (projectDO.getId() != null)
+            project.id = projectDO.getId();
         project.setTitle(projectDO.getTitle());
         project.setDescription(projectDO.getDescription());
         project.setStart(projectDO.getStart());
@@ -57,6 +60,8 @@ public class ProjectDOMapper {
     }
 
     public static void mapDOtoEntity(FundingDO fundingDO, Funding funding) {
+        if (fundingDO.getId() != null)
+            funding.id = fundingDO.getId();
         funding.setFundingStatus(fundingDO.getFunding_status());
 
         if (fundingDO.getFunder_id() != null) {
