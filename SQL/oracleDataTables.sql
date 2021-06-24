@@ -128,7 +128,9 @@ CREATE TABLE damap.dmp
     target_audience VARCHAR2(4000 CHAR),
     tools VARCHAR2(4000 CHAR),
     restricted_data_access VARCHAR2(4000 CHAR),
-    personal_information NUMBER(1,0),
+    personal_data NUMBER(1,0),
+    personal_data_access VARCHAR2(4000 CHAR),
+    other_personal_data_compliance VARCHAR2(4000 CHAR),
     sensitive_data NUMBER(1,0),
     sensitive_data_security VARCHAR2(4000 CHAR),
     legal_restrictions NUMBER(1,0),
@@ -313,7 +315,9 @@ CREATE TABLE damap.dataset
     type VARCHAR2(255 CHAR),
     data_size VARCHAR2(255 CHAR),
     dataset_comment VARCHAR2(4000 CHAR),
-    publish NUMBER(1,0),
+    personal_data NUMBER(1,0),
+    sensitive_data NUMBER(1,0),
+    legal_restrictions NUMBER(1,0),
     license VARCHAR2(4000 CHAR),
     start_date DATE,
     reference_hash VARCHAR2(255 CHAR),
@@ -325,6 +329,33 @@ CREATE TABLE damap.dataset
         REFERENCES damap.host (id),
     FOREIGN KEY (data_access)
         REFERENCES damap.data_access (access_type)
+);
+
+--------------------------------------------------------------
+
+CREATE TABLE damap.compliance_type
+(
+    type VARCHAR2(255 CHAR) NOT NULL,
+    PRIMARY KEY (type)
+);
+
+insert into damap.compliance_type values ('informedConsent');
+insert into damap.compliance_type values ('encryption');
+insert into damap.compliance_type values ('anonymisation');
+insert into damap.compliance_type values ('pseudonymisation');
+insert into damap.compliance_type values ('other');
+
+--------------------------------------------------------------
+
+CREATE TABLE damap.personal_data_compliance_list
+(
+    dmp_id NUMBER(19,0) NOT NULL,
+    compliance_type VARCHAR2(255 CHAR),
+    PRIMARY KEY (dmp_id, compliance_type),
+    FOREIGN KEY (dmp_id)
+        REFERENCES damap.dmp (id),
+    FOREIGN KEY (compliance_type)
+        REFERENCES damap.compliance_type (type)
 );
 
 --------------------------------------------------------------

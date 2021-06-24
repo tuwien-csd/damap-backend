@@ -17,7 +17,9 @@ public class DatasetDO {
     private String type;
     private String size;
     private String comment;
-    private boolean publish;
+    private Boolean personalData;
+    private Boolean sensitiveData;
+    private Boolean legalRestrictions;
     private String license;
     @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private Date startDate;
