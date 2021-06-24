@@ -33,8 +33,10 @@ public class DocumentConversionService {
 
         Dmp dmp = dmpRepo.findById(dmpId);
 
-        String template = "..\\src\\template\\template.docx";
-        XWPFDocument document = new XWPFDocument(Files.newInputStream(Paths.get(template)));
+        String template = "template/template.docx";
+        ClassLoader classLoader = getClass().getClassLoader();
+
+        XWPFDocument document = new XWPFDocument(classLoader.getResourceAsStream(template));
 
         //mapping general information
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
