@@ -12,7 +12,9 @@ public class DatasetDOMapper {
         datasetDO.setType(dataset.getType());
         datasetDO.setSize(dataset.getSize());
         datasetDO.setComment(dataset.getComment());
-        datasetDO.setPublish(dataset.isPublish());
+        datasetDO.setPersonalData(dataset.getPersonalData());
+        datasetDO.setSensitiveData(dataset.getSensitiveData());
+        datasetDO.setLegalRestrictions(dataset.getLegalRestrictions());
         datasetDO.setLicense(dataset.getLicense());
         datasetDO.setStartDate(dataset.getStart());
         datasetDO.setReferenceHash(dataset.getReferenceHash());
@@ -27,7 +29,9 @@ public class DatasetDOMapper {
         dataset.setType(datasetDO.getType());
         dataset.setSize(datasetDO.getSize());
         dataset.setComment(datasetDO.getComment());
-        dataset.setPublish(datasetDO.isPublish());
+        dataset.setPersonalData(datasetDO.getPersonalData());
+        dataset.setSensitiveData(datasetDO.getSensitiveData());
+        dataset.setLegalRestrictions(datasetDO.getLegalRestrictions());
         dataset.setLicense(datasetDO.getLicense());
         dataset.setStart(datasetDO.getStartDate());
         dataset.setReferenceHash(datasetDO.getReferenceHash());
