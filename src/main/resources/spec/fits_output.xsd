@@ -37,11 +37,11 @@
     </xs:attributeGroup>
     <!-- FITS Metadata type -->
     <xs:complexType name="fitsMetadataType">
-        <xs:complexContent>
-            <xs:extension base="xs:anyType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
                 <xs:attributeGroup ref="nameVersionStatusAttrGrp"/>
             </xs:extension>
-        </xs:complexContent>
+        </xs:simpleContent>
     </xs:complexType>
     <!-- Statistics elements -->
     <xs:complexType name="statisticsType">

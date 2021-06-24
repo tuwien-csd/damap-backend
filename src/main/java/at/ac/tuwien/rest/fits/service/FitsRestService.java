@@ -1,7 +1,7 @@
 package at.ac.tuwien.rest.fits.service;
 
 import at.ac.tuwien.rest.fits.dto.MultipartBodyDTO;
-import at.ac.tuwien.rest.fits.dto.generated.Fits;
+import edu.harvard.fits.Fits;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 

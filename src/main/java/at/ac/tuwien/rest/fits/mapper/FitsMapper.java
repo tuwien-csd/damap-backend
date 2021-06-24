@@ -1,9 +1,9 @@
 package at.ac.tuwien.rest.fits.mapper;
 
 import at.ac.tuwien.damap.domain.Dataset;
-import at.ac.tuwien.rest.fits.dto.generated.Fits;
-import at.ac.tuwien.rest.fits.dto.generated.FitsMetadataType;
-import at.ac.tuwien.rest.fits.dto.generated.IdentificationType;
+import edu.harvard.fits.Fits;
+import edu.harvard.fits.FitsMetadataType;
+import edu.harvard.fits.IdentificationType;
 
 import javax.xml.bind.JAXBElement;
 import java.util.Optional;
