@@ -1,7 +1,8 @@
 package at.ac.tuwien.conversion;
 
-import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.text.SimpleDateFormat;
 
@@ -32,11 +33,8 @@ public class DocumentConversionService {
 
         Dmp dmp = dmpRepo.findById(dmpId);
 
-        String template = "template.docx";
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(Objects.requireNonNull(classLoader.getResource(template)).getFile());
-
-        XWPFDocument document = new XWPFDocument(Files.newInputStream(file.toPath()));
+        String template = "..\\src\\template\\template.docx";
+        XWPFDocument document = new XWPFDocument(Files.newInputStream(Paths.get(template)));
 
         //mapping general information
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
