@@ -123,9 +123,14 @@ public class MaDmpMapper {
     }
 
     public static void mapEntityToMaDmp(Dataset dataset, MaDmpDistribution maDmpDistribution) {
-        maDmpDistribution.setLicense(dataset.getLicense());
         maDmpDistribution.setByte_size(dataset.getSize());
 
+        if (dataset.getLicense() != null) {
+            MaDmpLicense maDmpLicense = new MaDmpLicense();
+            //TODO map to license object should include license date
+            maDmpLicense.setLicense_ref(dataset.getLicense());
+            maDmpDistribution.setLicense(maDmpLicense);
+        }
         if (dataset.getHost() != null) {
             MaDmpHost maDmpHost = new MaDmpHost();
             mapEntityToMaDmp(dataset.getHost(), maDmpHost);

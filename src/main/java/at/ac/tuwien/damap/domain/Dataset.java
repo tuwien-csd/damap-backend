@@ -43,7 +43,14 @@ public class Dataset extends PanacheEntity {
     @Column(name = "dataset_comment")
     private String comment;
 
-    private boolean publish;
+    @Column(name = "personal_data")
+    private Boolean personalData;
+
+    @Column(name = "sensitive_data")
+    private Boolean sensitiveData;
+
+    @Column(name = "legal_restrictions")
+    private Boolean legalRestrictions;
 
     private String license;
 
