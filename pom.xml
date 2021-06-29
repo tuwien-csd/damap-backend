@@ -46,6 +46,10 @@
     </dependency>
     <!-- Rest -->
     <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-multipart-provider</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy</artifactId>
     </dependency>
@@ -143,6 +147,7 @@
         </executions>
         <configuration>
           <sources>
+            <source>src/main/resources/spec/fits_output.xsd</source>
             <source>src/main/resources/spec/re3dataV3-0.xsd</source>
             <source>src/main/resources/spec/re3dataV2-2.xsd</source>
             <source>src/main/resources/spec/re3data_index_V1-0.xsd</source>
