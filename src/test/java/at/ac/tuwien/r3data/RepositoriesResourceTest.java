@@ -4,7 +4,6 @@ import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusTest
 public class RepositoriesResourceTest {
@@ -12,9 +11,25 @@ public class RepositoriesResourceTest {
     @Test
     public void testRepositoriesEndpoint() {
         given()
-          .when().get("/repositories")
-          .then()
-             .statusCode(401);
+                .when().get("/repositories")
+                .then()
+                .statusCode(401);
+    }
+
+    @Test
+    public void testRepositoryByIdEndpoint() {
+        given()
+                .when().get("/repositories/1")
+                .then()
+                .statusCode(401);
+    }
+
+    @Test
+    public void testRepositoriesSearchEndpoint() {
+        given()
+                .when().get("/repositories/search?pidSystems=DOI")
+                .then()
+                .statusCode(401);
     }
 
 }
