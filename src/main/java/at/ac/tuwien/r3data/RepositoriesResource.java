@@ -1,10 +1,9 @@
 package at.ac.tuwien.r3data;
 
 import generated.Repository;
+import lombok.extern.jbosslog.JBossLog;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.re3data.schema._2_2.Re3Data;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -17,12 +16,11 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
+@JBossLog
 @Path("/repositories")
 @RolesAllowed("user")
 @Produces(MediaType.APPLICATION_JSON)
 public class RepositoriesResource {
-
-    private static final Logger log = LoggerFactory.getLogger(RepositoriesResource.class);
 
     @Inject
     RepositoriesService repositoriesService;
@@ -36,14 +34,14 @@ public class RepositoriesResource {
     @GET
     @Path("/{id}")
     public Re3Data getById(@PathParam String id) {
-        log.info("Get repository with id: {}", id);
+        log.info("Get repository with id: " + id);
         return repositoriesService.getById(id);
     }
 
     @GET
     @Path("/search")
     public List<Repository> search(@Context UriInfo uriInfo) {
-        log.info("Search repositories: {}", uriInfo.getQueryParameters());
+        log.info("Search repositories: " + uriInfo.getQueryParameters());
         MultivaluedMap<String, String> params = uriInfo.getQueryParameters();
         return repositoriesService.search(params);
     }
