@@ -1,0 +1,49 @@
+quarkus:
+  http:
+    cors:
+      ~: true
+      origins: ${DAMAP_ORIGINS}
+      headers: origin,content-type,accept,authorization
+      access-control-max-age: 1
+
+  oidc: 
+    auth-server-url: ${DAMAP_AUTH_URL}
+    client-id: ${DAMAP_CLIENT_ID}
+
+  datasource:
+    jdbc:
+      min-size: 4
+      max-size: 16
+      url: ${DAMAP_DB_URL}
+    db-kind: postgresql
+    username: ${DAMAP_DB_USERNAME}
+    password: ${DAMAP_DB_PASSWORD}
+
+  hibernate-orm:
+    database:
+      generation: none
+    sql-load-script: no-file
+
+at:
+  ac:
+    tuwien:
+      r3data:
+        RepositoriesRemoteResource/mp-rest/url: https://www.re3data.org/api
+        RepositoriesRemoteResource/mp-rest/scope: javax.inject.Singleton
+      rest:
+        projectdatabase.service.ProjectDatabaseRestService/mp-rest/url :  ${ORG_API_URL}
+        addressbook.service.AddressBookRestService/mp-rest/url :  ${ORG_API_URL}
+        fits.service.FitsRestService/mp-rest/url :  ${DAMAP_FITS_URL}
+
+"%dev":
+
+"%oracle":
+
+"%test":
+
+"%staging":
+  quarkus:
+    datasource:
+      db-kind: oracle
+
+# QUARKUS_DATASOURCE_DB_KIND=oracle
