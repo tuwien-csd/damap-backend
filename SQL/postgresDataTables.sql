@@ -194,6 +194,7 @@ CREATE TABLE damap.dmp
     sensitive_data boolean,
     sensitive_data_security text,
     legal_restrictions boolean,
+    legal_restrictions_comment text,
     ethical_issues_exist boolean,
     committee_approved boolean,
     ethics_report text,
