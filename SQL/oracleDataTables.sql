@@ -310,7 +310,6 @@ CREATE TABLE damap.dataset
     id NUMBER(19,0) NOT NULL,
     version NUMBER(10,0) NOT NULL,
     dmp_id NUMBER(19,0),
-    host_id NUMBER(19,0),
     title VARCHAR2(255 CHAR),
     type VARCHAR2(255 CHAR),
     data_size VARCHAR2(255 CHAR),
@@ -325,8 +324,6 @@ CREATE TABLE damap.dataset
     PRIMARY KEY (id),
     FOREIGN KEY (dmp_id)
         REFERENCES damap.dmp (id),
-    FOREIGN KEY (host_id)
-        REFERENCES damap.host (id),
     FOREIGN KEY (data_access)
         REFERENCES damap.data_access (access_type)
 );
@@ -407,6 +404,21 @@ CREATE TABLE damap.access_management
         REFERENCES damap.identifier (id),
     FOREIGN KEY (role)
         REFERENCES damap.function_role (role)
+);
+
+--------------------------------------------------------------
+
+CREATE TABLE damap.distribution
+(
+    id         NUMBER(19,0) NOT NULL,
+    version    NUMBER(10,0) NOT NULL,
+    dataset_id NUMBER(19,0),
+    host_id    NUMBER(19,0),
+    PRIMARY KEY (id),
+    FOREIGN KEY (dataset_id)
+        REFERENCES damap.dataset (id),
+    FOREIGN KEY (host_id)
+        REFERENCES damap.host (id)
 );
 
 --------------------------------------------------------------
