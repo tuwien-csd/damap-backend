@@ -39,6 +39,7 @@ public class DmpDO {
     private Boolean sensitiveData;
     private String sensitiveDataSecurity;
     private Boolean legalRestrictions;
+    private String legalRestrictionsComment;
     private Boolean ethicalIssuesExist;
     private Boolean committeeApproved;
     private String ethicsReport;
