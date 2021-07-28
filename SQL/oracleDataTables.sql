@@ -134,6 +134,7 @@ CREATE TABLE damap.dmp
     sensitive_data NUMBER(1,0),
     sensitive_data_security VARCHAR2(4000 CHAR),
     legal_restrictions NUMBER(1,0),
+    legal_restrictions_comment VARCHAR2(4000 CHAR),
     ethical_issues_exist NUMBER(1,0),
     committee_approved NUMBER(1,0),
     ethics_report VARCHAR2(4000 CHAR),
