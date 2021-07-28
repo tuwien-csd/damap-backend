@@ -18,7 +18,7 @@ public class ProjectResource {
     private static final Logger log = LoggerFactory.getLogger(ProjectResource.class);
 
     @Inject
-    private ProjectDatabaseService projectDatabaseService;
+    ProjectDatabaseService projectDatabaseService;
 
     @GET
     @Path("/suggest-projects/{personId}")

@@ -2,11 +2,9 @@ package at.ac.tuwien.rest.projectdatabase.dto;
 
 import at.ac.tuwien.damap.enums.EFundingState;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FundingDTO {
 
