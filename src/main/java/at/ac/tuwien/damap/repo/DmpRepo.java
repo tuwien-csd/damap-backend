@@ -10,6 +10,6 @@ import java.util.List;
 public class DmpRepo implements PanacheRepository<Dmp> {
 
     public List<Dmp> getAll() {
-        return find("select dmp from Dmp dmp").list();
+        return listAll();
     }
 }
