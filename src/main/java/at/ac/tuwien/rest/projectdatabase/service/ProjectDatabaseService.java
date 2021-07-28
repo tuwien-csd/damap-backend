@@ -25,11 +25,11 @@ public class ProjectDatabaseService {
 
     @Inject
     @RestClient
-    private AddressBookRestService addressBookRestService;
+    AddressBookRestService addressBookRestService;
 
     @Inject
     @RestClient
-    private ProjectDatabaseRestService projectDatabaseRestService;
+    ProjectDatabaseRestService projectDatabaseRestService;
 
     /*
         returns a list of projects lead by "personId"
