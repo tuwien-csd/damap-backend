@@ -1,14 +1,12 @@
 package at.ac.tuwien.rest.addressbook.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.json.bind.annotation.JsonbProperty;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PersonDTO {
 
