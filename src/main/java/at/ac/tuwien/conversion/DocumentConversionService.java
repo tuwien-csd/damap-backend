@@ -45,7 +45,8 @@ public class DocumentConversionService {
                 map.put("[startdate]", formatter.format(dmp.getProject().getStart()));
             if (dmp.getProject().getEnd() != null)
                 map.put("[enddate]", formatter.format(dmp.getProject().getEnd()));
-            if (dmp.getProject().getFunding().getGrantIdentifier() != null)
+            if (dmp.getProject().getFunding().getGrantIdentifier() != null &&
+                dmp.getProject().getFunding().getGrantIdentifier().getIdentifier() != null)
                 map.put("[grantid]", dmp.getProject().getFunding().getGrantIdentifier().getIdentifier());
         }
 
