@@ -10,6 +10,6 @@ import java.util.List;
 public class IdentifierRepo implements PanacheRepository<Identifier> {
 
     public List<Identifier> getAll() {
-        return find("select identifier from Identifier identifier").list();
+        return listAll();
     }
 }
