@@ -3,11 +3,13 @@ package at.ac.tuwien.damap.rest.mapper;
 import at.ac.tuwien.damap.domain.*;
 import at.ac.tuwien.damap.enums.EComplianceType;
 import at.ac.tuwien.damap.rest.domain.*;
+import lombok.extern.jbosslog.JBossLog;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@JBossLog
 public class DmpDOMapper {
 
     public static void mapEntityToDO(Dmp dmp, DmpDO dmpDO) {
@@ -99,8 +101,8 @@ public class DmpDOMapper {
 
             //add frontend referenceHash list to host
             List<String> referenceHashList = new ArrayList<>();
-            host.getDatasetList().forEach(dataset -> {
-                referenceHashList.add(dataset.getReferenceHash());
+            host.getDistributionList().forEach(distribution -> {
+                referenceHashList.add(distribution.getDataset().getReferenceHash());
             });
             if (!referenceHashList.isEmpty())
                 hostDO.setDatasets(referenceHashList);
@@ -225,7 +227,6 @@ public class DmpDOMapper {
             if (datasetOptional.isPresent()) {
                 Dataset dataset = datasetOptional.get();
                 DatasetDOMapper.mapDOtoEntity(datasetDO, dataset);
-                dataset.setHost(null);
             } else {
                 Dataset dataset = new Dataset();
                 DatasetDOMapper.mapDOtoEntity(datasetDO, dataset);
@@ -285,15 +286,7 @@ public class DmpDOMapper {
                 host.setDmp(dmp);
                 hostList.add(host);
             }
-
-            //convert datasetHash to id references from datasdet to hosts
-            if (hostDO.getDatasets() != null) {
-                dmp.getDatasetList().forEach(dataset -> {
-                    if (hostDO.getDatasets().contains(dataset.getReferenceHash())) {
-                        dataset.setHost(host);
-                    }
-                });
-            }
+            determineDistributions(dmp, hostDO, host);
         });
 
         //create Storage objects
@@ -313,14 +306,7 @@ public class DmpDOMapper {
                 host.setDmp(dmp);
                 hostList.add(host);
             }
-            //convert datasetHash to id references from datasdet to hosts
-            if (hostDO.getDatasets() != null) {
-                dmp.getDatasetList().forEach(dataset -> {
-                    if (hostDO.getDatasets().contains(dataset.getReferenceHash())) {
-                        dataset.setHost(host);
-                    }
-                });
-            }
+            determineDistributions(dmp, hostDO, host);
         });
 
         //create ExternalStorage
@@ -341,14 +327,7 @@ public class DmpDOMapper {
                 host.setHostId(String.valueOf(System.currentTimeMillis()) + Math.random());
                 hostList.add(host);
             }
-            //convert datasetHash to id references from datasdet to hosts
-            if (hostDO.getDatasets() != null) {
-                dmp.getDatasetList().forEach(dataset -> {
-                    if (hostDO.getDatasets().contains(dataset.getReferenceHash())) {
-                        dataset.setHost(host);
-                    }
-                });
-            }
+            determineDistributions(dmp, hostDO, host);
         });
 
 
@@ -378,5 +357,31 @@ public class DmpDOMapper {
                 costList.add(cost);
             }
         });
+    }
+
+    private static void determineDistributions(Dmp dmp, HostDO hostDO, Host host) {
+        //convert datasetHash to id references from dataset to hosts
+        if (hostDO.getDatasets() != null) {
+            List<Distribution> distributionList = host.getDistributionList();
+            List<Distribution> distributionUpdatedList = new ArrayList<>();
+
+            dmp.getDatasetList().forEach(dataset -> {
+                if (hostDO.getDatasets().contains(dataset.getReferenceHash())) {
+                    Distribution distribution = new Distribution();
+                    distribution.setHost(host);
+                    distribution.setDataset(dataset);
+
+                    if (!distributionList.contains(distribution))
+                        distributionList.add(distribution);
+                    distributionUpdatedList.add(distribution);
+                }
+            });
+            List<Distribution> distributionRemoveList = new ArrayList<>();
+            distributionList.forEach(distribution -> {
+                if (!distributionUpdatedList.contains(distribution))
+                    distributionRemoveList.add(distribution);
+            });
+            distributionList.removeAll(distributionRemoveList);
+        }
     }
 }

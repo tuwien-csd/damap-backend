@@ -6,11 +6,8 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.text.SimpleDateFormat;
 
-import at.ac.tuwien.damap.domain.Cost;
-import at.ac.tuwien.damap.domain.Dataset;
-import at.ac.tuwien.damap.domain.Dmp;
+import at.ac.tuwien.damap.domain.*;
 import at.ac.tuwien.damap.repo.DmpRepo;
-import at.ac.tuwien.damap.domain.Contributor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
@@ -106,7 +103,10 @@ public class DocumentConversionService {
             map.put("[contributors]", "");
         }
 
-        //mapping dataset information
+        //TODO datasets and hosts are now connected by Distribution objects
+        // the following table (5a) should only list datasets with distributions on a repository for long term storage
+        // (each distribution should be listed, therefore there can be multiple entries for the same dataset)
+        //mapping dataset information to published data table (5a) (only datasets with distributions on repositories)
         List<Dataset> datasets = dmp.getDatasetList();
         for (Dataset dataset : datasets) {
             int idx = datasets.indexOf(dataset) + 1;
@@ -139,8 +139,9 @@ public class DocumentConversionService {
                 datasetLicense = dataset.getLicense();
             if (dataset.getStart() != null)
                 datasetPubdate = formatter.format(dataset.getStart());
-            if (dataset.getHost() != null)
-                datasetRepo = dataset.getHost().getTitle();
+            //TODO datasets and hosts are now connected by Distribution objects
+//            if (dataset.getHost() != null)
+//                datasetRepo = dataset.getHost().getTitle();
             if (dataset.getDataAccess() != null)
                 datasetAccess = dataset.getDataAccess().toString();
 
@@ -270,12 +271,13 @@ public class DocumentConversionService {
                         else {
                             docVar.add("");
                         }
-                        if (datasets.get(i - 1).getHost() != null) {
-                            docVar.add(datasets.get(i - 1).getHost().getTitle());
-                        }
-                        else {
+                        //TODO datasets and hosts are now connected by Distribution objects
+//                        if (datasets.get(i - 1).getHost() != null) {
+//                            docVar.add(datasets.get(i - 1).getHost().getTitle());
+//                        }
+//                        else {
                             docVar.add("");
-                        }
+//                        }
                         docVar.add("");
                         if (datasets.get(i - 1).getLicense() != null) {
                             docVar.add(datasets.get(i - 1).getLicense());

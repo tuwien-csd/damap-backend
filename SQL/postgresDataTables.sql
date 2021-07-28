@@ -438,7 +438,6 @@ CREATE TABLE damap.dataset
     id bigint NOT NULL,
 	version integer NOT NULL,
 	dmp_id bigint,
-	host_id bigint,
     title text,
     type text,
     data_size text,
@@ -453,11 +452,6 @@ CREATE TABLE damap.dataset
     PRIMARY KEY (id),
     FOREIGN KEY (dmp_id)
         REFERENCES damap.dmp (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
-        NOT VALID,
-	FOREIGN KEY (host_id)
-        REFERENCES damap.host (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
         NOT VALID,
@@ -579,6 +573,31 @@ CREATE TABLE damap.access_management
 );
 
 ALTER TABLE damap.access_management
+    OWNER to damap;
+
+
+--------------------------------------------------------------
+
+CREATE TABLE damap.distribution
+(
+    id bigint NOT NULL,
+	version integer NOT NULL,
+	dataset_id bigint,
+	host_id bigint,
+    PRIMARY KEY (id),
+    FOREIGN KEY (dataset_id)
+        REFERENCES damap.dataset (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+	FOREIGN KEY (host_id)
+        REFERENCES damap.host (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+);
+
+ALTER TABLE damap.distribution
     OWNER to damap;
 
 
