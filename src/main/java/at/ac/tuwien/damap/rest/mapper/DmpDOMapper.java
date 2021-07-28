@@ -43,6 +43,7 @@ public class DmpDOMapper {
         dmpDO.setSensitiveData(dmp.getSensitiveData());
         dmpDO.setSensitiveDataSecurity(dmp.getSensitiveDataSecurity());
         dmpDO.setLegalRestrictions(dmp.getLegalRestrictions());
+        dmpDO.setLegalRestrictionsComment(dmp.getLegalRestrictionsComment());
         dmpDO.setEthicalIssuesExist(dmp.getEthicalIssuesExist());
         dmpDO.setCommitteeApproved(dmp.getCommitteeApproved());
         dmpDO.setEthicsReport(dmp.getEthicsReport());
@@ -157,6 +158,7 @@ public class DmpDOMapper {
         dmp.setSensitiveDataSecurity(dmpDO.getSensitiveDataSecurity());
         dmp.setSensitiveData(dmpDO.getSensitiveData());
         dmp.setLegalRestrictions(dmpDO.getLegalRestrictions());
+        dmp.setLegalRestrictionsComment(dmpDO.getLegalRestrictionsComment());
         dmp.setEthicalIssuesExist(dmpDO.getEthicalIssuesExist());
         dmp.setCommitteeApproved(dmpDO.getCommitteeApproved());
         dmp.setEthicsReport(dmpDO.getEthicsReport());
