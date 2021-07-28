@@ -117,12 +117,16 @@ public class MaDmpMapper {
         maDmpDataset.setDescription(dataset.getComment());
         maDmpDataset.setType(dataset.getType());
 
-        MaDmpDistribution maDmpDistribution = new MaDmpDistribution();
-        mapEntityToMaDmp(dataset, maDmpDistribution);
-        maDmpDataset.setDistribution(maDmpDistribution);
+        List<MaDmpDistribution> maDmpDistributionList = new ArrayList<>();
+        dataset.getDistributionList().forEach(distribution -> {
+            MaDmpDistribution maDmpDistribution = new MaDmpDistribution();
+            mapEntityToMaDmp(dataset, distribution, maDmpDistribution);
+            maDmpDistributionList.add(maDmpDistribution);
+        });
+        maDmpDataset.setDistribution(maDmpDistributionList);
     }
 
-    public static void mapEntityToMaDmp(Dataset dataset, MaDmpDistribution maDmpDistribution) {
+    public static void mapEntityToMaDmp(Dataset dataset, Distribution distribution, MaDmpDistribution maDmpDistribution) {
         maDmpDistribution.setByte_size(dataset.getSize());
 
         if (dataset.getLicense() != null) {
@@ -131,14 +135,14 @@ public class MaDmpMapper {
             maDmpLicense.setLicense_ref(dataset.getLicense());
             maDmpDistribution.setLicense(maDmpLicense);
         }
-        if (dataset.getHost() != null) {
+        if (distribution.getHost() != null) {
             MaDmpHost maDmpHost = new MaDmpHost();
-            mapEntityToMaDmp(dataset.getHost(), maDmpHost);
+            mapEntityToMaDmp(distribution.getHost(), maDmpHost);
             maDmpDistribution.setHost(maDmpHost);
         }
     }
 
     public static void mapEntityToMaDmp(Host host, MaDmpHost maDmpHost) {
-        maDmpHost.setTitle(maDmpHost.getTitle());
+        maDmpHost.setTitle(host.getTitle());
     }
 }

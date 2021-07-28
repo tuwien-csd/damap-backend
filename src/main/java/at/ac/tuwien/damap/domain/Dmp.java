@@ -88,6 +88,9 @@ public class Dmp extends PanacheEntity {
     @Column(name = "legal_restrictions")
     private Boolean legalRestrictions;
 
+    @Column(name = "legal_restrictions_comment")
+    private String legalRestrictionsComment;
+
     @Column(name = "ethical_issues_exist")
     private Boolean ethicalIssuesExist;
 
