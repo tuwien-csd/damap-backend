@@ -229,7 +229,12 @@ public class DocumentConversionService {
                         docVar.add(datasets.get(i - 1).getTitle());
                         docVar.add(datasets.get(i - 1).getType());
                         docVar.add("");
-                        docVar.add(format(Long.parseLong(datasets.get(i-1).getSize()))+"B");
+                        if (!datasets.get(i-1).getSize().equals("")) {
+                            docVar.add(format(Long.parseLong(datasets.get(i - 1).getSize())) + "B");
+                        }
+                        else {
+                            docVar.add("");
+                        }
                         docVar.add("");
 
                         List<XWPFTableCell> cells = newRow.getTableCells();
