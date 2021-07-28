@@ -8,7 +8,9 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true, exclude = "dmp")
@@ -26,12 +28,6 @@ public class Dataset extends PanacheEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dmp_id")
     private Dmp dmp;
-
-//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @JsonbTransient
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "host_id")
-    private Host host;
 
     private String title;
 
@@ -63,4 +59,7 @@ public class Dataset extends PanacheEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "data_access")
     private EDataAccessType dataAccess;
+
+    @OneToMany(mappedBy = "dataset", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    private List<Distribution> distributionList = new ArrayList<>();
 }

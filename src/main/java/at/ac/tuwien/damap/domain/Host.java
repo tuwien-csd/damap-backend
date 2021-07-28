@@ -12,8 +12,8 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-@EqualsAndHashCode(callSuper = true, exclude = {"dmp", "datasetList"})
-@ToString(exclude = {"dmp", "datasetList"})
+@EqualsAndHashCode(callSuper = true, exclude = {"dmp", "distributionList"})
+@ToString(exclude = {"dmp", "distributionList"})
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
 @DiscriminatorColumn(name="discriminator", discriminatorType= DiscriminatorType.STRING)
@@ -38,7 +38,6 @@ public class Host extends PanacheEntity {
     @Column(name = "retrieval_date")
     private Date date;
 
-    @JsonbTransient
-    @OneToMany(mappedBy = "host", fetch = FetchType.LAZY)
-    private List<Dataset> datasetList = new ArrayList<>();
+    @OneToMany(mappedBy = "host", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    private List<Distribution> distributionList = new ArrayList<>();
 }

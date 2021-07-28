@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,7 +14,7 @@ public class MaDmpDataset {
     private String data_quality_assurance;
     private MaDmpIdentifier dataset_id;
     private String description;
-    private MaDmpDistribution distribution;
+    private List<MaDmpDistribution> distribution;
     private Date issued;
     private String keyword;
     private String language;
