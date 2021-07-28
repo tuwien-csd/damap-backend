@@ -17,7 +17,7 @@ public class AddressBookService {
 
     @Inject
     @RestClient
-    private AddressBookRestService addressBookRestService;
+    AddressBookRestService addressBookRestService;
 
     public PersonDO getPersonById(String id) {
         PersonDTO personDTO = addressBookRestService.getPersonDetailsById(id);
