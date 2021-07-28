@@ -1,10 +1,8 @@
 package at.ac.tuwien.rest.projectdatabase.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class IdentifierDTO {
 
     private String identifier;

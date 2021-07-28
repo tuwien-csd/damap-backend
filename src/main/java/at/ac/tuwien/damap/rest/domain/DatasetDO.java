@@ -1,14 +1,12 @@
 package at.ac.tuwien.damap.rest.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.json.bind.annotation.JsonbDateFormat;
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DatasetDO {
 
