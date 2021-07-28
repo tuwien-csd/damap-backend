@@ -2,15 +2,13 @@ package at.ac.tuwien.damap.rest.domain;
 
 import at.ac.tuwien.damap.enums.EDataKind;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.json.bind.annotation.JsonbDateFormat;
 import java.util.Date;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DmpDO {
 
