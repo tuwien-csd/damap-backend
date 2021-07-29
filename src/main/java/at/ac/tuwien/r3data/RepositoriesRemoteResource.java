@@ -13,21 +13,19 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @RegisterRestClient
+@Produces(MediaType.TEXT_XML)
 public interface RepositoriesRemoteResource {
 
     @GET
     @Path("/v1/repositories")
-    @Produces(MediaType.TEXT_XML)
     List<Repository> getAll();
 
     @GET
     @Path("/v1/repository/{id}")
-    @Produces(MediaType.TEXT_XML)
     Re3Data getById(@PathParam String id);
 
     @GET
     @Path("/beta/repositories")
-    @Produces(MediaType.TEXT_XML)
     List<Repository> search(
             @QueryParam("subjects[]") List<String> subjects,
             @QueryParam("contentTypes[]") List<String> contentTypes,
