@@ -32,7 +32,6 @@ public class MaDmpResource {
 
     @GET
     @Path("/file/{id}")
-    @Produces("application/json")
     public Response getFileById(@PathParam("id") long id) {
         log.info("Return maDMP file for DMP with id=" + id);
 

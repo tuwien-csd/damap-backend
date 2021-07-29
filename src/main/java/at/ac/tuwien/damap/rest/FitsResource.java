@@ -13,6 +13,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 @Path("/api/fits")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.MULTIPART_FORM_DATA)
 public class FitsResource {
 
     private static final Logger log = LoggerFactory.getLogger(FitsResource.class);
@@ -22,8 +24,6 @@ public class FitsResource {
 
     @POST
     @Path("/examine")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON)
     public DatasetDO examine(@MultipartForm MultipartBodyDO data) {
         log.info("Analyse file");
         DatasetDO datasetDO = new DatasetDO();

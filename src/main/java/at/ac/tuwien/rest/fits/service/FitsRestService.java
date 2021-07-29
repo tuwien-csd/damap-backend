@@ -13,11 +13,11 @@ import javax.ws.rs.core.MediaType;
 
 @Path("fits")
 @RegisterRestClient
+@Produces(MediaType.APPLICATION_XML)
+@Consumes(MediaType.MULTIPART_FORM_DATA)
 public interface FitsRestService {
 
     @POST
     @Path("/examine")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_XML)
     Fits analyseFile(@MultipartForm MultipartBodyDTO datafile);
 }

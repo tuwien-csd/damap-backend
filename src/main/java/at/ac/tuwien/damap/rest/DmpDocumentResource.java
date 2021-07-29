@@ -14,6 +14,7 @@ import javax.ws.rs.core.StreamingOutput;
 import java.io.*;
 
 @Path("/document")
+@Produces(MediaType.APPLICATION_OCTET_STREAM)
 public class DmpDocumentResource {
 
     private static final Logger log = LoggerFactory.getLogger(DmpDocumentResource.class);
@@ -26,7 +27,6 @@ public class DmpDocumentResource {
 
     @GET
     @Path("/{dmpId}")
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getFWFTemplate(@PathParam("dmpId") long dmpId) throws Exception {
         log.info("Return DMP document file for DMP with id=" + dmpId);
 

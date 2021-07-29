@@ -48,7 +48,7 @@ public class DataManagementPlanResource {
     }
 
     @POST
-    @Consumes("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Path("/save-dmp")
     public Response saveDmp(SaveDmpWrapper dmpWrapper){
         return Response.ok(dmpService.save(dmpWrapper)).build();
