@@ -6,17 +6,15 @@ import at.ac.tuwien.rest.fits.dto.MultipartBodyDTO;
 import at.ac.tuwien.rest.fits.mapper.FitsMapper;
 import at.ac.tuwien.rest.fits.mapper.MultipartBodyMapper;
 import edu.harvard.fits.Fits;
+import lombok.extern.jbosslog.JBossLog;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 @ApplicationScoped
+@JBossLog
 public class FitsService {
-
-    private static final Logger log = LoggerFactory.getLogger(FitsService.class);
 
     @Inject
     @RestClient

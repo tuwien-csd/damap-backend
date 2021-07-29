@@ -2,9 +2,8 @@ package at.ac.tuwien.damap.rest;
 
 import at.ac.tuwien.conversion.DocumentConversionService;
 import at.ac.tuwien.damap.rest.service.DmpService;
+import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -15,9 +14,8 @@ import java.io.*;
 
 @Path("/document")
 @Produces(MediaType.APPLICATION_OCTET_STREAM)
+@JBossLog
 public class DmpDocumentResource {
-
-    private static final Logger log = LoggerFactory.getLogger(DmpDocumentResource.class);
 
     @Inject
     DocumentConversionService documentConversionService;
