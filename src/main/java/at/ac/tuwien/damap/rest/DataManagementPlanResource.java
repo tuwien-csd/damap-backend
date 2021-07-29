@@ -5,8 +5,7 @@ import at.ac.tuwien.damap.rest.domain.DmpListItemDO;
 import at.ac.tuwien.damap.rest.service.SaveDmpResponse;
 import at.ac.tuwien.damap.rest.service.SaveDmpWrapper;
 import at.ac.tuwien.damap.rest.service.DmpService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.jbosslog.JBossLog;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -16,8 +15,8 @@ import java.util.List;
 
 @Path("/plans")
 @Produces(MediaType.APPLICATION_JSON)
+@JBossLog
 public class DataManagementPlanResource {
-    private static final Logger log = LoggerFactory.getLogger(DataManagementPlanResource.class);
 
     @Inject
     DmpService dmpService;

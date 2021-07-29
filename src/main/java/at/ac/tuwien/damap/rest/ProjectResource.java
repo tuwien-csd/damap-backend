@@ -3,8 +3,7 @@ package at.ac.tuwien.damap.rest;
 import at.ac.tuwien.damap.rest.domain.ProjectDO;
 import at.ac.tuwien.damap.rest.domain.ProjectMemberDO;
 import at.ac.tuwien.rest.projectdatabase.service.ProjectDatabaseService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.jbosslog.JBossLog;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -14,8 +13,8 @@ import java.util.List;
 @Path("/api/pdb")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@JBossLog
 public class ProjectResource {
-    private static final Logger log = LoggerFactory.getLogger(ProjectResource.class);
 
     @Inject
     ProjectDatabaseService projectDatabaseService;

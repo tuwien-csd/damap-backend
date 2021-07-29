@@ -8,8 +8,7 @@ import at.ac.tuwien.damap.rest.domain.DmpDO;
 import at.ac.tuwien.damap.rest.domain.DmpListItemDO;
 import at.ac.tuwien.damap.rest.mapper.DmpDOMapper;
 import at.ac.tuwien.damap.rest.mapper.DmpListItemDOMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.jbosslog.JBossLog;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -19,8 +18,8 @@ import java.util.Date;
 import java.util.List;
 
 @ApplicationScoped
+@JBossLog
 public class DmpService {
-    private static final Logger log = LoggerFactory.getLogger(DmpService.class);
 
     @Inject
     DmpRepo dmpRepo;
