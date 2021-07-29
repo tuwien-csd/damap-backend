@@ -2,7 +2,6 @@ package at.ac.tuwien.damap.rest;
 
 import at.ac.tuwien.damap.rest.domain.DmpDO;
 import at.ac.tuwien.damap.rest.domain.DmpListItemDO;
-import at.ac.tuwien.damap.rest.service.SaveDmpResponse;
 import at.ac.tuwien.damap.rest.service.SaveDmpWrapper;
 import at.ac.tuwien.damap.rest.service.DmpService;
 import lombok.extern.jbosslog.JBossLog;
@@ -10,7 +9,6 @@ import lombok.extern.jbosslog.JBossLog;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Path("/plans")
@@ -49,7 +47,7 @@ public class DataManagementPlanResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/save-dmp")
-    public Response saveDmp(SaveDmpWrapper dmpWrapper){
-        return Response.ok(dmpService.save(dmpWrapper)).build();
+    public DmpDO saveDmp(SaveDmpWrapper dmpWrapper){
+        return dmpService.save(dmpWrapper);
     }
 }
