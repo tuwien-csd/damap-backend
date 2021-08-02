@@ -5,10 +5,12 @@ import at.ac.tuwien.damap.domain.Person;
 import at.ac.tuwien.damap.enums.EContributorRole;
 import at.ac.tuwien.damap.rest.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.domain.PersonDO;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class ContributorDOMapper {
 
-    public static void mapEntityToDO(Contributor contributor, ContributorDO contributorDO) {
+    public ContributorDO mapEntityToDO(Contributor contributor, ContributorDO contributorDO) {
 
         contributorDO.setId(contributor.id);
 
@@ -20,9 +22,11 @@ public class ContributorDOMapper {
             PersonDOMapper.mapEntityToDO(contributor.getContributor(), personDO);
             contributorDO.setPerson(personDO);
         }
+
+        return contributorDO;
     }
 
-    public static void mapDOtoEntity(ContributorDO contributorDO, Contributor contributor){
+    public Contributor mapDOtoEntity(ContributorDO contributorDO, Contributor contributor){
 
         if (contributorDO.getId() != null)
             contributor.id = contributorDO.getId();
@@ -36,5 +40,7 @@ public class ContributorDOMapper {
             contributor.setContributor(person);
         } else
             contributor.setContributor(null);
+
+        return contributor;
     }
 }

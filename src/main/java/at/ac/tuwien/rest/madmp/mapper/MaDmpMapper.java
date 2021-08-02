@@ -3,13 +3,15 @@ package at.ac.tuwien.rest.madmp.mapper;
 import at.ac.tuwien.damap.domain.*;
 import at.ac.tuwien.damap.enums.EContributorRole;
 import at.ac.tuwien.rest.madmp.dto.*;
+import lombok.experimental.UtilityClass;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@UtilityClass
 public class MaDmpMapper {
 
-    public static void mapEntityToMaDmp(Dmp dmp, MaDmp maDmp) {
+    public MaDmp mapEntityToMaDmp(Dmp dmp, MaDmp maDmp) {
 
         maDmp.setTitle(dmp.getTitle());
         maDmp.setDescription(dmp.getDescription());
@@ -45,9 +47,11 @@ public class MaDmpMapper {
             maDmpDatasetList.add(maDmpDataset);
         });
         maDmp.setDataset(maDmpDatasetList);
+
+        return maDmp;
     }
 
-    public static void mapEntityToMaDmp(Person person, MaDmpContact maDmpContact) {
+    public MaDmpContact mapEntityToMaDmp(Person person, MaDmpContact maDmpContact) {
         maDmpContact.setName(person.getFirstName() + " " + person.getLastName());
         maDmpContact.setMbox(person.getMbox());
 
@@ -56,9 +60,11 @@ public class MaDmpMapper {
             mapEntityToMaDmp(person.getPersonIdentifier(), maDmpIdentifier);
             maDmpContact.setContact_id(maDmpIdentifier);
         }
+
+        return maDmpContact;
     }
 
-    public static void mapEntityToMaDmp(Contributor contributor, MaDmpContributor maDmpContributor) {
+    public MaDmpContributor mapEntityToMaDmp(Contributor contributor, MaDmpContributor maDmpContributor) {
         Person person = contributor.getContributor();
         maDmpContributor.setName(person.getFirstName() + " " + person.getLastName());
         maDmpContributor.setMbox(person.getMbox());
@@ -72,15 +78,19 @@ public class MaDmpMapper {
         List<EContributorRole> roleList = new ArrayList<>();
         roleList.add(contributor.getContributorRole());
         maDmpContributor.setRole(roleList);
+
+        return maDmpContributor;
     }
 
-    public static void mapEntityToMaDmp(Identifier identifier, MaDmpIdentifier maDmpIdentifier) {
+    public MaDmpIdentifier mapEntityToMaDmp(Identifier identifier, MaDmpIdentifier maDmpIdentifier) {
         maDmpIdentifier.setIdentifier(identifier.getIdentifier());
         if (identifier.getIdentifierType() != null)
             maDmpIdentifier.setIdentifierType(identifier.getIdentifierType().toString());
+
+        return maDmpIdentifier;
     }
 
-    public static void mapEntityToMaDmp(Project project, MaDmpProject maDmpProject) {
+    public MaDmpProject mapEntityToMaDmp(Project project, MaDmpProject maDmpProject) {
         maDmpProject.setTitle(project.getTitle());
         maDmpProject.setDescription(project.getDescription());
         maDmpProject.setStart(project.getStart());
@@ -93,9 +103,11 @@ public class MaDmpMapper {
             maDmpFundingList.add(maDmpFunding);
         }
         maDmpProject.setFunding(maDmpFundingList);
+
+        return maDmpProject;
     }
 
-    public static void mapEntityToMaDmp(Funding funding, MaDmpFunding maDmpFunding) {
+    public MaDmpFunding mapEntityToMaDmp(Funding funding, MaDmpFunding maDmpFunding) {
         if (funding.getFundingStatus() != null)
             maDmpFunding.setFunding_status(funding.getFundingStatus().toString());
 
@@ -110,9 +122,11 @@ public class MaDmpMapper {
             mapEntityToMaDmp(funding.getGrantIdentifier(), maDmpIdentifier);
             maDmpFunding.setGrant_id(maDmpIdentifier);
         }
+
+        return maDmpFunding;
     }
 
-    public static void mapEntityToMaDmp(Dataset dataset, MaDmpDataset maDmpDataset) {
+    public MaDmpDataset mapEntityToMaDmp(Dataset dataset, MaDmpDataset maDmpDataset) {
         maDmpDataset.setTitle(dataset.getTitle());
         maDmpDataset.setDescription(dataset.getComment());
         maDmpDataset.setType(dataset.getType());
@@ -124,9 +138,11 @@ public class MaDmpMapper {
             maDmpDistributionList.add(maDmpDistribution);
         });
         maDmpDataset.setDistribution(maDmpDistributionList);
+
+        return maDmpDataset;
     }
 
-    public static void mapEntityToMaDmp(Dataset dataset, Distribution distribution, MaDmpDistribution maDmpDistribution) {
+    public MaDmpDistribution mapEntityToMaDmp(Dataset dataset, Distribution distribution, MaDmpDistribution maDmpDistribution) {
         maDmpDistribution.setByte_size(dataset.getSize());
 
         if (dataset.getLicense() != null) {
@@ -140,9 +156,13 @@ public class MaDmpMapper {
             mapEntityToMaDmp(distribution.getHost(), maDmpHost);
             maDmpDistribution.setHost(maDmpHost);
         }
+
+        return maDmpDistribution;
     }
 
-    public static void mapEntityToMaDmp(Host host, MaDmpHost maDmpHost) {
+    public MaDmpHost mapEntityToMaDmp(Host host, MaDmpHost maDmpHost) {
         maDmpHost.setTitle(host.getTitle());
+
+        return maDmpHost;
     }
 }

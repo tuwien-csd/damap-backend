@@ -24,8 +24,6 @@ public class FitsResource {
     @Path("/examine")
     public DatasetDO examine(@MultipartForm MultipartBodyDO data) {
         log.info("Analyse file");
-        DatasetDO datasetDO = new DatasetDO();
-        DatasetDOMapper.mapEntityToDO(fitsService.analyseFile(data), datasetDO);
-        return datasetDO;
+        return DatasetDOMapper.mapEntityToDO(fitsService.analyseFile(data), new DatasetDO());
     }
 }

@@ -6,10 +6,12 @@ import at.ac.tuwien.damap.domain.Project;
 import at.ac.tuwien.damap.rest.domain.FundingDO;
 import at.ac.tuwien.damap.rest.domain.IdentifierDO;
 import at.ac.tuwien.damap.rest.domain.ProjectDO;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class ProjectDOMapper {
 
-    public static void mapEntityToDO(Project project, ProjectDO projectDO) {
+    public ProjectDO mapEntityToDO(Project project, ProjectDO projectDO) {
         projectDO.setId(project.id);
         projectDO.setTitle(project.getTitle());
         projectDO.setDescription(project.getDescription());
@@ -21,9 +23,11 @@ public class ProjectDOMapper {
             mapEntityToDO(project.getFunding(), fundingDO);
             projectDO.setFunding(fundingDO);
         }
+
+        return projectDO;
     }
 
-    public static void mapEntityToDO(Funding funding, FundingDO fundingDO) {
+    public FundingDO mapEntityToDO(Funding funding, FundingDO fundingDO) {
         fundingDO.setId(funding.id);
         fundingDO.setFunding_status(funding.getFundingStatus());
 
@@ -38,10 +42,12 @@ public class ProjectDOMapper {
             IdentifierDOMapper.mapEntityToDO(funding.getGrantIdentifier(), identifierGrantDO);
             fundingDO.setGrant_id(identifierGrantDO);
         }
+
+        return fundingDO;
     }
 
 
-    public static void mapDOtoEntity(ProjectDO projectDO, Project project){
+    public Project mapDOtoEntity(ProjectDO projectDO, Project project){
         if (projectDO.getId() != null)
             project.id = projectDO.getId();
         project.setTitle(projectDO.getTitle());
@@ -57,9 +63,11 @@ public class ProjectDOMapper {
             project.setFunding(funding);
         } else
             project.setFunding(null);
+
+        return project;
     }
 
-    public static void mapDOtoEntity(FundingDO fundingDO, Funding funding) {
+    public Funding mapDOtoEntity(FundingDO fundingDO, Funding funding) {
         if (fundingDO.getId() != null)
             funding.id = fundingDO.getId();
         funding.setFundingStatus(fundingDO.getFunding_status());
@@ -81,5 +89,7 @@ public class ProjectDOMapper {
             funding.setGrantIdentifier(identifierGrant);
         } else
             funding.setGrantIdentifier(null);
+
+        return funding;
     }
 }

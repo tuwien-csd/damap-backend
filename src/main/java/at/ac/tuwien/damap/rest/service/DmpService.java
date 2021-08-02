@@ -32,9 +32,7 @@ public class DmpService {
         List<Dmp> dmpList = dmpRepo.getAll();
         List<DmpDO> dmpDOList = new ArrayList<>();
         dmpList.forEach(dmp -> {
-            DmpDO dmpDO = new DmpDO();
-            DmpDOMapper.mapEntityToDO(dmp, dmpDO);
-            dmpDOList.add(dmpDO);
+            dmpDOList.add(DmpDOMapper.mapEntityToDO(dmp, new DmpDO()));
         });
         return dmpDOList;
     }
@@ -45,19 +43,13 @@ public class DmpService {
 
         List<DmpListItemDO> dmpListItemDOS = new ArrayList<>();
         accessList.forEach(access -> {
-            DmpListItemDO dmpListItemDO = new DmpListItemDO();
-            DmpListItemDOMapper.mapEntityToDO(access, access.getDmp(), dmpListItemDO);
-            dmpListItemDOS.add(dmpListItemDO);
+            dmpListItemDOS.add(DmpListItemDOMapper.mapEntityToDO(access, access.getDmp(), new DmpListItemDO()));
         });
         return dmpListItemDOS;
     }
 
     public DmpDO getDmpById(long dmpId) {
-        Dmp dmp = dmpRepo.findById(dmpId);
-
-        DmpDO dmpDO = new DmpDO();
-        DmpDOMapper.mapEntityToDO(dmp, dmpDO);
-        return dmpDO;
+        return DmpDOMapper.mapEntityToDO(dmpRepo.findById(dmpId), new DmpDO());
     }
 
     @Transactional
@@ -72,8 +64,7 @@ public class DmpService {
 
     public long create(SaveDmpWrapper dmpWrapper) {
         log.info("Creating new DMP");
-        Dmp dmp = new Dmp();
-        DmpDOMapper.mapDOtoEntity(dmpWrapper.getDmp(), dmp);
+        Dmp dmp = DmpDOMapper.mapDOtoEntity(dmpWrapper.getDmp(), new Dmp());
         dmp.setCreated(new Date());
         dmp.persist();
         createAccess(dmp, dmpWrapper.getEdited_by());

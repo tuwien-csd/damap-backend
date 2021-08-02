@@ -40,9 +40,7 @@ public class ProjectDatabaseService {
         personDTO.getEmploymentList().forEach(employment -> {
             OrganisationalUnit orgUnit = employment.getOrganisationalUnit();
             projectDatabaseRestService.getProjectsByCriteria(orgUnit.getId().toString(), personId).forEach(projectDTO -> {
-                ProjectDO projectDO = new ProjectDO();
-                ProjectDTOMapper.mapAtoB(projectDTO, projectDO);
-                projects.add(projectDO);
+                projects.add(ProjectDTOMapper.mapAtoB(projectDTO, new ProjectDO()));
             });
         });
         return projects;
@@ -54,8 +52,7 @@ public class ProjectDatabaseService {
 
         projectDTO.getProjectMembers().forEach(projectMemberDTO -> {
             PersonDTO personDTO = addressBookRestService.getPersonDetailsById(String.valueOf(projectMemberDTO.getId()));
-            PersonDO personDO = new PersonDO();
-            PersonDTOMapper.mapAtoB(personDTO, personDO);
+            PersonDO personDO = PersonDTOMapper.mapAtoB(personDTO, new PersonDO());
             ProjectMemberDO projectMemberDO = new ProjectMemberDO();
             projectMemberDO.setPerson(personDO);
             projectMemberDO.setRoleInProject(projectMemberDTO.getRole());
