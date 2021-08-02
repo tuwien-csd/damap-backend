@@ -19,9 +19,6 @@ public class AddressBookService {
 
     public PersonDO getPersonById(String id) {
         PersonDTO personDTO = addressBookRestService.getPersonDetailsById(id);
-        PersonDO personDO = new PersonDO();
-        PersonDTOMapper.mapAtoB(personDTO, personDO);
-
-        return personDO;
+        return PersonDTOMapper.mapAtoB(personDTO, new PersonDO());
     }
 }

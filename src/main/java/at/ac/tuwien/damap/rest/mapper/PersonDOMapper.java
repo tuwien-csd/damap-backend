@@ -4,10 +4,12 @@ import at.ac.tuwien.damap.domain.Identifier;
 import at.ac.tuwien.damap.domain.Person;
 import at.ac.tuwien.damap.rest.domain.IdentifierDO;
 import at.ac.tuwien.damap.rest.domain.PersonDO;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class PersonDOMapper {
 
-    public static void mapEntityToDO(Person person, PersonDO personDO) {
+    public PersonDO mapEntityToDO(Person person, PersonDO personDO) {
         personDO.setId(person.id);
         personDO.setFirstName(person.getFirstName());
         personDO.setLastName(person.getLastName());
@@ -19,9 +21,11 @@ public class PersonDOMapper {
             IdentifierDOMapper.mapEntityToDO(person.getPersonIdentifier(), identifierPersonDO);
             personDO.setPersonId(identifierPersonDO);
         }
+
+        return personDO;
     }
 
-    public static void mapDOtoEntity(PersonDO personDO, Person person){
+    public Person mapDOtoEntity(PersonDO personDO, Person person){
         if (personDO.getId() != null)
             person.id = personDO.getId();
         person.setFirstName(personDO.getFirstName());
@@ -37,5 +41,7 @@ public class PersonDOMapper {
             person.setPersonIdentifier(identifierPerson);
         } else
             person.setPersonIdentifier(null);
+
+        return person;
     }
 }

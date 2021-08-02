@@ -5,10 +5,12 @@ import at.ac.tuwien.damap.domain.Dmp;
 import at.ac.tuwien.damap.rest.domain.DmpListItemDO;
 import at.ac.tuwien.damap.rest.domain.PersonDO;
 import at.ac.tuwien.damap.rest.domain.ProjectDO;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class DmpListItemDOMapper {
 
-    public static void mapEntityToDO(Access access, Dmp dmp, DmpListItemDO dmpListItemDO) {
+    public DmpListItemDO mapEntityToDO(Access access, Dmp dmp, DmpListItemDO dmpListItemDO) {
         dmpListItemDO.setId(dmp.id);
         dmpListItemDO.setTitle(dmp.getTitle());
         dmpListItemDO.setCreated(dmp.getCreated());
@@ -27,5 +29,7 @@ public class DmpListItemDOMapper {
             ProjectDOMapper.mapEntityToDO(dmp.getProject(), projectDO);
             dmpListItemDO.setProject(projectDO);
         }
+
+        return dmpListItemDO;
     }
 }

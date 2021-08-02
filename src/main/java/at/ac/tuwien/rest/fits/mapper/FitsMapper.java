@@ -4,10 +4,12 @@ import at.ac.tuwien.damap.domain.Dataset;
 import edu.harvard.fits.Fits;
 import edu.harvard.fits.FitsMetadataType;
 import edu.harvard.fits.IdentificationType;
+import lombok.experimental.UtilityClass;
 
 import javax.xml.bind.JAXBElement;
 import java.util.Optional;
 
+@UtilityClass
 public class FitsMapper {
 
     // TODO: Replace with enum?
@@ -29,10 +31,12 @@ public class FitsMapper {
             "OTHER"
     };
 
-    public static void mapAtoB(Fits fits, Dataset dataset) {
+    public Dataset mapAtoB(Fits fits, Dataset dataset) {
         dataset.setSize(String.valueOf(getSize(fits)));
         IdentificationType.Identity identity = getMajorityVoteIdentity(fits);
         dataset.setType(mapFileFormat(identity));
+
+        return dataset;
     }
 
     /**
@@ -41,7 +45,7 @@ public class FitsMapper {
      * @param fits
      * @return identity where most tools agree
      */
-    static private IdentificationType.Identity getMajorityVoteIdentity(Fits fits) {
+    private IdentificationType.Identity getMajorityVoteIdentity(Fits fits) {
 
         if(fits.getIdentification().getIdentity().size() == 1) {
             return fits.getIdentification().getIdentity().get(0);
@@ -60,7 +64,7 @@ public class FitsMapper {
         return null;
     }
 
-    static private Long getSize(Fits dto) {
+    private Long getSize(Fits dto) {
 
         if(dto.getFileinfo() == null || dto.getFileinfo().getFileInfoElements().isEmpty()){
             return null;
@@ -78,7 +82,7 @@ public class FitsMapper {
     }
 
     // TODO: Add more file format mappings
-    static private String mapFileFormat(IdentificationType.Identity identity) {
+    private String mapFileFormat(IdentificationType.Identity identity) {
 
         // TODO: Return null instead of 'OTHER'?
         if (identity == null) {

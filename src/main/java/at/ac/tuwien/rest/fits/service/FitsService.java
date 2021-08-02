@@ -22,13 +22,10 @@ public class FitsService {
 
     public Dataset analyseFile(MultipartBodyDO multipartBodyDO) {
         log.trace("Analyse File");
-        MultipartBodyDTO multipartBodyDTO = new MultipartBodyDTO();
-        MultipartBodyMapper.mapAtoB(multipartBodyDO, multipartBodyDTO);
+        MultipartBodyDTO multipartBodyDTO = MultipartBodyMapper.mapAtoB(multipartBodyDO, new MultipartBodyDTO());
         Fits fits;
-        Dataset dataset = new Dataset();
         // TODO: Handle JAXB Exceptions
         fits = fitsRestService.analyseFile(multipartBodyDTO);
-        FitsMapper.mapAtoB(fits, dataset);
-        return dataset;
+        return FitsMapper.mapAtoB(fits, new Dataset());
     }
 }

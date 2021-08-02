@@ -4,10 +4,12 @@ import at.ac.tuwien.damap.enums.EIdentifierType;
 import at.ac.tuwien.damap.rest.domain.IdentifierDO;
 import at.ac.tuwien.damap.rest.domain.PersonDO;
 import at.ac.tuwien.rest.addressbook.dto.PersonDTO;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class PersonDTOMapper {
 
-    public static void mapAtoB(PersonDTO personDTO, PersonDO personDO){
+    public PersonDO mapAtoB(PersonDTO personDTO, PersonDO personDO){
         personDO.setUniversityId(personDTO.getId());
         personDO.setFirstName(personDTO.getFirstName());
         personDO.setLastName(personDTO.getLastName());
@@ -19,5 +21,7 @@ public class PersonDTOMapper {
             personIdentifierDO.setType(EIdentifierType.ORCID);
             personDO.setPersonId(personIdentifierDO);
         }
+
+        return personDO;
     }
 }
