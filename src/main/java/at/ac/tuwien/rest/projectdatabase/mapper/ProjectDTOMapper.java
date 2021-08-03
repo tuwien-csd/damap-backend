@@ -7,13 +7,15 @@ import at.ac.tuwien.damap.rest.domain.ProjectDO;
 import at.ac.tuwien.rest.projectdatabase.dto.FundingDTO;
 import at.ac.tuwien.rest.projectdatabase.dto.IdentifierDTO;
 import at.ac.tuwien.rest.projectdatabase.dto.ProjectDTO;
+import lombok.experimental.UtilityClass;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+@UtilityClass
 public class ProjectDTOMapper {
 
-    public static void mapAtoB(ProjectDTO projectDTO, ProjectDO projectDO) {
+    public ProjectDO mapAtoB(ProjectDTO projectDTO, ProjectDO projectDO) {
         projectDO.setUniversityId(projectDTO.getId());
         projectDO.setTitle(projectDTO.getTitle());
         projectDO.setDescription(projectDTO.getDescription());
@@ -27,9 +29,11 @@ public class ProjectDTOMapper {
         FundingDO fundingDO = new FundingDO();
         mapAtoB(projectDTO.getFunding(), fundingDO);
         projectDO.setFunding(fundingDO);
+
+        return projectDO;
     }
 
-    public static void mapAtoB(FundingDTO fundingDTO, FundingDO fundingDO) {
+    public FundingDO mapAtoB(FundingDTO fundingDTO, FundingDO fundingDO) {
         fundingDO.setFunding_status(fundingDTO.getFunding_status());
 
         IdentifierDO identifierFundingDO = new IdentifierDO();
@@ -39,11 +43,15 @@ public class ProjectDTOMapper {
         IdentifierDO identifierGrantDO = new IdentifierDO();
         mapAtoB(fundingDTO.getGrant_id(), identifierGrantDO);
         fundingDO.setGrant_id(identifierGrantDO);
+
+        return fundingDO;
     }
 
-    public static void mapAtoB(IdentifierDTO identifierDTO, IdentifierDO identifierDO){
+    public IdentifierDO mapAtoB(IdentifierDTO identifierDTO, IdentifierDO identifierDO){
         identifierDO.setIdentifier(identifierDTO.getIdentifier());
         if (identifierDTO.getType() != null)
             identifierDO.setType(EIdentifierType.valueOf(identifierDTO.getType()));
+
+        return identifierDO;
     }
 }

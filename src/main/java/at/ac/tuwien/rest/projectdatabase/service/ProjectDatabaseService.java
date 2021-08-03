@@ -9,9 +9,8 @@ import at.ac.tuwien.rest.addressbook.mapper.PersonDTOMapper;
 import at.ac.tuwien.rest.addressbook.service.AddressBookRestService;
 import at.ac.tuwien.rest.projectdatabase.dto.*;
 import at.ac.tuwien.rest.projectdatabase.mapper.ProjectDTOMapper;
+import lombok.extern.jbosslog.JBossLog;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -19,9 +18,8 @@ import java.util.*;
 
 
 @ApplicationScoped
+@JBossLog
 public class ProjectDatabaseService {
-
-    private static final Logger log = LoggerFactory.getLogger(ProjectDatabaseService.class);
 
     @Inject
     @RestClient
@@ -42,9 +40,7 @@ public class ProjectDatabaseService {
         personDTO.getEmploymentList().forEach(employment -> {
             OrganisationalUnit orgUnit = employment.getOrganisationalUnit();
             projectDatabaseRestService.getProjectsByCriteria(orgUnit.getId().toString(), personId).forEach(projectDTO -> {
-                ProjectDO projectDO = new ProjectDO();
-                ProjectDTOMapper.mapAtoB(projectDTO, projectDO);
-                projects.add(projectDO);
+                projects.add(ProjectDTOMapper.mapAtoB(projectDTO, new ProjectDO()));
             });
         });
         return projects;
@@ -56,8 +52,7 @@ public class ProjectDatabaseService {
 
         projectDTO.getProjectMembers().forEach(projectMemberDTO -> {
             PersonDTO personDTO = addressBookRestService.getPersonDetailsById(String.valueOf(projectMemberDTO.getId()));
-            PersonDO personDO = new PersonDO();
-            PersonDTOMapper.mapAtoB(personDTO, personDO);
+            PersonDO personDO = PersonDTOMapper.mapAtoB(personDTO, new PersonDO());
             ProjectMemberDO projectMemberDO = new ProjectMemberDO();
             projectMemberDO.setPerson(personDO);
             projectMemberDO.setRoleInProject(projectMemberDTO.getRole());

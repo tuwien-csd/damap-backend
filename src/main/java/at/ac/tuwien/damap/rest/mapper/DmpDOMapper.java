@@ -3,16 +3,16 @@ package at.ac.tuwien.damap.rest.mapper;
 import at.ac.tuwien.damap.domain.*;
 import at.ac.tuwien.damap.enums.EComplianceType;
 import at.ac.tuwien.damap.rest.domain.*;
-import lombok.extern.jbosslog.JBossLog;
+import lombok.experimental.UtilityClass;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@JBossLog
+@UtilityClass
 public class DmpDOMapper {
 
-    public static void mapEntityToDO(Dmp dmp, DmpDO dmpDO) {
+    public DmpDO mapEntityToDO(Dmp dmp, DmpDO dmpDO) {
         dmpDO.setId(dmp.id);
         dmpDO.setTitle(dmp.getTitle());
         dmpDO.setCreated(dmp.getCreated());
@@ -120,9 +120,11 @@ public class DmpDOMapper {
             costDOList.add(costDO);
         });
         dmpDO.setCosts(costDOList);
+
+        return dmpDO;
     }
 
-    public static void mapDOtoEntity(DmpDO dmpDO, Dmp dmp) {
+    public Dmp mapDOtoEntity(DmpDO dmpDO, Dmp dmp) {
         if (dmpDO.getId() != null)
             dmp.id = dmpDO.getId();
         dmp.setTitle(dmpDO.getTitle());
@@ -357,9 +359,11 @@ public class DmpDOMapper {
                 costList.add(cost);
             }
         });
+
+        return dmp;
     }
 
-    private static void determineDistributions(Dmp dmp, HostDO hostDO, Host host) {
+    private void determineDistributions(Dmp dmp, HostDO hostDO, Host host) {
         //convert datasetHash to id references from dataset to hosts
         if (hostDO.getDatasets() != null) {
             List<Distribution> distributionList = host.getDistributionList();
