@@ -1,6 +1,5 @@
 package at.ac.tuwien.rest.madmp.service;
 
-import at.ac.tuwien.damap.domain.Dmp;
 import at.ac.tuwien.damap.repo.DmpRepo;
 import at.ac.tuwien.rest.madmp.dto.MaDmp;
 import at.ac.tuwien.rest.madmp.mapper.MaDmpMapper;
@@ -15,9 +14,6 @@ public class MaDmpService {
     DmpRepo dmpRepo;
 
     public MaDmp getById(long id) {
-        Dmp dmp = dmpRepo.findById(id);
-        MaDmp maDmp = new MaDmp();
-        MaDmpMapper.mapEntityToMaDmp(dmp, maDmp);
-        return maDmp;
+        return MaDmpMapper.mapEntityToMaDmp(dmpRepo.findById(id), new MaDmp());
     }
 }

@@ -10,6 +10,6 @@ import java.util.List;
 public class ProjectRepo implements PanacheRepository<Project> {
 
     public List<Project> getAll() {
-        return find("select project from Project project").list();
+        return listAll();
     }
 }

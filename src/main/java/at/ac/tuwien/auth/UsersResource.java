@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Path("users")
+@Produces(MediaType.TEXT_PLAIN)
 public class UsersResource {
 
     @Inject SecurityIdentity securityIdentity;
@@ -18,7 +19,6 @@ public class UsersResource {
     @GET
     @Path("/me")
     @RolesAllowed("user")
-    @Produces(MediaType.TEXT_PLAIN)
     @NoCache
     public String me() {
         return securityIdentity.getPrincipal().getName();

@@ -10,6 +10,6 @@ import java.util.List;
 public class FundingRepo implements PanacheRepository<Funding> {
 
     public List<Funding> getAll() {
-        return find("select funding from Funding funding").list();
+        return listAll();
     }
 }

@@ -5,19 +5,19 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Path("/api/pdb/rest")
 @RegisterRestClient
+@Produces(MediaType.APPLICATION_JSON)
 public interface ProjectDatabaseRestService {
 
     @GET
     @Path("/restricted/damap/project/{projectId}")
-    @Produces("application/json")
     ProjectDTO getProjectDetails(@PathParam String projectId);
 
     @GET
     @Path("/restricted/damap/projectsByCriteria")
-    @Produces("application/json")
     List<ProjectDTO> getProjectsByCriteria(@QueryParam("orgUnitId") String orgUnitId, @QueryParam("projectleaderId") String projectleaderId);
 }

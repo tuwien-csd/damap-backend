@@ -3,10 +3,12 @@ package at.ac.tuwien.damap.rest.mapper;
 import at.ac.tuwien.damap.domain.Dataset;
 import at.ac.tuwien.damap.enums.EDataAccessType;
 import at.ac.tuwien.damap.rest.domain.*;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class DatasetDOMapper {
 
-    public static void mapEntityToDO(Dataset dataset, DatasetDO datasetDO) {
+    public DatasetDO mapEntityToDO(Dataset dataset, DatasetDO datasetDO) {
         datasetDO.setId(dataset.id);
         datasetDO.setTitle(dataset.getTitle());
         datasetDO.setType(dataset.getType());
@@ -20,9 +22,11 @@ public class DatasetDOMapper {
         datasetDO.setReferenceHash(dataset.getReferenceHash());
         if (dataset.getDataAccess() != null)
             datasetDO.setDataAccess(dataset.getDataAccess().getValue());
+
+        return datasetDO;
     }
 
-    public static void mapDOtoEntity(DatasetDO datasetDO, Dataset dataset){
+    public Dataset mapDOtoEntity(DatasetDO datasetDO, Dataset dataset){
         if (datasetDO.getId() != null)
             dataset.id = datasetDO.getId();
         dataset.setTitle(datasetDO.getTitle());
@@ -36,4 +40,6 @@ public class DatasetDOMapper {
         dataset.setStart(datasetDO.getStartDate());
         dataset.setReferenceHash(datasetDO.getReferenceHash());
         dataset.setDataAccess(EDataAccessType.getByValue(datasetDO.getDataAccess()));
+
+        return dataset;
     }}
