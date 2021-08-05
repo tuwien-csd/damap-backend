@@ -229,7 +229,7 @@ public class DocumentConversionService {
                         docVar.add(datasets.get(i - 1).getTitle());
                         docVar.add(datasets.get(i - 1).getType());
                         docVar.add("");
-                        if (!datasets.get(i-1).getSize().equals("")) {
+                        if (datasets.get(i-1).getSize() != null && !datasets.get(i-1).getSize().equals("")) {
                             docVar.add(format(Long.parseLong(datasets.get(i - 1).getSize())) + "B");
                         }
                         else {
