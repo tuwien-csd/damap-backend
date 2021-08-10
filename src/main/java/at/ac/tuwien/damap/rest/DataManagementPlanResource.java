@@ -97,12 +97,11 @@ public class DataManagementPlanResource {
         return dmpService.save(dmpWrapper);
     }
 
-    private String getPersonId(){
-        String personId = String.valueOf(Optional.of(jsonWebToken.claim("tissID")));
-        if (personId == null) {
+    private String getPersonId() {
+        if (jsonWebToken.claim("tissID").isEmpty()) {
             // TODO: Throw correct exception
             throw new AuthenticationFailedException("Invalid Tiss ID.");
         }
-        return personId;
+        return String.valueOf(jsonWebToken.claim("tissID").get());
     }
 }
