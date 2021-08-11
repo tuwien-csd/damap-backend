@@ -77,6 +77,7 @@ public class DataManagementPlanResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public DmpDO saveDmp(DmpDO dmpDO) {
+        log.info("Save dmp");
         String personId = this.getPersonId();
         SaveDmpWrapper dmpWrapper = new SaveDmpWrapper();
         dmpWrapper.setDmp(dmpDO);
@@ -88,6 +89,7 @@ public class DataManagementPlanResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     public DmpDO updateDmp(@PathParam String id, DmpDO dmpDO) {
+        log.info("Update dmp with id: " + id);
         String personId = this.getPersonId();
         SaveDmpWrapper dmpWrapper = new SaveDmpWrapper();
         dmpWrapper.setDmp(dmpDO);
