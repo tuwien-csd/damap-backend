@@ -32,7 +32,7 @@ public class DataManagementPlanResource {
 
     @GET
     @Path("/all")
-    @RolesAllowed("admin")
+    @RolesAllowed("Damap Admin")
     public List<DmpListItemDO> getAll() {
         log.info("Return all Dmps");
         return dmpService.getAll();
@@ -40,7 +40,7 @@ public class DataManagementPlanResource {
 
     @GET
     @Path("/person/{id}")
-    @RolesAllowed("admin")
+    @RolesAllowed("Damap Admin")
     public DmpDO getDmpByPerson(@PathParam String id) {
         log.info("Return dmp for person id: " + id);
         return dmpService.getDmpById(Long.parseLong(id));
