@@ -14,6 +14,7 @@ public class MaDmpService {
     DmpRepo dmpRepo;
 
     public MaDmp getById(long id) {
+        // TODO: check permission
         return MaDmpMapper.mapEntityToMaDmp(dmpRepo.findById(id), new MaDmp());
     }
 }
