@@ -4,6 +4,7 @@ import at.ac.tuwien.damap.rest.domain.DmpDO;
 import at.ac.tuwien.damap.rest.domain.DmpListItemDO;
 import at.ac.tuwien.damap.rest.service.SaveDmpWrapper;
 import at.ac.tuwien.damap.rest.service.DmpService;
+import io.quarkus.security.Authenticated;
 import io.quarkus.security.AuthenticationFailedException;
 import lombok.extern.jbosslog.JBossLog;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
@@ -16,7 +17,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Path("/dmps")
-@RolesAllowed("user")
+@Authenticated
 @Produces(MediaType.APPLICATION_JSON)
 @JBossLog
 public class DataManagementPlanResource {
@@ -59,6 +60,7 @@ public class DataManagementPlanResource {
 
     @GET
     @Path("/subordinates")
+    @RolesAllowed("user")
     public List<DmpListItemDO> getDmpsSubordinates() {
         log.info("Return dmp list for subordinates");
         String personId = this.getPersonId();
@@ -76,6 +78,7 @@ public class DataManagementPlanResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed("user")
     public DmpDO saveDmp(DmpDO dmpDO) {
         log.info("Save dmp");
         String personId = this.getPersonId();
