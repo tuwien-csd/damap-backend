@@ -14,14 +14,12 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
-import java.util.Optional;
 
 @Path("/dmps")
-@JBossLog
 @RolesAllowed("user")
 @Produces(MediaType.APPLICATION_JSON)
+@JBossLog
 public class DataManagementPlanResource {
-
 
     @Inject
     JsonWebToken jsonWebToken;
@@ -99,8 +97,7 @@ public class DataManagementPlanResource {
 
     private String getPersonId() {
         if (jsonWebToken.claim("tissID").isEmpty()) {
-            // TODO: Throw correct exception
-            throw new AuthenticationFailedException("Invalid Tiss ID.");
+            throw new AuthenticationFailedException("Tiss ID is missing.");
         }
         return String.valueOf(jsonWebToken.claim("tissID").get());
     }
