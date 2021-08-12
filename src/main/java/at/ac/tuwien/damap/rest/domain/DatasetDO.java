@@ -13,7 +13,7 @@ public class DatasetDO {
     private Long id;
     private String title;
     private String type;
-    private String size;
+    private Long size;
     private String comment;
     private Boolean personalData;
     private Boolean sensitiveData;

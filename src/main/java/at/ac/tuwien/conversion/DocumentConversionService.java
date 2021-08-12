@@ -133,8 +133,8 @@ public class DocumentConversionService {
                 datasetName = dataset.getTitle();
             if (dataset.getType() != null)
                 datasetType = dataset.getType();
-            if (dataset.getSize() != null && !dataset.getSize().equals("")) {
-                datasetVol = format(Long.parseLong(dataset.getSize()))+"B";
+            if (dataset.getSize() != null) {
+                datasetVol = format(dataset.getSize())+"B";
             }
             if (dataset.getLicense() != null)
                 datasetLicense = dataset.getLicense();
@@ -229,8 +229,8 @@ public class DocumentConversionService {
                         docVar.add(datasets.get(i - 1).getTitle());
                         docVar.add(datasets.get(i - 1).getType());
                         docVar.add("");
-                        if (datasets.get(i-1).getSize() != null && !datasets.get(i-1).getSize().equals("")) {
-                            docVar.add(format(Long.parseLong(datasets.get(i - 1).getSize())) + "B");
+                        if (datasets.get(i-1).getSize() != null) {
+                            docVar.add(format(datasets.get(i - 1).getSize()) + "B");
                         }
                         else {
                             docVar.add("");

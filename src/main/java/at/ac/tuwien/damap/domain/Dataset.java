@@ -34,7 +34,7 @@ public class Dataset extends PanacheEntity {
     private String type;
 
     @Column(name = "data_size")
-    private String size;
+    private Long size;
 
     @Column(name = "dataset_comment")
     private String comment;
