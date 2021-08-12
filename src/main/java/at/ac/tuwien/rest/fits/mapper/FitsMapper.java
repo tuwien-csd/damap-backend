@@ -32,7 +32,7 @@ public class FitsMapper {
     };
 
     public Dataset mapAtoB(Fits fits, Dataset dataset) {
-        dataset.setSize(String.valueOf(getSize(fits)));
+        dataset.setSize(getSize(fits));
         IdentificationType.Identity identity = getMajorityVoteIdentity(fits);
         dataset.setType(mapFileFormat(identity));
 

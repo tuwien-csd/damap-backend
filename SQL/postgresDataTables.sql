@@ -440,7 +440,7 @@ CREATE TABLE damap.dataset
 	dmp_id bigint,
     title text,
     type text,
-    data_size text,
+    data_size bigint,
     dataset_comment text,
     personal_data boolean,
     sensitive_data boolean,
