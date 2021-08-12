@@ -1,9 +1,12 @@
 package at.ac.tuwien.damap;
 
+import at.ac.tuwien.damap.rest.DataManagementPlanResource;
 import at.ac.tuwien.damap.rest.domain.DmpDO;
 import at.ac.tuwien.damap.rest.domain.DmpListItemDO;
 import at.ac.tuwien.damap.rest.service.DmpService;
 import at.ac.tuwien.damap.rest.service.SaveDmpWrapper;
+import at.ac.tuwien.validation.AccessValidator;
+import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 import io.quarkus.test.security.TestSecurity;
@@ -21,13 +24,19 @@ import static io.restassured.RestAssured.given;
 import static org.mockito.ArgumentMatchers.*;
 
 @QuarkusTest
+@TestHTTPEndpoint(DataManagementPlanResource.class)
 public class DataManagementPlanResourceTest {
+
+    @InjectMock
+    AccessValidator accessValidator;
 
     @InjectMock
     DmpService dmpService;
 
     @BeforeEach
     public void setup() {
+        Mockito.when(accessValidator.canViewDmp(anyLong(), anyString())).thenReturn(true);
+        Mockito.when(accessValidator.canEditDmp(anyLong(), anyString())).thenReturn(true);
         Mockito.when(dmpService.save(any(SaveDmpWrapper.class))).thenReturn(this.createDmpDO());
         Mockito.when(dmpService.getAll()).thenReturn(this.createDmpListItemDOList());
         Mockito.when(dmpService.getDmpById(anyLong())).thenReturn(this.createDmpDO());
@@ -37,7 +46,7 @@ public class DataManagementPlanResourceTest {
     @Test
     public void testGetAllPlansEndpoint_Invalid() {
         given()
-                .when().get("/dmps/all")
+                .when().get("/all")
                 .then()
                 .statusCode(401);
     }
@@ -46,7 +55,7 @@ public class DataManagementPlanResourceTest {
     @TestSecurity(user = "userJwt", roles = "user")
     public void testGetAllPlansEndpoint_InvalidRole() {
         given()
-                .when().get("/dmps/all")
+                .when().get("/all")
                 .then()
                 .statusCode(403);
     }
@@ -55,7 +64,7 @@ public class DataManagementPlanResourceTest {
     @TestSecurity(user = "adminJwt", roles = "Damap Admin")
     public void testGetAllPlansEndpoint_ValidRole() {
         given()
-                .when().get("/dmps/all")
+                .when().get("/all")
                 .then()
                 .statusCode(200);
     }
@@ -64,7 +73,7 @@ public class DataManagementPlanResourceTest {
     @Test
     public void testGetPlansByPersonEndpoint_Invalid() {
         given()
-                .when().get("/dmps/person/012345")
+                .when().get("/person/012345")
                 .then()
                 .statusCode(401);
     }
@@ -73,7 +82,7 @@ public class DataManagementPlanResourceTest {
     @TestSecurity(user = "userJwt", roles = "user")
     public void testGetPlansByPersonEndpoint_InvalidRole() {
         given()
-                .when().get("/dmps/person/012345")
+                .when().get("/person/012345")
                 .then()
                 .statusCode(403);
     }
@@ -82,7 +91,7 @@ public class DataManagementPlanResourceTest {
     @TestSecurity(user = "adminJwt", roles = "Damap Admin")
     public void testGetPlansByPersonEndpoint_ValidRole() {
         given()
-                .when().get("/dmps/person/012345")
+                .when().get("/person/012345")
                 .then()
                 .statusCode(200);
     }
@@ -95,7 +104,7 @@ public class DataManagementPlanResourceTest {
     })
     public void testGetPlansEndpoint_Valid() {
         given()
-                .when().get("/dmps/list")
+                .when().get("/list")
                 .then()
                 .statusCode(200);
     }
@@ -103,7 +112,7 @@ public class DataManagementPlanResourceTest {
     @Test
     public void testGetPlansEndpoint_Invalid() {
         given()
-                .when().get("/dmps/list")
+                .when().get("/list")
                 .then()
                 .statusCode(401);
     }
@@ -111,7 +120,7 @@ public class DataManagementPlanResourceTest {
     @Test
     public void testPlanByIdEndpoint() {
         given()
-                .when().get("/dmps/1")
+                .when().get("/1")
                 .then()
                 .statusCode(401);
     }
@@ -127,7 +136,7 @@ public class DataManagementPlanResourceTest {
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(this.createDmpDO())
-                .when().post("/dmps")
+                .when().post("")
                 .then()
                 .statusCode(200);
     }
@@ -137,7 +146,7 @@ public class DataManagementPlanResourceTest {
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(this.createDmpDO())
-                .when().post("/dmps")
+                .when().post("")
                 .then()
                 .statusCode(401);
     }
@@ -151,7 +160,7 @@ public class DataManagementPlanResourceTest {
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body("{}")
-                .when().put("/dmps/1")
+                .when().put("/1")
                 .then()
                 .statusCode(200);
     }
@@ -161,7 +170,7 @@ public class DataManagementPlanResourceTest {
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body("{}")
-                .when().put("/dmps/1")
+                .when().put("/1")
                 .then()
                 .statusCode(401);
     }

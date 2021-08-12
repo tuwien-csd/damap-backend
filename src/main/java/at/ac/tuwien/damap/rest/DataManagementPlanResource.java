@@ -4,8 +4,10 @@ import at.ac.tuwien.damap.rest.domain.DmpDO;
 import at.ac.tuwien.damap.rest.domain.DmpListItemDO;
 import at.ac.tuwien.damap.rest.service.SaveDmpWrapper;
 import at.ac.tuwien.damap.rest.service.DmpService;
+import at.ac.tuwien.validation.AccessValidator;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.AuthenticationFailedException;
+import io.quarkus.security.ForbiddenException;
 import lombok.extern.jbosslog.JBossLog;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -24,6 +26,9 @@ public class DataManagementPlanResource {
 
     @Inject
     JsonWebToken jsonWebToken;
+
+    @Inject
+    AccessValidator accessValidator;
 
     @Inject
     DmpService dmpService;
@@ -73,7 +78,12 @@ public class DataManagementPlanResource {
     @Path("/{id}")
     public DmpDO getDmpById(@PathParam String id) {
         log.info("Return dmp with id: " + id);
-        return dmpService.getDmpById(Long.parseLong(id));
+        String personId = this.getPersonId();
+        long dmpId = Long.parseLong(id);
+        if(!accessValidator.canViewDmp(dmpId, personId)){
+            throw new ForbiddenException("Not authorized to access dmp with id " + dmpId);
+        }
+        return dmpService.getDmpById(dmpId);
     }
 
     @POST
@@ -94,6 +104,10 @@ public class DataManagementPlanResource {
     public DmpDO updateDmp(@PathParam String id, DmpDO dmpDO) {
         log.info("Update dmp with id: " + id);
         String personId = this.getPersonId();
+        long dmpId = Long.parseLong(id);
+        if(!accessValidator.canEditDmp(dmpId, personId)){
+            throw new ForbiddenException("Not authorized to access dmp with id " + dmpId);
+        }
         SaveDmpWrapper dmpWrapper = new SaveDmpWrapper();
         dmpWrapper.setDmp(dmpDO);
         dmpWrapper.setEdited_by(personId);
