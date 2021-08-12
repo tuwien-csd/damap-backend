@@ -8,6 +8,7 @@ import io.quarkus.security.AuthenticationFailedException;
 import lombok.extern.jbosslog.JBossLog;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -28,6 +29,7 @@ public class ProjectResource {
 
     @GET
     @Path("/suggest")
+    @RolesAllowed("user")
     public List<ProjectDO> getProjectSuggestionsForPerson() {
         log.info("Get project suggestions");
         String personId = this.getPersonId();
@@ -35,7 +37,7 @@ public class ProjectResource {
         return projectDatabaseService.getProjectSuggestionsForPerson(personId);
     }
 
-
+    /* TODO: Strategy for permission check required for restricted projects */
     @GET
     @Path("/{id}/staff")
     public List<ProjectMemberDO> getProjectMembers(@PathParam("id") String projectId) {
