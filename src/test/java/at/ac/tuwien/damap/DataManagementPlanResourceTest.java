@@ -52,7 +52,7 @@ public class DataManagementPlanResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "adminJwt", roles = "admin")
+    @TestSecurity(user = "adminJwt", roles = "Damap Admin")
     public void testGetAllPlansEndpoint_ValidRole() {
         given()
                 .when().get("/dmps/all")
@@ -60,6 +60,7 @@ public class DataManagementPlanResourceTest {
                 .statusCode(200);
     }
 
+/*
     @Test
     public void testGetPlansByPersonEndpoint_Invalid() {
         given()
@@ -78,20 +79,21 @@ public class DataManagementPlanResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "adminJwt", roles = "admin")
+    @TestSecurity(user = "adminJwt", roles = "Damap Admin")
     public void testGetPlansByPersonEndpoint_ValidRole() {
         given()
                 .when().get("/dmps/person/012345")
                 .then()
                 .statusCode(200);
     }
+*/
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
     @JwtSecurity(claims = {
             @Claim(key = "tissID", value = "012345")
     })
-    public void testPlansByPersonEndpoint_Valid() {
+    public void testGetPlansEndpoint_Valid() {
         given()
                 .when().get("/dmps/list")
                 .then()
@@ -99,7 +101,7 @@ public class DataManagementPlanResourceTest {
     }
 
     @Test
-    public void testPlansByPersonEndpoint_Invalid() {
+    public void testGetPlansEndpoint_Invalid() {
         given()
                 .when().get("/dmps/list")
                 .then()

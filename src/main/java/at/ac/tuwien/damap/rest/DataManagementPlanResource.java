@@ -38,13 +38,13 @@ public class DataManagementPlanResource {
         return dmpService.getAll();
     }
 
-    @GET
-    @Path("/person/{id}")
+    /*@GET
+    @Path("/person/{personId}")
     @RolesAllowed("Damap Admin")
-    public DmpDO getDmpByPerson(@PathParam String id) {
-        log.info("Return dmp for person id: " + id);
-        return dmpService.getDmpById(Long.parseLong(id));
-    }
+    public List<DmpListItemDO> getDmpListByPerson(@PathParam String personId) {
+        log.info("Return dmp for person id: " + personId);
+        return dmpService.getDmpListByPersonId(personId);
+    }*/
 
     // USER
 
@@ -58,7 +58,7 @@ public class DataManagementPlanResource {
     }
 
 
-    @GET
+    /*@GET
     @Path("/subordinates")
     @RolesAllowed("user")
     public List<DmpListItemDO> getDmpsSubordinates() {
@@ -67,7 +67,7 @@ public class DataManagementPlanResource {
         log.info("User id: " + personId);
         // TODO: Service stub
         return dmpService.getDmpListByPersonId(personId);
-    }
+    }*/
 
     @GET
     @Path("/{id}")
