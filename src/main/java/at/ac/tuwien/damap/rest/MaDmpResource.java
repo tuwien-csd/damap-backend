@@ -3,8 +3,10 @@ package at.ac.tuwien.damap.rest;
 import at.ac.tuwien.damap.rest.service.DmpService;
 import at.ac.tuwien.rest.madmp.dto.MaDmp;
 import at.ac.tuwien.rest.madmp.service.MaDmpService;
+import at.ac.tuwien.validation.AccessValidator;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.AuthenticationFailedException;
+import io.quarkus.security.ForbiddenException;
 import lombok.extern.jbosslog.JBossLog;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
@@ -24,6 +26,9 @@ public class MaDmpResource {
     JsonWebToken jsonWebToken;
 
     @Inject
+    AccessValidator accessValidator;
+
+    @Inject
     MaDmpService maDmpService;
 
     @Inject
@@ -34,6 +39,9 @@ public class MaDmpResource {
     public MaDmp getById(@PathParam("id") long id) {
         log.info("Return maDMP for DMP with id: " + id);
         String personId = this.getPersonId();
+        if(!accessValidator.canViewDmp(id, personId)){
+            throw new ForbiddenException("Not authorized to access dmp with id " + id);
+        }
         return maDmpService.getById(id);
     }
 
@@ -42,6 +50,9 @@ public class MaDmpResource {
     public Response getFileById(@PathParam("id") long id) {
         log.info("Return maDMP file for DMP with id: " + id);
         String personId = this.getPersonId();
+        if(!accessValidator.canViewDmp(id, personId)){
+            throw new ForbiddenException("Not authorized to access dmp with id " + id);
+        }
 
         String filename = dmpService.getDefaultFileName(id);
 
