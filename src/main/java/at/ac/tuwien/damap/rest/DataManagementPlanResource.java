@@ -4,50 +4,120 @@ import at.ac.tuwien.damap.rest.domain.DmpDO;
 import at.ac.tuwien.damap.rest.domain.DmpListItemDO;
 import at.ac.tuwien.damap.rest.service.SaveDmpWrapper;
 import at.ac.tuwien.damap.rest.service.DmpService;
+import at.ac.tuwien.validation.AccessValidator;
+import io.quarkus.security.Authenticated;
+import io.quarkus.security.AuthenticationFailedException;
+import io.quarkus.security.ForbiddenException;
 import lombok.extern.jbosslog.JBossLog;
+import org.jboss.resteasy.annotations.jaxrs.PathParam;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-@Path("/plans")
+@Path("/dmps")
+@Authenticated
 @Produces(MediaType.APPLICATION_JSON)
 @JBossLog
 public class DataManagementPlanResource {
 
     @Inject
+    JsonWebToken jsonWebToken;
+
+    @Inject
+    AccessValidator accessValidator;
+
+    @Inject
     DmpService dmpService;
+
+    // ADMIN
 
     @GET
     @Path("/all")
-    public List<DmpDO> getAll() {
-        //TODO delete this method, it currently only exists for testing the DB
+    @RolesAllowed("Damap Admin")
+    public List<DmpListItemDO> getAll() {
         log.info("Return all Dmps");
         return dmpService.getAll();
     }
 
+    /*@GET
+    @Path("/person/{personId}")
+    @RolesAllowed("Damap Admin")
+    public List<DmpListItemDO> getDmpListByPerson(@PathParam String personId) {
+        log.info("Return dmp for person id: " + personId);
+        return dmpService.getDmpListByPersonId(personId);
+    }*/
+
+    // USER
+
     @GET
-    @Path("/dmp-list/{personId}")
-//    @RolesAllowed("user")
-    public List<DmpListItemDO> getDmpListByPersonId(@PathParam("personId") String personId) {
-        log.info("Return dmp list for user id=" + personId);
+    @Path("/list")
+    public List<DmpListItemDO> getDmpList() {
+        log.info("Return dmp list for user");
+        String personId = this.getPersonId();
+        log.info("User id: " + personId);
         return dmpService.getDmpListByPersonId(personId);
     }
 
 
+    /*@GET
+    @Path("/subordinates")
+    @RolesAllowed("user")
+    public List<DmpListItemDO> getDmpsSubordinates() {
+        log.info("Return dmp list for subordinates");
+        String personId = this.getPersonId();
+        log.info("User id: " + personId);
+        // TODO: Service stub
+        return dmpService.getDmpListByPersonId(personId);
+    }*/
+
     @GET
-    @Path("/dmp/{id}")
-//    @RolesAllowed("user")
-    public DmpDO getDmpById(@PathParam("id") String id) {
-        log.info("Return dmp with id=" + id);
-        return dmpService.getDmpById(Long.valueOf(id));
+    @Path("/{id}")
+    public DmpDO getDmpById(@PathParam String id) {
+        log.info("Return dmp with id: " + id);
+        String personId = this.getPersonId();
+        long dmpId = Long.parseLong(id);
+        if(!accessValidator.canViewDmp(dmpId, personId)){
+            throw new ForbiddenException("Not authorized to access dmp with id " + dmpId);
+        }
+        return dmpService.getDmpById(dmpId);
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/save-dmp")
-    public DmpDO saveDmp(SaveDmpWrapper dmpWrapper){
+    @RolesAllowed("user")
+    public DmpDO saveDmp(DmpDO dmpDO) {
+        log.info("Save dmp");
+        String personId = this.getPersonId();
+        SaveDmpWrapper dmpWrapper = new SaveDmpWrapper();
+        dmpWrapper.setDmp(dmpDO);
+        dmpWrapper.setEdited_by(personId);
         return dmpService.save(dmpWrapper);
+    }
+
+    @PUT
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public DmpDO updateDmp(@PathParam String id, DmpDO dmpDO) {
+        log.info("Update dmp with id: " + id);
+        String personId = this.getPersonId();
+        long dmpId = Long.parseLong(id);
+        if(!accessValidator.canEditDmp(dmpId, personId)){
+            throw new ForbiddenException("Not authorized to access dmp with id " + dmpId);
+        }
+        SaveDmpWrapper dmpWrapper = new SaveDmpWrapper();
+        dmpWrapper.setDmp(dmpDO);
+        dmpWrapper.setEdited_by(personId);
+        return dmpService.save(dmpWrapper);
+    }
+
+    private String getPersonId() {
+        if (jsonWebToken.claim("tissID").isEmpty()) {
+            throw new AuthenticationFailedException("Tiss ID is missing.");
+        }
+        return String.valueOf(jsonWebToken.claim("tissID").get());
     }
 }
