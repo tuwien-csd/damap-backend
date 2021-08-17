@@ -27,13 +27,14 @@ public class DmpService {
     @Inject
     AccessRepo accessRepo;
 
-    public List<DmpDO> getAll() {
+    public List<DmpListItemDO> getAll() {
 
         List<Dmp> dmpList = dmpRepo.getAll();
-        List<DmpDO> dmpDOList = new ArrayList<>();
-        dmpList.forEach(dmp -> {
-            dmpDOList.add(DmpDOMapper.mapEntityToDO(dmp, new DmpDO()));
-        });
+        List<DmpListItemDO> dmpDOList = new ArrayList<>();
+        // FIXME
+        /*dmpList.forEach(dmp -> {
+            dmpDOList.add(DmpDOMapper.mapEntityToDO(dmp, new DmpListItemDO()));
+        });*/
         return dmpDOList;
     }
 
@@ -58,6 +59,7 @@ public class DmpService {
         if (dmpWrapper.getDmp().getId() == null)
             dmpId = create(dmpWrapper);
         else
+            // TODO: check if allowed to update
             dmpId = update(dmpWrapper);
         return getDmpById(dmpId);
     }
@@ -73,6 +75,7 @@ public class DmpService {
 
     public long update(SaveDmpWrapper dmpWrapper) {
         log.info("Updating DMP with id " + dmpWrapper.getDmp().getId());
+        // TODO: check privileges
         Dmp dmp = dmpRepo.findById(dmpWrapper.getDmp().getId());
         DmpDOMapper.mapDOtoEntity(dmpWrapper.getDmp(), dmp);
         dmp.setModified(new Date());

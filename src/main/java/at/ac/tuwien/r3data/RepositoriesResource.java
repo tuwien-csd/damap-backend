@@ -1,11 +1,11 @@
 package at.ac.tuwien.r3data;
 
 import generated.Repository;
+import io.quarkus.security.Authenticated;
 import lombok.extern.jbosslog.JBossLog;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.re3data.schema._2_2.Re3Data;
 
-import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -16,10 +16,10 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
-@JBossLog
 @Path("/repositories")
-@RolesAllowed("user")
+@Authenticated
 @Produces(MediaType.APPLICATION_JSON)
+@JBossLog
 public class RepositoriesResource {
 
     @Inject
