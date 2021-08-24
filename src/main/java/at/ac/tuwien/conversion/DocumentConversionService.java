@@ -46,7 +46,7 @@ public class DocumentConversionService {
             if (dmp.getProject().getEnd() != null)
                 map.put("[enddate]", formatter.format(dmp.getProject().getEnd()));
             if (dmp.getProject().getFunding().getGrantIdentifier() != null &&
-                dmp.getProject().getFunding().getGrantIdentifier().getIdentifier() != null)
+                    dmp.getProject().getFunding().getGrantIdentifier().getIdentifier() != null)
                 map.put("[grantid]", dmp.getProject().getFunding().getGrantIdentifier().getIdentifier());
         }
 
@@ -331,7 +331,7 @@ public class DocumentConversionService {
 //                            docVar.add(datasets.get(i - 1).getHost().getTitle());
 //                        }
 //                        else {
-                            docVar.add("");
+                        docVar.add("");
 //                        }
                         docVar.add("");
                         if (datasets.get(i - 1).getLicense() != null) {
