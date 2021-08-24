@@ -93,12 +93,19 @@ public class FitsMapper {
         }
 
         switch (format) {
+            case "Graphics Interchange Format":
+            case "JPEG File Interchange Format":
             case "Portable Network Graphics":
             case "JPEG EXIF":
                 return FILE_TYPES[3];
         }
 
         switch (mimetype) {
+            case "image/jpeg":
+            case "image/png":
+            case "image/tiff":
+            case "image/gif":
+                return FILE_TYPES[3];
             case "application/msword":
             case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
             case "application/vnd.ms-excel":
