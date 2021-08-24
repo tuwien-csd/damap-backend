@@ -104,6 +104,8 @@ public class DocumentConversionService {
             map.put("[contributors]", "");
         }
 
+        //Section 1
+
         //TODO datasets and hosts are now connected by Distribution objects
         // the following table (5a) should only list datasets with distributions on a repository for long term storage
         // (each distribution should be listed, therefore there can be multiple entries for the same dataset)
@@ -159,6 +161,53 @@ public class DocumentConversionService {
         if (datasets.size() == 0) {
             map.put("P1", "");
         }
+
+        if (dmp.getDataGeneration() != null)
+            map.put("[datageneration]", dmp.getDataGeneration());
+
+        //Section 2
+
+        if (dmp.getMetadata() != null) {
+            if (dmp.getMetadata().equals("")) {
+                map.put("[metadata]", "As there are no domain specific metadata standards applicable, we will provide a README file with an explanation of all values and terms used next to each file with data.");
+            } else {
+                map.put("[metadata]", dmp.getMetadata());
+            }
+        }
+
+        //Section 3
+
+        List<Host> hostList = dmp.getHostList();
+        String storageVar = "";
+
+        for (Host host: hostList) {
+            List<Distribution> distributions = host.getDistributionList();
+            String hostVar = host.getTitle();
+
+            String distVar = "";
+            for (Distribution dist: distributions) {
+
+                int idx = datasets.indexOf(dist.getDataset())+1;
+                distVar = distVar + "P" + idx + " (" + dist.getDataset().getTitle() + ")";
+                if (datasets.indexOf(dist.getDataset())+1 < datasets.size())
+                    distVar = distVar + ", ";
+            }
+
+            storageVar = storageVar + distVar + " will be stored in " + hostVar + System.lineSeparator();
+
+            if (hostList.indexOf(host)+1 < hostList.size())
+                storageVar = storageVar.concat("\r\n");
+        }
+
+        map.put("[storage]", storageVar);
+
+        //Section 4
+
+        if (dmp.getEthicsReport() != null)
+            map.put("[otherguideline]", dmp.getEthicsReport());
+
+
+        //Section 6
 
         //mapping cost information
         Long totalCost = 0L;
