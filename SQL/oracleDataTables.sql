@@ -313,7 +313,7 @@ CREATE TABLE damap.dataset
     dmp_id NUMBER(19,0),
     title VARCHAR2(255 CHAR),
     type VARCHAR2(255 CHAR),
-    data_size VARCHAR2(255 CHAR),
+    data_size NUMBER(19,0),
     dataset_comment VARCHAR2(4000 CHAR),
     personal_data NUMBER(1,0),
     sensitive_data NUMBER(1,0),
