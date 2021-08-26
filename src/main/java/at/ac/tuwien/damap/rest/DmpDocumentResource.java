@@ -1,7 +1,7 @@
 package at.ac.tuwien.damap.rest;
 
-import at.ac.tuwien.conversion.DocumentConversionService;
-import at.ac.tuwien.damap.rest.service.DmpService;
+import at.ac.tuwien.damap.conversion.DocumentConversionService;
+import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.AuthenticationFailedException;
 import lombok.extern.jbosslog.JBossLog;

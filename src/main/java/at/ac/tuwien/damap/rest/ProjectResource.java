@@ -1,8 +1,8 @@
 package at.ac.tuwien.damap.rest;
 
-import at.ac.tuwien.damap.rest.domain.ProjectDO;
-import at.ac.tuwien.damap.rest.domain.ProjectMemberDO;
-import at.ac.tuwien.rest.projectdatabase.service.ProjectDatabaseService;
+import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
+import at.ac.tuwien.damap.rest.dmp.domain.ProjectMemberDO;
+import at.ac.tuwien.damap.rest.projectdatabase.service.ProjectDatabaseService;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.AuthenticationFailedException;
 import lombok.extern.jbosslog.JBossLog;

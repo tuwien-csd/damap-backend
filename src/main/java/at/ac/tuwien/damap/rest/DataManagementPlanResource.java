@@ -1,10 +1,10 @@
 package at.ac.tuwien.damap.rest;
 
-import at.ac.tuwien.damap.rest.domain.DmpDO;
-import at.ac.tuwien.damap.rest.domain.DmpListItemDO;
-import at.ac.tuwien.damap.rest.service.SaveDmpWrapper;
-import at.ac.tuwien.damap.rest.service.DmpService;
-import at.ac.tuwien.validation.AccessValidator;
+import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
+import at.ac.tuwien.damap.rest.dmp.domain.DmpListItemDO;
+import at.ac.tuwien.damap.rest.dmp.service.SaveDmpWrapper;
+import at.ac.tuwien.damap.rest.dmp.service.DmpService;
+import at.ac.tuwien.damap.validation.AccessValidator;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.AuthenticationFailedException;
 import io.quarkus.security.ForbiddenException;

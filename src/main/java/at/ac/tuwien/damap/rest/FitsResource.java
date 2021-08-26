@@ -1,9 +1,9 @@
 package at.ac.tuwien.damap.rest;
 
-import at.ac.tuwien.damap.rest.domain.DatasetDO;
-import at.ac.tuwien.damap.rest.domain.MultipartBodyDO;
-import at.ac.tuwien.damap.rest.mapper.DatasetDOMapper;
-import at.ac.tuwien.rest.fits.service.FitsService;
+import at.ac.tuwien.damap.rest.dmp.domain.DatasetDO;
+import at.ac.tuwien.damap.rest.dmp.domain.MultipartBodyDO;
+import at.ac.tuwien.damap.rest.dmp.mapper.DatasetDOMapper;
+import at.ac.tuwien.damap.rest.fits.service.FitsService;
 import io.quarkus.security.Authenticated;
 import lombok.extern.jbosslog.JBossLog;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;

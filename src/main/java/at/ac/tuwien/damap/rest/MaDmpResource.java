@@ -1,9 +1,9 @@
 package at.ac.tuwien.damap.rest;
 
-import at.ac.tuwien.damap.rest.service.DmpService;
-import at.ac.tuwien.rest.madmp.dto.MaDmp;
-import at.ac.tuwien.rest.madmp.service.MaDmpService;
-import at.ac.tuwien.validation.AccessValidator;
+import at.ac.tuwien.damap.rest.dmp.service.DmpService;
+import at.ac.tuwien.damap.rest.madmp.dto.MaDmp;
+import at.ac.tuwien.damap.rest.madmp.service.MaDmpService;
+import at.ac.tuwien.damap.validation.AccessValidator;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.AuthenticationFailedException;
 import io.quarkus.security.ForbiddenException;
