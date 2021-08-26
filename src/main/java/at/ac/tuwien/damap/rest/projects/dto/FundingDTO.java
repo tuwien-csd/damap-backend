@@ -1,4 +1,4 @@
-package at.ac.tuwien.damap.rest.projectdatabase.dto;
+package at.ac.tuwien.damap.rest.projects.dto;
 
 import at.ac.tuwien.damap.enums.EFundingState;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

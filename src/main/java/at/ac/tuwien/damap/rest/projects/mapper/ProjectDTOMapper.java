@@ -1,12 +1,12 @@
-package at.ac.tuwien.damap.rest.projectdatabase.mapper;
+package at.ac.tuwien.damap.rest.projects.mapper;
 
 import at.ac.tuwien.damap.enums.EIdentifierType;
 import at.ac.tuwien.damap.rest.dmp.domain.FundingDO;
 import at.ac.tuwien.damap.rest.dmp.domain.IdentifierDO;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
-import at.ac.tuwien.damap.rest.projectdatabase.dto.FundingDTO;
-import at.ac.tuwien.damap.rest.projectdatabase.dto.IdentifierDTO;
-import at.ac.tuwien.damap.rest.projectdatabase.dto.ProjectDTO;
+import at.ac.tuwien.damap.rest.projects.dto.FundingDTO;
+import at.ac.tuwien.damap.rest.projects.dto.IdentifierDTO;
+import at.ac.tuwien.damap.rest.projects.dto.ProjectDTO;
 import lombok.experimental.UtilityClass;
 
 import java.text.ParseException;

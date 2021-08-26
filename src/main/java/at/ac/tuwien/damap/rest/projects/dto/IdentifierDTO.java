@@ -1,4 +1,4 @@
-package at.ac.tuwien.damap.rest.projectdatabase.dto;
+package at.ac.tuwien.damap.rest.projects.dto;
 
 import lombok.Data;
 
