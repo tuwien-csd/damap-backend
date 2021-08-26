@@ -2,7 +2,7 @@ package at.ac.tuwien.damap.rest;
 
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectMemberDO;
-import at.ac.tuwien.damap.rest.projectdatabase.service.ProjectDatabaseService;
+import at.ac.tuwien.damap.rest.projects.service.ProjectService;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.AuthenticationFailedException;
 import lombok.extern.jbosslog.JBossLog;
@@ -25,16 +25,16 @@ public class ProjectResource {
     JsonWebToken jsonWebToken;
 
     @Inject
-    ProjectDatabaseService projectDatabaseService;
+    ProjectService projectService;
 
     @GET
     @Path("/suggest")
     @RolesAllowed("user")
-    public List<ProjectDO> getProjectSuggestionsForPerson() {
+    public List<ProjectDO> getProjectList() {
         log.info("Get project suggestions");
         String personId = this.getPersonId();
         log.info("User id: " + personId);
-        return projectDatabaseService.getProjectSuggestionsForPerson(personId);
+        return projectService.getProjectList(personId);
     }
 
     /* TODO: Strategy for permission check required for restricted projects */
@@ -42,7 +42,7 @@ public class ProjectResource {
     @Path("/{id}/staff")
     public List<ProjectMemberDO> getProjectMembers(@PathParam("id") String projectId) {
         log.info(String.format("Get Project Staff for Project ID=%s", projectId));
-        return projectDatabaseService.getProjectStaff(projectId);
+        return projectService.getProjectStaff(projectId);
     }
 
     private String getPersonId() {

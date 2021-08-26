@@ -1,12 +1,12 @@
-package at.ac.tuwien.damap.rest.projectdatabase.dto;
+package at.ac.tuwien.damap.rest.projects.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class OrgunitDTO {
+public class ProjectMemberDTO {
 
     private long id;
-    private String code;
+    private String role;
 }
