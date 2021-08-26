@@ -9,7 +9,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Path("/api/pdb/rest")
-@RegisterRestClient
+@RegisterRestClient(configKey = "damap.projects")
 @Produces(MediaType.APPLICATION_JSON)
 public interface ProjectDatabaseRestService {
 

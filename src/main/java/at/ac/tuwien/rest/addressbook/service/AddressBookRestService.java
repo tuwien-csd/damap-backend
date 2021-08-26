@@ -10,7 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Path("/api")
-@RegisterRestClient
+@RegisterRestClient(configKey = "damap.address-book")
 @Produces(MediaType.APPLICATION_JSON)
 public interface AddressBookRestService {
 

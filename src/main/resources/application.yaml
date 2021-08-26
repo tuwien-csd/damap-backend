@@ -24,26 +24,14 @@ quarkus:
       generation: none
     sql-load-script: no-file
 
-at:
-  ac:
-    tuwien:
-      r3data:
-        RepositoriesRemoteResource/mp-rest/url: https://www.re3data.org/api
-        RepositoriesRemoteResource/mp-rest/scope: javax.inject.Singleton
-      rest:
-        projectdatabase.service.ProjectDatabaseRestService/mp-rest/url :  ${ORG_API_URL}
-        addressbook.service.AddressBookRestService/mp-rest/url :  ${ORG_API_URL}
-        fits.service.FitsRestService/mp-rest/url :  ${DAMAP_FITS_URL}
+damap:
+  projects/mp-rest/url: ${ORG_API_URL}
+  address-book/mp-rest/url: ${ORG_API_URL}
+  fits/mp-rest/url: ${DAMAP_FITS_URL}
+r3data:
+  repositories/mp-rest/url: https://www.re3data.org/api
+  repositories/mp-rest/scope: javax.inject.Singleton
 
 "%dev":
 
-"%oracle":
-
 "%test":
-
-"%staging":
-  quarkus:
-    datasource:
-      db-kind: oracle
-
-# QUARKUS_DATASOURCE_DB_KIND=oracle
