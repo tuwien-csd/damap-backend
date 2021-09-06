@@ -14,6 +14,7 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
 
@@ -57,52 +58,97 @@ public class DocumentConversionService {
         //mapping contact information
         if (dmp.getContact() != null) {
             //TO DO: add affiliation and ROR (currently not stored in TISS)
-            String contactName = "[contactname]";
-            String contactMail = "[contactmail]";
-            String contactId = "[contactid]";
+            //Now affiliation assigned manually with TU Wien
+            String contactName = "";
+            String contactMail = "";
+            String contactId = "";
+            String contactaff = "TU Wien";
+            String identifierType = "";
+            String identifierID = "";
 
             if (dmp.getContact().getFirstName() != null && dmp.getContact().getFirstName() != null)
                 contactName = dmp.getContact().getFirstName() + " " + dmp.getContact().getLastName();
             if (dmp.getContact().getMbox() != null)
                 contactMail = dmp.getContact().getMbox();
             //TO DO: Check if the identifier is ORCID or not
-            if (dmp.getContact().getPersonIdentifier() != null)
-                contactId = dmp.getContact().getPersonIdentifier().getIdentifier();
+            if (dmp.getContact().getPersonIdentifier() != null) {
+                identifierID = dmp.getContact().getPersonIdentifier().getIdentifier();
+                if (dmp.getContact().getPersonIdentifier().getIdentifierType().toString().equals("orcid")) {
+                    identifierType = "ORCID iD: ";
+                }
+                contactId = identifierType + identifierID;
+            }
 
             map.put("[contactname]", contactName);
             map.put("[contactmail]", contactMail);
             map.put("[contactid]", contactId);
+            map.put("[contactaffiliation]", contactaff);
+            map.put("[contactror]", "");
         }
 
-        //mapping contributor information
+        //mapping project coordinator and contributor information
+        String coordinatorName = "";
+        String coordinatorMail = "";
+        String coordinatorId = "";
+        String coordinatorAffiliation = "TU Wien";
+        String coordinatorRor = "";
+
         if (dmp.getContributorList() != null) {
-            String contributorValue = "";
+            String contributorPerson = "";
+
             List<Contributor> contributors = dmp.getContributorList();
+            List<String> contributorList = new ArrayList<>();
             for(Contributor contributor : contributors) {
                 //TO DO: add affiliation and ROR (currently not stored in TISS)
 
-                if (contributors.indexOf(contributor) != 0) {
-                    contributorValue = contributorValue.concat("\r\n");
-                }
+//                if (contributors.indexOf(contributor) != 0) {
+//                    contributorValue = contributorValue.concat("\r\n");
+//                }
 
                 String contributorName = "";
                 String contributorMail = "";
                 String contributorId = "";
+                String contributorRole = "";
+                String identifierID = "";
+                String identifierType = "";
+                String leaderName = "";
+                String leaderMail = "";
+                String leaderId = "";
 
                 if (contributor.getContributor().getFirstName() != null && contributor.getContributor().getLastName() != null)
                     contributorName = contributor.getContributor().getFirstName() + " " + contributor.getContributor().getLastName();
                 if (contributor.getContributor().getMbox() != null)
                     contributorMail = contributor.getContributor().getMbox();
-                if (contributor.getContributor().getPersonIdentifier() != null)
-                    contributorId = contributor.getContributor().getPersonIdentifier().getIdentifier();
-
-                contributorValue = contributorValue.concat(contributorName + ", " + contributorMail + ", " + contributorId + ", " + "[contributoraffiliation]" + ", " + "[contributorror]");
+                if (contributor.getContributor().getPersonIdentifier() != null) {
+                    identifierID = contributor.getContributor().getPersonIdentifier().getIdentifier();
+                    if (contributor.getContributor().getPersonIdentifier().getIdentifierType().toString().equals("orcid")) {
+                        identifierType = "ORCID iD: ";
+                    }
+                    contributorId = identifierType + identifierID;
+                }
+                if (contributor.getContributorRole().getRole() != null) {
+                    contributorRole = contributor.getContributorRole().getRole();
+                    if ((contributorRole.equals("Project Leader") || contributorRole.equals("Project Manager")) && coordinatorName.equals("")) {
+                        coordinatorName = contributorName;
+                        coordinatorMail = contributorMail;
+                        coordinatorId = contributorId;
+                    }
+                }
+                contributorPerson = contributorName + ", " + contributorMail + ", " + contributorId + ", " + "TU Wien" + ", " + contributorRole;
+                contributorList.add(contributorPerson);
             }
+            String contributorValue = String.join(";", contributorList);
             map.put("[contributors]", contributorValue);
         }
         else {
             map.put("[contributors]", "");
         }
+
+        map.put("[coordinatorname]", coordinatorName);
+        map.put("[coordinatormail]", coordinatorMail);
+        map.put("[coordinatorid]", coordinatorId);
+        map.put("[coordinatoraffiliation]", coordinatorAffiliation);
+        map.put("[coordinatorror]", coordinatorRor);
 
         //Section 1
 
@@ -121,6 +167,7 @@ public class DocumentConversionService {
             String docVar6 = "[dataset" + idx + "pubdate]";
             String docVar7 = "[dataset" + idx + "repo]";
             String docVar8 = "[dataset" + idx + "access]";
+            String docVar9 = "[dataset" + idx + "sensitive]";
 
             String datasetName = "";
             String datasetType = "";
@@ -130,14 +177,14 @@ public class DocumentConversionService {
             String datasetPubdate = "";
             String datasetRepo = "";
             String datasetAccess = "";
+            String datasetSensitive = "";
 
             if (dataset.getTitle() != null)
                 datasetName = dataset.getTitle();
             if (dataset.getType() != null)
                 datasetType = dataset.getType();
-            if (dataset.getSize() != null) {
+            if (dataset.getSize() != null)
                 datasetVol = format(dataset.getSize())+"B";
-            }
             if (dataset.getLicense() != null)
                 datasetLicense = dataset.getLicense();
             if (dataset.getStart() != null)
@@ -147,6 +194,14 @@ public class DocumentConversionService {
 //                datasetRepo = dataset.getHost().getTitle();
             if (dataset.getDataAccess() != null)
                 datasetAccess = dataset.getDataAccess().toString();
+            if (dataset.getSensitiveData() != null) {
+                if (dataset.getSensitiveData()) {
+                    datasetSensitive = "yes";
+                }
+                else {
+                    datasetSensitive = "true";
+                }
+            }
 
             map.put(docVar1, datasetName);
             map.put(docVar2, datasetType);
@@ -156,6 +211,7 @@ public class DocumentConversionService {
             map.put(docVar6, datasetPubdate);
             map.put(docVar7, datasetRepo);
             map.put(docVar8, datasetAccess);
+            map.put(docVar9, datasetSensitive);
         }
 
         if (datasets.size() == 0) {
@@ -171,7 +227,7 @@ public class DocumentConversionService {
             if (dmp.getMetadata().equals("")) {
                 map.put("[metadata]", "As there are no domain specific metadata standards applicable, we will provide a README file with an explanation of all values and terms used next to each file with data.");
             } else {
-                map.put("[metadata]", dmp.getMetadata());
+                map.put("[metadata]", "To help others identify, discover and reuse the data, " + dmp.getMetadata() + " will be used.");
             }
         }
 
@@ -189,22 +245,134 @@ public class DocumentConversionService {
 
                 int idx = datasets.indexOf(dist.getDataset())+1;
                 distVar = distVar + "P" + idx + " (" + dist.getDataset().getTitle() + ")";
-                if (datasets.indexOf(dist.getDataset())+1 < datasets.size())
+                if (distributions.indexOf(dist)+1 < distributions.size())
                     distVar = distVar + ", ";
             }
 
-            storageVar = storageVar + distVar + " will be stored in " + hostVar + System.lineSeparator();
+            if (host.getHostId() != null) {
+                if (host.getHostId().contains("r3")) {
+                    storageVar = storageVar.concat(distVar + " will use " + hostVar + " for the data repository.");
+                }
+                else {
+                    if (distVar != "")
+                        storageVar = storageVar.concat(distVar + " will be stored in " + hostVar + ".");
+                }
+            }
+            else { //case for external storage, will have null host Id
+                storageVar = storageVar.concat(distVar + " will be stored in " + hostVar + ".");
+            }
 
             if (hostList.indexOf(host)+1 < hostList.size())
-                storageVar = storageVar.concat("\r\n");
+                storageVar = storageVar.concat(";");
+
+            System.out.println(storageVar);
         }
+
+        if (dmp.getExternalStorageInfo() != null)
+            storageVar = storageVar.concat(";");
+            storageVar = storageVar.concat("External storage will be used " + dmp.getExternalStorageInfo().toLowerCase(Locale.ROOT));
 
         map.put("[storage]", storageVar);
 
         //Section 4
 
-        if (dmp.getEthicsReport() != null)
-            map.put("[otherguideline]", dmp.getEthicsReport());
+        //Section 4a: personal data
+        String personalData = "";
+        if (dmp.getPersonalData()) {
+            String personalDataSentence = "Personal data will be collected/used as part of the project. ";
+            String personalDataset = "";
+            String datasetSentence = "";
+            List<String> datasetList = new ArrayList<>();
+
+            for (Dataset dataset: datasets) {
+
+                int idx = datasets.indexOf(dataset)+1;
+                if (dataset.getPersonalData()) {
+                    personalDataset = personalDataset + "P" + idx + " (" + dataset.getTitle() + ")";
+                    datasetList.add(personalDataset);
+                }
+            }
+
+            if (datasetList.size()>0) {
+                personalDataset = String.join(",", datasetList);
+                datasetSentence = " will containing personal data. ";
+            }
+
+            personalData = personalDataSentence + " " + personalDataset + datasetSentence + "To ensure that only authorised users can access personal data, " + dmp.getPersonalDataAccess() + " will be used.";
+
+        } else {
+            personalData = "At this stage, it is not foreseen to process any personal data in the project. If this changes, advice will be sought from the data protection specialist at TU Wien (Verena Dolovai), and the DMP will be updated.";
+        }
+        map.put("[personaldata]", personalData);
+
+        //Section 4a: sensitive data
+
+        String sensitiveData = "";
+        if (dmp.getSensitiveData()) {
+            String sensitiveDataSentence = "";
+            String sensitiveDataset = "";
+            String datasetSentence = "";
+            List<String> datasetList = new ArrayList<>();
+
+            for (Dataset dataset: datasets) {
+
+                int idx = datasets.indexOf(dataset)+1;
+                if (dataset.getSensitiveData()) {
+                    sensitiveDataset = sensitiveDataset + "P" + idx + " (" + dataset.getTitle() + ")";
+                    datasetList.add(sensitiveDataset);
+                }
+            }
+
+            if (datasetList.size()>0) {
+                sensitiveDataset = String.join(",", datasetList);
+                datasetSentence = " will containing sensitive data. ";
+            }
+
+            sensitiveData = sensitiveDataSentence + sensitiveDataset + datasetSentence + "To ensure that the dataset containing sensitive data stored and transfered safe, " + dmp.getSensitiveDataSecurity() + " will be taken.";
+
+        } else {
+            sensitiveData = "At this stage, it is not foreseen to process any sensitive data in the project. If this changes, advice will be sought from the data protection specialist at TU Wien (Verena Dolovai), and the DMP will be updated.";
+        }
+        map.put("[sensitivedata]", sensitiveData);
+
+        //Section 4b: legal restriction
+
+        String legalRestriction = "";
+        if (dmp.getLegalRestrictions()) {
+            String legalRestrictionSentence = "";
+            String legalRestrictionDataset = "";
+            List<String> datasetList = new ArrayList<>();
+
+            for (Dataset dataset: datasets) {
+
+                int idx = datasets.indexOf(dataset)+1;
+                if (dataset.getLegalRestrictions()) {
+                    legalRestrictionDataset = legalRestrictionDataset + "P" + idx + " (" + dataset.getTitle() + ")";
+                    datasetList.add(legalRestrictionDataset);
+                }
+            }
+
+            if (datasetList.size()>0) {
+                legalRestrictionDataset = String.join(",", datasetList);
+                legalRestrictionSentence = "There is a concern of legal restriction for dataset ";
+            }
+
+            legalRestriction = legalRestrictionSentence + legalRestrictionDataset + ". " + dmp.getLegalRestrictionsComment() + ".";
+
+        }
+
+        map.put("[legalrestriction]", legalRestriction);
+
+        //Section 4c: ethical issues
+
+        String ethicalIssues = "";
+        if (dmp.getEthicalIssuesExist()) {
+            String ethicalSentence = "Ethical issues in the project have been identified and discussed with the Research Ethics Coordinator at TU Wien (https://www.tuwien.at/en/research/rti-support/research-ethics/).";
+            ethicalIssues = ethicalSentence + " " + dmp.getEthicalComplianceStatement() + "Relevant ethical guidelines in this project are " + dmp.getEthicsReport() + ".";
+        } else {
+            ethicalIssues = "No particular ethical issue is foreseen with the data to be used or produced by the project. This section will be updated if issues arise.";
+        }
+        map.put("[ethicalissues]", ethicalIssues);
 
 
         //Section 6
@@ -263,98 +431,106 @@ public class DocumentConversionService {
         for (XWPFTable xwpfTable : tables) {
             if (xwpfTable.getRow(1) != null) {
 
-                //dynamic table rows code for dataset
+                //dynamic table rows code for dataset (1a)
                 //notes: dataset number 2 until the end will be written directly to the table
-                if (xwpfTable.getRow(1).getCell(1).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[dataset1name]")
-                        && datasets.size() > 1) {
+                if (xwpfTable.getRow(1).getCell(1).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[dataset1name]")) {
 
-                    for (int i = 2; i < datasets.size() + 1; i++) {
+                    if (datasets.size() > 1) {
+                        for (int i = 2; i < datasets.size() + 1; i++) {
 
-                        XWPFTableRow sourceTableRow = xwpfTable.getRow(i);
-                        XWPFTableRow newRow = insertNewTableRow(sourceTableRow, i);
+                            XWPFTableRow sourceTableRow = xwpfTable.getRow(i);
+                            XWPFTableRow newRow = insertNewTableRow(sourceTableRow, i);
 
-                        ArrayList<String> docVar = new ArrayList<String>();
-                        docVar.add("P" + i);
-                        docVar.add(datasets.get(i - 1).getTitle());
-                        docVar.add(datasets.get(i - 1).getType());
-                        docVar.add("");
-                        if (datasets.get(i-1).getSize() != null) {
-                            docVar.add(format(datasets.get(i - 1).getSize()) + "B");
-                        }
-                        else {
+                            ArrayList<String> docVar = new ArrayList<String>();
+                            docVar.add("P" + i);
+                            docVar.add(datasets.get(i - 1).getTitle());
+                            docVar.add(datasets.get(i - 1).getType());
                             docVar.add("");
-                        }
-                        docVar.add("");
 
-                        List<XWPFTableCell> cells = newRow.getTableCells();
+                            if (datasets.get(i-1).getSize() != null) {
+                                docVar.add(format(datasets.get(i - 1).getSize()) + "B");
+                            }
+                            else {
+                                docVar.add("");
+                            }
 
-                        for (XWPFTableCell cell : cells) {
+                            if (datasets.get(i-1).getSensitiveData()) {
+                                docVar.add("yes");
+                            }
+                            else {
+                                docVar.add("no");
+                            }
 
-                            for (XWPFParagraph paragraph : cell.getParagraphs()) {
-                                for (XWPFRun run : paragraph.getRuns()) {
-                                    run.setText(docVar.get(cells.indexOf(cell)), 0);
+                            List<XWPFTableCell> cells = newRow.getTableCells();
+
+                            for (XWPFTableCell cell : cells) {
+
+                                for (XWPFParagraph paragraph : cell.getParagraphs()) {
+                                    for (XWPFRun run : paragraph.getRuns()) {
+                                        run.setText(docVar.get(cells.indexOf(cell)), 0);
+                                    }
                                 }
                             }
+
+                            boolean weMustCommitTableRows = true;
+
+                            if (weMustCommitTableRows) commitTableRows(xwpfTable);
                         }
-
-                        boolean weMustCommitTableRows = true;
-
-                        if (weMustCommitTableRows) commitTableRows(xwpfTable);
                     }
                     //end of dynamic table rows code
                     xwpfTable.removeRow(xwpfTable.getRows().size() - 1);
                 }
 
-
                 //dynamic table rows code for data sharing
                 //notes: cost number 2 until the end will be written directly to the table
-                if (xwpfTable.getRow(1).getCell(1).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[dataset1access]")
-                        && datasets.size() > 1) {
+                if (xwpfTable.getRow(1).getCell(1).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[dataset1access]")) {
 
-                    for (int i = 2; i < datasets.size() + 1; i++) {
+                    if (datasets.size() > 1) {
+                        for (int i = 2; i < datasets.size() + 1; i++) {
 
-                        XWPFTableRow sourceTableRow = xwpfTable.getRow(i);
-                        XWPFTableRow newRow = insertNewTableRow(sourceTableRow, i);
+                            XWPFTableRow sourceTableRow = xwpfTable.getRow(i);
+                            XWPFTableRow newRow = insertNewTableRow(sourceTableRow, i);
 
-                        ArrayList<String> docVar = new ArrayList<String>();
-                        docVar.add("" + i);
-                        docVar.add(datasets.get(i - 1).getDataAccess().toString());
-                        docVar.add("");
-                        if (datasets.get(i - 1).getStart() != null) {
-                            docVar.add(formatter.format(datasets.get(i - 1).getStart()));
-                        }
-                        else {
+                            ArrayList<String> docVar = new ArrayList<String>();
+                            docVar.add("" + i);
+                            docVar.add(datasets.get(i - 1).getDataAccess().toString());
                             docVar.add("");
-                        }
-                        //TODO datasets and hosts are now connected by Distribution objects
+                            if (datasets.get(i - 1).getStart() != null) {
+                                docVar.add(formatter.format(datasets.get(i - 1).getStart()));
+                            }
+                            else {
+                                docVar.add("");
+                            }
+                            //TODO datasets and hosts are now connected by Distribution objects
 //                        if (datasets.get(i - 1).getHost() != null) {
 //                            docVar.add(datasets.get(i - 1).getHost().getTitle());
 //                        }
 //                        else {
-                        docVar.add("");
-//                        }
-                        docVar.add("");
-                        if (datasets.get(i - 1).getLicense() != null) {
-                            docVar.add(datasets.get(i - 1).getLicense());
-                        }
-                        else {
                             docVar.add("");
-                        }
+//                        }
+                            docVar.add("");
+                            if (datasets.get(i - 1).getLicense() != null) {
+                                docVar.add(datasets.get(i - 1).getLicense());
+                            }
+                            else {
+                                docVar.add("");
+                            }
 
-                        List<XWPFTableCell> cells = newRow.getTableCells();
+                            List<XWPFTableCell> cells = newRow.getTableCells();
 
-                        for (XWPFTableCell cell : cells) {
+                            for (XWPFTableCell cell : cells) {
 
-                            for (XWPFParagraph paragraph : cell.getParagraphs()) {
-                                for (XWPFRun run : paragraph.getRuns()) {
-                                    run.setText(docVar.get(cells.indexOf(cell)), 0);
+                                for (XWPFParagraph paragraph : cell.getParagraphs()) {
+                                    for (XWPFRun run : paragraph.getRuns()) {
+                                        run.setText(docVar.get(cells.indexOf(cell)), 0);
+                                    }
                                 }
                             }
+
+                            boolean weMustCommitTableRows = true;
+
+                            if (weMustCommitTableRows) commitTableRows(xwpfTable);
                         }
-
-                        boolean weMustCommitTableRows = true;
-
-                        if (weMustCommitTableRows) commitTableRows(xwpfTable);
                     }
                     //end of dynamic table rows code
                     xwpfTable.removeRow(xwpfTable.getRows().size() - 1);
@@ -362,36 +538,37 @@ public class DocumentConversionService {
 
                 //dynamic table rows code for cost
                 //notes: cost number 2 until the end will be written directly to the table
-                if (xwpfTable.getRow(1).getCell(0).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[cost1title]")
-                        && costList.size() > 1) {
+                if (xwpfTable.getRow(1).getCell(0).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[cost1title]")) {
+                    if (costList.size() > 1) {
+                        for (int i = 2; i < costList.size() + 1; i++) {
 
-                    for (int i = 2; i < costList.size() + 1; i++) {
+                            XWPFTableRow sourceTableRow = xwpfTable.getRow(i);
+                            XWPFTableRow newRow = insertNewTableRow(sourceTableRow, i);
 
-                        XWPFTableRow sourceTableRow = xwpfTable.getRow(i);
-                        XWPFTableRow newRow = insertNewTableRow(sourceTableRow, i);
+                            ArrayList<String> docVar = new ArrayList<String>();
+                            docVar.add(costList.get(i - 1).getTitle());
+                            docVar.add(costList.get(i - 1).getType().toString());
+                            docVar.add(costList.get(i - 1).getDescription());
+                            docVar.add(costList.get(i - 1).getCurrencyCode());
+                            docVar.add(costList.get(i - 1).getValue().toString());
 
-                        ArrayList<String> docVar = new ArrayList<String>();
-                        docVar.add(costList.get(i - 1).getTitle());
-                        docVar.add(costList.get(i - 1).getType().toString());
-                        docVar.add(costList.get(i - 1).getDescription());
-                        docVar.add(costList.get(i - 1).getCurrencyCode());
-                        docVar.add(costList.get(i - 1).getValue().toString());
+                            List<XWPFTableCell> cells = newRow.getTableCells();
 
-                        List<XWPFTableCell> cells = newRow.getTableCells();
+                            for (XWPFTableCell cell : cells) {
 
-                        for (XWPFTableCell cell : cells) {
-
-                            for (XWPFParagraph paragraph : cell.getParagraphs()) {
-                                for (XWPFRun run : paragraph.getRuns()) {
-                                    run.setText(docVar.get(cells.indexOf(cell)), 0);
+                                for (XWPFParagraph paragraph : cell.getParagraphs()) {
+                                    for (XWPFRun run : paragraph.getRuns()) {
+                                        run.setText(docVar.get(cells.indexOf(cell)), 0);
+                                    }
                                 }
                             }
+
+                            boolean weMustCommitTableRows = true;
+
+                            if (weMustCommitTableRows) commitTableRows(xwpfTable);
                         }
-
-                        boolean weMustCommitTableRows = true;
-
-                        if (weMustCommitTableRows) commitTableRows(xwpfTable);
                     }
+
                     //end of dynamic table rows code
                     xwpfTable.removeRow(xwpfTable.getRows().size() - 2);
                 }
@@ -437,14 +614,24 @@ public class DocumentConversionService {
         for (XWPFParagraph xwpfParagraph : xwpfParagraphs) {
             List<XWPFRun> xwpfRuns = xwpfParagraph.getRuns();
             for (XWPFRun xwpfRun : xwpfRuns) {
-                String xwpfRunText = xwpfRun.getText(xwpfRun
-                        .getTextPosition());
-                for (Map.Entry<String, String> entry : replacements
-                        .entrySet()) {
-                    if (xwpfRunText != null
-                            && xwpfRunText.contains(entry.getKey())) {
-                        xwpfRunText = xwpfRunText.replace(
-                                entry.getKey(), entry.getValue());
+                String xwpfRunText = xwpfRun.getText(xwpfRun.getTextPosition());
+                for (Map.Entry<String, String> entry : replacements.entrySet()) {
+                    if (xwpfRunText != null && xwpfRunText.contains(entry.getKey())) {
+                        //handle new line for contributor list and storage information
+                        if (entry.getKey().equals("[contributors]") || entry.getKey().equals("[storage]")){
+                            String[] value=entry.getValue().split(";");
+                            for(String text : value){
+                                xwpfParagraph.setAlignment(ParagraphAlignment.LEFT);
+                                xwpfRun.setText(text.trim());
+                                xwpfRun.addBreak();
+                                xwpfRun.addBreak();
+                            }
+                            xwpfRunText = "";
+                        }
+                        //general case for non contributor list
+                        else {
+                            xwpfRunText = xwpfRunText.replace(entry.getKey(), entry.getValue());
+                        }
                     }
                 }
                 xwpfRun.setText(xwpfRunText, 0);
