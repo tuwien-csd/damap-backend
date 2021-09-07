@@ -292,9 +292,10 @@ public class DocumentConversionService {
             System.out.println(storageVar);
         }
 
-        if (dmp.getExternalStorageInfo() != null)
+        if (dmp.getExternalStorageInfo() != null) {
             storageVar = storageVar.concat(";");
-        storageVar = storageVar.concat("External storage will be used " + dmp.getExternalStorageInfo().toLowerCase(Locale.ROOT));
+            storageVar = storageVar.concat("External storage will be used " + dmp.getExternalStorageInfo().toLowerCase(Locale.ROOT));
+        }
 
         map.put("[storage]", storageVar);
 
@@ -674,10 +675,16 @@ public class DocumentConversionService {
 
                             ArrayList<String> docVar = new ArrayList<String>();
                             docVar.add(costList.get(i - 1).getTitle());
-                            docVar.add(costList.get(i - 1).getType().toString());
+                            if (costList.get(i - 1).getType() != null)
+                                docVar.add(costList.get(i - 1).getType().toString());
+                            else
+                                docVar.add("");
                             docVar.add(costList.get(i - 1).getDescription());
                             docVar.add(costList.get(i - 1).getCurrencyCode());
-                            docVar.add(costList.get(i - 1).getValue().toString());
+                            if (costList.get(i - 1).getValue() != null)
+                                docVar.add(costList.get(i - 1).getValue().toString());
+                            else
+                                docVar.add("");
 
                             List<XWPFTableCell> cells = newRow.getTableCells();
 
