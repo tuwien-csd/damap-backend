@@ -50,7 +50,7 @@ public class DocumentConversionService {
                     dmp.getProject().getFunding().getGrantIdentifier().getIdentifier() != null)
                 map.put("[grantid]", dmp.getProject().getFunding().getGrantIdentifier().getIdentifier());
         }
-
+        
         if (dmp.getCreated() != null) {
             map.put("[datever1]", formatter.format(dmp.getCreated()));
         }
@@ -100,10 +100,6 @@ public class DocumentConversionService {
             List<String> contributorList = new ArrayList<>();
             for(Contributor contributor : contributors) {
                 //TO DO: add affiliation and ROR (currently not stored in TISS)
-
-//                if (contributors.indexOf(contributor) != 0) {
-//                    contributorValue = contributorValue.concat("\r\n");
-//                }
 
                 String contributorName = "";
                 String contributorMail = "";
@@ -155,7 +151,7 @@ public class DocumentConversionService {
         //TODO datasets and hosts are now connected by Distribution objects
         // the following table (5a) should only list datasets with distributions on a repository for long term storage
         // (each distribution should be listed, therefore there can be multiple entries for the same dataset)
-        //mapping dataset information to published data table (5a) (only datasets with distributions on repositories)
+        //mapping dataset information to published data table (5a) and long term storage (5b) (only datasets with distributions on repositories)
         List<Dataset> datasets = dmp.getDatasetList();
         for (Dataset dataset : datasets) {
             int idx = datasets.indexOf(dataset) + 1;
@@ -168,6 +164,9 @@ public class DocumentConversionService {
             String docVar7 = "[dataset" + idx + "repo]";
             String docVar8 = "[dataset" + idx + "access]";
             String docVar9 = "[dataset" + idx + "sensitive]";
+            String docVar10 = "[dataset" + idx + "restriction]";
+            String docVar11 = "[dataset" + idx + "storage]";
+            String docVar12 =  "[dataset" + idx + "period]";
 
             String datasetName = "";
             String datasetType = "";
@@ -178,6 +177,9 @@ public class DocumentConversionService {
             String datasetRepo = "";
             String datasetAccess = "";
             String datasetSensitive = "";
+            String datasetRestriction = "";
+            String datasetStorage = "";
+            String datasetPeriod = "";
 
             if (dataset.getTitle() != null)
                 datasetName = dataset.getTitle();
@@ -189,9 +191,24 @@ public class DocumentConversionService {
                 datasetLicense = dataset.getLicense();
             if (dataset.getStart() != null)
                 datasetPubdate = formatter.format(dataset.getStart());
-            //TODO datasets and hosts are now connected by Distribution objects
-//            if (dataset.getHost() != null)
-//                datasetRepo = dataset.getHost().getTitle();
+            if (dataset.getDistributionList() != null){
+                List<Distribution> distributions = dataset.getDistributionList();
+                List<String> repositories = new ArrayList<>();
+                List<String> storage = new ArrayList<>();
+
+                for (Distribution distribution: distributions) {
+                    if (distribution.getHost().getHostId() != null)
+                        if (distribution.getHost().getHostId().contains("r3")) { //respository
+                            repositories.add(distribution.getHost().getTitle());
+                        } else { //storage
+                            storage.add(distribution.getHost().getTitle());
+                        }
+                }
+                if (repositories.size() > 0)
+                    datasetRepo = String.join(", ", repositories);
+                if (storage.size() > 0)
+                    datasetStorage = String.join(", ", storage);
+            }
             if (dataset.getDataAccess() != null)
                 datasetAccess = dataset.getDataAccess().toString();
             if (dataset.getSensitiveData() != null) {
@@ -201,6 +218,10 @@ public class DocumentConversionService {
                 else {
                     datasetSensitive = "true";
                 }
+            }
+            if (dataset.getLegalRestrictions() != null) {
+                if (dataset.getLegalRestrictions())
+                    datasetRestriction = dataset.getDmp().getLegalRestrictionsComment();
             }
 
             map.put(docVar1, datasetName);
@@ -212,6 +233,9 @@ public class DocumentConversionService {
             map.put(docVar7, datasetRepo);
             map.put(docVar8, datasetAccess);
             map.put(docVar9, datasetSensitive);
+            map.put(docVar10, datasetRestriction);
+            map.put(docVar11, datasetStorage);
+            map.put(docVar12, datasetPeriod);
         }
 
         if (datasets.size() == 0) {
@@ -270,7 +294,7 @@ public class DocumentConversionService {
 
         if (dmp.getExternalStorageInfo() != null)
             storageVar = storageVar.concat(";");
-            storageVar = storageVar.concat("External storage will be used " + dmp.getExternalStorageInfo().toLowerCase(Locale.ROOT));
+        storageVar = storageVar.concat("External storage will be used " + dmp.getExternalStorageInfo().toLowerCase(Locale.ROOT));
 
         map.put("[storage]", storageVar);
 
@@ -374,8 +398,33 @@ public class DocumentConversionService {
         }
         map.put("[ethicalissues]", ethicalIssues);
 
+        //Section 5
+
+        String targetAudience = "";
+        String tools = "";
+
+        if (dmp.getTargetAudience() != null)
+            targetAudience = dmp.getTargetAudience();
+
+        if (dmp.getTools() != null)
+            tools = dmp.getTools();
+
+        map.put("[targetaudience]", targetAudience);
+        map.put("[tools]", tools);
 
         //Section 6
+
+        String costs = "";
+
+        if (dmp.getCostsExist() != null) {
+            if (dmp.getCostsExist()) {
+                costs = "There are costs dedicated to data management and ensuring that data will be FAIR as outlined below.";
+            } else {
+                costs = "There are no costs dedicated to data management and ensuring that data will be FAIR.";
+            }
+        }
+
+        map.put("[costs]", costs);
 
         //mapping cost information
         Long totalCost = 0L;
@@ -482,7 +531,8 @@ public class DocumentConversionService {
                 }
 
                 //dynamic table rows code for data sharing
-                //notes: cost number 2 until the end will be written directly to the table
+                //table 5a
+                //notes: dataset number 2 until the end will be written directly to the table
                 if (xwpfTable.getRow(1).getCell(1).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[dataset1access]")) {
 
                     if (datasets.size() > 1) {
@@ -492,9 +542,19 @@ public class DocumentConversionService {
                             XWPFTableRow newRow = insertNewTableRow(sourceTableRow, i);
 
                             ArrayList<String> docVar = new ArrayList<String>();
-                            docVar.add("" + i);
+                            docVar.add("P" + i);
                             docVar.add(datasets.get(i - 1).getDataAccess().toString());
-                            docVar.add("");
+
+                            if (datasets.get(i - 1).getLegalRestrictions() != null) {
+                                if (datasets.get(i - 1).getLegalRestrictions()) {
+                                    docVar.add(datasets.get(i - 1).getDmp().getLegalRestrictionsComment());
+                                } else {
+                                    docVar.add("");
+                                }
+                            } else {
+                                docVar.add("");
+                            }
+
                             if (datasets.get(i - 1).getStart() != null) {
                                 docVar.add(formatter.format(datasets.get(i - 1).getStart()));
                             }
@@ -502,15 +562,82 @@ public class DocumentConversionService {
                                 docVar.add("");
                             }
                             //TODO datasets and hosts are now connected by Distribution objects
-//                        if (datasets.get(i - 1).getHost() != null) {
-//                            docVar.add(datasets.get(i - 1).getHost().getTitle());
-//                        }
-//                        else {
-                            docVar.add("");
-//                        }
+                            if (datasets.get(i - 1).getDistributionList() != null){
+                                List<Distribution> distributions = datasets.get(i - 1).getDistributionList();
+                                List<String> repositories = new ArrayList<>();
+                                for (Distribution distribution: distributions) {
+                                    if (distribution.getHost().getHostId() != null)
+                                        if (distribution.getHost().getHostId().contains("r3")) {
+                                            repositories.add(distribution.getHost().getTitle());
+                                        }
+                                }
+                                if (repositories.size() > 0) {
+                                    docVar.add(String.join(", ", repositories));
+                                }
+                                else {
+                                    docVar.add("");
+                                }
+                            }
                             docVar.add("");
                             if (datasets.get(i - 1).getLicense() != null) {
                                 docVar.add(datasets.get(i - 1).getLicense());
+                            }
+                            else {
+                                docVar.add("");
+                            }
+
+                            List<XWPFTableCell> cells = newRow.getTableCells();
+
+                            for (XWPFTableCell cell : cells) {
+
+                                for (XWPFParagraph paragraph : cell.getParagraphs()) {
+                                    for (XWPFRun run : paragraph.getRuns()) {
+                                        run.setText(docVar.get(cells.indexOf(cell)), 0);
+                                    }
+                                }
+                            }
+
+                            boolean weMustCommitTableRows = true;
+
+                            if (weMustCommitTableRows) commitTableRows(xwpfTable);
+                        }
+                    }
+                    //end of dynamic table rows code
+                    xwpfTable.removeRow(xwpfTable.getRows().size() - 1);
+                }
+
+                //table 5b
+                //notes: dataset number 2 until the end will be written directly to the table
+                if (xwpfTable.getRow(1).getCell(1).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[dataset1storage]")) {
+
+                    if (datasets.size() > 1) {
+                        for (int i = 2; i < datasets.size() + 1; i++) {
+
+                            XWPFTableRow sourceTableRow = xwpfTable.getRow(i);
+                            XWPFTableRow newRow = insertNewTableRow(sourceTableRow, i);
+
+                            ArrayList<String> docVar = new ArrayList<String>();
+                            docVar.add("P" + i);
+                            //TODO datasets and hosts are now connected by Distribution objects
+                            if (datasets.get(i - 1).getDistributionList() != null){
+                                List<Distribution> distributions = datasets.get(i - 1).getDistributionList();
+                                List<String> storage = new ArrayList<>();
+                                for (Distribution distribution: distributions) {
+                                    if (distribution.getHost().getHostId() != null)
+                                        if (!distribution.getHost().getHostId().contains("r3")) {
+                                            storage.add(distribution.getHost().getTitle());
+                                        }
+                                }
+                                if (storage.size() > 0) {
+                                    docVar.add(String.join(", ", storage));
+                                }
+                                else {
+                                    docVar.add("");
+                                }
+                            }
+                            docVar.add("");
+                            if (datasets.get(i - 1).getDmp().getTargetAudience() != null) {
+                                docVar.add(datasets.get(i - 1).getDmp().getTargetAudience());
                             }
                             else {
                                 docVar.add("");
