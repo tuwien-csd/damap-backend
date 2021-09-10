@@ -1,7 +1,7 @@
 package at.ac.tuwien.damap.rest;
 
 import at.ac.tuwien.damap.rest.dmp.domain.PersonDO;
-import at.ac.tuwien.damap.rest.addressbook.service.AddressBookService;
+import at.ac.tuwien.damap.rest.persons.service.PersonService;
 import io.quarkus.security.Authenticated;
 import lombok.extern.jbosslog.JBossLog;
 
@@ -20,12 +20,12 @@ import javax.ws.rs.core.MediaType;
 public class PersonResource {
 
     @Inject
-    AddressBookService addressBookService;
+    PersonService personService;
 
     @GET
     @Path("/{id}")
     public PersonDO getPersonById(@PathParam("id") String id) {
         log.info("Return person details for id=" + id);
-        return addressBookService.getPersonById(id);
+        return personService.getPersonById(id);
     }
 }

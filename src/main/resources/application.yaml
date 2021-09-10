@@ -26,7 +26,7 @@ quarkus:
 
 damap:
   projects/mp-rest/url: ${ORG_API_URL}
-  address-book/mp-rest/url: ${ORG_API_URL}
+  persons/mp-rest/url: ${ORG_API_URL}
   fits/mp-rest/url: ${DAMAP_FITS_URL}
 r3data:
   repositories/mp-rest/url: https://www.re3data.org/api

@@ -1,7 +1,7 @@
-package at.ac.tuwien.damap.rest.addressbook.service;
+package at.ac.tuwien.damap.rest.persons.service;
 
 import at.ac.tuwien.damap.rest.dmp.domain.PersonDO;
 
-public interface AddressBookService {
+public interface PersonService {
     PersonDO getPersonById(String id);
 }

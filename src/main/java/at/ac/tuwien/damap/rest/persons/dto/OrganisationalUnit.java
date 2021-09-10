@@ -1,4 +1,4 @@
-package at.ac.tuwien.damap.rest.addressbook.dto;
+package at.ac.tuwien.damap.rest.persons.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
