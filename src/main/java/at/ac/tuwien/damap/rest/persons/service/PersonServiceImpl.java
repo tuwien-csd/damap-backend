@@ -1,4 +1,4 @@
-package at.ac.tuwien.damap.rest.addressbook.service;
+package at.ac.tuwien.damap.rest.persons.service;
 
 import at.ac.tuwien.damap.rest.dmp.domain.PersonDO;
 import io.quarkus.arc.DefaultBean;
@@ -11,7 +11,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 @DefaultBean
-public class AddressBookServiceImpl implements AddressBookService {
+public class PersonServiceImpl implements PersonService {
 
     @Override
     public PersonDO getPersonById(String id) {

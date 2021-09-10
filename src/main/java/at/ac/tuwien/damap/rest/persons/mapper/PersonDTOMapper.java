@@ -1,9 +1,9 @@
-package at.ac.tuwien.damap.rest.addressbook.mapper;
+package at.ac.tuwien.damap.rest.persons.mapper;
 
 import at.ac.tuwien.damap.enums.EIdentifierType;
 import at.ac.tuwien.damap.rest.dmp.domain.IdentifierDO;
 import at.ac.tuwien.damap.rest.dmp.domain.PersonDO;
-import at.ac.tuwien.damap.rest.addressbook.dto.PersonDTO;
+import at.ac.tuwien.damap.rest.persons.dto.PersonDTO;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
