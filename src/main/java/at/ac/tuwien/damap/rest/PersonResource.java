@@ -1,7 +1,7 @@
 package at.ac.tuwien.damap.rest;
 
 import at.ac.tuwien.damap.rest.dmp.domain.PersonDO;
-import at.ac.tuwien.damap.rest.persons.service.PersonService;
+import at.ac.tuwien.damap.rest.persons.PersonService;
 import io.quarkus.security.Authenticated;
 import lombok.extern.jbosslog.JBossLog;
 

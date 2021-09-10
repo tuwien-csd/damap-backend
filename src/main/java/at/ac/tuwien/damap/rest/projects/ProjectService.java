@@ -1,4 +1,4 @@
-package at.ac.tuwien.damap.rest.projects.service;
+package at.ac.tuwien.damap.rest.projects;
 
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectMemberDO;
