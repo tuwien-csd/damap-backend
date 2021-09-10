@@ -1,6 +1,7 @@
 package at.ac.tuwien.damap.r3data;
 
 import generated.Repository;
+import io.quarkus.cache.CacheResult;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.re3data.schema._2_2.Re3Data;
 
@@ -12,16 +13,16 @@ import java.util.List;
 @ApplicationScoped
 public class RepositoriesService {
 
-    private List<Repository> repositories;
+    @Inject
+    @RestClient
+    RepositoriesRemoteResource repositoriesRemoteResource;
 
-    @Inject @RestClient RepositoriesRemoteResource repositoriesRemoteResource;
-
+    @CacheResult(cacheName = "repositories")
     public List<Repository> getAll() {
-        if(repositories == null)
-            repositories = repositoriesRemoteResource.getAll();
-        return repositories;
+        return repositoriesRemoteResource.getAll();
     }
 
+    @CacheResult(cacheName = "repository")
     public Re3Data getById(String id) {
         return repositoriesRemoteResource.getById(id);
     }
