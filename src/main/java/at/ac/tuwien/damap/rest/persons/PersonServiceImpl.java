@@ -1,4 +1,4 @@
-package at.ac.tuwien.damap.rest.persons.service;
+package at.ac.tuwien.damap.rest.persons;
 
 import at.ac.tuwien.damap.rest.dmp.domain.PersonDO;
 import io.quarkus.arc.DefaultBean;
