@@ -1,11 +1,11 @@
 package at.ac.tuwien.damap;
 
 import at.ac.tuwien.damap.rest.DataManagementPlanResource;
-import at.ac.tuwien.damap.rest.domain.DmpDO;
-import at.ac.tuwien.damap.rest.domain.DmpListItemDO;
-import at.ac.tuwien.damap.rest.service.DmpService;
-import at.ac.tuwien.damap.rest.service.SaveDmpWrapper;
-import at.ac.tuwien.validation.AccessValidator;
+import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
+import at.ac.tuwien.damap.rest.dmp.domain.DmpListItemDO;
+import at.ac.tuwien.damap.rest.dmp.service.DmpService;
+import at.ac.tuwien.damap.rest.dmp.service.SaveDmpWrapper;
+import at.ac.tuwien.damap.validation.AccessValidator;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;

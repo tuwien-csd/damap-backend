@@ -1,0 +1,44 @@
+quarkus:
+  http:
+    cors:
+      ~: true
+      origins: ${DAMAP_ORIGINS}
+      headers: origin,content-type,accept,authorization
+      access-control-max-age: 1
+
+  oidc: 
+    auth-server-url: ${DAMAP_AUTH_URL}
+    client-id: ${DAMAP_CLIENT_ID}
+
+  datasource:
+    jdbc:
+      min-size: 4
+      max-size: 16
+      url: ${DAMAP_DB_URL}
+    db-kind: postgresql
+    username: ${DAMAP_DB_USERNAME}
+    password: ${DAMAP_DB_PASSWORD}
+
+  hibernate-orm:
+    database:
+      generation: none
+    sql-load-script: no-file
+
+  cache:
+    caffeine:
+      "repositories":
+        expire-after-write: P1D
+      "repository":
+        expire-after-write: P1D
+
+damap:
+  projects/mp-rest/url: ${ORG_API_URL}
+  persons/mp-rest/url: ${ORG_API_URL}
+  fits/mp-rest/url: ${DAMAP_FITS_URL}
+r3data:
+  repositories/mp-rest/url: https://www.re3data.org/api
+  repositories/mp-rest/scope: javax.inject.Singleton
+
+"%dev":
+
+"%test":
