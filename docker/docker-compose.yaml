@@ -1,0 +1,75 @@
+version: '3.3'
+
+services:
+  damap-be:
+    # When damap is publicly available on docker hub one can
+    # just pull the latest container image.
+    # image: damap-repository/damap-backend:latest
+
+    # comment the following two lines and uncomment the previous
+    # 'image' to directly pull the image from a repository.
+    build:
+      context: ../
+    environment:
+      DAMAP_ORIGINS: http://localhost:8086
+      DAMAP_AUTH_URL: http://localhost:8087
+      DAMAP_CLIENT_ID: dmap
+      DAMAP_DB_URL: jdbc:postgresql://damap-db:5432/damap
+      DAMAP_DB_USERNAME: damap
+      DAMAP_DB_PASSWORD: pw4damap
+    ports:
+      - "8086:8080"
+
+  damap-db:
+    image: postgres:12
+    environment:
+      POSTGRES_USER: damap
+      POSTGRES_PASSWORD: pw4damap
+      POSTGRES_DB: damap
+
+    # Uncomment the following to directly access the database
+    # at localhost:8088
+    #ports:
+    #  - "8088:5432"
+
+  keycloak:
+    image: jboss/keycloak
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+
+      # Uncomment the following block to use a postgres
+      # database for keycloak
+      #DB_ADDR: keycloak-db
+      #DB_DATABASE: keycloak
+      #DB_USER: keycloak
+      #DB_PORT: 5432
+      #DB_PASSWORD: keycloak
+      KEYCLOAK_IMPORT: /tmp/sample-damap-realm-export.json
+    ports:
+      - "8087:8080"
+    volumes:
+      - ./sample-damap-realm-export.json:/tmp/sample-damap-realm-export.json
+
+  # Uncomment the following service block to start a Postgres
+  # database for Keycloak. Also see the commented block in the keycloak
+  # service.
+  #keycloak-db:
+  #  image: postgres:12
+  #  environment:
+  #    POSTGRES_USER: keycloak
+  #    POSTGRES_PASSWORD: keycloak
+  #    POSTGRES_DB: keycloak
+  #    DB_VENDOR: postgres
+
+  damap-fe:
+    build:
+      # This assumes that 'damap-frontend' repository is checked out
+      # beside 'damap-backend'.
+      context: ../../damap-frontend
+
+# Uncomment the following block to persist postgres data.
+#    volumes:
+#      - damap-db-data:/var/lib/postgresql/data
+#volumes:
+#  damap-db-data:
