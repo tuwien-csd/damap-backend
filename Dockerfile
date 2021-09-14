@@ -37,6 +37,7 @@ COPY --from=builder $BUILD_HOME/target/quarkus-app/quarkus/ /deployments/quarkus
 EXPOSE 8080
 USER 1001
 
-HEALTHCHECK /q/health/live
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f http://localhost/q/health/live || exit 1
 
 ENTRYPOINT [ "/deployments/run-java.sh" ]
