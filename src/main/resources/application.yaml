@@ -1,23 +1,35 @@
+# custom config settings
+# replace these in the config of your custom project or by overriding these variables
+damap:
+  origins: https://your.frontend.com,https://*.yourdomain.com
+  auth-url: https://your.authentication.server
+  auth-client: your-authentication-client-id
+  datasource-url: jdbc:your-datasource-language:your-datasource.address
+  datasource-username: your-datasource-username
+  datasource-password: your-datasource-password
+  projects-url: http://your.project.management.system.com
+  persons-url: http://your.personnel.management.system.com
+  fits-url: http://your.fits.service:1234
+
+# general config settings
 quarkus:
   http:
     cors:
       ~: true
-      origins: ${DAMAP_ORIGINS}
+      origins: ${damap.origins}
       headers: origin,content-type,accept,authorization
       access-control-max-age: 1
 
   oidc: 
-    auth-server-url: ${DAMAP_AUTH_URL}
-    client-id: ${DAMAP_CLIENT_ID}
+    auth-server-url: ${damap.auth-url}
+    client-id: ${damap.auth-client}
 
   datasource:
     jdbc:
-      min-size: 4
-      max-size: 16
-      url: ${DAMAP_DB_URL}
+      url: ${damap.datasource-url}
     db-kind: postgresql
-    username: ${DAMAP_DB_USERNAME}
-    password: ${DAMAP_DB_PASSWORD}
+    username: ${damap.datasource-username}
+    password: ${damap.datasource-password}
 
   hibernate-orm:
     database:
@@ -31,14 +43,19 @@ quarkus:
       "repository":
         expire-after-write: P1D
 
-damap:
-  projects/mp-rest/url: ${ORG_API_URL}
-  persons/mp-rest/url: ${ORG_API_URL}
-  fits/mp-rest/url: ${DAMAP_FITS_URL}
-r3data:
-  repositories/mp-rest/url: https://www.re3data.org/api
-  repositories/mp-rest/scope: javax.inject.Singleton
+rest:
+  projects/mp-rest/url: ${damap.projects-url}
+  persons/mp-rest/url: ${damap.persons-url}
+  fits/mp-rest/url: ${damap.fits-url}
+  r3data:
+    repositories/mp-rest/url: https://www.re3data.org/api
+    repositories/mp-rest/scope: javax.inject.Singleton
 
 "%dev":
+  damap:
+    origins: http://localhost:4200
+    datasource-url: jdbc:postgresql://localhost:5432/damap
+    datasource-username: damap
+    datasource-password: pw4damap
 
 "%test":

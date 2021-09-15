@@ -12,7 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-@RegisterRestClient(configKey = "r3data.repositories")
+@RegisterRestClient(configKey = "rest.r3data.repositories")
 @Produces(MediaType.TEXT_XML)
 public interface RepositoriesRemoteResource {
 
