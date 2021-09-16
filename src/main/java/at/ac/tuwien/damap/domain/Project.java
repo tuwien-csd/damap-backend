@@ -20,6 +20,8 @@ public class Project extends PanacheEntity {
     @Setter(AccessLevel.NONE)
     private long version;
 
+    private String university_id;
+
     private String title;
 
     private String description;

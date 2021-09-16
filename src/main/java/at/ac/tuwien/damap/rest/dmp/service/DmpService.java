@@ -6,6 +6,7 @@ import at.ac.tuwien.damap.repo.AccessRepo;
 import at.ac.tuwien.damap.repo.DmpRepo;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpListItemDO;
+import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
 import at.ac.tuwien.damap.rest.dmp.mapper.DmpDOMapper;
 import at.ac.tuwien.damap.rest.dmp.mapper.DmpListItemDOMapper;
 import lombok.extern.jbosslog.JBossLog;
@@ -97,5 +98,18 @@ public class DmpService {
         }
 
         return filename;
+    }
+
+    public List<ProjectDO> checkExistingDmps(List<ProjectDO> projectDOList){
+
+        for (Dmp dmp : dmpRepo.getAll()) {
+            for (ProjectDO projectDO : projectDOList){
+                if (dmp.getProject().getUniversity_id() != null &&
+                        projectDO.getUniversityId() != null &&
+                        dmp.getProject().getUniversity_id().equals(projectDO.getUniversityId()))
+                    projectDO.setDmpExists(true);
+            }
+        }
+        return projectDOList;
     }
 }
