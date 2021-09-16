@@ -2,11 +2,13 @@
 # replace these in the config of your custom project or by overriding these variables
 damap:
   origins: https://your.frontend.com,https://*.yourdomain.com
-  auth-url: https://your.authentication.server
-  auth-client: your-authentication-client-id
-  datasource-url: jdbc:your-datasource-language:your-datasource.address
-  datasource-username: your-datasource-username
-  datasource-password: your-datasource-password
+  auth:
+    url: https://your.authentication.server
+    client: your-authentication-client-id
+  datasource:
+    url: jdbc:your-datasource-language:your-datasource.address
+    username: your-datasource-username
+    password: your-datasource-password
   projects-url: http://your.project.management.system.com
   persons-url: http://your.personnel.management.system.com
   fits-url: http://your.fits.service:1234
@@ -21,15 +23,15 @@ quarkus:
       access-control-max-age: 1
 
   oidc: 
-    auth-server-url: ${damap.auth-url}
-    client-id: ${damap.auth-client}
+    auth-server-url: ${damap.auth.url}
+    client-id: ${damap.auth.client}
 
   datasource:
     jdbc:
-      url: ${damap.datasource-url}
+      url: ${damap.datasource.url}
     db-kind: postgresql
-    username: ${damap.datasource-username}
-    password: ${damap.datasource-password}
+    username: ${damap.datasource.username}
+    password: ${damap.datasource.password}
 
   hibernate-orm:
     database:
@@ -54,8 +56,9 @@ rest:
 "%dev":
   damap:
     origins: http://localhost:4200
-    datasource-url: jdbc:postgresql://localhost:5432/damap
-    datasource-username: damap
-    datasource-password: pw4damap
+    datasource:
+      url: jdbc:postgresql://localhost:5432/damap
+      username: damap
+      password: pw4damap
 
 "%test":
