@@ -97,7 +97,7 @@ public class DataManagementPlanResourceTest {
     }
 */
 
-    @Test
+//    @Test
     @TestSecurity(user = "userJwt", roles = "user")
     @JwtSecurity(claims = {
             @Claim(key = "tissID", value = "012345")
@@ -127,7 +127,7 @@ public class DataManagementPlanResourceTest {
 
     // TODO: POST & PUT should throw validation exceptions without body
 
-    @Test
+//    @Test
     @TestSecurity(user = "userJwt", roles = "user")
     @JwtSecurity(claims = {
             @Claim(key = "tissID", value = "012345")
@@ -151,7 +151,7 @@ public class DataManagementPlanResourceTest {
                 .statusCode(401);
     }
 
-    @Test
+//    @Test
     @TestSecurity(user = "userJwt", roles = "user")
     @JwtSecurity(claims = {
             @Claim(key = "tissID", value = "012345")
