@@ -54,33 +54,24 @@ public class DmpService {
     }
 
     @Transactional
-    public DmpDO save(SaveDmpWrapper dmpWrapper){
-        long dmpId;
-        if (dmpWrapper.getDmp().getId() == null)
-            dmpId = create(dmpWrapper);
-        else
-            // TODO: check if allowed to update
-            dmpId = update(dmpWrapper);
-        return getDmpById(dmpId);
-    }
-
-    public long create(SaveDmpWrapper dmpWrapper) {
+    public DmpDO create(SaveDmpWrapper dmpWrapper) {
         log.info("Creating new DMP");
         Dmp dmp = DmpDOMapper.mapDOtoEntity(dmpWrapper.getDmp(), new Dmp());
         dmp.setCreated(new Date());
         dmp.persist();
         createAccess(dmp, dmpWrapper.getEdited_by());
-        return dmp.id;
+        return getDmpById(dmp.id);
     }
 
-    public long update(SaveDmpWrapper dmpWrapper) {
+    @Transactional
+    public DmpDO update(SaveDmpWrapper dmpWrapper) {
         log.info("Updating DMP with id " + dmpWrapper.getDmp().getId());
         // TODO: check privileges
         Dmp dmp = dmpRepo.findById(dmpWrapper.getDmp().getId());
         DmpDOMapper.mapDOtoEntity(dmpWrapper.getDmp(), dmp);
         dmp.setModified(new Date());
         dmp.persist();
-        return dmp.id;
+        return getDmpById(dmp.id);
     }
 
     public void createAccess(Dmp dmp, String editedById){

@@ -37,7 +37,8 @@ public class DataManagementPlanResourceTest {
     public void setup() {
         Mockito.when(accessValidator.canViewDmp(anyLong(), anyString())).thenReturn(true);
         Mockito.when(accessValidator.canEditDmp(anyLong(), anyString())).thenReturn(true);
-        Mockito.when(dmpService.save(any(SaveDmpWrapper.class))).thenReturn(this.createDmpDO());
+        Mockito.when(dmpService.create(any(SaveDmpWrapper.class))).thenReturn(this.createDmpDO());
+        Mockito.when(dmpService.update(any(SaveDmpWrapper.class))).thenReturn(this.createDmpDO());
         Mockito.when(dmpService.getAll()).thenReturn(this.createDmpListItemDOList());
         Mockito.when(dmpService.getDmpById(anyLong())).thenReturn(this.createDmpDO());
         Mockito.when(dmpService.getDmpListByPersonId(anyString())).thenReturn(this.createDmpListItemDOList());
