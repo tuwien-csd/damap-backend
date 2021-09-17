@@ -1,0 +1,61 @@
+/**
+  * This file is a Jenkins pipeline definition in Groovy which is supposed to be run
+  * on CSD servers with specific requirements, thus this file might be useless for anyone
+  * outside of CSD repositories.
+  *
+  * This pipeline definition is based on a Jenkins shared library 'ops-jenkins-library'
+  * for which you can find code and documentation under https://git.tiss.tuwien.ac.at/CSD/ops-jenkins-lib
+  **/
+
+@Library('ops-jenkins-library') _
+
+pipeline {
+    agent none
+
+    stages {
+        stage('Parallel') {
+            failFast true
+            parallel {
+                stage('Test and publish') {
+                    agent { label 'maven' }
+                    stages {
+                        stage('Test') {
+                            steps {
+                                script {
+                                    csdMavenVerify(this)
+                                }
+                            }
+                        }
+
+                        stage('Publish artifacts') {
+                            steps {
+                                script {
+                                    csdMavenDeploy(this)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                stage("Build") {
+                    agent any
+                    steps {
+                        script {
+                            csdWithProject(this) {
+                                csdBuild(this, "damap-be")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        cleanup {
+            script {
+                csdCleanup(this)
+            }
+        }
+    }
+}
