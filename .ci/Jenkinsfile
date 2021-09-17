@@ -28,6 +28,7 @@ pipeline {
                         }
 
                         stage('Publish artifacts') {
+                            when { branch 'public' }
                             steps {
                                 script {
                                     csdMavenDeploy(this)
