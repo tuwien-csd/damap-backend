@@ -28,7 +28,6 @@ public class ProjectResource {
     ProjectService projectService;
 
     @GET
-    @Path("/suggest")
     @RolesAllowed("user")
     public List<ProjectDO> getProjectList() {
         log.info("Get project suggestions");
