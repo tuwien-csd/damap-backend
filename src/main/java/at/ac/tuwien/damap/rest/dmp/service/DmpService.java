@@ -104,9 +104,9 @@ public class DmpService {
 
         for (Dmp dmp : dmpRepo.getAll()) {
             for (ProjectDO projectDO : projectDOList){
-                if (dmp.getProject().getUniversity_id() != null &&
+                if (dmp.getProject().getUniversityId() != null &&
                         projectDO.getUniversityId() != null &&
-                        dmp.getProject().getUniversity_id().equals(projectDO.getUniversityId()))
+                        dmp.getProject().getUniversityId().equals(projectDO.getUniversityId()))
                     projectDO.setDmpExists(true);
             }
         }
