@@ -28,7 +28,7 @@ quarkus:
 
   oidc: 
     auth-server-url: ${damap.auth.url}
-    client-id: ${damap.auth.client}
+    client-id: ${damap.auth.client.backend}
 
   datasource:
     jdbc:
