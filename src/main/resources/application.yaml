@@ -4,7 +4,11 @@ damap:
   origins: https://your.frontend.com,https://*.yourdomain.com
   auth:
     url: https://your.authentication.server
-    client: your-authentication-client-id
+    client:
+      backend: your-backend-authentication-client-id
+      frontend: your-frontend-authentication-client-id
+    scope: your-authentication-scope
+    user: your-authentication-claim-holding-the-user-id
   datasource:
     url: jdbc:your-datasource-language:your-datasource.address
     username: your-datasource-username
