@@ -1,5 +1,6 @@
 package at.ac.tuwien.damap.rest;
 
+import at.ac.tuwien.damap.rest.config.domain.ConfigDO;
 import lombok.extern.jbosslog.JBossLog;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -7,8 +8,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.HashMap;
-import java.util.Map;
 
 @Path("/config")
 @Produces(MediaType.APPLICATION_JSON)
@@ -28,13 +27,12 @@ public class ConfigResource {
     String authUser;
 
     @GET
-    public Map<String, String> config() {
-        log.info("Get config");
-        Map<String, String> config = new HashMap<>();
-        config.put("authUrl", authUrl);
-        config.put("authClient", authClient);
-        config.put("authScope", authScope);
-        config.put("authUser", authUser);
-        return config;
+    public ConfigDO config() {
+        ConfigDO configDO = new ConfigDO();
+        configDO.setAuthUrl(authUrl);
+        configDO.setAuthClient(authClient);
+        configDO.setAuthScope(authScope);
+        configDO.setAuthUser(authUser);
+        return configDO;
     }
 }
