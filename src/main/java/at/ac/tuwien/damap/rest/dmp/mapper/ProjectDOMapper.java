@@ -13,7 +13,7 @@ public class ProjectDOMapper {
 
     public ProjectDO mapEntityToDO(Project project, ProjectDO projectDO) {
         projectDO.setId(project.id);
-        projectDO.setUniversityId(project.getUniversity_id());
+        projectDO.setUniversityId(project.getUniversityId());
         projectDO.setTitle(project.getTitle());
         projectDO.setDescription(project.getDescription());
         projectDO.setStart(project.getStart());
@@ -51,7 +51,7 @@ public class ProjectDOMapper {
     public Project mapDOtoEntity(ProjectDO projectDO, Project project){
         if (projectDO.getId() != null)
             project.id = projectDO.getId();
-        project.setUniversity_id(projectDO.getUniversityId());
+        project.setUniversityId(projectDO.getUniversityId());
         project.setTitle(projectDO.getTitle());
         project.setDescription(projectDO.getDescription());
         project.setStart(projectDO.getStart());
