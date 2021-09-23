@@ -6,6 +6,7 @@ import at.ac.tuwien.damap.repo.AccessRepo;
 import at.ac.tuwien.damap.repo.DmpRepo;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpListItemDO;
+import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
 import at.ac.tuwien.damap.rest.dmp.mapper.DmpDOMapper;
 import at.ac.tuwien.damap.rest.dmp.mapper.DmpListItemDOMapper;
 import lombok.extern.jbosslog.JBossLog;
@@ -54,33 +55,24 @@ public class DmpService {
     }
 
     @Transactional
-    public DmpDO save(SaveDmpWrapper dmpWrapper){
-        long dmpId;
-        if (dmpWrapper.getDmp().getId() == null)
-            dmpId = create(dmpWrapper);
-        else
-            // TODO: check if allowed to update
-            dmpId = update(dmpWrapper);
-        return getDmpById(dmpId);
-    }
-
-    public long create(SaveDmpWrapper dmpWrapper) {
+    public DmpDO create(SaveDmpWrapper dmpWrapper) {
         log.info("Creating new DMP");
         Dmp dmp = DmpDOMapper.mapDOtoEntity(dmpWrapper.getDmp(), new Dmp());
         dmp.setCreated(new Date());
         dmp.persist();
         createAccess(dmp, dmpWrapper.getEdited_by());
-        return dmp.id;
+        return getDmpById(dmp.id);
     }
 
-    public long update(SaveDmpWrapper dmpWrapper) {
+    @Transactional
+    public DmpDO update(SaveDmpWrapper dmpWrapper) {
         log.info("Updating DMP with id " + dmpWrapper.getDmp().getId());
         // TODO: check privileges
         Dmp dmp = dmpRepo.findById(dmpWrapper.getDmp().getId());
         DmpDOMapper.mapDOtoEntity(dmpWrapper.getDmp(), dmp);
         dmp.setModified(new Date());
         dmp.persist();
-        return dmp.id;
+        return getDmpById(dmp.id);
     }
 
     public void createAccess(Dmp dmp, String editedById){
@@ -106,5 +98,18 @@ public class DmpService {
         }
 
         return filename;
+    }
+
+    public List<ProjectDO> checkExistingDmps(List<ProjectDO> projectDOList){
+
+        for (Dmp dmp : dmpRepo.getAll()) {
+            for (ProjectDO projectDO : projectDOList){
+                if (dmp.getProject().getUniversityId() != null &&
+                        projectDO.getUniversityId() != null &&
+                        dmp.getProject().getUniversityId().equals(projectDO.getUniversityId()))
+                    projectDO.setDmpExists(true);
+            }
+        }
+        return projectDOList;
     }
 }
