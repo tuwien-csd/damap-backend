@@ -6,6 +6,7 @@ import at.ac.tuwien.damap.rest.projects.ProjectService;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.AuthenticationFailedException;
 import lombok.extern.jbosslog.JBossLog;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import javax.annotation.security.RolesAllowed;
@@ -27,6 +28,9 @@ public class ProjectResource {
     @Inject
     ProjectService projectService;
 
+    @ConfigProperty(name = "damap.auth.user")
+    String authUser;
+
     @GET
     @RolesAllowed("user")
     public List<ProjectDO> getProjectList() {
@@ -45,9 +49,9 @@ public class ProjectResource {
     }
 
     private String getPersonId() {
-        if (jsonWebToken.claim("tissID").isEmpty()) {
-            throw new AuthenticationFailedException("Tiss ID is missing.");
+        if (jsonWebToken.claim(authUser).isEmpty()) {
+            throw new AuthenticationFailedException("User ID is missing.");
         }
-        return String.valueOf(jsonWebToken.claim("tissID").get());
+        return String.valueOf(jsonWebToken.claim(authUser).get());
     }
 }
