@@ -86,6 +86,7 @@ CREATE TABLE damap.project
 (
     id NUMBER(19,0) NOT NULL,
     version NUMBER(10,0) NOT NULL,
+    university_id VARCHAR2(255 CHAR),
     title VARCHAR2(255 CHAR),
     description VARCHAR2(4000 CHAR),
     funding NUMBER(19,0),
