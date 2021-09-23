@@ -22,4 +22,7 @@ public class ProjectDO {
     @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private Date end;
 
+    //indicates if this project is already related to a dmp
+    private boolean dmpExists = false;
+
 }

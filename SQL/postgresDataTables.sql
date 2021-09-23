@@ -136,6 +136,7 @@ CREATE TABLE damap.project
 (
     id bigint NOT NULL,
 	version integer NOT NULL,
+	university_id text,
     title text,
     description text,
     funding bigint,

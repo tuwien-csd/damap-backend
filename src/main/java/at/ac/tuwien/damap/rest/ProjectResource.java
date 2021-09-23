@@ -2,6 +2,7 @@ package at.ac.tuwien.damap.rest;
 
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectMemberDO;
+import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.AuthenticationFailedException;
@@ -28,6 +29,9 @@ public class ProjectResource {
     @Inject
     ProjectService projectService;
 
+    @Inject
+    DmpService dmpService;
+
     @ConfigProperty(name = "damap.auth.user")
     String authUser;
 
@@ -37,7 +41,8 @@ public class ProjectResource {
         log.info("Get project suggestions");
         String personId = this.getPersonId();
         log.info("User id: " + personId);
-        return projectService.getProjectList(personId);
+        List<ProjectDO> projectDOList = projectService.getProjectList(personId);
+        return dmpService.checkExistingDmps(projectDOList);
     }
 
     /* TODO: Strategy for permission check required for restricted projects */

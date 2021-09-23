@@ -99,7 +99,7 @@ public class DataManagementPlanResource {
         SaveDmpWrapper dmpWrapper = new SaveDmpWrapper();
         dmpWrapper.setDmp(dmpDO);
         dmpWrapper.setEdited_by(personId);
-        return dmpService.save(dmpWrapper);
+        return dmpService.create(dmpWrapper);
     }
 
     @PUT
@@ -115,7 +115,7 @@ public class DataManagementPlanResource {
         SaveDmpWrapper dmpWrapper = new SaveDmpWrapper();
         dmpWrapper.setDmp(dmpDO);
         dmpWrapper.setEdited_by(personId);
-        return dmpService.save(dmpWrapper);
+        return dmpService.update(dmpWrapper);
     }
 
     private String getPersonId() {
