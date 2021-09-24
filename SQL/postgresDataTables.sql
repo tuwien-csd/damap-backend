@@ -32,10 +32,25 @@ CREATE TABLE damap.revinfo
     id bigint NOT NULL,
 	timestamp timestamp,
     changed_by text,
-    changed_by_id text
+    changed_by_id text,
+    PRIMARY KEY (id)
 );
 
 ALTER TABLE damap.revinfo
+    OWNER to damap;
+
+--------------------------------------------------------------
+
+create table damap.revchanges
+(
+    rev bigint not null,
+    entityname varchar(255),
+    constraint type
+        FOREIGN KEY (rev)
+        REFERENCES damap.revinfo (id) MATCH SIMPLE
+);
+
+ALTER TABLE damap.revchanges
     OWNER to damap;
 
 --------------------------------------------------------------
