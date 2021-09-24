@@ -6,6 +6,7 @@ import io.quarkus.security.Authenticated;
 import io.quarkus.security.AuthenticationFailedException;
 import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import javax.inject.Inject;
@@ -29,6 +30,9 @@ public class DmpDocumentResource {
 
     @Inject
     DmpService dmpService;
+
+    @ConfigProperty(name = "damap.auth.user")
+    String authUser;
 
     @GET
     @Path("/{dmpId}")
@@ -58,9 +62,9 @@ public class DmpDocumentResource {
     }
 
     private String getPersonId() {
-        if (jsonWebToken.claim("tissID").isEmpty()) {
-            throw new AuthenticationFailedException("Tiss ID is missing.");
+        if (jsonWebToken.claim(authUser).isEmpty()) {
+            throw new AuthenticationFailedException("User ID is missing.");
         }
-        return String.valueOf(jsonWebToken.claim("tissID").get());
+        return String.valueOf(jsonWebToken.claim(authUser).get());
     }
 }
