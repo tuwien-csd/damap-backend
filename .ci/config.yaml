@@ -1,0 +1,4 @@
+container:
+  operator:
+    spec:
+      probe_enabled: false
