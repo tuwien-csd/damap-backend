@@ -9,6 +9,7 @@ import io.quarkus.security.Authenticated;
 import io.quarkus.security.AuthenticationFailedException;
 import io.quarkus.security.ForbiddenException;
 import lombok.extern.jbosslog.JBossLog;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
@@ -32,6 +33,9 @@ public class DataManagementPlanResource {
 
     @Inject
     DmpService dmpService;
+
+    @ConfigProperty(name = "damap.auth.user")
+    String authUser;
 
     // ADMIN
 
@@ -115,9 +119,9 @@ public class DataManagementPlanResource {
     }
 
     private String getPersonId() {
-        if (jsonWebToken.claim("tissID").isEmpty()) {
-            throw new AuthenticationFailedException("Tiss ID is missing.");
+        if (jsonWebToken.claim(authUser).isEmpty()) {
+            throw new AuthenticationFailedException("User ID is missing.");
         }
-        return String.valueOf(jsonWebToken.claim("tissID").get());
+        return String.valueOf(jsonWebToken.claim(authUser).get());
     }
 }
