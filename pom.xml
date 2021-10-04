@@ -110,6 +110,15 @@
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-jdbc-oracle</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-liquibase</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>1.29</version>
+    </dependency>
     <!-- Health -->
     <dependency>
         <groupId>io.quarkus</groupId>

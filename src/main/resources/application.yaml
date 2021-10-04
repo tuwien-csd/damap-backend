@@ -49,6 +49,10 @@ quarkus:
       "repository":
         expire-after-write: P1D
 
+  liquibase:
+    migrate-at-start: true
+    change-log: db/changeLog.yaml
+
 rest:
   projects/mp-rest/url: ${damap.projects-url}
   persons/mp-rest/url: ${damap.persons-url}
