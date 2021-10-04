@@ -28,7 +28,7 @@ public class Project extends PanacheEntity {
     private String description;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "funding")
+    @JoinColumn(name = "funding_id")
     private Funding funding;
 
     @Column(name = "project_start")
