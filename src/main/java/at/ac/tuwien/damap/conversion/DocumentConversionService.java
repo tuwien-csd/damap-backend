@@ -26,16 +26,52 @@ public class DocumentConversionService {
 
     public XWPFDocument getFWFTemplate(long dmpId) throws Exception {
 
-        Dmp dmp = dmpRepo.findById(dmpId);
-
         String template = "template/template.docx";
         ClassLoader classLoader = getClass().getClassLoader();
-
         XWPFDocument document = new XWPFDocument(classLoader.getResourceAsStream(template));
+        List<XWPFTable> tables = document.getTables();
 
-        //mapping general information
+        Dmp dmp = dmpRepo.findById(dmpId);
+        List<Dataset> datasets = dmp.getDatasetList();
+        List<Cost> costList = dmp.getCosts();
+
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Map<String, String> map = new HashMap<>();
+
+        //Pre Section
+        preSection(dmp, map, formatter);
+
+        //Section 1
+        sectionOne(dmp, map, datasets, formatter);
+
+        //Section 2
+        sectionTwo(dmp, map);
+
+        //Section 3
+        sectionThree(dmp, map, datasets);
+
+        //Section 4
+        sectionFour(dmp, map, datasets);
+
+        //Section 5
+        sectionFive(dmp, map);
+
+        //Section 6
+        sectionSix(dmp, map, costList);
+
+        //variables replacement
+        List<XWPFParagraph> xwpfParagraphs = document.getParagraphs();
+
+        replaceInParagraphs(xwpfParagraphs, map);
+
+        //Dynamic table in all sections
+        tableContent(xwpfParagraphs, map, tables, datasets, costList, formatter);
+
+        return document;
+    }
+
+    private void preSection(Dmp dmp, Map<String, String> map, SimpleDateFormat formatter) {
+        //mapping general information
         if (dmp.getProject() != null) {
             if (dmp.getProject().getTitle() != null)
                 map.put("[projectname]", dmp.getProject().getTitle());
@@ -47,7 +83,7 @@ public class DocumentConversionService {
                     dmp.getProject().getFunding().getGrantIdentifier().getIdentifier() != null)
                 map.put("[grantid]", dmp.getProject().getFunding().getGrantIdentifier().getIdentifier());
         }
-        
+
         if (dmp.getCreated() != null) {
             map.put("[datever1]", formatter.format(dmp.getCreated()));
         }
@@ -142,14 +178,9 @@ public class DocumentConversionService {
         map.put("[coordinatorid]", coordinatorId);
         map.put("[coordinatoraffiliation]", coordinatorAffiliation);
         map.put("[coordinatorror]", coordinatorRor);
+    }
 
-        //Section 1
-
-        //TODO datasets and hosts are now connected by Distribution objects
-        // the following table (5a) should only list datasets with distributions on a repository for long term storage
-        // (each distribution should be listed, therefore there can be multiple entries for the same dataset)
-        //mapping dataset information to published data table (5a) and long term storage (5b) (only datasets with distributions on repositories)
-        List<Dataset> datasets = dmp.getDatasetList();
+    private void sectionOne(Dmp dmp, Map<String, String> map, List<Dataset> datasets, SimpleDateFormat formatter) {
         for (Dataset dataset : datasets) {
             int idx = datasets.indexOf(dataset) + 1;
             String docVar1 = "[dataset" + idx + "name]";
@@ -241,8 +272,9 @@ public class DocumentConversionService {
 
         if (dmp.getDataGeneration() != null)
             map.put("[datageneration]", dmp.getDataGeneration());
+    }
 
-        //Section 2
+    private void sectionTwo(Dmp dmp, Map<String, String> map) {
 
         if (dmp.getMetadata() != null) {
             if (dmp.getMetadata().equals("")) {
@@ -251,8 +283,9 @@ public class DocumentConversionService {
                 map.put("[metadata]", "To help others identify, discover and reuse the data, " + dmp.getMetadata() + " will be used.");
             }
         }
+    }
 
-        //Section 3
+    private void sectionThree(Dmp dmp, Map<String, String> map, List<Dataset> datasets) {
 
         List<Host> hostList = dmp.getHostList();
         String storageVar = "";
@@ -285,8 +318,6 @@ public class DocumentConversionService {
 
             if (hostList.indexOf(host)+1 < hostList.size())
                 storageVar = storageVar.concat(";");
-
-            System.out.println(storageVar);
         }
 
         if (dmp.getExternalStorageInfo() != null) {
@@ -295,9 +326,9 @@ public class DocumentConversionService {
         }
 
         map.put("[storage]", storageVar);
+    }
 
-        //Section 4
-
+    private void sectionFour(Dmp dmp, Map<String, String> map, List<Dataset> datasets) {
         //Section 4a: personal data
         String personalData = "";
         if (dmp.getPersonalData()) {
@@ -396,7 +427,9 @@ public class DocumentConversionService {
         }
         map.put("[ethicalissues]", ethicalIssues);
 
-        //Section 5
+    }
+
+    private void sectionFive(Dmp dmp, Map<String, String> map) {
 
         String targetAudience = "";
         String tools = "";
@@ -410,7 +443,9 @@ public class DocumentConversionService {
         map.put("[targetaudience]", targetAudience);
         map.put("[tools]", tools);
 
-        //Section 6
+    }
+
+    private void sectionSix(Dmp dmp, Map<String, String> map, List<Cost> costList) {
 
         String costs = "";
 
@@ -427,7 +462,6 @@ public class DocumentConversionService {
         //mapping cost information
         Long totalCost = 0L;
 
-        List<Cost> costList = dmp.getCosts();
         for (Cost cost : costList) {
             int idx = costList.indexOf(cost) + 1;
             String docVar1 = "[cost" + idx + "title]";
@@ -469,12 +503,9 @@ public class DocumentConversionService {
 
         map.put("[costtotal]", totalCost.toString());
 
-        //variables replacement
-        List<XWPFParagraph> xwpfParagraphs = document.getParagraphs();
+    }
 
-        replaceInParagraphs(xwpfParagraphs, map);
-
-        List<XWPFTable> tables = document.getTables();
+    private void tableContent(List<XWPFParagraph> xwpfParagraphs, Map<String, String> map, List<XWPFTable> tables, List<Dataset> datasets, List<Cost> costList, SimpleDateFormat formatter) {
         for (XWPFTable xwpfTable : tables) {
             if (xwpfTable.getRow(1) != null) {
 
@@ -486,7 +517,13 @@ public class DocumentConversionService {
                         for (int i = 2; i < datasets.size() + 1; i++) {
 
                             XWPFTableRow sourceTableRow = xwpfTable.getRow(i);
-                            XWPFTableRow newRow = insertNewTableRow(sourceTableRow, i);
+                            XWPFTableRow newRow = new XWPFTableRow(sourceTableRow.getCtRow(), xwpfTable);
+
+                            try {
+                                newRow = insertNewTableRow(sourceTableRow, i);
+                            }
+                            catch (Exception e) {
+                            }
 
                             ArrayList<String> docVar = new ArrayList<String>();
                             docVar.add("P" + i);
@@ -537,7 +574,13 @@ public class DocumentConversionService {
                         for (int i = 2; i < datasets.size() + 1; i++) {
 
                             XWPFTableRow sourceTableRow = xwpfTable.getRow(i);
-                            XWPFTableRow newRow = insertNewTableRow(sourceTableRow, i);
+                            XWPFTableRow newRow = new XWPFTableRow(sourceTableRow.getCtRow(), xwpfTable);
+
+                            try {
+                                newRow = insertNewTableRow(sourceTableRow, i);
+                            }
+                            catch (Exception e) {
+                            }
 
                             ArrayList<String> docVar = new ArrayList<String>();
                             docVar.add("P" + i);
@@ -612,7 +655,13 @@ public class DocumentConversionService {
                         for (int i = 2; i < datasets.size() + 1; i++) {
 
                             XWPFTableRow sourceTableRow = xwpfTable.getRow(i);
-                            XWPFTableRow newRow = insertNewTableRow(sourceTableRow, i);
+                            XWPFTableRow newRow = new XWPFTableRow(sourceTableRow.getCtRow(), xwpfTable);
+
+                            try {
+                                newRow = insertNewTableRow(sourceTableRow, i);
+                            }
+                            catch (Exception e) {
+                            }
 
                             ArrayList<String> docVar = new ArrayList<String>();
                             docVar.add("P" + i);
@@ -668,7 +717,13 @@ public class DocumentConversionService {
                         for (int i = 2; i < costList.size() + 1; i++) {
 
                             XWPFTableRow sourceTableRow = xwpfTable.getRow(i);
-                            XWPFTableRow newRow = insertNewTableRow(sourceTableRow, i);
+                            XWPFTableRow newRow = new XWPFTableRow(sourceTableRow.getCtRow(), xwpfTable);
+
+                            try {
+                                newRow = insertNewTableRow(sourceTableRow, i);
+                            }
+                            catch (Exception e) {
+                            }
 
                             ArrayList<String> docVar = new ArrayList<String>();
                             docVar.add(costList.get(i - 1).getTitle());
@@ -715,8 +770,6 @@ public class DocumentConversionService {
                 }
             }
         }
-
-        return document;
     }
 
     private XWPFTableRow insertNewTableRow(XWPFTableRow sourceTableRow, int pos) throws Exception {
