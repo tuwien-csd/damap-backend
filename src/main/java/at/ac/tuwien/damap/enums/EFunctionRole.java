@@ -16,6 +16,7 @@ public enum EFunctionRole {
         this.role = role;
     }
 
+    @Override
     @JsonValue
     public String toString() {
         return role;

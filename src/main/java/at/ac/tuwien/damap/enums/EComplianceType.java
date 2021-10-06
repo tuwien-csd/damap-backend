@@ -6,11 +6,11 @@ import java.util.HashMap;
 
 public enum EComplianceType {
 
-    informedConsent("by gaining informed consent"),
-    encryption("by encryption"),
-    anonymisation("by anonymisation"),
-    pseudonymisation("by pseudonymisation"),
-    other("other");
+    INFORMED_CONSENT("by gaining informed consent"),
+    ENCRYPTION("by encryption"),
+    ANONYMISATION("by anonymisation"),
+    PSEUDONYMISATION("by pseudonymisation"),
+    OTHER("other");
 
     private final String value;
 
@@ -20,6 +20,7 @@ public enum EComplianceType {
         this.value = value;
     }
 
+    @Override
     @JsonValue
     public String toString() {
         return value;

@@ -188,121 +188,121 @@ databaseChangeLog:
             columns:
               -  column:
                    name:  role
-                   value: 'DataCollector'
+                   value: 'DATA_COLLECTOR'
             tableName:  e_contributor_role
         - insert:
             columns:
               -  column:
                    name:  role
-                   value: 'DataCurator'
+                   value: 'DATA_CURATOR'
             tableName:  e_contributor_role
         - insert:
             columns:
               -  column:
                    name:  role
-                   value: 'DataManager'
+                   value: 'DATA_MANAGER'
             tableName:  e_contributor_role
         - insert:
             columns:
               -  column:
                    name:  role
-                   value: 'Distributor'
+                   value: 'DISTRIBUTOR'
             tableName:  e_contributor_role
         - insert:
             columns:
               -  column:
                    name:  role
-                   value: 'Editor'
+                   value: 'EDITOR'
             tableName:  e_contributor_role
         - insert:
             columns:
               -  column:
                    name:  role
-                   value: 'HostingInstitution'
+                   value: 'HOSTING_INSTITUTION'
             tableName:  e_contributor_role
         - insert:
             columns:
               -  column:
                    name:  role
-                   value: 'Producer'
+                   value: 'PRODUCER'
             tableName:  e_contributor_role
         - insert:
             columns:
               -  column:
                    name:  role
-                   value: 'ProjectLeader'
+                   value: 'PROJECT_LEADER'
             tableName:  e_contributor_role
         - insert:
             columns:
               -  column:
                    name:  role
-                   value: 'ProjectManager'
+                   value: 'PROJECT_MANAGER'
             tableName:  e_contributor_role
         - insert:
             columns:
               -  column:
                    name:  role
-                   value: 'ProjectMember'
+                   value: 'PROJECT_MEMBER'
             tableName:  e_contributor_role
         - insert:
             columns:
               -  column:
                    name:  role
-                   value: 'RegistrationAgency'
+                   value: 'REGISTRATION_AGENCY'
             tableName:  e_contributor_role
         - insert:
             columns:
               -  column:
                    name:  role
-                   value: 'RegistrationAuthority'
+                   value: 'REGISTRATION_AUTHORITY'
             tableName:  e_contributor_role
         - insert:
             columns:
               -  column:
                    name:  role
-                   value: 'RelatedPerson'
+                   value: 'RELATED_PERSON'
             tableName:  e_contributor_role
         - insert:
             columns:
               -  column:
                    name:  role
-                   value: 'Researcher'
+                   value: 'RESEARCHER'
             tableName:  e_contributor_role
         - insert:
             columns:
               -  column:
                    name:  role
-                   value: 'ResearchGroup'
+                   value: 'RESEARCH_GROUP'
             tableName:  e_contributor_role
         - insert:
             columns:
               -  column:
                    name:  role
-                   value: 'RightsHolder'
+                   value: 'RIGHTS_HOLDER'
             tableName:  e_contributor_role
         - insert:
             columns:
               -  column:
                    name:  role
-                   value: 'Sponsor'
+                   value: 'SPONSOR'
             tableName:  e_contributor_role
         - insert:
             columns:
               -  column:
                    name:  role
-                   value: 'Supervisor'
+                   value: 'SUPERVISOR'
             tableName:  e_contributor_role
         - insert:
             columns:
               -  column:
                    name:  role
-                   value: 'WorkPackageLeader'
+                   value: 'WORK_PACKAGE_LEADER'
             tableName:  e_contributor_role
         - insert:
             columns:
               -  column:
                    name:  role
-                   value: 'Other'
+                   value: 'OTHER'
             tableName:  e_contributor_role
 
         -  createTable:
@@ -318,61 +318,61 @@ databaseChangeLog:
             columns:
               -  column:
                    name:  type
-                   value: 'dataAcquisition'
+                   value: 'DATA_ACQUISITION'
             tableName:  e_cost_type
         - insert:
             columns:
               -  column:
                    name:  type
-                   value: 'database'
+                   value: 'DATABASE'
             tableName:  e_cost_type
         - insert:
             columns:
               -  column:
                    name:  type
-                   value: 'filebasedStorage'
+                   value: 'FILE_BASED_STORAGE'
             tableName:  e_cost_type
         - insert:
             columns:
               -  column:
                    name:  type
-                   value: 'hardwareAndInfrastructure'
+                   value: 'HARDWARE_AND_INFRASTRUCTURE'
             tableName:  e_cost_type
         - insert:
             columns:
               -  column:
                    name:  type
-                   value: 'legalAdvice'
+                   value: 'LEGAL_ADVICE'
             tableName:  e_cost_type
         - insert:
             columns:
               -  column:
                    name:  type
-                   value: 'personnel'
+                   value: 'PERSONNEL'
             tableName:  e_cost_type
         - insert:
             columns:
               -  column:
                    name:  type
-                   value: 'repository'
+                   value: 'REPOSITORY'
             tableName:  e_cost_type
         - insert:
             columns:
               -  column:
                    name:  type
-                   value: 'sofwareLicense'
+                   value: 'SOFTWARE_LICENSE'
             tableName:  e_cost_type
         - insert:
             columns:
               -  column:
                    name:  type
-                   value: 'training'
+                   value: 'TRAINING'
             tableName:  e_cost_type
         - insert:
             columns:
               -  column:
                    name:  type
-                   value: 'other'
+                   value: 'OTHER'
             tableName:  e_cost_type
 
         -  createTable:
@@ -388,19 +388,19 @@ databaseChangeLog:
             columns:
               -  column:
                    name:  access_type
-                   value: 'open'
+                   value: 'OPEN'
             tableName:  e_data_access
         - insert:
             columns:
               -  column:
                    name:  access_type
-                   value: 'restricted'
+                   value: 'RESTRICTED'
             tableName:  e_data_access
         - insert:
             columns:
               -  column:
                    name:  access_type
-                   value: 'closed'
+                   value: 'CLOSED'
             tableName:  e_data_access
 
         -  createTable:
@@ -416,31 +416,31 @@ databaseChangeLog:
             columns:
               -  column:
                    name:  type
-                   value: 'informedConsent'
+                   value: 'INFORMED_CONSENT'
             tableName:  e_compliance_type
         - insert:
             columns:
               -  column:
                    name:  type
-                   value: 'encryption'
+                   value: 'ENCRYPTION'
             tableName:  e_compliance_type
         - insert:
             columns:
               -  column:
                    name:  type
-                   value: 'anonymisation'
+                   value: 'ANONYMISATION'
             tableName:  e_compliance_type
         - insert:
             columns:
               -  column:
                    name:  type
-                   value: 'pseudonymisation'
+                   value: 'PSEUDONYMISATION'
             tableName:  e_compliance_type
         - insert:
             columns:
               -  column:
                    name:  type
-                   value: 'other'
+                   value: 'OTHER'
             tableName:  e_compliance_type
 
         -  createTable:
