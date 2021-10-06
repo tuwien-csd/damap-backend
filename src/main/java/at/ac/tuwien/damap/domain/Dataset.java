@@ -1,5 +1,6 @@
 package at.ac.tuwien.damap.domain;
 
+import at.ac.tuwien.damap.enums.EAccessRight;
 import at.ac.tuwien.damap.enums.EDataAccessType;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import lombok.*;
@@ -62,4 +63,16 @@ public class Dataset extends PanacheEntity {
 
     @OneToMany(mappedBy = "dataset", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<Distribution> distributionList = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "selected_project_members_access")
+    private EAccessRight selectedProjectMembersAccess;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "other_project_members_access")
+    private EAccessRight otherProjectMembersAccess;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "public_access")
+    private EAccessRight publicAccess;
 }
