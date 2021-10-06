@@ -6,9 +6,9 @@ import java.util.HashMap;
 
 public enum EDataAccessType {
 
-    open("Open"),
-    restricted("Restricted"),
-    closed("Closed");
+    OPEN("Open"),
+    RESTRICTED("Restricted"),
+    CLOSED("Closed");
 
     private final String value;
 
@@ -18,6 +18,7 @@ public enum EDataAccessType {
         this.value = value;
     }
 
+    @Override
     @JsonValue
     public String toString() {
         return value;
