@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-@EqualsAndHashCode(callSuper = true, exclude = "dmp")
+@EqualsAndHashCode(callSuper = false)
 @ToString(exclude = "dmp")
 @Entity
 //@Audited
@@ -28,6 +28,7 @@ public class Dataset extends PanacheEntity {
     @JsonbTransient
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dmp_id")
+    @EqualsAndHashCode.Exclude
     private Dmp dmp;
 
     private String title;
@@ -75,4 +76,9 @@ public class Dataset extends PanacheEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "public_access")
     private EAccessRight publicAccess;
+
+    @EqualsAndHashCode.Include
+    private Long getId() {
+        return id;
+    }
 }
