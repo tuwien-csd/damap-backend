@@ -30,9 +30,11 @@ public class DamapRevisionEntity {
     @RevisionTimestamp
     private Date timestamp;
 
-    private String changed_by;
+    @Column(name = "changed_by")
+    private String changedBy;
 
-    private String changed_by_id;
+    @Column(name = "changed_by_id")
+    private String changedById;
 
     //TODO edit DamapRevisionListener to update additional fields
 
