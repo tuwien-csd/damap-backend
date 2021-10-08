@@ -13,7 +13,7 @@ import java.security.Principal;
 
 @JBossLog
 @Unremovable
-@UnlessBuildProfile("test")
+//@UnlessBuildProfile("test")
 @ApplicationScoped
 public class SecurityService {
     @Inject
