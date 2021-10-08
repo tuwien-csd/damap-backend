@@ -70,3 +70,10 @@ rest:
       password: pw4damap
 
 "%test":
+  quarkus:
+    datasource:
+      db-kind: h2
+      jdbc:
+        url: jdbc:h2:mem:test
+    oidc:
+      enabled: false

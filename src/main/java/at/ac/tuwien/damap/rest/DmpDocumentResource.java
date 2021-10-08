@@ -2,12 +2,12 @@ package at.ac.tuwien.damap.rest;
 
 import at.ac.tuwien.damap.conversion.DocumentConversionService;
 import at.ac.tuwien.damap.rest.dmp.service.DmpService;
+import at.ac.tuwien.damap.security.SecurityService;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.AuthenticationFailedException;
 import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -23,7 +23,7 @@ import java.io.*;
 public class DmpDocumentResource {
 
     @Inject
-    JsonWebToken jsonWebToken;
+    SecurityService securityService;
 
     @Inject
     DocumentConversionService documentConversionService;
@@ -62,9 +62,9 @@ public class DmpDocumentResource {
     }
 
     private String getPersonId() {
-        if (jsonWebToken.claim(authUser).isEmpty()) {
+        if (securityService == null) {
             throw new AuthenticationFailedException("User ID is missing.");
         }
-        return String.valueOf(jsonWebToken.claim(authUser).get());
+        return securityService.getUserId();
     }
 }
