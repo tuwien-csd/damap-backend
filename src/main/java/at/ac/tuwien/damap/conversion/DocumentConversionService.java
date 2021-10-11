@@ -26,45 +26,54 @@ public class DocumentConversionService {
 
     public XWPFDocument getFWFTemplate(long dmpId) throws Exception {
 
+        //Loading a template file in resources folder
         String template = "template/template.docx";
         ClassLoader classLoader = getClass().getClassLoader();
+
+        //Extract document using Apache POI https://poi.apache.org/
         XWPFDocument document = new XWPFDocument(classLoader.getResourceAsStream(template));
+        List<XWPFParagraph> xwpfParagraphs = document.getParagraphs();
         List<XWPFTable> tables = document.getTables();
 
+        //Loading data related to the project from database
         Dmp dmp = dmpRepo.findById(dmpId);
         List<Dataset> datasets = dmp.getDatasetList();
         List<Cost> costList = dmp.getCosts();
 
+        //Convert the date for readable format for the document
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        //List of document variables mapping
         Map<String, String> map = new HashMap<>();
 
-        //Pre Section
+        //Pre Section including general information from the project,
+        // e.g. project title, coordinator, contact person, project and grant number.
         preSection(dmp, map, formatter);
 
-        //Section 1
+        //Section 1 contains the dataset information table and how data is generated or used
         sectionOne(dmp, map, datasets, formatter);
 
-        //Section 2
+        //Section 2 contains about the documentation and data quality including versioning and used metadata.
         sectionTwo(dmp, map);
 
-        //Section 3
+        //Section 3 contains storage and backup that will be used for the data in the research
+        // including the data access and sensitive aspect.
         sectionThree(dmp, map, datasets);
 
-        //Section 4
+        //Section 4 contains legal and ethical requirements.
         sectionFour(dmp, map, datasets);
 
-        //Section 5
+        //Section 5 contains information about data publication and long term preservation.
         sectionFive(dmp, map);
 
-        //Section 6
+        //Section 6 contains resources and cost information if necessary.
         sectionSix(dmp, map, costList);
 
         //variables replacement
-        List<XWPFParagraph> xwpfParagraphs = document.getParagraphs();
-
         replaceInParagraphs(xwpfParagraphs, map);
 
-        //Dynamic table in all sections
+        //Dynamic table in all sections will be added from row number two until the end of data list.
+        //TO DO: combine the function with the first row generation to avoid double code of similar modification.
         tableContent(xwpfParagraphs, map, tables, datasets, costList, formatter);
 
         return document;
@@ -95,7 +104,7 @@ public class DocumentConversionService {
             String contactName = "";
             String contactMail = "";
             String contactId = "";
-            String contactaff = "TU Wien";
+            String contactAffiliation = "TU Wien";
             String identifierType = "";
             String identifierID = "";
 
@@ -103,7 +112,7 @@ public class DocumentConversionService {
                 contactName = dmp.getContact().getFirstName() + " " + dmp.getContact().getLastName();
             if (dmp.getContact().getMbox() != null)
                 contactMail = dmp.getContact().getMbox();
-            //TO DO: Check if the identifier is ORCID or not
+            //TO DO: Create mapping for multiple identifier type
             if (dmp.getContact().getPersonIdentifier() != null) {
                 identifierID = dmp.getContact().getPersonIdentifier().getIdentifier();
                 if (dmp.getContact().getPersonIdentifier().getIdentifierType().toString().equals("orcid")) {
@@ -115,7 +124,7 @@ public class DocumentConversionService {
             map.put("[contactname]", contactName);
             map.put("[contactmail]", contactMail);
             map.put("[contactid]", contactId);
-            map.put("[contactaffiliation]", contactaff);
+            map.put("[contactaffiliation]", contactAffiliation);
             map.put("[contactror]", "");
         }
 
@@ -180,6 +189,35 @@ public class DocumentConversionService {
         map.put("[coordinatorror]", coordinatorRor);
     }
 
+    //Number conversion for data size in section 1
+    private static final char[] SUFFIXES = {'K', 'M', 'G', 'T', 'P', 'E' };
+    private static String format(long number) {
+        if(number < 1000) {
+            // No need to format this
+            return String.valueOf(number);
+        }
+        // Convert to a string
+        final String string = String.valueOf(number);
+        // The suffix we're using, 1-based
+        final int magnitude = (string.length() - 1) / 3;
+        // The number of digits we must show before the prefix
+        final int digits = (string.length() - 1) % 3 + 1;
+
+        // Build the string
+        char[] value = new char[4];
+        for(int i = 0; i < digits; i++) {
+            value[i] = string.charAt(i);
+        }
+        int valueLength = digits;
+        // Can and should we add a decimal point and an additional number?
+        if(digits == 1 && string.charAt(1) != '0') {
+            value[valueLength++] = '.';
+            value[valueLength++] = string.charAt(1);
+        }
+        value[valueLength++] = SUFFIXES[magnitude - 1];
+        return new String(value, 0, valueLength);
+    }
+
     private void sectionOne(Dmp dmp, Map<String, String> map, List<Dataset> datasets, SimpleDateFormat formatter) {
         for (Dataset dataset : datasets) {
             int idx = datasets.indexOf(dataset) + 1;
@@ -226,7 +264,7 @@ public class DocumentConversionService {
 
                 for (Distribution distribution: distributions) {
                     if (distribution.getHost().getHostId() != null)
-                        if (distribution.getHost().getHostId().contains("r3")) { //respository
+                        if (distribution.getHost().getHostId().contains("r3")) { //repository
                             repositories.add(distribution.getHost().getTitle());
                         } else { //storage
                             storage.add(distribution.getHost().getTitle());
@@ -823,33 +861,4 @@ public class DocumentConversionService {
         }
     }
 
-    //Number conversion for data size
-    private static final char[] SUFFIXES = {'K', 'M', 'G', 'T', 'P', 'E' };
-
-    private static String format(long number) {
-        if(number < 1000) {
-            // No need to format this
-            return String.valueOf(number);
-        }
-        // Convert to a string
-        final String string = String.valueOf(number);
-        // The suffix we're using, 1-based
-        final int magnitude = (string.length() - 1) / 3;
-        // The number of digits we must show before the prefix
-        final int digits = (string.length() - 1) % 3 + 1;
-
-        // Build the string
-        char[] value = new char[4];
-        for(int i = 0; i < digits; i++) {
-            value[i] = string.charAt(i);
-        }
-        int valueLength = digits;
-        // Can and should we add a decimal point and an additional number?
-        if(digits == 1 && string.charAt(1) != '0') {
-            value[valueLength++] = '.';
-            value[valueLength++] = string.charAt(1);
-        }
-        value[valueLength++] = SUFFIXES[magnitude - 1];
-        return new String(value, 0, valueLength);
-    }
 }
