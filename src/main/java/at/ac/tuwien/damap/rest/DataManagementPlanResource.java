@@ -4,14 +4,13 @@ import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpListItemDO;
 import at.ac.tuwien.damap.rest.dmp.service.SaveDmpWrapper;
 import at.ac.tuwien.damap.rest.dmp.service.DmpService;
+import at.ac.tuwien.damap.security.SecurityService;
 import at.ac.tuwien.damap.validation.AccessValidator;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.AuthenticationFailedException;
 import io.quarkus.security.ForbiddenException;
 import lombok.extern.jbosslog.JBossLog;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -26,16 +25,13 @@ import java.util.List;
 public class DataManagementPlanResource {
 
     @Inject
-    JsonWebToken jsonWebToken;
+    SecurityService securityService;
 
     @Inject
     AccessValidator accessValidator;
 
     @Inject
     DmpService dmpService;
-
-    @ConfigProperty(name = "damap.auth.user")
-    String authUser;
 
     // ADMIN
 
@@ -119,9 +115,9 @@ public class DataManagementPlanResource {
     }
 
     private String getPersonId() {
-        if (jsonWebToken.claim(authUser).isEmpty()) {
+        if (securityService == null) {
             throw new AuthenticationFailedException("User ID is missing.");
         }
-        return String.valueOf(jsonWebToken.claim(authUser).get());
+        return securityService.getUserId();
     }
 }

@@ -35,7 +35,7 @@ class DatasetDOMapperTest {
         dataset.setLicense("any License");
         dataset.setStart(new Date(100000));
         dataset.setReferenceHash("hex-hash");
-        dataset.setDataAccess(EDataAccessType.closed);
+        dataset.setDataAccess(EDataAccessType.CLOSED);
         dataset.setSelectedProjectMembersAccess(EAccessRight.WRITE);
         dataset.setOtherProjectMembersAccess(EAccessRight.READ);
         dataset.setPublicAccess(null);

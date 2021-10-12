@@ -72,6 +72,7 @@ public enum EIdentifierType {
         return metadataIdentifierType;
     }
 
+    @Override
     @JsonValue
     public String toString() {
         return type;

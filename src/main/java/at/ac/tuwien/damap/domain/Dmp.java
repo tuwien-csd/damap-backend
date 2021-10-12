@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-//@Audited
+@Audited
 @Table
 public class Dmp extends PanacheEntity {
 
@@ -35,11 +36,11 @@ public class Dmp extends PanacheEntity {
     private String description;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "project")
+    @JoinColumn(name = "project_id")
     private Project project;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "contact")
+    @JoinColumn(name = "contact_id")
     private Person contact;
 
     @Enumerated(EnumType.STRING)
@@ -71,7 +72,7 @@ public class Dmp extends PanacheEntity {
     private String personalDataAccess;
 
     @ElementCollection(targetClass = EComplianceType.class, fetch = FetchType.LAZY)
-    @CollectionTable(name="personal_data_compliance_list")
+    @CollectionTable(name="personal_data_compliance")
     @Column(name = "compliance_type")
     @Enumerated(EnumType.STRING)
     private List<EComplianceType> personalDataCompliance;

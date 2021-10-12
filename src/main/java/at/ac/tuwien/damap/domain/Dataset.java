@@ -17,7 +17,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @ToString(exclude = "dmp")
 @Entity
-//@Audited
+@Inheritance(strategy=InheritanceType.JOINED)
+@Audited
 public class Dataset extends PanacheEntity {
 
     @Version
