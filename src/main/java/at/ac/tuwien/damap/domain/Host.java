@@ -17,7 +17,7 @@ import java.util.List;
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
 @DiscriminatorColumn(name="discriminator", discriminatorType= DiscriminatorType.STRING)
-//@Audited
+@Audited
 public class Host extends PanacheEntity {
 
     @Version

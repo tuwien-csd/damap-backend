@@ -6,26 +6,26 @@ import java.util.HashMap;
 
 public enum EContributorRole {
 
-    DataCollector("Data Collector"),
-    DataCurator("Data Curator"),
-    DataManager("Data Manager"),
-    Distributor("Distributor"),
-    Editor("Editor"),
-    HostingInstitution("Hosting Institution"),
-    Producer("Producer"),
-    ProjectLeader("Project Leader"),
-    ProjectManager("Project Manager"),
-    ProjectMember("Project Member"),
-    RegistrationAgency("Registration Agency"),
-    RegistrationAuthority("Registration Authority"),
-    RelatedPerson("Related Person"),
-    Researcher("Researcher"),
-    ResearchGroup("Research Group"),
-    RightsHolder("Rights Holder"),
-    Sponsor("Sponsor"),
-    Supervisor("Supervisor"),
-    WorkPackageLeader("Work Package Leader"),
-    Other("Other");
+    DATA_COLLECTOR("Data Collector"),
+    DATA_CURATOR("Data Curator"),
+    DATA_MANAGER("Data Manager"),
+    DISTRIBUTOR("Distributor"),
+    EDITOR("Editor"),
+    HOSTING_INSTITUTION("Hosting Institution"),
+    PRODUCER("Producer"),
+    PROJECT_LEADER("Project Leader"),
+    PROJECT_MANAGER("Project Manager"),
+    PROJECT_MEMBER("Project Member"),
+    REGISTRATION_AGENCY("Registration Agency"),
+    REGISTRATION_AUTHORITY("Registration Authority"),
+    RELATED_PERSON("Related Person"),
+    RESEARCHER("Researcher"),
+    RESEARCH_GROUP("Research Group"),
+    RIGHTS_HOLDER("Rights Holder"),
+    SPONSOR("Sponsor"),
+    SUPERVISOR("Supervisor"),
+    WORK_PACKAGE_LEADER("Work Package Leader"),
+    OTHER("Other");
 
     private final String role;
 
@@ -35,6 +35,7 @@ public enum EContributorRole {
         this.role = role;
     }
 
+    @Override
     @JsonValue
     public String toString() {
         return role;

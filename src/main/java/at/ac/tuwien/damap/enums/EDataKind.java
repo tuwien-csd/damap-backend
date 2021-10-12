@@ -14,6 +14,7 @@ public enum EDataKind {
         this.kind = kind;
     }
 
+    @Override
     @JsonValue
     public String toString() {
         return kind;

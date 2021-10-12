@@ -3,13 +3,18 @@ package at.ac.tuwien.damap.domain;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Entity
+@Inheritance(strategy=InheritanceType.JOINED)
+@Audited
 public class Distribution extends PanacheEntity {
 
     @Version
