@@ -1,4 +1,6 @@
+--------------------------------------------------------------
 -- create database and role for postgres
+--------------------------------------------------------------
 
 CREATE ROLE damap WITH
 	LOGIN
@@ -20,7 +22,39 @@ CREATE SCHEMA damap
     AUTHORIZATION damap;
 
 --------------------------------------------------------------
--- create basic data tables
+-- setup for hibernate
+--------------------------------------------------------------
+
+CREATE SEQUENCE damap.hibernate_sequence INCREMENT 1 START 1 MINVALUE 1;
+
+CREATE TABLE damap.revinfo
+(
+    id bigint NOT NULL,
+	timestamp timestamp,
+    changed_by text,
+    changed_by_id text,
+    PRIMARY KEY (id)
+);
+
+ALTER TABLE damap.revinfo
+    OWNER to damap;
+
+--------------------------------------------------------------
+
+create table damap.revchanges
+(
+    rev bigint not null,
+    entityname varchar(255),
+    constraint type
+        FOREIGN KEY (rev)
+        REFERENCES damap.revinfo (id) MATCH SIMPLE
+);
+
+ALTER TABLE damap.revchanges
+    OWNER to damap;
+
+--------------------------------------------------------------
+-- create data tables
 --------------------------------------------------------------
 
 CREATE TABLE damap.identifier_type
@@ -58,6 +92,25 @@ CREATE TABLE damap.identifier
 );
 
 ALTER TABLE damap.identifier
+    OWNER to damap;
+
+---------------------------------------------------------------
+
+CREATE TABLE damap.identifier_aud
+(
+    id bigint NOT NULL,
+	REV integer not null,
+	REVTYPE integer,
+    identifier text,
+    type text,
+    PRIMARY KEY (id, rev),
+    FOREIGN KEY (type)
+        REFERENCES damap.identifier_type (type) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+);
+
+ALTER TABLE damap.identifier_aud
     OWNER to damap;
 
 ---------------------------------------------------------------
@@ -110,6 +163,37 @@ ALTER TABLE damap.funding
 
 ---------------------------------------------------------------
 
+CREATE TABLE damap.funding_aud
+(
+    id bigint NOT NULL,
+	REV integer not null,
+	REVTYPE integer,
+    funder_id bigint,
+    funding_status text,
+    grant_id bigint,
+    PRIMARY KEY (id, rev),
+    FOREIGN KEY (funder_id)
+        REFERENCES damap.identifier (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    FOREIGN KEY (grant_id)
+        REFERENCES damap.identifier (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+	FOREIGN KEY (funding_status)
+        REFERENCES damap.funding_status (status) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+);
+
+ALTER TABLE damap.funding_aud
+    OWNER to damap;
+
+---------------------------------------------------------------
+
 CREATE TABLE damap.person
 (
     id bigint NOT NULL,
@@ -128,6 +212,29 @@ CREATE TABLE damap.person
 );
 
 ALTER TABLE damap.person
+    OWNER to damap;
+
+---------------------------------------------------------------
+
+CREATE TABLE damap.person_aud
+(
+    id bigint NOT NULL,
+	REV integer not null,
+	REVTYPE integer,
+    person_id bigint,
+    university_id text,
+    mbox text,
+    first_name text,
+    last_name text,
+    PRIMARY KEY (id, rev),
+    FOREIGN KEY (person_id)
+        REFERENCES damap.identifier (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+);
+
+ALTER TABLE damap.person_aud
     OWNER to damap;
 
 ---------------------------------------------------------------
@@ -151,6 +258,30 @@ CREATE TABLE damap.project
 );
 
 ALTER TABLE damap.project
+    OWNER to damap;
+
+---------------------------------------------------------------
+
+CREATE TABLE damap.project_aud
+(
+    id bigint NOT NULL,
+	REV integer not null,
+	REVTYPE integer,
+    university_id text,
+    title text,
+    description text,
+    funding bigint,
+    project_start date,
+    project_end date,
+    PRIMARY KEY (id, rev),
+    FOREIGN KEY (funding)
+        REFERENCES damap.funding (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+);
+
+ALTER TABLE damap.project_aud
     OWNER to damap;
 
 ---------------------------------------------------------------
@@ -225,6 +356,63 @@ CREATE TABLE damap.dmp
 ALTER TABLE damap.dmp
     OWNER to damap;
 
+---------------------------------------------------------------
+
+CREATE TABLE damap.dmp_aud
+(
+    id bigint NOT NULL,
+	REV integer not null,
+	REVTYPE integer,
+    created date,
+    modified date,
+    title text,
+    description text,
+    project bigint,
+    contact bigint,
+    data_kind text,
+    no_data_explanation text,
+    metadata text,
+    data_generation text,
+    structure text,
+    target_audience text,
+    tools text,
+    restricted_data_access text,
+    personal_data boolean,
+    personal_data_access text,
+    other_personal_data_compliance text,
+    sensitive_data boolean,
+    sensitive_data_security text,
+    legal_restrictions boolean,
+    legal_restrictions_comment text,
+    ethical_issues_exist boolean,
+    committee_approved boolean,
+    ethics_report text,
+    ethical_compliance_statement text,
+    external_storage_info text,
+    restricted_access_info text,
+    closed_access_info text,
+    costs_exist boolean,
+    PRIMARY KEY (id, rev),
+	FOREIGN KEY (contact)
+        REFERENCES damap.person (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    FOREIGN KEY (data_kind)
+        REFERENCES damap.data_kind (data_kind) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    FOREIGN KEY (project)
+        REFERENCES damap.project (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+);
+
+ALTER TABLE damap.dmp_aud
+    OWNER to damap;
+
 --------------------------------------------------------------
 
 CREATE TABLE damap.contributor_role
@@ -289,6 +477,37 @@ ALTER TABLE damap.contributor
 
 --------------------------------------------------------------
 
+CREATE TABLE damap.contributor_aud
+(
+    id bigint NOT NULL,
+	REV integer not null,
+	REVTYPE integer,
+    dmp_id bigint,
+    person_id bigint,
+	contributor_role text,
+    PRIMARY KEY (id, rev),
+    FOREIGN KEY (dmp_id)
+        REFERENCES damap.dmp (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    FOREIGN KEY (person_id)
+        REFERENCES damap.person (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+	FOREIGN KEY (contributor_role)
+        REFERENCES damap.contributor_role (role) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+);
+
+ALTER TABLE damap.contributor_aud
+    OWNER to damap;
+
+--------------------------------------------------------------
+
 CREATE TABLE damap.cost_type
 (
     type text NOT NULL,
@@ -340,6 +559,36 @@ ALTER TABLE damap.cost
 
 --------------------------------------------------------------
 
+CREATE TABLE damap.cost_aud
+(
+    id bigint NOT NULL,
+    REV integer not null,
+    REVTYPE integer,
+    dmp_id bigint,
+    title text,
+    value bigint,
+    currency_code text,
+    description text,
+    cost_type text,
+    custom_type text,
+    PRIMARY KEY (id),
+    FOREIGN KEY (dmp_id)
+        REFERENCES damap.dmp (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    FOREIGN KEY (cost_type)
+         REFERENCES damap.cost_type (type) MATCH SIMPLE
+         ON UPDATE NO ACTION
+         ON DELETE NO ACTION
+         NOT VALID
+);
+
+ALTER TABLE damap.cost_aud
+    OWNER to damap;
+
+--------------------------------------------------------------
+
 CREATE TABLE damap.host
 (
     id bigint NOT NULL,
@@ -358,6 +607,29 @@ CREATE TABLE damap.host
 );
 
 ALTER TABLE damap.host
+    OWNER to damap;
+
+--------------------------------------------------------------
+
+CREATE TABLE damap.host_aud
+(
+    id bigint NOT NULL,
+	REV integer not null,
+	REVTYPE integer,
+	host_id text,
+    dmp_id bigint,
+    title text,
+    retrieval_date date,
+    discriminator text,
+    PRIMARY KEY (id, rev),
+    FOREIGN KEY (dmp_id)
+        REFERENCES damap.dmp (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+);
+
+ALTER TABLE damap.host_aud
     OWNER to damap;
 
 --------------------------------------------------------------
@@ -382,6 +654,28 @@ ALTER TABLE damap.external_storage
 
 --------------------------------------------------------------
 
+CREATE TABLE damap.external_storage_aud
+(
+    id bigint NOT NULL,
+    REV integer not null,
+    REVTYPE integer,
+	url text,
+	backup_frequency text,
+	storage_location text,
+	backup_location text,
+    PRIMARY KEY (id),
+    FOREIGN KEY (id)
+        REFERENCES damap.host (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+);
+
+ALTER TABLE damap.external_storage_aud
+    OWNER to damap;
+
+--------------------------------------------------------------
+
 CREATE TABLE damap.repository
 (
     id bigint NOT NULL,
@@ -394,6 +688,24 @@ CREATE TABLE damap.repository
 );
 
 ALTER TABLE damap.repository
+    OWNER to damap;
+
+--------------------------------------------------------------
+
+CREATE TABLE damap.repository_aud
+(
+    id bigint NOT NULL,
+    REV integer not null,
+    REVTYPE integer,
+    PRIMARY KEY (id),
+    FOREIGN KEY (id)
+        REFERENCES damap.host (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+);
+
+ALTER TABLE damap.repository_aud
     OWNER to damap;
 
 --------------------------------------------------------------
@@ -414,6 +726,28 @@ CREATE TABLE damap.storage
 );
 
 ALTER TABLE damap.storage
+    OWNER to damap;
+
+--------------------------------------------------------------
+
+CREATE TABLE damap.storage_aud
+(
+    id bigint NOT NULL,
+    REV integer not null,
+    REVTYPE integer,
+	url text,
+	backup_frequency text,
+	storage_location text,
+	backup_location text,
+    PRIMARY KEY (id),
+    FOREIGN KEY (id)
+        REFERENCES damap.host (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+);
+
+ALTER TABLE damap.storage_aud
     OWNER to damap;
 
 --------------------------------------------------------------
@@ -465,6 +799,42 @@ CREATE TABLE damap.dataset
 
 ALTER TABLE damap.dataset
     OWNER to damap;
+
+--------------------------------------------------------------
+
+CREATE TABLE damap.dataset_aud
+(
+    id bigint NOT NULL,
+    REV integer not null,
+    REVTYPE integer,
+	dmp_id bigint,
+    title text,
+    type text,
+    data_size bigint,
+    dataset_comment text,
+    personal_data boolean,
+    sensitive_data boolean,
+    legal_restrictions boolean,
+    license text,
+    start_date date,
+    reference_hash text,
+    data_access text,
+    PRIMARY KEY (id),
+    FOREIGN KEY (dmp_id)
+        REFERENCES damap.dmp (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    FOREIGN KEY (data_access)
+         REFERENCES damap.data_access (access_type) MATCH SIMPLE
+         ON UPDATE NO ACTION
+         ON DELETE NO ACTION
+         NOT VALID
+);
+
+ALTER TABLE damap.dataset_aud
+    OWNER to damap;
+
 --------------------------------------------------------------
 
 CREATE TABLE damap.compliance_type
@@ -502,6 +872,30 @@ CREATE TABLE damap.personal_data_compliance_list
 );
 
 ALTER TABLE damap.personal_data_compliance_list
+    OWNER to damap;
+
+--------------------------------------------------------------
+
+CREATE TABLE damap.personal_data_compliance_list_aud
+(
+    dmp_id bigint NOT NULL,
+    REV integer not null,
+    REVTYPE integer,
+    compliance_type text,
+    PRIMARY KEY (dmp_id, compliance_type),
+    FOREIGN KEY (dmp_id)
+        REFERENCES damap.dmp (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    FOREIGN KEY (compliance_type)
+        REFERENCES damap.compliance_type (type) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+);
+
+ALTER TABLE damap.personal_data_compliance_list_aud
     OWNER to damap;
 
 --------------------------------------------------------------
@@ -544,6 +938,27 @@ ALTER TABLE damap.administration
     OWNER to damap;
 
 --------------------------------------------------------------
+CREATE TABLE damap.administration_aud
+(
+    id bigint NOT NULL,
+	REV integer not null,
+	REVTYPE integer,
+    university_id text,
+    role text,
+    start_date date,
+    until_date date,
+    PRIMARY KEY (id, rev),
+    FOREIGN KEY (role)
+        REFERENCES damap.function_role (role) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+);
+
+ALTER TABLE damap.administration_aud
+    OWNER to damap;
+
+--------------------------------------------------------------
 
 CREATE TABLE damap.access_management
 (
@@ -576,6 +991,39 @@ CREATE TABLE damap.access_management
 ALTER TABLE damap.access_management
     OWNER to damap;
 
+--------------------------------------------------------------
+
+CREATE TABLE damap.access_management_aud
+(
+    id bigint NOT NULL,
+	REV integer not null,
+	REVTYPE integer,
+    dmp_id bigint,
+    university_id text,
+    identifier_id bigint,
+    role text,
+    start_date date,
+    until_date date,
+    PRIMARY KEY (id, rev),
+    FOREIGN KEY (dmp_id)
+        REFERENCES damap.dmp (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    FOREIGN KEY (identifier_id)
+        REFERENCES damap.identifier (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    FOREIGN KEY (role)
+        REFERENCES damap.function_role (role) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+);
+
+ALTER TABLE damap.access_management_aud
+    OWNER to damap;
 
 --------------------------------------------------------------
 
@@ -603,7 +1051,27 @@ ALTER TABLE damap.distribution
 
 
 --------------------------------------------------------------
--- create id sequence for hibernate
---------------------------------------------------------------
 
-CREATE SEQUENCE damap.hibernate_sequence INCREMENT 1 START 1 MINVALUE 1;
+CREATE TABLE damap.distribution_aud
+(
+    id bigint NOT NULL,
+	REV integer not null,
+	REVTYPE integer,
+	dataset_id bigint,
+	host_id bigint,
+    PRIMARY KEY (id),
+    FOREIGN KEY (dataset_id)
+        REFERENCES damap.dataset (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+	FOREIGN KEY (host_id)
+        REFERENCES damap.host (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+);
+
+ALTER TABLE damap.distribution_aud
+    OWNER to damap;
+

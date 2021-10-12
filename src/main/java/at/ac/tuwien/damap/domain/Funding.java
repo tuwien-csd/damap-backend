@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-//@Audited
+@Audited
 public class Funding extends PanacheEntity {
 
     @Version

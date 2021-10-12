@@ -141,7 +141,9 @@ public class DmpDOMapper {
 
         if (dmpDO.getContact() != null) {
             Person contact = new Person();
-            if (dmp.getContact() != null)
+            //check if contact is still the same, if so update their data, else skip and replace
+            if (dmp.getContact() != null
+                && dmp.getContact().id.equals(dmpDO.getContact().getId()))
                 contact = dmp.getContact();
             PersonDOMapper.mapDOtoEntity(dmpDO.getContact(), contact);
             dmp.setContact(contact);

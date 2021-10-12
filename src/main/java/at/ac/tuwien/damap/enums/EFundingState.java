@@ -16,6 +16,7 @@ public enum EFundingState {
 
     private final String state;
 
+    @Override
     @JsonValue
     public String toString() {
         return state;

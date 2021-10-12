@@ -59,6 +59,11 @@
       <artifactId>quarkus-test-security-jwt</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-h2</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- Rest -->
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -109,6 +114,15 @@
     <dependency>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-jdbc-oracle</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-liquibase</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>1.29</version>
     </dependency>
     <!-- Health -->
     <dependency>

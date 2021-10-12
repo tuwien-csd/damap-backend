@@ -3,13 +3,13 @@ package at.ac.tuwien.damap.rest;
 import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import at.ac.tuwien.damap.rest.madmp.dto.MaDmp;
 import at.ac.tuwien.damap.rest.madmp.service.MaDmpService;
+import at.ac.tuwien.damap.security.SecurityService;
 import at.ac.tuwien.damap.validation.AccessValidator;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.AuthenticationFailedException;
 import io.quarkus.security.ForbiddenException;
 import lombok.extern.jbosslog.JBossLog;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -24,7 +24,7 @@ import javax.ws.rs.core.Response;
 public class MaDmpResource {
 
     @Inject
-    JsonWebToken jsonWebToken;
+    SecurityService securityService;
 
     @Inject
     AccessValidator accessValidator;
@@ -67,9 +67,9 @@ public class MaDmpResource {
     }
 
     private String getPersonId() {
-        if (jsonWebToken.claim(authUser).isEmpty()) {
+        if (securityService == null) {
             throw new AuthenticationFailedException("User ID is missing.");
         }
-        return String.valueOf(jsonWebToken.claim(authUser).get());
+        return securityService.getUserId();
     }
 }

@@ -13,7 +13,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-//@Audited
+@Audited
 public class Project extends PanacheEntity {
 
     @Version
@@ -28,7 +28,7 @@ public class Project extends PanacheEntity {
     private String description;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "funding")
+    @JoinColumn(name = "funding_id")
     private Funding funding;
 
     @Column(name = "project_start")
