@@ -16,12 +16,16 @@ public class PersonDOMapper {
         personDO.setMbox(person.getMbox());
         personDO.setUniversityId(person.getUniversityId());
         personDO.setAffiliation(person.getAffiliation());
-        personDO.setAffiliationId(person.getAffiliationId());
 
         if (person.getPersonIdentifier() != null) {
             IdentifierDO identifierPersonDO = new IdentifierDO();
             IdentifierDOMapper.mapEntityToDO(person.getPersonIdentifier(), identifierPersonDO);
             personDO.setPersonId(identifierPersonDO);
+        }
+        if (person.getAffiliationId() != null) {
+            IdentifierDO affiliationIdentifierDO = new IdentifierDO();
+            IdentifierDOMapper.mapEntityToDO(person.getAffiliationId(), affiliationIdentifierDO);
+            personDO.setPersonId(affiliationIdentifierDO);
         }
 
         return personDO;
@@ -34,8 +38,7 @@ public class PersonDOMapper {
         person.setLastName(personDO.getLastName());
         person.setMbox(personDO.getMbox());
         person.setUniversityId(personDO.getUniversityId());
-        person.setAffiliation(personDO.getAffiliationId());
-        person.setAffiliationId(personDO.getAffiliationId());
+        person.setAffiliation(personDO.getAffiliation());
 
         if (personDO.getPersonId() != null) {
             Identifier identifierPerson = new Identifier();
@@ -45,6 +48,15 @@ public class PersonDOMapper {
             person.setPersonIdentifier(identifierPerson);
         } else
             person.setPersonIdentifier(null);
+
+        if (personDO.getAffiliationId() != null) {
+            Identifier affiliationIdentifier = new Identifier();
+            if (person.getAffiliationId() != null)
+                affiliationIdentifier = person.getAffiliationId();
+            IdentifierDOMapper.mapDOtoEntity(personDO.getAffiliationId(), affiliationIdentifier);
+            person.setAffiliationId(affiliationIdentifier);
+        } else
+            person.setAffiliationId(null);
 
         return person;
     }

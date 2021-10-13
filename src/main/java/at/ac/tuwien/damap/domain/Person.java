@@ -38,6 +38,7 @@ public class Person extends PanacheEntity {
 
     private String affiliation;
 
-    @Column(name = "affiliation_id")
-    private String affiliationId;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "affiliation_id")
+    private Identifier affiliationId;
 }
