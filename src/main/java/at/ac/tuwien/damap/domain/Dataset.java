@@ -79,7 +79,7 @@ public class Dataset extends PanacheEntity {
     private EAccessRight publicAccess;
 
     @EqualsAndHashCode.Include
-    private Long getId() {
+    public Long getId() {
         return id;
     }
 }
