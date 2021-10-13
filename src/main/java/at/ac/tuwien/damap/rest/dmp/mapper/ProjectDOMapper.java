@@ -30,18 +30,18 @@ public class ProjectDOMapper {
 
     public FundingDO mapEntityToDO(Funding funding, FundingDO fundingDO) {
         fundingDO.setId(funding.id);
-        fundingDO.setFunding_status(funding.getFundingStatus());
+        fundingDO.setFundingStatus(funding.getFundingStatus());
 
         if (funding.getFunderIdentifier() != null) {
             IdentifierDO identifierFundingDO = new IdentifierDO();
             IdentifierDOMapper.mapEntityToDO(funding.getFunderIdentifier(), identifierFundingDO);
-            fundingDO.setFunder_id(identifierFundingDO);
+            fundingDO.setFunderId(identifierFundingDO);
         }
 
         if (funding.getGrantIdentifier() != null) {
             IdentifierDO identifierGrantDO = new IdentifierDO();
             IdentifierDOMapper.mapEntityToDO(funding.getGrantIdentifier(), identifierGrantDO);
-            fundingDO.setGrant_id(identifierGrantDO);
+            fundingDO.setGrantId(identifierGrantDO);
         }
 
         return fundingDO;
@@ -72,22 +72,22 @@ public class ProjectDOMapper {
     public Funding mapDOtoEntity(FundingDO fundingDO, Funding funding) {
         if (fundingDO.getId() != null)
             funding.id = fundingDO.getId();
-        funding.setFundingStatus(fundingDO.getFunding_status());
+        funding.setFundingStatus(fundingDO.getFundingStatus());
 
-        if (fundingDO.getFunder_id() != null) {
+        if (fundingDO.getFunderId() != null) {
             Identifier identifierFunding = new Identifier();
             if (funding.getFunderIdentifier() != null)
                 identifierFunding = funding.getFunderIdentifier();
-            IdentifierDOMapper.mapDOtoEntity(fundingDO.getFunder_id(), identifierFunding);
+            IdentifierDOMapper.mapDOtoEntity(fundingDO.getFunderId(), identifierFunding);
             funding.setFunderIdentifier(identifierFunding);
         } else
             funding.setFunderIdentifier(null);
 
-        if (fundingDO.getGrant_id() != null) {
+        if (fundingDO.getGrantId() != null) {
             Identifier identifierGrant = new Identifier();
             if (funding.getGrantIdentifier() != null)
                 identifierGrant = funding.getGrantIdentifier();
-            IdentifierDOMapper.mapDOtoEntity(fundingDO.getGrant_id(), identifierGrant);
+            IdentifierDOMapper.mapDOtoEntity(fundingDO.getGrantId(), identifierGrant);
             funding.setGrantIdentifier(identifierGrant);
         } else
             funding.setGrantIdentifier(null);

@@ -15,6 +15,8 @@ public class PersonDOMapper {
         personDO.setLastName(person.getLastName());
         personDO.setMbox(person.getMbox());
         personDO.setUniversityId(person.getUniversityId());
+        personDO.setAffiliation(person.getAffiliation());
+        personDO.setAffiliationId(person.getAffiliationId());
 
         if (person.getPersonIdentifier() != null) {
             IdentifierDO identifierPersonDO = new IdentifierDO();
@@ -32,6 +34,8 @@ public class PersonDOMapper {
         person.setLastName(personDO.getLastName());
         person.setMbox(personDO.getMbox());
         person.setUniversityId(personDO.getUniversityId());
+        person.setAffiliation(personDO.getAffiliationId());
+        person.setAffiliationId(personDO.getAffiliationId());
 
         if (personDO.getPersonId() != null) {
             Identifier identifierPerson = new Identifier();
