@@ -1,6 +1,7 @@
 package at.ac.tuwien.damap.rest;
 
 import at.ac.tuwien.damap.conversion.DocumentConversionService;
+import at.ac.tuwien.damap.conversion.ExportFWFTemplate;
 import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.AuthenticationFailedException;
@@ -25,8 +26,11 @@ public class DmpDocumentResource {
     @Inject
     JsonWebToken jsonWebToken;
 
+    //@Inject
+    //DocumentConversionService documentConversionService;
+
     @Inject
-    DocumentConversionService documentConversionService;
+    ExportFWFTemplate exportFWFTemplate;
 
     @Inject
     DmpService dmpService;
@@ -36,7 +40,8 @@ public class DmpDocumentResource {
 
     @GET
     @Path("/{dmpId}")
-    public Response getFWFTemplate(@PathParam("dmpId") long dmpId) throws Exception {
+
+    public Response getTemplate(@PathParam("dmpId") long dmpId) throws Exception {
         log.info("Return DMP document file for DMP with id=" + dmpId);
 
         // TODO: check permission
@@ -44,7 +49,10 @@ public class DmpDocumentResource {
 
         String filename = dmpService.getDefaultFileName(dmpId);
 
-        XWPFDocument document = documentConversionService.getFWFTemplate(dmpId);
+        // TODO: replace template link with template uploaded from frontend
+        String template = "template/template.docx";
+
+        XWPFDocument document = exportFWFTemplate.getTemplate(dmpId, template);
 
         StreamingOutput streamingOutput = new StreamingOutput() {
             @Override
