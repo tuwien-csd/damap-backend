@@ -1699,3 +1699,27 @@ databaseChangeLog:
                     name:  host_id
                     type:  NUMBER(20,0)
 
+
+  - changeSet:
+      id: 2
+      author: Zeno Casellato
+      changes:
+        - addColumn:
+            tableName: person
+            columns:
+              - column:
+                  name: affiliation
+                  type: VARCHAR(255)
+              - column:
+                  name: affiliation_id
+                  type: VARCHAR(255)
+        - addColumn:
+            tableName: person_aud
+            columns:
+              - column:
+                  name: affiliation
+                  type: VARCHAR(255)
+              - column:
+                  name: affiliation_id
+                  type: VARCHAR(255)
+

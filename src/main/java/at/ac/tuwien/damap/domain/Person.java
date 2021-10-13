@@ -35,4 +35,9 @@ public class Person extends PanacheEntity {
 
     @Column(name = "last_name")
     private String lastName;
+
+    private String affiliation;
+
+    @Column(name = "affiliation_id")
+    private String affiliationId;
 }
