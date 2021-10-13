@@ -18,6 +18,7 @@
     <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
     <quarkus.platform.version>2.0.3.Final</quarkus.platform.version>
+    <sonar.version>3.9.0.2155</sonar.version>
   </properties>
 
   <dependencyManagement>
@@ -34,6 +35,11 @@
 
   <dependencies>
     <!-- Test -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jacoco</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5</artifactId>
@@ -257,6 +263,25 @@
       <properties>
         <quarkus.package.type>native</quarkus.package.type>
       </properties>
+    </profile>
+
+    <profile>
+      <id>sonar</id>
+      <properties>
+        <sonar.projectKey>at.ac.tuwien:damap-backend</sonar.projectKey>
+        <sonar.coverage.jacoco.xmlReportPaths>
+          ${project.build.directory}/jacoco-report/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+            <version>${sonar.version}</version>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 
