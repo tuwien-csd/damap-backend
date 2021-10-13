@@ -1712,7 +1712,10 @@ databaseChangeLog:
                   type: VARCHAR(255)
               - column:
                   name: affiliation_id
-                  type: VARCHAR(255)
+                  type:  NUMBER(20,0)
+                  constraints:
+                    foreignKeyName:  fk_person_affil_identifier
+                    references:  identifier(id)
         - addColumn:
             tableName: person_aud
             columns:
@@ -1721,5 +1724,5 @@ databaseChangeLog:
                   type: VARCHAR(255)
               - column:
                   name: affiliation_id
-                  type: VARCHAR(255)
+                  type: NUMBER(20,0)
 

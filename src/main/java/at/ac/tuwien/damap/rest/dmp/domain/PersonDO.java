@@ -17,6 +17,6 @@ public class PersonDO {
     private String lastName;
     private String mbox;
     private String affiliation;
-    private String affiliationId;
+    private IdentifierDO affiliationId;
 
 }

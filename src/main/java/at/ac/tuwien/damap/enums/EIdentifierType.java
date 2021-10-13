@@ -15,7 +15,8 @@ public enum EIdentifierType {
     DOI("doi"),
     ARK("ark"),
     URL("url"),
-    FUNDREF("fundref");
+    FUNDREF("fundref"),
+    ROR("ror");
 
     private final String type;
 
