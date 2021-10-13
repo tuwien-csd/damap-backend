@@ -1,31 +1,24 @@
 package at.ac.tuwien.damap.conversion;
 
-import java.util.*;
-import java.text.SimpleDateFormat;
-
 import at.ac.tuwien.damap.domain.*;
-import at.ac.tuwien.damap.repo.DmpRepo;
+import org.apache.poi.xwpf.usermodel.*;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
-import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
-
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 @ApplicationScoped
-public class DocumentConversionService {
+public class ExportFWFTemplate extends DocumentConversionService{
 
-    @Inject
-    DmpRepo dmpRepo;
-
-/*
-    public XWPFDocument getFWFTemplate(long dmpId, String template) throws Exception {
+    public XWPFDocument getTemplate(long dmpId, String template) throws Exception {
 
         //Loading a template file in resources folder
         //String template = "template/template.docx";
@@ -81,6 +74,7 @@ public class DocumentConversionService {
     }
 
     private void preSection(Dmp dmp, Map<String, String> map, SimpleDateFormat formatter) {
+/*
         //mapping general information
         if (dmp.getProject() != null) {
             if (dmp.getProject().getTitle() != null)
@@ -92,13 +86,15 @@ public class DocumentConversionService {
             if (dmp.getProject().getFunding().getGrantIdentifier() != null &&
                     dmp.getProject().getFunding().getGrantIdentifier().getIdentifier() != null)
                 map.put("[grantid]", dmp.getProject().getFunding().getGrantIdentifier().getIdentifier());
+
+
         }
 
         if (dmp.getCreated() != null) {
             map.put("[datever1]", formatter.format(dmp.getCreated()));
         }
 
-        //mapping contact information
+      //mapping contact information
         if (dmp.getContact() != null) {
             //TO DO: add affiliation and ROR (currently not stored in TISS)
             //Now affiliation assigned manually with TU Wien
@@ -128,6 +124,57 @@ public class DocumentConversionService {
             map.put("[contactaffiliation]", contactAffiliation);
             map.put("[contactror]", "");
         }
+        */
+
+        //mapping general information
+        System.out.println("test1");
+        addReplacement(map, "[projectname]", dmp.getProject().getTitle());
+        addReplacement(map,"[startdate]", formatter.format(dmp.getProject().getStart()));
+        addReplacement(map,"[enddate]", formatter.format(dmp.getProject().getEnd()));
+        addReplacement(map,"[grantid]", dmp.getProject().getFunding().getGrantIdentifier().getIdentifier());
+        addReplacement(map,"[datever1]", formatter.format(dmp.getCreated()));
+
+        //mapping contact information
+        //TO DO: add affiliation and ROR (currently not stored in TISS)
+        //Now affiliation assigned manually with TU Wien
+
+        System.out.println("test2");
+
+        String contactName = "";
+        String contactMail = "";
+        String contactId = "";
+        String contactAffiliation = "TU Wien";
+        String identifierType = "";
+        String identifierID = "";
+
+        if (dmp.getContact() != null)
+        {
+            contactName = dmp.getContact().getFirstName() + " " + dmp.getContact().getLastName();
+            contactMail = dmp.getContact().getMbox();
+            //TO DO: Create mapping for multiple identifier type
+            contactId = "";
+            if (dmp.getContact().getPersonIdentifier() != null) {
+                identifierID = dmp.getContact().getPersonIdentifier().getIdentifier();
+                identifierType = "";
+                if (dmp.getContact().getPersonIdentifier().getIdentifierType().toString().equals("orcid")) {
+                    identifierType = "ORCID iD: ";
+                }
+                contactId = identifierType + identifierID;
+            }
+
+        }
+
+        System.out.println("test3");
+
+        addReplacement(map,"[contactname]", contactName);
+        addReplacement(map,"[contactmail]", contactMail);
+        addReplacement(map,"[contactid]", contactId);
+        addReplacement(map,"[contactaffiliation]", contactAffiliation);
+        addReplacement(map,"[contactror]", "");
+
+        System.out.println("test3");
+
+        //checkline
 
         //mapping project coordinator and contributor information
         String coordinatorName = "";
@@ -148,8 +195,6 @@ public class DocumentConversionService {
                 String contributorMail = "";
                 String contributorId = "";
                 String contributorRole = "";
-                String identifierID = "";
-                String identifierType = "";
                 String leaderName = "";
                 String leaderMail = "";
                 String leaderId = "";
@@ -810,67 +855,5 @@ public class DocumentConversionService {
             }
         }
     }
-*/
-
-    public void addReplacement(Map<String, String> replacements, String var, String content) {
-        if (content != null) {
-            replacements.put(var, content);
-        }
-        else
-            replacements.put(var,"");
-    }
-
-    public void replaceInParagraphs(List<XWPFParagraph> xwpfParagraphs, Map<String, String> replacements) {
-
-        /*
-            Each XWPFRun will contain part of a text. These are split weirdly (by Word?).
-            Special characters will usually be separated from strings, but might be connected if several words are within that textblock.
-            Also capitalized letters seem to behave differently and are sometimes separated from the characters following them.
-         */
-
-        for (XWPFParagraph xwpfParagraph : xwpfParagraphs) {
-            List<XWPFRun> xwpfRuns = xwpfParagraph.getRuns();
-            for (XWPFRun xwpfRun : xwpfRuns) {
-                String xwpfRunText = xwpfRun.getText(xwpfRun.getTextPosition());
-                for (Map.Entry<String, String> entry : replacements.entrySet()) {
-                    if (xwpfRunText != null && xwpfRunText.contains(entry.getKey())) {
-                        //handle new line for contributor list and storage information
-                        if (entry.getKey().equals("[contributors]") || entry.getKey().equals("[storage]")){
-                            String[] value=entry.getValue().split(";");
-                            for(String text : value){
-                                xwpfParagraph.setAlignment(ParagraphAlignment.LEFT);
-                                xwpfRun.setText(text.trim());
-                                xwpfRun.addBreak();
-                                xwpfRun.addBreak();
-                            }
-                            xwpfRunText = "";
-                        }
-                        //general case for non contributor list
-                        else {
-                            xwpfRunText = xwpfRunText.replace(entry.getKey(), entry.getValue());
-                        }
-                    }
-                }
-                xwpfRun.setText(xwpfRunText, 0);
-            }
-        }
-    }
-
-    public XWPFTableRow insertNewTableRow(XWPFTableRow sourceTableRow, int pos) throws Exception {
-        XWPFTable table = sourceTableRow.getTable();
-        CTRow newCTRrow = CTRow.Factory.parse(sourceTableRow.getCtRow().newInputStream());
-        XWPFTableRow tableRow = new XWPFTableRow(newCTRrow, table);
-        table.addRow(tableRow, pos);
-        return tableRow;
-    }
-
-    static void commitTableRows(XWPFTable table) {
-        int rowNr = 0;
-        for (XWPFTableRow tableRow : table.getRows()) {
-            table.getCTTbl().setTrArray(rowNr++, tableRow.getCtRow());
-        }
-    }
-
-
 
 }
