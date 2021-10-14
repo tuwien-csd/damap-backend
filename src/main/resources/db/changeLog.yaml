@@ -1731,3 +1731,78 @@ databaseChangeLog:
                    name:  type
                    value: 'ROR'
             tableName:  e_identifier_type
+
+
+  - changeSet:
+      id: 3
+      author: Clara Schuster
+      changes:
+        - createTable:
+            tableName: e_access_right
+            columns:
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'READ'
+            tableName: e_access_right
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'WRITE'
+            tableName: e_access_right
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'NONE'
+            tableName: e_access_right
+        - addColumn:
+            tableName: dataset
+            columns:
+              - column:
+                  name: sel_project_members_access
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName:  fk_dataset_selected_ar
+                    references:  e_access_right(type)
+              - column:
+                  name: other_project_members_access
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName:  fk_dataset_other_ar
+                    references:  e_access_right(type)
+              - column:
+                  name: public_access
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName:  fk_dataset_public_ar
+                    references:  e_access_right(type)
+        - addColumn:
+            tableName: dataset_aud
+            columns:
+              - column:
+                  name: sel_project_members_access
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName: fk_dataset_aud_selected_ar
+                    references: e_access_right(type)
+              - column:
+                  name: other_project_members_access
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName: fk_dataset_aud_other_ar
+                    references: e_access_right(type)
+              - column:
+                  name: public_access
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName: fk_dataset_aud_public_ar
+                    references: e_access_right(type)

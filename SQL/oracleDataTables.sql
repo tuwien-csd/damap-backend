@@ -307,6 +307,18 @@ insert into damap.data_access values ('closed');
 
 --------------------------------------------------------------
 
+CREATE TABLE damap.access_right
+(
+    type VARCHAR2(255 CHAR) NOT NULL,
+    PRIMARY KEY (type)
+);
+
+insert into damap.access_right values ('READ');
+insert into damap.access_right values ('WRITE');
+insert into damap.access_right values ('NONE');
+
+--------------------------------------------------------------
+
 CREATE TABLE damap.dataset
 (
     id NUMBER(19,0) NOT NULL,
@@ -323,11 +335,20 @@ CREATE TABLE damap.dataset
     start_date DATE,
     reference_hash VARCHAR2(255 CHAR),
     data_access VARCHAR2(255 CHAR),
+    selected_project_members_access VARCHAR2(255 CHAR),
+    other_project_members_access VARCHAR2(255 CHAR),
+    public_access VARCHAR2(255 CHAR),
     PRIMARY KEY (id),
     FOREIGN KEY (dmp_id)
         REFERENCES damap.dmp (id),
     FOREIGN KEY (data_access)
-        REFERENCES damap.data_access (access_type)
+        REFERENCES damap.data_access (access_type),
+    FOREIGN KEY (selected_project_members_access)
+        REFERENCES damap.access_right (type),
+    FOREIGN KEY (other_project_members_access)
+        REFERENCES damap.access_right (type),
+    FOREIGN KEY (public_access)
+        REFERENCES damap.access_right (type)
 );
 
 --------------------------------------------------------------
