@@ -1725,4 +1725,9 @@ databaseChangeLog:
               - column:
                   name: affiliation_id
                   type: NUMBER(20,0)
-
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'ROR'
+            tableName:  e_identifier_type
