@@ -41,7 +41,7 @@ public class DmpDocumentResource {
     @GET
     @Path("/{dmpId}")
 
-    public Response getTemplate(@PathParam("dmpId") long dmpId) throws Exception {
+    public Response exportTemplate(@PathParam("dmpId") long dmpId) throws Exception {
         log.info("Return DMP document file for DMP with id=" + dmpId);
 
         // TODO: check permission
@@ -49,10 +49,7 @@ public class DmpDocumentResource {
 
         String filename = dmpService.getDefaultFileName(dmpId);
 
-        // TODO: replace template link with template uploaded from frontend
-        String template = "template/template.docx";
-
-        XWPFDocument document = exportFWFTemplate.getTemplate(dmpId, template);
+        XWPFDocument document = exportFWFTemplate.exportTemplate(dmpId);
 
         StreamingOutput streamingOutput = new StreamingOutput() {
             @Override

@@ -24,6 +24,9 @@ public class DocumentConversionService {
     @Inject
     DmpRepo dmpRepo;
 
+    String template;
+    Map<String, String> replacements;
+
 /*
     public XWPFDocument getFWFTemplate(long dmpId, String template) throws Exception {
 
@@ -812,7 +815,14 @@ public class DocumentConversionService {
     }
 */
 
-    public void addReplacement(Map<String, String> replacements, String var, String content) {
+    public XWPFDocument loadTemplate (String template) throws Exception{
+        ClassLoader classLoader = getClass().getClassLoader();
+        XWPFDocument document = new XWPFDocument(classLoader.getResourceAsStream(template));
+
+        return document;
+    }
+
+    public void addReplacement(String var, String content) {
         if (content != null) {
             replacements.put(var, content);
         }
@@ -820,7 +830,7 @@ public class DocumentConversionService {
             replacements.put(var,"");
     }
 
-    public void replaceInParagraphs(List<XWPFParagraph> xwpfParagraphs, Map<String, String> replacements) {
+    public void replaceInParagraphs(List<XWPFParagraph> xwpfParagraphs) {
 
         /*
             Each XWPFRun will contain part of a text. These are split weirdly (by Word?).

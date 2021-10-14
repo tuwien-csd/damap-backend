@@ -18,14 +18,19 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class ExportFWFTemplate extends DocumentConversionService{
 
-    public XWPFDocument getTemplate(long dmpId, String template) throws Exception {
+    // TODO: replace template link with template uploaded from frontend
+    String template = "template/template.docx";
+    Map<String, String> replacements = new HashMap<>();
+
+    public XWPFDocument exportTemplate(long dmpId) throws Exception {
 
         //Loading a template file in resources folder
         //String template = "template/template.docx";
-        ClassLoader classLoader = getClass().getClassLoader();
+        //ClassLoader classLoader = getClass().getClassLoader();
 
         //Extract document using Apache POI https://poi.apache.org/
-        XWPFDocument document = new XWPFDocument(classLoader.getResourceAsStream(template));
+        //XWPFDocument document = new XWPFDocument(classLoader.getResourceAsStream(template));
+        XWPFDocument document = loadTemplate(template);
         List<XWPFParagraph> xwpfParagraphs = document.getParagraphs();
         List<XWPFTable> tables = document.getTables();
 
@@ -38,37 +43,38 @@ public class ExportFWFTemplate extends DocumentConversionService{
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
         //List of document variables mapping
-        Map<String, String> map = new HashMap<>();
+//        Map<String, String> map = new HashMap<>();
+        //Map<String, String> map = replacements;
 
         //Pre Section including general information from the project,
         // e.g. project title, coordinator, contact person, project and grant number.
-        preSection(dmp, map, formatter);
+        preSection(dmp, replacements, formatter);
 
         //Section 1 contains the dataset information table and how data is generated or used
-        sectionOne(dmp, map, datasets, formatter);
+        sectionOne(dmp, replacements, datasets, formatter);
 
         //Section 2 contains about the documentation and data quality including versioning and used metadata.
-        sectionTwo(dmp, map);
+        sectionTwo(dmp, replacements);
 
         //Section 3 contains storage and backup that will be used for the data in the research
         // including the data access and sensitive aspect.
-        sectionThree(dmp, map, datasets);
+        sectionThree(dmp, replacements, datasets);
 
         //Section 4 contains legal and ethical requirements.
-        sectionFour(dmp, map, datasets);
+        sectionFour(dmp, replacements, datasets);
 
         //Section 5 contains information about data publication and long term preservation.
-        sectionFive(dmp, map);
+        sectionFive(dmp, replacements);
 
         //Section 6 contains resources and cost information if necessary.
-        sectionSix(dmp, map, costList);
+        sectionSix(dmp, replacements, costList);
 
         //variables replacement
-        replaceInParagraphs(xwpfParagraphs, map);
+        replaceInParagraphs(xwpfParagraphs);
 
         //Dynamic table in all sections will be added from row number two until the end of data list.
         //TO DO: combine the function with the first row generation to avoid double code of similar modification.
-        tableContent(xwpfParagraphs, map, tables, datasets, costList, formatter);
+        tableContent(xwpfParagraphs, replacements, tables, datasets, costList, formatter);
 
         return document;
     }
@@ -128,11 +134,11 @@ public class ExportFWFTemplate extends DocumentConversionService{
 
         //mapping general information
         System.out.println("test1");
-        addReplacement(map, "[projectname]", dmp.getProject().getTitle());
-        addReplacement(map,"[startdate]", formatter.format(dmp.getProject().getStart()));
-        addReplacement(map,"[enddate]", formatter.format(dmp.getProject().getEnd()));
-        addReplacement(map,"[grantid]", dmp.getProject().getFunding().getGrantIdentifier().getIdentifier());
-        addReplacement(map,"[datever1]", formatter.format(dmp.getCreated()));
+        addReplacement("[projectname]", dmp.getProject().getTitle());
+        addReplacement("[startdate]", formatter.format(dmp.getProject().getStart()));
+        addReplacement("[enddate]", formatter.format(dmp.getProject().getEnd()));
+        addReplacement("[grantid]", dmp.getProject().getFunding().getGrantIdentifier().getIdentifier());
+        addReplacement("[datever1]", formatter.format(dmp.getCreated()));
 
         //mapping contact information
         //TO DO: add affiliation and ROR (currently not stored in TISS)
@@ -166,11 +172,11 @@ public class ExportFWFTemplate extends DocumentConversionService{
 
         System.out.println("test3");
 
-        addReplacement(map,"[contactname]", contactName);
-        addReplacement(map,"[contactmail]", contactMail);
-        addReplacement(map,"[contactid]", contactId);
-        addReplacement(map,"[contactaffiliation]", contactAffiliation);
-        addReplacement(map,"[contactror]", "");
+        addReplacement("[contactname]", contactName);
+        addReplacement("[contactmail]", contactMail);
+        addReplacement("[contactid]", contactId);
+        addReplacement("[contactaffiliation]", contactAffiliation);
+        addReplacement("[contactror]", "");
 
         System.out.println("test3");
 
@@ -850,7 +856,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
                         .getTableCells();
                 for (XWPFTableCell xwpfTableCell : tableCells) {
                     xwpfParagraphs = xwpfTableCell.getParagraphs();
-                    replaceInParagraphs(xwpfParagraphs, map);
+                    replaceInParagraphs(xwpfParagraphs);
                 }
             }
         }
