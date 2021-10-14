@@ -12,7 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Path("fits")
-@RegisterRestClient(configKey = "damap.fits")
+@RegisterRestClient(configKey = "rest.fits")
 @Produces(MediaType.APPLICATION_XML)
 @Consumes(MediaType.MULTIPART_FORM_DATA)
 public interface FitsRestService {
