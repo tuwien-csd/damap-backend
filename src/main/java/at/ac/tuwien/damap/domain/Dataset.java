@@ -67,7 +67,7 @@ public class Dataset extends PanacheEntity {
     private List<Distribution> distributionList = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "selected_project_members_access")
+    @Column(name = "sel_project_members_access")
     private EAccessRight selectedProjectMembersAccess;
 
     @Enumerated(EnumType.STRING)
