@@ -768,6 +768,22 @@ insert into damap.data_access values ('closed');
 
 --------------------------------------------------------------
 
+CREATE TABLE damap.access_right
+(
+    type text NOT NULL,
+    PRIMARY KEY (type)
+);
+
+ALTER TABLE damap.access_right
+    OWNER to damap;
+
+
+insert into damap.access_right values ('READ');
+insert into damap.access_right values ('WRITE');
+insert into damap.access_right values ('NONE');
+
+--------------------------------------------------------------
+
 CREATE TABLE damap.dataset
 (
     id bigint NOT NULL,
@@ -784,6 +800,9 @@ CREATE TABLE damap.dataset
     start_date date,
     reference_hash text,
     data_access text,
+    selected_project_members_access text,
+    other_project_members_access text,
+    public_access text,
     PRIMARY KEY (id),
     FOREIGN KEY (dmp_id)
         REFERENCES damap.dmp (id) MATCH SIMPLE
@@ -794,7 +813,22 @@ CREATE TABLE damap.dataset
          REFERENCES damap.data_access (access_type) MATCH SIMPLE
          ON UPDATE NO ACTION
          ON DELETE NO ACTION
-         NOT VALID
+         NOT VALID,
+    FOREIGN KEY (selected_project_members_access)
+        REFERENCES damap.access_right (type) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    FOREIGN KEY (other_project_members_access)
+        REFERENCES damap.access_right (type) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    FOREIGN KEY (public_access)
+        REFERENCES damap.access_right (type) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
 );
 
 ALTER TABLE damap.dataset

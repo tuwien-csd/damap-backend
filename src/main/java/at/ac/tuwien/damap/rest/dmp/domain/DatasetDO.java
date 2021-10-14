@@ -23,4 +23,7 @@ public class DatasetDO {
     private Date startDate;
     private String referenceHash;
     private String dataAccess;
+    private String selectedProjectMembersAccess;
+    private String otherProjectMembersAccess;
+    private String publicAccess;
 }
