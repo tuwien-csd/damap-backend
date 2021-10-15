@@ -11,7 +11,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Path("fits")
+@Path("/fits")
 @RegisterRestClient(configKey = "rest.fits")
 @Produces(MediaType.APPLICATION_XML)
 @Consumes(MediaType.MULTIPART_FORM_DATA)
