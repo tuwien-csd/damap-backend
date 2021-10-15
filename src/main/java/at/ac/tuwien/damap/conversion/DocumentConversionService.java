@@ -164,7 +164,7 @@ public class DocumentConversionService {
                     }
                     contributorId = identifierType + identifierID;
                 }
-                if (contributor.getContributorRole().getRole() != null) {
+                if (contributor.getContributorRole() != null) {
                     contributorRole = contributor.getContributorRole().getRole();
                     if ((contributorRole.equals("Project Leader") || contributorRole.equals("Project Manager")) && coordinatorName.equals("")) {
                         coordinatorName = contributorName;
