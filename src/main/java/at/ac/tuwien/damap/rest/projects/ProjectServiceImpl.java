@@ -24,4 +24,9 @@ public class ProjectServiceImpl implements ProjectService {
     public List<ProjectMemberDO> getProjectStaff(String projectId) {
         return Collections.emptyList();
     }
+
+    @Override
+    public ProjectDO getProjectDetails(String projectId) {
+        return null;
+    }
 }
