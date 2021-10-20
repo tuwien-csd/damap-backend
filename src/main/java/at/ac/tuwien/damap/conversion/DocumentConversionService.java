@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 
 import at.ac.tuwien.damap.domain.*;
 import at.ac.tuwien.damap.repo.DmpRepo;
+import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
+import at.ac.tuwien.damap.rest.projects.ProjectService;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
@@ -23,6 +25,9 @@ public class DocumentConversionService {
 
     @Inject
     DmpRepo dmpRepo;
+
+    @Inject
+    ProjectService projectService;
 
     public XWPFDocument getFWFTemplate(long dmpId) throws Exception {
 
@@ -82,15 +87,31 @@ public class DocumentConversionService {
     private void preSection(Dmp dmp, Map<String, String> map, SimpleDateFormat formatter) {
         //mapping general information
         if (dmp.getProject() != null) {
+            String funding = "";
+            List<String> fundingItems = new ArrayList<>();
+
             if (dmp.getProject().getTitle() != null)
                 map.put("[projectname]", dmp.getProject().getTitle());
+            if (projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym() != null)
+                map.put("[acronym]", projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym());
             if (dmp.getProject().getStart() != null)
                 map.put("[startdate]", formatter.format(dmp.getProject().getStart()));
             if (dmp.getProject().getEnd() != null)
                 map.put("[enddate]", formatter.format(dmp.getProject().getEnd()));
-            if (dmp.getProject().getFunding().getGrantIdentifier() != null &&
-                    dmp.getProject().getFunding().getGrantIdentifier().getIdentifier() != null)
-                map.put("[grantid]", dmp.getProject().getFunding().getGrantIdentifier().getIdentifier());
+            //add funding name
+            if (projectService.getProjectDetails(dmp.getProject().getUniversityId()).getFunding().getFundingName() != null)
+                fundingItems.add(projectService.getProjectDetails(dmp.getProject().getUniversityId()).getFunding().getFundingName());
+            //add funding program
+            if (projectService.getProjectDetails(dmp.getProject().getUniversityId()).getFunding().getFundingProgram() != null)
+                fundingItems.add(projectService.getProjectDetails(dmp.getProject().getUniversityId()).getFunding().getFundingProgram());
+            //add grant number
+            if (dmp.getProject().getFunding().getGrantIdentifier().getIdentifier() != null)
+                fundingItems.add(dmp.getProject().getFunding().getGrantIdentifier().getIdentifier());
+            if (!fundingItems.isEmpty())
+                funding = String.join(", ",fundingItems);
+            map.put("[grantid]", funding);
+            if (dmp.getProject().getUniversityId() != null)
+                map.put("[projectid]", dmp.getProject().getUniversityId());
         }
 
         if (dmp.getCreated() != null) {
@@ -99,14 +120,16 @@ public class DocumentConversionService {
 
         //mapping contact information
         if (dmp.getContact() != null) {
-            //TO DO: add affiliation and ROR (currently not stored in TISS)
-            //Now affiliation assigned manually with TU Wien
+            //TO DO: add affiliation and ROR at university project
             String contactName = "";
             String contactMail = "";
             String contactId = "";
-            String contactAffiliation = "TU Wien";
             String identifierType = "";
             String identifierID = "";
+            String contactAffiliation = "";
+            String contactAffiliationID = "";
+            String affiliationType = "";
+            String affiliationIdentifierID = "";
 
             if (dmp.getContact().getFirstName() != null && dmp.getContact().getFirstName() != null)
                 contactName = dmp.getContact().getFirstName() + " " + dmp.getContact().getLastName();
@@ -121,11 +144,26 @@ public class DocumentConversionService {
                 contactId = identifierType + identifierID;
             }
 
+            if (dmp.getContact().getAffiliation() != null) {
+                contactAffiliation = dmp.getContact().getAffiliation();
+                System.out.println(contactAffiliation);
+            }
+
+            if (dmp.getContact().getAffiliationId() != null) {
+                affiliationIdentifierID = dmp.getContact().getAffiliationId().getIdentifier();
+                if (dmp.getContact().getAffiliationId().getIdentifierType().toString().equals("ror")) {
+                    affiliationType = "ROR: ";
+                    System.out.println("ror");
+                }
+                contactAffiliationID = affiliationType + affiliationIdentifierID;
+                System.out.println(contactAffiliationID);
+            }
+
             map.put("[contactname]", contactName);
             map.put("[contactmail]", contactMail);
             map.put("[contactid]", contactId);
             map.put("[contactaffiliation]", contactAffiliation);
-            map.put("[contactror]", "");
+            map.put("[contactror]", contactAffiliationID);
         }
 
         //mapping project coordinator and contributor information
