@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.*;
 
-@Path("/document")
+@Path("/api/document")
 @Authenticated
 @Produces(MediaType.APPLICATION_OCTET_STREAM)
 @JBossLog

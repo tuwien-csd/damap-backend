@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 
 /* Resource currently unused, but will be required for person search at a later stage */
 // TODO: remove unused functions
-@Path("/persons")
+@Path("/api/persons")
 @Authenticated
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)

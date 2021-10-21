@@ -9,6 +9,10 @@ damap:
       frontend: your-frontend-authentication-client-id
     scope: your-authentication-scope
     user: your-authentication-claim-holding-the-user-id
+    permission:
+      ConfigAllowed:
+        paths: /api/config
+        policy: permit
   datasource:
     url: jdbc:your-datasource-language:your-datasource.address
     username: your-datasource-username
@@ -68,6 +72,15 @@ rest:
       url: jdbc:postgresql://localhost:5432/damap
       username: damap
       password: pw4damap
+
+"%oracle":
+  quarkus:
+    datasource:
+      jdbc:
+        driver: oracle.jdbc.driver.OracleDriver
+      db-kind: oracle
+    hibernate-orm:
+      dialect: org.hibernate.dialect.Oracle12cDialect
 
 "%test":
   quarkus:

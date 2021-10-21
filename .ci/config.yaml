@@ -1,4 +1,6 @@
-container:
-  operator:
-    spec:
-      probe_enabled: false
+pipelines:
+  openshift:
+    stages:
+      deploy:
+        spec:
+          probe_enabled: false

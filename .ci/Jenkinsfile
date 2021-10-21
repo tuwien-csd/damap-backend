@@ -7,6 +7,6 @@
   * for which you can find code and documentation under https://git.tiss.tuwien.ac.at/CSD/ops-jenkins-lib
   **/
 
-@Library('ops-jenkins-library@fhi-pipeline') _
+@Library('ops-jenkins-library@next') _
 
-csdPipeline(this)
+csdPipeline()
