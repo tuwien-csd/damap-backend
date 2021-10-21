@@ -142,10 +142,15 @@ public class DmpDOMapper {
         if (dmpDO.getContact() != null) {
             Person contact = new Person();
             //check if contact is still the same, if so update their data, else skip and replace
-            if (dmp.getContact() != null
-                && dmp.getContact().id.equals(dmpDO.getContact().getId()))
+            // TODO current fix persists the contact ID to mantain DB integrity. We should change this behavior though. ref #73051
+            Long contactId = null;
+            if (dmp.getContact() != null) {
+                contactId = dmp.getContact().id;
                 contact = dmp.getContact();
+            }
             PersonDOMapper.mapDOtoEntity(dmpDO.getContact(), contact);
+            if (dmp.getContact() != null)
+                contact.id = contactId;
             dmp.setContact(contact);
         } else
             dmp.setContact(null);
