@@ -11,6 +11,7 @@ import lombok.Data;
 public class ProjectMemberDO {
 
     private String roleInProject;
+    private boolean projectLeader;
 
     private PersonDO person;
 
