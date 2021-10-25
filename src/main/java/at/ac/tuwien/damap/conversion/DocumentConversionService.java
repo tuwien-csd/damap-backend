@@ -300,6 +300,7 @@ public class DocumentConversionService {
             value[valueLength++] = '.';
             value[valueLength++] = string.charAt(1);
         }
+        value[valueLength++] = ' ';
         value[valueLength++] = SUFFIXES[magnitude - 1];
         return new String(value, 0, valueLength);
     }
@@ -336,7 +337,7 @@ public class DocumentConversionService {
             if (dataset.getTitle() != null)
                 datasetName = dataset.getTitle();
             if (dataset.getType() != null)
-                datasetType = dataset.getType();
+                datasetType = String.format(dataset.getType()).toLowerCase().replace('_',' ');
             if (dataset.getSize() != null)
                 datasetVol = format(dataset.getSize())+"B";
             if (dataset.getLicense() != null)
@@ -368,7 +369,7 @@ public class DocumentConversionService {
                     datasetSensitive = "yes";
                 }
                 else {
-                    datasetSensitive = "true";
+                    datasetSensitive = "no";
                 }
             }
             if (dataset.getLegalRestrictions() != null) {
@@ -652,7 +653,8 @@ public class DocumentConversionService {
                             ArrayList<String> docVar = new ArrayList<String>();
                             docVar.add("P" + i);
                             docVar.add(datasets.get(i - 1).getTitle());
-                            docVar.add(datasets.get(i - 1).getType());
+
+                            docVar.add(String.format(datasets.get(i - 1).getType()).toLowerCase().replace('_',' '));
                             docVar.add("");
 
                             if (datasets.get(i-1).getSize() != null) {
