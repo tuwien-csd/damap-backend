@@ -188,7 +188,7 @@ public class DocumentConversionService {
             }
         }
 
-        //mapping project coordinator and contributor information
+        //mapping project coordinator information
         List<String> coordinatorProperties = new ArrayList<>();
         String coordinatorValue = "";
 
@@ -199,82 +199,113 @@ public class DocumentConversionService {
                 leaderId = member.getPerson().getUniversityId();
                 coordinatorProperties.add(member.getPerson().getFirstName() + " " + member.getPerson().getLastName());
                 coordinatorProperties.add(member.getPerson().getMbox());
+
+                String coordinatorIdentifierId = member.getPerson().getAffiliationId().getIdentifier();
+
+                if (member.getPerson().getPersonId().getType().toString().equals("orcid")) {
+                    String coordinatorIdentifierType = "ORCID iD: ";
+                    String coordinatorId = coordinatorIdentifierType + coordinatorIdentifierId;
+                    coordinatorProperties.add(coordinatorId);
+                }
+
+                if (member.getPerson().getPersonId().getType().toString().equals("ror")) {
+                    String coordinatorIdentifierType = "ROR: ";
+                    String coordinatorId = coordinatorIdentifierType + coordinatorIdentifierId;
+                    coordinatorProperties.add(coordinatorId);
+                }
+
                 coordinatorProperties.add(member.getPerson().getAffiliation());
+
+                String coordinatorAffiliationIdentifierId = member.getPerson().getAffiliationId().getIdentifier();
+
+                if (member.getPerson().getAffiliationId().getType().toString().equals("ror")) {
+                    String coordinatorAffiliationIdentifierType = "ROR: ";
+                    String coordinatorAffiliationId = coordinatorAffiliationIdentifierType + coordinatorAffiliationIdentifierId;
+                    coordinatorProperties.add(coordinatorAffiliationId);
+                }
             }
-        }
 
-        if (dmp.getContributorList() != null) {
-            String contributorPerson = "";
+            //mapping contributor information
 
-            List<Contributor> contributors = dmp.getContributorList();
-            List<String> contributorList = new ArrayList<>();
-            for(Contributor contributor : contributors) {
-                List<String> contributorProperties = new ArrayList<>();
-                String contributorName = "";
-                String contributorMail = "";
-                String contributorId = "";
-                String contributorIdentifierType = "";
-                String contributorIdentifierId = "";
-                String contributorRole = "";
-                String contributorAffiliation = "";
-                String contributorAffiliationId = "";
-                String contributorAffiliationIdentifierType = "";
-                String contributorAffiliationIdentifierId = "";
+            if (dmp.getContributorList() != null) {
+                String contributorPerson = "";
 
-                if (contributor.getContributor().getFirstName() != null && contributor.getContributor().getLastName() != null) {
-                    contributorName = contributor.getContributor().getFirstName() + " " + contributor.getContributor().getLastName();
-                    contributorProperties.add(contributorName);
-                }
+                List<Contributor> contributors = dmp.getContributorList();
+                List<String> contributorList = new ArrayList<>();
+                for(Contributor contributor : contributors) {
+                    List<String> contributorProperties = new ArrayList<>();
+                    String contributorName = "";
+                    String contributorMail = "";
+                    String contributorId = "";
+                    String contributorIdentifierType = "";
+                    String contributorIdentifierId = "";
+                    String contributorRole = "";
+                    String contributorAffiliation = "";
+                    String contributorAffiliationId = "";
+                    String contributorAffiliationIdentifierType = "";
+                    String contributorAffiliationIdentifierId = "";
 
-                if (contributor.getContributor().getMbox() != null) {
-                    contributorMail = contributor.getContributor().getMbox();
-                    contributorProperties.add(contributorMail);
-                }
-
-                if (contributor.getContributor().getPersonIdentifier() != null) {
-                    contributorIdentifierId = contributor.getContributor().getPersonIdentifier().getIdentifier();
-                    if (contributor.getContributor().getPersonIdentifier().getIdentifierType().toString().equals("orcid")) {
-                        contributorIdentifierType = "ORCID iD: ";
-                        contributorId = contributorIdentifierType + contributorIdentifierId;
-                        contributorProperties.add(contributorId);
+                    if (contributor.getContributor().getFirstName() != null && contributor.getContributor().getLastName() != null) {
+                        contributorName = contributor.getContributor().getFirstName() + " " + contributor.getContributor().getLastName();
+                        contributorProperties.add(contributorName);
                     }
-                    if (contributor.getContributor().getPersonIdentifier().getIdentifierType().toString().equals("ror")) {
-                        contributorIdentifierType = "ROR: ";
-                        contributorId = contributorIdentifierType + contributorIdentifierId;
-                        contributorProperties.add(contributorId);
+
+                    if (contributor.getContributor().getMbox() != null) {
+                        contributorMail = contributor.getContributor().getMbox();
+                        contributorProperties.add(contributorMail);
                     }
-                }
 
-                if (contributor.getContributor().getAffiliation() != null) {
-                    contributorAffiliation = contributor.getContributor().getAffiliation();
-                    contributorProperties.add(contributorAffiliation);
-                }
-
-                if (contributor.getContributor().getAffiliationId() != null) {
-                    contributorAffiliationIdentifierId = contributor.getContributor().getAffiliationId().getIdentifier();
-                    if (contributor.getContributor().getAffiliationId().getIdentifierType().toString().equals("ror")) {
-                        contributorAffiliationIdentifierType = "ROR: ";
-                        contributorAffiliationId = contributorAffiliationIdentifierType + contributorAffiliationIdentifierId;
-                        contributorProperties.add(contributorAffiliationId);
+                    if (contributor.getContributor().getPersonIdentifier() != null) {
+                        contributorIdentifierId = contributor.getContributor().getPersonIdentifier().getIdentifier();
+                        if (contributor.getContributor().getPersonIdentifier().getIdentifierType().toString().equals("orcid")) {
+                            contributorIdentifierType = "ORCID iD: ";
+                            contributorId = contributorIdentifierType + contributorIdentifierId;
+                            contributorProperties.add(contributorId);
+                        }
+                        if (contributor.getContributor().getPersonIdentifier().getIdentifierType().toString().equals("ror")) {
+                            contributorIdentifierType = "ROR: ";
+                            contributorId = contributorIdentifierType + contributorIdentifierId;
+                            contributorProperties.add(contributorId);
+                        }
                     }
-                }
 
-                if (contributor.getContributorRole() != null) {
-                    contributorRole = contributor.getContributorRole().getRole();
-                    contributorProperties.add(contributorRole);
+                    if (contributor.getContributor().getAffiliation() != null) {
+                        contributorAffiliation = contributor.getContributor().getAffiliation();
+                        contributorProperties.add(contributorAffiliation);
+                    }
+
+                    if (contributor.getContributor().getAffiliationId() != null) {
+                        contributorAffiliationIdentifierId = contributor.getContributor().getAffiliationId().getIdentifier();
+                        if (contributor.getContributor().getAffiliationId().getIdentifierType().toString().equals("ror")) {
+                            contributorAffiliationIdentifierType = "ROR: ";
+                            contributorAffiliationId = contributorAffiliationIdentifierType + contributorAffiliationIdentifierId;
+                            contributorProperties.add(contributorAffiliationId);
+                        }
+                    }
+
+                    if (contributor.getContributorRole() != null) {
+                        contributorRole = contributor.getContributorRole().getRole();
+                        contributorProperties.add(contributorRole);
+                    }
+
+                    if (contributor.getContributor().getUniversityId().equals(leaderId)) {
+                        coordinatorProperties.add(contributorId);
+                        coordinatorProperties.add(contributorAffiliationId);
+                    }
+
+                    contributorPerson = String.join(", ", contributorProperties);
+                    contributorList.add(contributorPerson);
                 }
-                contributorPerson = String.join(", ", contributorProperties);
-                contributorList.add(contributorPerson);
+                String contributorValue = String.join(";", contributorList);
+                map.put("[contributors]", contributorValue);
             }
-            String contributorValue = String.join(";", contributorList);
-            map.put("[contributors]", contributorValue);
-        }
-        else {
-            map.put("[contributors]", "");
-        }
+            else {
+                map.put("[contributors]", "");
+            }
 
-        coordinatorValue = String.join(", ", coordinatorProperties);
-        map.put("[coordinator]", coordinatorValue);
+            coordinatorValue = String.join(", ", coordinatorProperties);
+            map.put("[coordinator]", coordinatorValue);
+        }
     }
 
     //Number conversion for data size in section 1
