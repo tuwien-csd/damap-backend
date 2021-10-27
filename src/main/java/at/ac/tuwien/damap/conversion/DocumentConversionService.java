@@ -4,6 +4,7 @@ import java.util.*;
 import java.text.SimpleDateFormat;
 
 import at.ac.tuwien.damap.domain.*;
+import at.ac.tuwien.damap.enums.EComplianceType;
 import at.ac.tuwien.damap.repo.DmpRepo;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -78,7 +79,7 @@ public class DocumentConversionService {
 
         //Dynamic table in all sections will be added from row number two until the end of data list.
         //TO DO: combine the function with the first row generation to avoid double code of similar modification.
-        tableContent(xwpfParagraphs, map, tables, datasets, costList, formatter);
+        tableContent(dmp, xwpfParagraphs, map, tables, datasets, costList, formatter);
 
         return document;
     }
@@ -320,6 +321,9 @@ public class DocumentConversionService {
             String docVar10 = "[dataset" + idx + "restriction]";
             String docVar11 = "[dataset" + idx + "storage]";
             String docVar12 =  "[dataset" + idx + "period]";
+            String docVar13 = "[dataset" + idx + "selectedaccess]";
+            String docVar14 = "[dataset" + idx + "allaccess]";
+            String docVar15 = "[dataset" + idx + "publicaccess]";
 
             String datasetName = "";
             String datasetType = "";
@@ -333,6 +337,9 @@ public class DocumentConversionService {
             String datasetRestriction = "";
             String datasetStorage = "";
             String datasetPeriod = "";
+            String datasetSelectedAccess = "";
+            String datasetAllAccess = "";
+            String datasetPublicAccess = "";
 
             if (dataset.getTitle() != null)
                 datasetName = dataset.getTitle();
@@ -341,7 +348,26 @@ public class DocumentConversionService {
             if (dataset.getSize() != null)
                 datasetVol = format(dataset.getSize())+"B";
             if (dataset.getLicense() != null)
-                datasetLicense = dataset.getLicense();
+                switch (dataset.getLicense()) {
+                    case "https://creativecommons.org/licenses/by/4.0/":
+                        datasetLicense = "CC BY 4.0";
+                        break;
+                    case "https://creativecommons.org/publicdomain/zero/1.0/":
+                        datasetLicense = "CC ZERO 1.0";
+                        break;
+                    case "https://opendatacommons.org/licenses/pddl/summary/":
+                        datasetLicense = "PDDL";
+                        break;
+                    case "https://opendatacommons.org/licenses/by/summary/":
+                        datasetLicense = "ODC BY";
+                        break;
+                    case "https://creativecommons.org/publicdomain/mark/1.0/":
+                        datasetLicense = "PD";
+                        break;
+                    default:
+                        datasetLicense = "CC BY";
+                        break;
+                }
             if (dataset.getStart() != null)
                 datasetPubdate = formatter.format(dataset.getStart());
             if (dataset.getDistributionList() != null){
@@ -373,8 +399,21 @@ public class DocumentConversionService {
                 }
             }
             if (dataset.getLegalRestrictions() != null) {
-                if (dataset.getLegalRestrictions())
-                    datasetRestriction = dataset.getDmp().getLegalRestrictionsComment();
+                if (dataset.getLegalRestrictions()) {
+                    datasetRestriction = dmp.getLegalRestrictionsComment();
+                }
+            }
+
+            if (dataset.getSelectedProjectMembersAccess() != null) {
+                datasetSelectedAccess = dataset.getSelectedProjectMembersAccess().toString().toLowerCase();
+            }
+
+            if (dataset.getOtherProjectMembersAccess() != null) {
+                datasetAllAccess = dataset.getSelectedProjectMembersAccess().toString().toLowerCase();
+            }
+
+            if (dataset.getPublicAccess() != null) {
+                datasetPublicAccess = dataset.getSelectedProjectMembersAccess().toString().toLowerCase();
             }
 
             map.put(docVar1, datasetName);
@@ -387,8 +426,11 @@ public class DocumentConversionService {
             map.put(docVar8, datasetAccess);
             map.put(docVar9, datasetSensitive);
             map.put(docVar10, datasetRestriction);
-            map.put(docVar11, datasetStorage);
+            map.put(docVar11, datasetRepo);
             map.put(docVar12, datasetPeriod);
+            map.put(docVar13, datasetSelectedAccess);
+            map.put(docVar14, datasetAllAccess);
+            map.put(docVar15, datasetPublicAccess);
         }
 
         if (datasets.size() == 0) {
@@ -401,11 +443,17 @@ public class DocumentConversionService {
 
     private void sectionTwo(Dmp dmp, Map<String, String> map) {
 
+        String metadata = "";
+
         if (dmp.getMetadata() != null) {
             if (dmp.getMetadata().equals("")) {
                 map.put("[metadata]", "As there are no domain specific metadata standards applicable, we will provide a README file with an explanation of all values and terms used next to each file with data.");
             } else {
-                map.put("[metadata]", "To help others identify, discover and reuse the data, " + dmp.getMetadata() + " will be used.");
+                metadata = dmp.getMetadata().toLowerCase();
+                if (metadata.charAt(metadata.length()-1)!='.') {
+                    metadata = metadata + '.';
+                }
+                map.put("[metadata]", "To help others identify, discover and reuse the data, " + metadata);
             }
         }
     }
@@ -414,14 +462,36 @@ public class DocumentConversionService {
 
         List<Host> hostList = dmp.getHostList();
         String storageVar = "";
+        String storageDescription = "";
 
         for (Host host: hostList) {
             List<Distribution> distributions = host.getDistributionList();
             String hostVar = host.getTitle();
+            if (host.getTitle().equals("TUfiles")) {
+                storageDescription = ", a central and readily available network drive with daily backups and regular snapshots provided by TU.it. " +
+                        "TUfiles is suitable for storing data with moderate access requirements, but high availability demands that allows full control of allocating authorisations. " +
+                        "Only authorized staff members will have access.";
+            }
+            if (host.getTitle().equals("Server Housing")) {
+                storageDescription = ". The server is housed in a dedicated TU.it server room with limited access and operated by our institute.";
+            }
+            if (host.getTitle().equals("TUproCloud")) {
+                storageDescription = ", a sync&share service for projects provided by TU.it. " +
+                        "Only authorized staff members and project partners will have access to the TUproCloud folders. " +
+                        "Deleted files can be recovered within 180 days by using the bin function.";
+            }
+            if (host.getTitle().equals("TUhost")) {
+                storageDescription = ", the central and highly available TU.it virtualisation platform, hosted on VMware ESXi. Hardware. " +
+                        "Storage and backup will be provided by TU.it and our institute will be responsible for the server operation.";
+            }
+            if (host.getTitle().equals("TUgitLab")) {
+                storageDescription = ", an application for managing repositories based on Git provided and managed by TU.it. " +
+                        "Our institute’s administrators will manage GitLab groups, assign project permissions, and assign external project partners as additional GitLab users. " +
+                        "This service is highly available and scalable on the Kubernetes platform.";
+            }
 
             String distVar = "";
             for (Distribution dist: distributions) {
-
                 int idx = datasets.indexOf(dist.getDataset())+1;
                 distVar = distVar + "P" + idx + " (" + dist.getDataset().getTitle() + ")";
                 if (distributions.indexOf(dist)+1 < distributions.size())
@@ -429,25 +499,22 @@ public class DocumentConversionService {
             }
 
             if (host.getHostId() != null) {
-                if (host.getHostId().contains("r3")) {
-                    storageVar = storageVar.concat(distVar + " will use " + hostVar + " for the data repository.");
-                }
-                else {
+                if (!host.getHostId().contains("r3")) { //only write information related to the storage, repository will be written in section 5
                     if (distVar != "")
-                        storageVar = storageVar.concat(distVar + " will be stored in " + hostVar + ".");
+                        storageVar = storageVar.concat(distVar + " will be stored in " + hostVar + storageDescription);
                 }
             }
             else { //case for external storage, will have null host Id
-                storageVar = storageVar.concat(distVar + " will be stored in " + hostVar + ".");
+                if (distVar != "") {
+                    storageVar = storageVar.concat(distVar + " will be stored in " + hostVar + ".");
+                    if (dmp.getExternalStorageInfo() != null && !dmp.getExternalStorageInfo().equals("")) {
+                        storageVar = storageVar.concat(" External storage will be used because " + dmp.getExternalStorageInfo().toLowerCase());
+                    }
+                }
             }
 
-            if (hostList.indexOf(host)+1 < hostList.size())
+            if (hostList.indexOf(host)+1 < hostList.size() && !host.getHostId().contains("r3"))
                 storageVar = storageVar.concat(";");
-        }
-
-        if (dmp.getExternalStorageInfo() != null) {
-            storageVar = storageVar.concat(";");
-            storageVar = storageVar.concat("External storage will be used " + dmp.getExternalStorageInfo().toLowerCase(Locale.ROOT));
         }
 
         map.put("[storage]", storageVar);
@@ -476,7 +543,22 @@ public class DocumentConversionService {
                 datasetSentence = " will containing personal data. ";
             }
 
-            personalData = personalDataSentence + " " + personalDataset + datasetSentence + "To ensure that only authorised users can access personal data, " + dmp.getPersonalDataAccess() + " will be used.";
+            List<String> dataComplianceList = new ArrayList<>();
+            String personalDataCompliance = "";
+
+            for (EComplianceType personalCompliance : dmp.getPersonalDataCompliance()) {
+                dataComplianceList.add(personalCompliance.toString().replace("by ", ""));
+            }
+
+            if (!dmp.getPersonalDataCompliance().isEmpty())
+                personalDataCompliance = String.join(", ",dataComplianceList);
+
+            if (personalDataCompliance != "") {
+                personalData = personalDataSentence + personalDataset + datasetSentence + "To ensure that only authorised users can access personal data, " + personalDataCompliance + " will be used.";
+            }
+            else {
+                personalData = personalDataSentence + personalDataset + datasetSentence;
+            }
 
         } else {
             personalData = "At this stage, it is not foreseen to process any personal data in the project. If this changes, advice will be sought from the data protection specialist at TU Wien (Verena Dolovai), and the DMP will be updated.";
@@ -484,7 +566,6 @@ public class DocumentConversionService {
         map.put("[personaldata]", personalData);
 
         //Section 4a: sensitive data
-
         String sensitiveData = "";
         if (dmp.getSensitiveData()) {
             String sensitiveDataSentence = "";
@@ -502,11 +583,11 @@ public class DocumentConversionService {
             }
 
             if (datasetList.size()>0) {
-                sensitiveDataset = String.join(",", datasetList);
+                sensitiveDataset = String.join(", ", datasetList);
                 datasetSentence = " will containing sensitive data. ";
             }
 
-            sensitiveData = sensitiveDataSentence + sensitiveDataset + datasetSentence + "To ensure that the dataset containing sensitive data stored and transfered safe, " + dmp.getSensitiveDataSecurity() + " will be taken.";
+            sensitiveData = sensitiveDataSentence + sensitiveDataset + datasetSentence + "To ensure that the dataset containing sensitive data stored and transfered safe, " + dmp.getSensitiveDataSecurity().toLowerCase() + " will be taken.";
 
         } else {
             sensitiveData = "At this stage, it is not foreseen to process any sensitive data in the project. If this changes, advice will be sought from the data protection specialist at TU Wien (Verena Dolovai), and the DMP will be updated.";
@@ -535,8 +616,15 @@ public class DocumentConversionService {
                 legalRestrictionSentence = "There is a concern of legal restriction for dataset ";
             }
 
-            legalRestriction = legalRestrictionSentence + legalRestrictionDataset + ". " + dmp.getLegalRestrictionsComment() + ".";
+            if (dmp.getLegalRestrictionsComment().equals("")) {
+                legalRestriction = legalRestrictionSentence + legalRestrictionDataset + ".";
+            }
+            else {
+                legalRestriction = legalRestrictionSentence + legalRestrictionDataset + ". " + dmp.getLegalRestrictionsComment();
+            }
 
+            if (legalRestriction.charAt(legalRestriction.length()-1)!='.')
+                legalRestriction = legalRestriction + ".";
         }
 
         map.put("[legalrestriction]", legalRestriction);
@@ -546,7 +634,18 @@ public class DocumentConversionService {
         String ethicalIssues = "";
         if (dmp.getEthicalIssuesExist()) {
             String ethicalSentence = "Ethical issues in the project have been identified and discussed with the Research Ethics Coordinator at TU Wien (https://www.tuwien.at/en/research/rti-support/research-ethics/).";
-            ethicalIssues = ethicalSentence + " " + dmp.getEthicalComplianceStatement() + "Relevant ethical guidelines in this project are " + dmp.getEthicsReport() + ".";
+            if (dmp.getEthicsReport().equals("")) {
+                ethicalIssues = ethicalSentence + " " + dmp.getEthicalComplianceStatement();
+            }
+            else {
+                ethicalIssues = ethicalSentence + " " + dmp.getEthicalComplianceStatement() + "Relevant ethical guidelines in this project are " + dmp.getEthicsReport() + ".";
+            }
+
+            if (ethicalIssues.charAt(ethicalIssues.length()-1) == ' ')
+                ethicalIssues = ethicalIssues.substring(0,ethicalIssues.length()-1);
+
+            if (ethicalIssues.charAt(ethicalIssues.length()-1) != '.')
+                ethicalIssues = ethicalIssues + ".";
         } else {
             ethicalIssues = "No particular ethical issue is foreseen with the data to be used or produced by the project. This section will be updated if issues arise.";
         }
@@ -573,13 +672,35 @@ public class DocumentConversionService {
     private void sectionSix(Dmp dmp, Map<String, String> map, List<Cost> costList) {
 
         String costs = "";
+        String costTitle = "";
+        String costType = "";
+        String costDescription = "";
+        String costCurrency = "";
+        String costValue = "";
+        String costCurrencyTotal = "";
 
         if (dmp.getCostsExist() != null) {
             if (dmp.getCostsExist()) {
                 costs = "There are costs dedicated to data management and ensuring that data will be FAIR as outlined below.";
             } else {
                 costs = "There are no costs dedicated to data management and ensuring that data will be FAIR.";
+                map.put("[cost1title]", costTitle);
+                map.put("[cost1type]", costType);
+                map.put("[cost1desc]", costDescription);
+                map.put("[cost1currency]", costCurrency);
+                map.put("[cost1value]", costValue);
+                map.put("[costcurrency]", "");
+                map.put("[costtotal]", "");
             }
+        }
+        else {
+            map.put("[cost1title]", costTitle);
+            map.put("[cost1type]", costType);
+            map.put("[cost1desc]", costDescription);
+            map.put("[cost1currency]", costCurrency);
+            map.put("[cost1value]", costValue);
+            map.put("[costcurrency]", "");
+            map.put("[costtotal]", "");
         }
 
         map.put("[costs]", costs);
@@ -594,12 +715,6 @@ public class DocumentConversionService {
             String docVar3 = "[cost" + idx + "desc]";
             String docVar4 = "[cost" + idx + "currency]";
             String docVar5 = "[cost" + idx + "value]";
-            String costTitle = "";
-            String costType = "";
-            String costDescription = "";
-            String costCurrency = "";
-            String costValue = "";
-            String costCurrencyTotal = "";
 
             if (cost.getTitle() != null)
                 costTitle = cost.getTitle();
@@ -630,7 +745,7 @@ public class DocumentConversionService {
 
     }
 
-    private void tableContent(List<XWPFParagraph> xwpfParagraphs, Map<String, String> map, List<XWPFTable> tables, List<Dataset> datasets, List<Cost> costList, SimpleDateFormat formatter) {
+    private void tableContent(Dmp dmp, List<XWPFParagraph> xwpfParagraphs, Map<String, String> map, List<XWPFTable> tables, List<Dataset> datasets, List<Cost> costList, SimpleDateFormat formatter) {
         for (XWPFTable xwpfTable : tables) {
             if (xwpfTable.getRow(1) != null) {
 
@@ -691,6 +806,50 @@ public class DocumentConversionService {
                     xwpfTable.removeRow(xwpfTable.getRows().size() - 1);
                 }
 
+                //dynamic table for data access
+                //table 3b
+                //notes: dataset number 2 until the end will be written directly to the table
+                if (xwpfTable.getRow(1).getCell(1).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[dataset1selectedaccess]")) {
+
+                    if (datasets.size() > 1) {
+                        for (int i = 2; i < datasets.size() + 1; i++) {
+
+                            XWPFTableRow sourceTableRow = xwpfTable.getRow(i);
+                            XWPFTableRow newRow = new XWPFTableRow(sourceTableRow.getCtRow(), xwpfTable);
+
+                            try {
+                                newRow = insertNewTableRow(sourceTableRow, i);
+                            }
+                            catch (Exception e) {
+                            }
+
+                            ArrayList<String> docVar = new ArrayList<String>();
+                            docVar.add("P" + i);
+                            docVar.add(datasets.get(i - 1).getSelectedProjectMembersAccess().toString().toLowerCase());
+                            docVar.add(datasets.get(i - 1).getOtherProjectMembersAccess().toString().toLowerCase());
+                            docVar.add(datasets.get(i - 1).getPublicAccess().toString().toLowerCase());
+
+                            List<XWPFTableCell> cells = newRow.getTableCells();
+
+                            for (XWPFTableCell cell : cells) {
+
+                                for (XWPFParagraph paragraph : cell.getParagraphs()) {
+                                    for (XWPFRun run : paragraph.getRuns()) {
+                                        run.setText(docVar.get(cells.indexOf(cell)), 0);
+                                    }
+                                }
+                            }
+
+                            boolean weMustCommitTableRows = true;
+
+                            if (weMustCommitTableRows) commitTableRows(xwpfTable);
+                        }
+                    }
+                    //end of dynamic table rows code
+                    xwpfTable.removeRow(xwpfTable.getRows().size() - 1);
+                }
+
+
                 //dynamic table rows code for data sharing
                 //table 5a
                 //notes: dataset number 2 until the end will be written directly to the table
@@ -714,7 +873,7 @@ public class DocumentConversionService {
 
                             if (datasets.get(i - 1).getLegalRestrictions() != null) {
                                 if (datasets.get(i - 1).getLegalRestrictions()) {
-                                    docVar.add(datasets.get(i - 1).getDmp().getLegalRestrictionsComment());
+                                    docVar.add(dmp.getLegalRestrictionsComment());
                                 } else {
                                     docVar.add("");
                                 }
@@ -747,7 +906,26 @@ public class DocumentConversionService {
                             }
                             docVar.add("");
                             if (datasets.get(i - 1).getLicense() != null) {
-                                docVar.add(datasets.get(i - 1).getLicense());
+                                switch (datasets.get(i - 1).getLicense()) {
+                                    case "https://creativecommons.org/licenses/by/4.0/":
+                                        docVar.add("CC BY 4.0");
+                                        break;
+                                    case "https://creativecommons.org/publicdomain/zero/1.0/":
+                                        docVar.add("CC ZERO 1.0");
+                                        break;
+                                    case "https://opendatacommons.org/licenses/pddl/summary/":
+                                        docVar.add("PDDL");
+                                        break;
+                                    case "https://opendatacommons.org/licenses/by/summary/":
+                                        docVar.add("ODC BY");
+                                        break;
+                                    case "https://creativecommons.org/publicdomain/mark/1.0/":
+                                        docVar.add("PD");
+                                        break;
+                                    default:
+                                        docVar.add("CC BY");
+                                        break;
+                                }
                             }
                             else {
                                 docVar.add("");
@@ -775,7 +953,7 @@ public class DocumentConversionService {
 
                 //table 5b
                 //notes: dataset number 2 until the end will be written directly to the table
-                if (xwpfTable.getRow(1).getCell(1).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[dataset1storage]")) {
+                if (xwpfTable.getRow(1).getCell(1).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[dataset1repo]")) {
 
                     if (datasets.size() > 1) {
                         for (int i = 2; i < datasets.size() + 1; i++) {
@@ -794,15 +972,15 @@ public class DocumentConversionService {
                             //TODO datasets and hosts are now connected by Distribution objects
                             if (datasets.get(i - 1).getDistributionList() != null){
                                 List<Distribution> distributions = datasets.get(i - 1).getDistributionList();
-                                List<String> storage = new ArrayList<>();
+                                List<String> repositories = new ArrayList<>();
                                 for (Distribution distribution: distributions) {
                                     if (distribution.getHost().getHostId() != null)
-                                        if (!distribution.getHost().getHostId().contains("r3")) {
-                                            storage.add(distribution.getHost().getTitle());
+                                        if (distribution.getHost().getHostId().contains("r3")) {
+                                            repositories.add(distribution.getHost().getTitle());
                                         }
                                 }
-                                if (storage.size() > 0) {
-                                    docVar.add(String.join(", ", storage));
+                                if (repositories.size() > 0) {
+                                    docVar.add(String.join(", ", repositories));
                                 }
                                 else {
                                     docVar.add("");
