@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import at.ac.tuwien.damap.domain.*;
 import at.ac.tuwien.damap.enums.EComplianceType;
 import at.ac.tuwien.damap.repo.DmpRepo;
+import at.ac.tuwien.damap.rest.dmp.domain.ProjectMemberDO;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
@@ -19,6 +20,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.sound.midi.SysexMessage;
 
 @ApplicationScoped
 public class DocumentConversionService {
@@ -190,6 +192,17 @@ public class DocumentConversionService {
         List<String> coordinatorProperties = new ArrayList<>();
         String coordinatorValue = "";
 
+        List<ProjectMemberDO> projectMember = projectService.getProjectStaff(dmp.getProject().getUniversityId());
+        String leaderId = "";
+        for (ProjectMemberDO member : projectMember) {
+            if (member.isProjectLeader()) {
+                leaderId = member.getPerson().getUniversityId();
+                coordinatorProperties.add(member.getPerson().getFirstName() + " " + member.getPerson().getLastName());
+                coordinatorProperties.add(member.getPerson().getMbox());
+                coordinatorProperties.add(member.getPerson().getAffiliation());
+            }
+        }
+
         if (dmp.getContributorList() != null) {
             String contributorPerson = "";
 
@@ -249,18 +262,6 @@ public class DocumentConversionService {
                 if (contributor.getContributorRole() != null) {
                     contributorRole = contributor.getContributorRole().getRole();
                     contributorProperties.add(contributorRole);
-                    if ((contributorRole.equals("Project Leader") || contributorRole.equals("Project Manager")) && coordinatorProperties.isEmpty()) {
-                        if (contributorName != "")
-                            coordinatorProperties.add(contributorName);
-                        if (contributorMail != "")
-                            coordinatorProperties.add(contributorMail);
-                        if (contributorId != "")
-                            coordinatorProperties.add(contributorId);
-                        if (contributorAffiliation != "")
-                            coordinatorProperties.add(contributorAffiliation);
-                        if (contributorAffiliationId != "")
-                            coordinatorProperties.add(contributorAffiliationId);
-                    }
                 }
                 contributorPerson = String.join(", ", contributorProperties);
                 contributorList.add(contributorPerson);
