@@ -142,7 +142,7 @@ public class DocumentConversionService {
             String contactAffiliationIdentifierType = "";
             String contactAffiliationIdentifierId = "";
 
-            if (dmp.getContact().getFirstName() != null && dmp.getContact().getFirstName() != null) {
+            if (dmp.getContact().getFirstName() != null && dmp.getContact().getLastName() != null) {
                 contactName = dmp.getContact().getFirstName() + " " + dmp.getContact().getLastName();
                 contactItems.add(contactName);
             }
@@ -190,48 +190,61 @@ public class DocumentConversionService {
 
         //mapping project coordinator information
         List<String> coordinatorProperties = new ArrayList<>();
-        String coordinatorValue = "";
+        String coordinatorIdentifierId = "";
+        String coordinatorAffiliationIdentifierId = "";
 
         List<ProjectMemberDO> projectMember = projectService.getProjectStaff(dmp.getProject().getUniversityId());
-        String leaderId = "";
-        for (ProjectMemberDO member : projectMember) {
-            if (member.isProjectLeader()) {
-                leaderId = member.getPerson().getUniversityId();
-                coordinatorProperties.add(member.getPerson().getFirstName() + " " + member.getPerson().getLastName());
-                coordinatorProperties.add(member.getPerson().getMbox());
 
-                String coordinatorIdentifierId = member.getPerson().getAffiliationId().getIdentifier();
+        if (!projectMember.isEmpty()) {
+            for (ProjectMemberDO member : projectMember) {
+                if (member.isProjectLeader()) {
+                    if (member.getPerson().getFirstName() != null && member.getPerson().getLastName() != null)
+                        coordinatorProperties.add(member.getPerson().getFirstName() + " " + member.getPerson().getLastName());
 
-                if (member.getPerson().getPersonId().getType().toString().equals("orcid")) {
-                    String coordinatorIdentifierType = "ORCID iD: ";
-                    String coordinatorId = coordinatorIdentifierType + coordinatorIdentifierId;
-                    coordinatorProperties.add(coordinatorId);
-                }
+                    if (member.getPerson().getMbox() != null)
+                        coordinatorProperties.add(member.getPerson().getMbox());
 
-                if (member.getPerson().getPersonId().getType().toString().equals("ror")) {
-                    String coordinatorIdentifierType = "ROR: ";
-                    String coordinatorId = coordinatorIdentifierType + coordinatorIdentifierId;
-                    coordinatorProperties.add(coordinatorId);
-                }
+                    if (member.getPerson().getPersonId() != null) {
+                        coordinatorIdentifierId = member.getPerson().getPersonId().getIdentifier();
 
-                coordinatorProperties.add(member.getPerson().getAffiliation());
+                        if (member.getPerson().getPersonId().getType().toString().equals("orcid")) {
+                            String coordinatorIdentifierType = "ORCID iD: ";
+                            String coordinatorId = coordinatorIdentifierType + coordinatorIdentifierId;
+                            coordinatorProperties.add(coordinatorId);
+                        }
 
-                String coordinatorAffiliationIdentifierId = member.getPerson().getAffiliationId().getIdentifier();
+                        if (member.getPerson().getPersonId().getType().toString().equals("ror")) {
+                            String coordinatorIdentifierType = "ROR: ";
+                            String coordinatorId = coordinatorIdentifierType + coordinatorIdentifierId;
+                            coordinatorProperties.add(coordinatorId);
+                        }
+                    }
 
-                if (member.getPerson().getAffiliationId().getType().toString().equals("ror")) {
-                    String coordinatorAffiliationIdentifierType = "ROR: ";
-                    String coordinatorAffiliationId = coordinatorAffiliationIdentifierType + coordinatorAffiliationIdentifierId;
-                    coordinatorProperties.add(coordinatorAffiliationId);
+                    if (member.getPerson().getAffiliation() != null)
+                        coordinatorProperties.add(member.getPerson().getAffiliation());
+
+                    if (member.getPerson().getAffiliationId() != null) {
+                        coordinatorAffiliationIdentifierId = member.getPerson().getAffiliationId().getIdentifier();
+
+                        if (member.getPerson().getAffiliationId().getType().toString().equals("ror")) {
+                            String coordinatorAffiliationIdentifierType = "ROR: ";
+                            String coordinatorAffiliationId = coordinatorAffiliationIdentifierType + coordinatorAffiliationIdentifierId;
+                            coordinatorProperties.add(coordinatorAffiliationId);
+                        }
+                    }
                 }
             }
+        }
 
-            //mapping contributor information
+        //mapping contributor information
 
-            if (dmp.getContributorList() != null) {
-                String contributorPerson = "";
+        if (dmp.getContributorList() != null) {
+            String contributorPerson = "";
 
-                List<Contributor> contributors = dmp.getContributorList();
-                List<String> contributorList = new ArrayList<>();
+            List<Contributor> contributors = dmp.getContributorList();
+            List<String> contributorList = new ArrayList<>();
+
+            if (!contributors.isEmpty()) {
                 for(Contributor contributor : contributors) {
                     List<String> contributorProperties = new ArrayList<>();
                     String contributorName = "";
@@ -288,24 +301,18 @@ public class DocumentConversionService {
                         contributorProperties.add(contributorRole);
                     }
 
-                    if (contributor.getContributor().getUniversityId().equals(leaderId)) {
-                        coordinatorProperties.add(contributorId);
-                        coordinatorProperties.add(contributorAffiliationId);
-                    }
-
-                    contributorPerson = String.join(", ", contributorProperties);
+                    contributorPerson = multipleVariable(contributorProperties);
                     contributorList.add(contributorPerson);
                 }
-                String contributorValue = String.join(";", contributorList);
-                map.put("[contributors]", contributorValue);
-            }
-            else {
-                map.put("[contributors]", "");
             }
 
-            coordinatorValue = String.join(", ", coordinatorProperties);
-            map.put("[coordinator]", coordinatorValue);
+            map.put("[contributors]", String.join(";", contributorList));
         }
+        else {
+            map.put("[contributors]", "");
+        }
+
+        map.put("[coordinator]", multipleVariable(coordinatorProperties));
     }
 
     //Number conversion for data size in section 1
@@ -496,57 +503,63 @@ public class DocumentConversionService {
         String storageVar = "";
         String storageDescription = "";
 
-        for (Host host: hostList) {
-            List<Distribution> distributions = host.getDistributionList();
-            String hostVar = host.getTitle();
-            if (host.getTitle().equals("TUfiles")) {
-                storageDescription = ", a central and readily available network drive with daily backups and regular snapshots provided by TU.it. " +
-                        "TUfiles is suitable for storing data with moderate access requirements, but high availability demands that allows full control of allocating authorisations. " +
-                        "Only authorized staff members will have access.";
-            }
-            if (host.getTitle().equals("Server Housing")) {
-                storageDescription = ". The server is housed in a dedicated TU.it server room with limited access and operated by our institute.";
-            }
-            if (host.getTitle().equals("TUproCloud")) {
-                storageDescription = ", a sync&share service for projects provided by TU.it. " +
-                        "Only authorized staff members and project partners will have access to the TUproCloud folders. " +
-                        "Deleted files can be recovered within 180 days by using the bin function.";
-            }
-            if (host.getTitle().equals("TUhost")) {
-                storageDescription = ", the central and highly available TU.it virtualisation platform, hosted on VMware ESXi. Hardware. " +
-                        "Storage and backup will be provided by TU.it and our institute will be responsible for the server operation.";
-            }
-            if (host.getTitle().equals("TUgitLab")) {
-                storageDescription = ", an application for managing repositories based on Git provided and managed by TU.it. " +
-                        "Our institute’s administrators will manage GitLab groups, assign project permissions, and assign external project partners as additional GitLab users. " +
-                        "This service is highly available and scalable on the Kubernetes platform.";
-            }
+        if (!hostList.isEmpty()) {
+            for (Host host: hostList) {
+                List<Distribution> distributions = host.getDistributionList();
+                String hostVar = "";
+                String distVar = "";
 
-            String distVar = "";
-            for (Distribution dist: distributions) {
-                int idx = datasets.indexOf(dist.getDataset())+1;
-                distVar = distVar + "P" + idx + " (" + dist.getDataset().getTitle() + ")";
-                if (distributions.indexOf(dist)+1 < distributions.size())
-                    distVar = distVar + ", ";
-            }
-
-            if (host.getHostId() != null) {
-                if (!host.getHostId().contains("r3")) { //only write information related to the storage, repository will be written in section 5
-                    if (distVar != "")
-                        storageVar = storageVar.concat(distVar + " will be stored in " + hostVar + storageDescription);
-                }
-            }
-            else { //case for external storage, will have null host Id
-                if (distVar != "") {
-                    storageVar = storageVar.concat(distVar + " will be stored in " + hostVar + ".");
-                    if (dmp.getExternalStorageInfo() != null && !dmp.getExternalStorageInfo().equals("")) {
-                        storageVar = storageVar.concat(" External storage will be used because " + dmp.getExternalStorageInfo().toLowerCase());
+                if (host.getTitle() != null) {
+                    hostVar = host.getTitle();
+                    if (host.getTitle().equals("TUfiles")) {
+                        storageDescription = ", a central and readily available network drive with daily backups and regular snapshots provided by TU.it. " +
+                                "TUfiles is suitable for storing data with moderate access requirements, but high availability demands that allows full control of allocating authorisations. " +
+                                "Only authorized staff members will have access.";
+                    }
+                    if (host.getTitle().equals("Server Housing")) {
+                        storageDescription = ". The server is housed in a dedicated TU.it server room with limited access and operated by our institute.";
+                    }
+                    if (host.getTitle().equals("TUproCloud")) {
+                        storageDescription = ", a sync&share service for projects provided by TU.it. " +
+                                "Only authorized staff members and project partners will have access to the TUproCloud folders. " +
+                                "Deleted files can be recovered within 180 days by using the bin function.";
+                    }
+                    if (host.getTitle().equals("TUhost")) {
+                        storageDescription = ", the central and highly available TU.it virtualisation platform, hosted on VMware ESXi. Hardware. " +
+                                "Storage and backup will be provided by TU.it and our institute will be responsible for the server operation.";
+                    }
+                    if (host.getTitle().equals("TUgitLab")) {
+                        storageDescription = ", an application for managing repositories based on Git provided and managed by TU.it. " +
+                                "Our institute’s administrators will manage GitLab groups, assign project permissions, and assign external project partners as additional GitLab users. " +
+                                "This service is highly available and scalable on the Kubernetes platform.";
                     }
                 }
-            }
 
-            if (hostList.indexOf(host)+1 < hostList.size() && !host.getHostId().contains("r3"))
-                storageVar = storageVar.concat(";");
+                for (Distribution dist: distributions) {
+                    int idx = datasets.indexOf(dist.getDataset())+1;
+                    distVar = distVar + "P" + idx + " (" + dist.getDataset().getTitle() + ")";
+                    if (distributions.indexOf(dist)+1 < distributions.size())
+                        distVar = distVar + ", ";
+                }
+
+                if (host.getHostId() != null) {
+                    if (!host.getHostId().contains("r3")) { //only write information related to the storage, repository will be written in section 5
+                        if (distVar != "")
+                            storageVar = storageVar.concat(distVar + " will be stored in " + hostVar + storageDescription);
+                    }
+                }
+                else { //case for external storage, will have null host Id
+                    if (distVar != "") {
+                        storageVar = storageVar.concat(distVar + " will be stored in " + hostVar + ".");
+                        if (dmp.getExternalStorageInfo() != null && !dmp.getExternalStorageInfo().equals("")) {
+                            storageVar = storageVar.concat(" External storage will be used because " + dmp.getExternalStorageInfo().toLowerCase());
+                        }
+                    }
+                }
+
+                if (hostList.indexOf(host)+1 < hostList.size() && !host.getHostId().contains("r3"))
+                    storageVar = storageVar.concat(";");
+            }
         }
 
         map.put("[storage]", storageVar);
@@ -571,19 +584,20 @@ public class DocumentConversionService {
             }
 
             if (datasetList.size()>0) {
-                personalDataset = String.join(",", datasetList);
+                personalDataset = multipleVariable(datasetList);
                 datasetSentence = " will containing personal data. ";
             }
 
             List<String> dataComplianceList = new ArrayList<>();
             String personalDataCompliance = "";
 
-            for (EComplianceType personalCompliance : dmp.getPersonalDataCompliance()) {
-                dataComplianceList.add(personalCompliance.toString().replace("by ", ""));
-            }
+            if (!dmp.getPersonalDataCompliance().isEmpty()) {
+                for (EComplianceType personalCompliance : dmp.getPersonalDataCompliance()) {
+                    dataComplianceList.add(personalCompliance.toString().replace("by ", ""));
+                }
 
-            if (!dmp.getPersonalDataCompliance().isEmpty())
-                personalDataCompliance = String.join(", ",dataComplianceList);
+                personalDataCompliance = multipleVariable(dataComplianceList);
+            }
 
             if (personalDataCompliance != "") {
                 personalData = personalDataSentence + personalDataset + datasetSentence + "To ensure that only authorised users can access personal data, " + personalDataCompliance + " will be used.";
@@ -595,6 +609,7 @@ public class DocumentConversionService {
         } else {
             personalData = "At this stage, it is not foreseen to process any personal data in the project. If this changes, advice will be sought from the data protection specialist at TU Wien (Verena Dolovai), and the DMP will be updated.";
         }
+
         map.put("[personaldata]", personalData);
 
         //Section 4a: sensitive data
@@ -711,21 +726,11 @@ public class DocumentConversionService {
         String costValue = "";
         String costCurrencyTotal = "";
 
-        if (dmp.getCostsExist() != null) {
-            if (dmp.getCostsExist()) {
-                costs = "There are costs dedicated to data management and ensuring that data will be FAIR as outlined below.";
-            } else {
-                costs = "There are no costs dedicated to data management and ensuring that data will be FAIR.";
-                map.put("[cost1title]", costTitle);
-                map.put("[cost1type]", costType);
-                map.put("[cost1desc]", costDescription);
-                map.put("[cost1currency]", costCurrency);
-                map.put("[cost1value]", costValue);
-                map.put("[costcurrency]", "");
-                map.put("[costtotal]", "");
-            }
+        if (dmp.getCostsExist() != null && dmp.getCostsExist()) {
+            costs = "There are costs dedicated to data management and ensuring that data will be FAIR as outlined below.";
         }
         else {
+            costs = "There are no costs dedicated to data management and ensuring that data will be FAIR.";
             map.put("[cost1title]", costTitle);
             map.put("[cost1type]", costType);
             map.put("[cost1desc]", costDescription);
@@ -799,9 +804,22 @@ public class DocumentConversionService {
 
                             ArrayList<String> docVar = new ArrayList<String>();
                             docVar.add("P" + i);
-                            docVar.add(datasets.get(i - 1).getTitle());
 
-                            docVar.add(String.format(datasets.get(i - 1).getType()).toLowerCase().replace('_',' '));
+                            if (datasets.get(i - 1).getTitle() != null) {
+                                docVar.add(datasets.get(i - 1).getTitle());
+                            }
+                            else {
+                                docVar.add("");
+                            }
+
+                            if (datasets.get(i-1).getType() != null) {
+                                docVar.add(String.format(datasets.get(i - 1).getType()).toLowerCase().replace('_', ' '));
+                            }
+                            else {
+                                docVar.add("");
+                            }
+
+                            //TODO: dataset format still not available
                             docVar.add("");
 
                             if (datasets.get(i-1).getSize() != null) {
@@ -857,9 +875,27 @@ public class DocumentConversionService {
 
                             ArrayList<String> docVar = new ArrayList<String>();
                             docVar.add("P" + i);
-                            docVar.add(datasets.get(i - 1).getSelectedProjectMembersAccess().toString().toLowerCase());
-                            docVar.add(datasets.get(i - 1).getOtherProjectMembersAccess().toString().toLowerCase());
-                            docVar.add(datasets.get(i - 1).getPublicAccess().toString().toLowerCase());
+
+                            if (datasets.get(i - 1).getSelectedProjectMembersAccess() != null) {
+                                docVar.add(datasets.get(i - 1).getSelectedProjectMembersAccess().toString().toLowerCase());
+                            }
+                            else {
+                                docVar.add("");
+                            }
+
+                            if (datasets.get(i - 1).getOtherProjectMembersAccess() != null) {
+                                docVar.add(datasets.get(i - 1).getOtherProjectMembersAccess().toString().toLowerCase());
+                            }
+                            else {
+                                docVar.add("");
+                            }
+
+                            if (datasets.get(i - 1).getPublicAccess() != null) {
+                                docVar.add(datasets.get(i - 1).getPublicAccess().toString().toLowerCase());
+                            }
+                            else {
+                                docVar.add("");
+                            }
 
                             List<XWPFTableCell> cells = newRow.getTableCells();
 
@@ -901,14 +937,16 @@ public class DocumentConversionService {
 
                             ArrayList<String> docVar = new ArrayList<String>();
                             docVar.add("P" + i);
-                            docVar.add(datasets.get(i - 1).getDataAccess().toString());
 
-                            if (datasets.get(i - 1).getLegalRestrictions() != null) {
-                                if (datasets.get(i - 1).getLegalRestrictions()) {
-                                    docVar.add(dmp.getLegalRestrictionsComment());
-                                } else {
-                                    docVar.add("");
-                                }
+                            if (datasets.get(i - 1).getDataAccess() != null) {
+                                docVar.add(datasets.get(i - 1).getDataAccess().toString());
+                            }
+                            else {
+                                docVar.add("");
+                            }
+
+                            if (datasets.get(i - 1).getLegalRestrictions() != null && datasets.get(i - 1).getLegalRestrictions()) {
+                                docVar.add(dmp.getLegalRestrictionsComment());
                             } else {
                                 docVar.add("");
                             }
@@ -936,7 +974,9 @@ public class DocumentConversionService {
                                     docVar.add("");
                                 }
                             }
+
                             docVar.add("");
+
                             if (datasets.get(i - 1).getLicense() != null) {
                                 switch (datasets.get(i - 1).getLicense()) {
                                     case "https://creativecommons.org/licenses/by/4.0/":
@@ -1012,7 +1052,7 @@ public class DocumentConversionService {
                                         }
                                 }
                                 if (repositories.size() > 0) {
-                                    docVar.add(String.join(", ", repositories));
+                                    docVar.add(multipleVariable(repositories));
                                 }
                                 else {
                                     docVar.add("");
