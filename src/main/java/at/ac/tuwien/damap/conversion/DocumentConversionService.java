@@ -2,6 +2,7 @@ package at.ac.tuwien.damap.conversion;
 
 import java.util.*;
 import java.text.SimpleDateFormat;
+import java.text.NumberFormat;
 
 import at.ac.tuwien.damap.domain.*;
 import at.ac.tuwien.damap.enums.EComplianceType;
@@ -569,7 +570,7 @@ public class DocumentConversionService {
         //Section 4a: personal data
         String personalData = "";
         if (dmp.getPersonalData()) {
-            String personalDataSentence = "Personal data will be collected/used as part of the project. ";
+            String personalDataSentence = "In this project, we will process personal data (see section 1a). ";
             String personalDataset = "";
             String datasetSentence = "";
             List<String> datasetList = new ArrayList<>();
@@ -600,7 +601,7 @@ public class DocumentConversionService {
             }
 
             if (personalDataCompliance != "") {
-                personalData = personalDataSentence + personalDataset + datasetSentence + "To ensure that only authorised users can access personal data, " + personalDataCompliance + " will be used.";
+                personalData = personalDataSentence + personalDataset + datasetSentence + "To ensure compliance with data protection laws, " + personalDataCompliance + " will be used.";
             }
             else {
                 personalData = personalDataSentence + personalDataset + datasetSentence;
@@ -624,7 +625,7 @@ public class DocumentConversionService {
 
                 int idx = datasets.indexOf(dataset)+1;
                 if (dataset.getSensitiveData()) {
-                    sensitiveDataset = sensitiveDataset + "P" + idx + " (" + dataset.getTitle() + ")";
+                    sensitiveDataset = "P" + idx + " (" + dataset.getTitle() + ")";
                     datasetList.add(sensitiveDataset);
                 }
             }
@@ -634,7 +635,10 @@ public class DocumentConversionService {
                 datasetSentence = " will containing sensitive data. ";
             }
 
-            sensitiveData = sensitiveDataSentence + sensitiveDataset + datasetSentence + "To ensure that the dataset containing sensitive data stored and transfered safe, " + dmp.getSensitiveDataSecurity().toLowerCase() + " will be taken.";
+            if (!dmp.getSensitiveDataSecurity().equals(""))
+                sensitiveData = sensitiveDataSentence + sensitiveDataset + datasetSentence + "To ensure that the dataset containing sensitive data stored and transferred safe, " + dmp.getSensitiveDataSecurity().toLowerCase() + " will be taken.";
+            else
+                sensitiveData = sensitiveDataSentence + sensitiveDataset + datasetSentence;
 
         } else {
             sensitiveData = "At this stage, it is not foreseen to process any sensitive data in the project. If this changes, advice will be sought from the data protection specialist at TU Wien (Verena Dolovai), and the DMP will be updated.";
@@ -659,19 +663,35 @@ public class DocumentConversionService {
             }
 
             if (datasetList.size()>0) {
-                legalRestrictionDataset = String.join(",", datasetList);
-                legalRestrictionSentence = "There is a concern of legal restriction for dataset ";
+                if (datasetList.size()==2) {
+                    legalRestrictionDataset = String.join("and ", datasetList);
+                }
+                else {
+                    legalRestrictionDataset = multipleVariable(datasetList);
+                }
+                legalRestrictionSentence = "Legal restrictions on how data is processed and shared are specified in the data processing agreement. The restrictions relate to datasets ";
             }
 
             if (dmp.getLegalRestrictionsComment().equals("")) {
-                legalRestriction = legalRestrictionSentence + legalRestrictionDataset + ".";
+                legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " and are based on trade secrets.";
             }
             else {
-                legalRestriction = legalRestrictionSentence + legalRestrictionDataset + ". " + dmp.getLegalRestrictionsComment();
+                legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " and are based on trade secrets. " + dmp.getLegalRestrictionsComment();
+            }
+
+            legalRestriction.concat(";");
+            if (dmp.getContact().getAffiliation() != null) {
+                legalRestriction.concat(dmp.getContact().getAffiliation() + " has rights to the produced data and controls access.");
+            }
+            else { //manually assign the organization
+                legalRestriction.concat("TU Wien has rights to the produced data and controls access.");
             }
 
             if (legalRestriction.charAt(legalRestriction.length()-1)!='.')
                 legalRestriction = legalRestriction + ".";
+        }
+        else {
+            legalRestriction = "There are no legal restrictions on the processing and disclosure of our data.";
         }
 
         map.put("[legalrestriction]", legalRestriction);
@@ -680,7 +700,8 @@ public class DocumentConversionService {
 
         String ethicalIssues = "";
         if (dmp.getEthicalIssuesExist()) {
-            String ethicalSentence = "Ethical issues in the project have been identified and discussed with the Research Ethics Coordinator at TU Wien (https://www.tuwien.at/en/research/rti-support/research-ethics/).";
+            String ethicalSentence = "Ethical issues in the project have been identified and discussed with the Research Ethics Coordinator at TU Wien (https://www.tuwien.at/en/research/rti-support/research-ethics/). " +
+                    "They are described in detail in separate documents.";
             if (dmp.getEthicsReport().equals("")) {
                 ethicalIssues = ethicalSentence + " " + dmp.getEthicalComplianceStatement();
             }
@@ -693,11 +714,13 @@ public class DocumentConversionService {
 
             if (ethicalIssues.charAt(ethicalIssues.length()-1) != '.')
                 ethicalIssues = ethicalIssues + ".";
+
+            ethicalIssues.concat(";");
+            ethicalIssues.concat("The research plan of the project was reviewed by an ethics committee / the TU Wien Pilot Research Ethics Committee / a similar body.");
         } else {
             ethicalIssues = "No particular ethical issue is foreseen with the data to be used or produced by the project. This section will be updated if issues arise.";
         }
         map.put("[ethicalissues]", ethicalIssues);
-
     }
 
     private void sectionFive(Dmp dmp, Map<String, String> map) {
@@ -767,7 +790,7 @@ public class DocumentConversionService {
                 }
             }
             if (cost.getValue() != null) {
-                costValue = cost.getValue().toString();
+                costValue = NumberFormat.getNumberInstance(Locale.GERMAN).format(cost.getValue());
                 totalCost = totalCost + cost.getValue();
             }
 
@@ -778,7 +801,7 @@ public class DocumentConversionService {
             map.put(docVar5, costValue);
         }
 
-        map.put("[costtotal]", totalCost.toString());
+        map.put("[costtotal]", NumberFormat.getNumberInstance(Locale.GERMAN).format(totalCost));
 
     }
 
@@ -1110,7 +1133,7 @@ public class DocumentConversionService {
                             docVar.add(costList.get(i - 1).getDescription());
                             docVar.add(costList.get(i - 1).getCurrencyCode());
                             if (costList.get(i - 1).getValue() != null)
-                                docVar.add(costList.get(i - 1).getValue().toString());
+                                docVar.add(NumberFormat.getNumberInstance(Locale.GERMAN).format(costList.get(i - 1).getValue()));
                             else
                                 docVar.add("");
 
