@@ -635,7 +635,7 @@ public class DocumentConversionService {
                 datasetSentence = " will containing sensitive data. ";
             }
 
-            if (!dmp.getSensitiveDataSecurity().equals(""))
+            if (dmp.getSensitiveDataSecurity() != null && !dmp.getSensitiveDataSecurity().equals(""))
                 sensitiveData = sensitiveDataSentence + sensitiveDataset + datasetSentence + "To ensure that the dataset containing sensitive data stored and transferred safe, " + dmp.getSensitiveDataSecurity().toLowerCase() + " will be taken.";
             else
                 sensitiveData = sensitiveDataSentence + sensitiveDataset + datasetSentence;
@@ -672,7 +672,8 @@ public class DocumentConversionService {
                 legalRestrictionSentence = "Legal restrictions on how data is processed and shared are specified in the data processing agreement. The restrictions relate to datasets ";
             }
 
-            if (dmp.getLegalRestrictionsComment().equals("")) {
+            if (dmp.getLegalRestrictionsComment() == null
+                    || dmp.getLegalRestrictionsComment().equals("")) {
                 legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " and are based on trade secrets.";
             }
             else {
@@ -702,7 +703,8 @@ public class DocumentConversionService {
         if (dmp.getEthicalIssuesExist()) {
             String ethicalSentence = "Ethical issues in the project have been identified and discussed with the Research Ethics Coordinator at TU Wien (https://www.tuwien.at/en/research/rti-support/research-ethics/). " +
                     "They are described in detail in separate documents.";
-            if (dmp.getEthicsReport().equals("")) {
+            if (dmp.getEthicsReport() == null
+                    || dmp.getEthicsReport().equals("")) {
                 ethicalIssues = ethicalSentence + " " + dmp.getEthicalComplianceStatement();
             }
             else {
