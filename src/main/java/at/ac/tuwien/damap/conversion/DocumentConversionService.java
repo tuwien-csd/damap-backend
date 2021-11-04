@@ -485,16 +485,16 @@ public class DocumentConversionService {
 
         String metadata = "";
 
-        if (dmp.getMetadata() != null) {
-            if (dmp.getMetadata().equals("")) {
-                map.put("[metadata]", "As there are no domain specific metadata standards applicable, we will provide a README file with an explanation of all values and terms used next to each file with data.");
-            } else {
-                metadata = dmp.getMetadata().toLowerCase();
-                if (metadata.charAt(metadata.length()-1)!='.') {
-                    metadata = metadata + '.';
-                }
-                map.put("[metadata]", "To help others identify, discover and reuse the data, " + metadata);
+        if (dmp.getMetadata() == null
+                || dmp.getMetadata().equals("")) {
+            map.put("[metadata]", "As there are no domain specific metadata standards applicable, we will provide a README file with an explanation of all values and terms used next to each file with data.");
+        }
+        else {
+            metadata = dmp.getMetadata().toLowerCase();
+            if (metadata.charAt(metadata.length()-1)!='.') {
+                metadata = metadata + '.';
             }
+            map.put("[metadata]", "To help others identify, discover and reuse the data, " + metadata);
         }
     }
 
@@ -579,7 +579,7 @@ public class DocumentConversionService {
 
                 int idx = datasets.indexOf(dataset)+1;
                 if (dataset.getPersonalData()) {
-                    personalDataset = personalDataset + "P" + idx + " (" + dataset.getTitle() + ")";
+                    personalDataset = "P" + idx + " (" + dataset.getTitle() + ")";
                     datasetList.add(personalDataset);
                 }
             }
@@ -657,7 +657,7 @@ public class DocumentConversionService {
 
                 int idx = datasets.indexOf(dataset)+1;
                 if (dataset.getLegalRestrictions()) {
-                    legalRestrictionDataset = legalRestrictionDataset + "P" + idx + " (" + dataset.getTitle() + ")";
+                    legalRestrictionDataset = "P" + idx + " (" + dataset.getTitle() + ")";
                     datasetList.add(legalRestrictionDataset);
                 }
             }
@@ -703,12 +703,19 @@ public class DocumentConversionService {
         if (dmp.getEthicalIssuesExist()) {
             String ethicalSentence = "Ethical issues in the project have been identified and discussed with the Research Ethics Coordinator at TU Wien (https://www.tuwien.at/en/research/rti-support/research-ethics/). " +
                     "They are described in detail in separate documents.";
+            String ethicalComplianceStatement = "";
+
+            if (dmp.getEthicalComplianceStatement() != null
+                    || !dmp.getEthicalComplianceStatement().equals("")) {
+                ethicalComplianceStatement = " " + dmp.getEthicalComplianceStatement();
+            }
+
             if (dmp.getEthicsReport() == null
                     || dmp.getEthicsReport().equals("")) {
-                ethicalIssues = ethicalSentence + " " + dmp.getEthicalComplianceStatement();
+                ethicalIssues = ethicalSentence + ethicalComplianceStatement;
             }
             else {
-                ethicalIssues = ethicalSentence + " " + dmp.getEthicalComplianceStatement() + "Relevant ethical guidelines in this project are " + dmp.getEthicsReport() + ".";
+                ethicalIssues = ethicalSentence + ethicalComplianceStatement + " Relevant ethical guidelines in this project are " + dmp.getEthicsReport() + ".";
             }
 
             if (ethicalIssues.charAt(ethicalIssues.length()-1) == ' ')
@@ -1020,7 +1027,7 @@ public class DocumentConversionService {
                                         docVar.add("PD");
                                         break;
                                     default:
-                                        docVar.add("CC BY");
+                                        docVar.add("");
                                         break;
                                 }
                             }
