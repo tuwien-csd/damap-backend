@@ -2,5 +2,19 @@ pipelines:
   openshift:
     stages:
       deploy:
-        spec:
-          probe_enabled: false
+        enabled: false
+  maven:
+    stages:
+      publish:
+        enabled: false
+
+whenBranch:
+  "next":
+    pipelines:
+      maven:
+        stages:
+          publish:
+            enabled: true
+    post:
+      success:
+        trigger: [ "CSD/job/damap-tuw-be/job/next" ]
