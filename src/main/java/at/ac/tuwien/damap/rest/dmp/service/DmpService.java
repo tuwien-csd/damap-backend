@@ -96,6 +96,7 @@ public class DmpService {
                     filename = dmp.getProject().getTitle();
             }
         }
+        filename = filename.replaceAll("[\"',\\s]+", "_");
 
         return filename;
     }
