@@ -31,12 +31,11 @@ public class DmpService {
     public List<DmpListItemDO> getAll() {
 
         List<Dmp> dmpList = dmpRepo.getAll();
-        List<DmpListItemDO> dmpDOList = new ArrayList<>();
-        // FIXME
-        /*dmpList.forEach(dmp -> {
-            dmpDOList.add(DmpDOMapper.mapEntityToDO(dmp, new DmpListItemDO()));
-        });*/
-        return dmpDOList;
+        List<DmpListItemDO> dmpListItemDOList = new ArrayList<>();
+        dmpList.forEach(dmp -> {
+            dmpListItemDOList.add(DmpListItemDOMapper.mapEntityToDO(null, dmp, new DmpListItemDO()));
+        });
+        return dmpListItemDOList;
     }
 
     public List<DmpListItemDO> getDmpListByPersonId(String personId) {
