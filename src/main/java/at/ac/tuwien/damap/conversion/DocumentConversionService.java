@@ -674,7 +674,7 @@ public class DocumentConversionService {
 
             if (datasetList.size()>0) {
                 if (datasetList.size()==2) {
-                    legalRestrictionDataset = String.join("and ", datasetList);
+                    legalRestrictionDataset = String.join(" and ", datasetList);
                 }
                 else {
                     legalRestrictionDataset = multipleVariable(datasetList);
