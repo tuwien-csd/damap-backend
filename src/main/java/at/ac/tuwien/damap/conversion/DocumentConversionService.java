@@ -21,7 +21,6 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.sound.midi.SysexMessage;
 
 @ApplicationScoped
 public class DocumentConversionService {
@@ -331,7 +330,8 @@ public class DocumentConversionService {
         final int digits = (string.length() - 1) % 3 + 1;
 
         // Build the string
-        char[] value = new char[4];
+        char[] value = new char[digits + 4];
+
         for(int i = 0; i < digits; i++) {
             value[i] = string.charAt(i);
         }
@@ -359,11 +359,10 @@ public class DocumentConversionService {
             String docVar8 = "[dataset" + idx + "access]";
             String docVar9 = "[dataset" + idx + "sensitive]";
             String docVar10 = "[dataset" + idx + "restriction]";
-            String docVar11 = "[dataset" + idx + "storage]";
-            String docVar12 =  "[dataset" + idx + "period]";
-            String docVar13 = "[dataset" + idx + "selectedaccess]";
-            String docVar14 = "[dataset" + idx + "allaccess]";
-            String docVar15 = "[dataset" + idx + "publicaccess]";
+            String docVar11 =  "[dataset" + idx + "period]";
+            String docVar12 = "[dataset" + idx + "selectedaccess]";
+            String docVar13 = "[dataset" + idx + "allaccess]";
+            String docVar14 = "[dataset" + idx + "publicaccess]";
 
             String datasetName = "";
             String datasetType = "";
@@ -372,10 +371,10 @@ public class DocumentConversionService {
             String datasetLicense = "";
             String datasetPubdate = "";
             String datasetRepo = "";
+            String datasetStorage = "";
             String datasetAccess = "";
             String datasetSensitive = "";
             String datasetRestriction = "";
-            String datasetStorage = "";
             String datasetPeriod = "";
             String datasetSelectedAccess = "";
             String datasetAllAccess = "";
@@ -387,7 +386,7 @@ public class DocumentConversionService {
                 datasetType = String.format(dataset.getType()).toLowerCase().replace('_',' ');
             if (dataset.getSize() != null)
                 datasetVol = format(dataset.getSize())+"B";
-            if (dataset.getLicense() != null)
+            if (dataset.getLicense() != null) {
                 switch (dataset.getLicense()) {
                     case "https://creativecommons.org/licenses/by/4.0/":
                         datasetLicense = "CC BY 4.0";
@@ -408,6 +407,7 @@ public class DocumentConversionService {
                         datasetLicense = "CC BY";
                         break;
                 }
+            }
             if (dataset.getStart() != null)
                 datasetPubdate = formatter.format(dataset.getStart());
             if (dataset.getDistributionList() != null){
@@ -466,15 +466,28 @@ public class DocumentConversionService {
             map.put(docVar8, datasetAccess);
             map.put(docVar9, datasetSensitive);
             map.put(docVar10, datasetRestriction);
-            map.put(docVar11, datasetRepo);
-            map.put(docVar12, datasetPeriod);
-            map.put(docVar13, datasetSelectedAccess);
-            map.put(docVar14, datasetAllAccess);
-            map.put(docVar15, datasetPublicAccess);
+            map.put(docVar11, datasetPeriod);
+            map.put(docVar12, datasetSelectedAccess);
+            map.put(docVar13, datasetAllAccess);
+            map.put(docVar14, datasetPublicAccess);
         }
 
         if (datasets.size() == 0) {
             map.put("P1", "");
+            map.put("[dataset1name]", "");
+            map.put("[dataset1type]", "");
+            map.put("[dataset1format]", "");
+            map.put("[dataset1vol]", "");
+            map.put("[dataset1license]", "");
+            map.put("[dataset1pubdate]", "");
+            map.put("[dataset1repo]", "");
+            map.put("[dataset1access]", "");
+            map.put("[dataset1sensitive]", "");
+            map.put("[dataset1restriction]", "");
+            map.put("[dataset1period]", "");
+            map.put("[dataset1selectedaccess]", "");
+            map.put("[dataset1allaccess]", "");
+            map.put("[dataset1publicaccess]", "");
         }
 
         if (dmp.getDataGeneration() != null)
@@ -485,16 +498,20 @@ public class DocumentConversionService {
 
         String metadata = "";
 
-        if (dmp.getMetadata() == null
-                || dmp.getMetadata().equals("")) {
+        if (dmp.getMetadata() == null) {
             map.put("[metadata]", "As there are no domain specific metadata standards applicable, we will provide a README file with an explanation of all values and terms used next to each file with data.");
         }
         else {
-            metadata = dmp.getMetadata().toLowerCase();
-            if (metadata.charAt(metadata.length()-1)!='.') {
-                metadata = metadata + '.';
+            if (dmp.getMetadata().equals("")) {
+                map.put("[metadata]", "As there are no domain specific metadata standards applicable, we will provide a README file with an explanation of all values and terms used next to each file with data.");
             }
-            map.put("[metadata]", "To help others identify, discover and reuse the data, " + metadata);
+            else {
+                metadata = dmp.getMetadata().toLowerCase();
+                if (metadata.charAt(metadata.length()-1)!='.') {
+                    metadata = metadata + '.';
+                }
+                map.put("[metadata]", "To help others identify, discover and reuse the data, " + metadata);
+            }
         }
     }
 
@@ -545,12 +562,12 @@ public class DocumentConversionService {
 
                 if (host.getHostId() != null) {
                     if (!host.getHostId().contains("r3")) { //only write information related to the storage, repository will be written in section 5
-                        if (distVar != "")
+                        if (!distVar.equals(""))
                             storageVar = storageVar.concat(distVar + " will be stored in " + hostVar + storageDescription);
                     }
                 }
                 else { //case for external storage, will have null host Id
-                    if (distVar != "") {
+                    if (!distVar.equals("")) {
                         storageVar = storageVar.concat(distVar + " will be stored in " + hostVar + ".");
                         if (dmp.getExternalStorageInfo() != null && !dmp.getExternalStorageInfo().equals("")) {
                             storageVar = storageVar.concat(" External storage will be used because " + dmp.getExternalStorageInfo().toLowerCase());
@@ -568,7 +585,7 @@ public class DocumentConversionService {
 
     private void sectionFour(Dmp dmp, Map<String, String> map, List<Dataset> datasets) {
         //Section 4a: personal data
-        String personalData = "";
+        String personalData;
         if (dmp.getPersonalData()) {
             String personalDataSentence = "In this project, we will process personal data (see section 1a). ";
             String personalDataset = "";
@@ -579,8 +596,7 @@ public class DocumentConversionService {
 
                 int idx = datasets.indexOf(dataset)+1;
                 if (dataset.getPersonalData()) {
-                    personalDataset = "P" + idx + " (" + dataset.getTitle() + ")";
-                    datasetList.add(personalDataset);
+                    datasetList.add("P" + idx + " (" + dataset.getTitle() + ")");
                 }
             }
 
@@ -600,7 +616,7 @@ public class DocumentConversionService {
                 personalDataCompliance = multipleVariable(dataComplianceList);
             }
 
-            if (personalDataCompliance != "") {
+            if (!personalDataCompliance.equals("")) {
                 personalData = personalDataSentence + personalDataset + datasetSentence + "To ensure compliance with data protection laws, " + personalDataCompliance + " will be used.";
             }
             else {
@@ -664,7 +680,7 @@ public class DocumentConversionService {
 
             if (datasetList.size()>0) {
                 if (datasetList.size()==2) {
-                    legalRestrictionDataset = String.join("and ", datasetList);
+                    legalRestrictionDataset = String.join(" and ", datasetList);
                 }
                 else {
                     legalRestrictionDataset = multipleVariable(datasetList);
@@ -672,12 +688,16 @@ public class DocumentConversionService {
                 legalRestrictionSentence = "Legal restrictions on how data is processed and shared are specified in the data processing agreement. The restrictions relate to datasets ";
             }
 
-            if (dmp.getLegalRestrictionsComment() == null
-                    || dmp.getLegalRestrictionsComment().equals("")) {
+            if (dmp.getLegalRestrictionsComment() == null) {
                 legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " and are based on trade secrets.";
             }
             else {
-                legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " and are based on trade secrets. " + dmp.getLegalRestrictionsComment();
+                if (dmp.getLegalRestrictionsComment().equals("")) {
+                legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " and are based on trade secrets.";
+                }
+                else {
+                    legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " and are based on trade secrets. " + dmp.getLegalRestrictionsComment();
+                }
             }
 
             legalRestriction.concat(";");
@@ -705,17 +725,22 @@ public class DocumentConversionService {
                     "They are described in detail in separate documents.";
             String ethicalComplianceStatement = "";
 
-            if (dmp.getEthicalComplianceStatement() != null
-                    || !dmp.getEthicalComplianceStatement().equals("")) {
-                ethicalComplianceStatement = " " + dmp.getEthicalComplianceStatement();
+            if (dmp.getEthicalComplianceStatement() != null) {
+                if (!dmp.getEthicalComplianceStatement().equals("")) {
+                    ethicalComplianceStatement = " " + dmp.getEthicalComplianceStatement();
+                }
             }
 
-            if (dmp.getEthicsReport() == null
-                    || dmp.getEthicsReport().equals("")) {
+            if (dmp.getEthicsReport() == null) {
                 ethicalIssues = ethicalSentence + ethicalComplianceStatement;
             }
             else {
-                ethicalIssues = ethicalSentence + ethicalComplianceStatement + " Relevant ethical guidelines in this project are " + dmp.getEthicsReport() + ".";
+                if (dmp.getEthicsReport().equals("")) {
+                    ethicalIssues = ethicalSentence + ethicalComplianceStatement;
+                }
+                else {
+                    ethicalIssues = ethicalSentence + ethicalComplianceStatement + " Relevant ethical guidelines in this project are " + dmp.getEthicsReport() + ".";
+                }
             }
 
             if (ethicalIssues.charAt(ethicalIssues.length()-1) == ' ')
@@ -1071,7 +1096,7 @@ public class DocumentConversionService {
                             catch (Exception e) {
                             }
 
-                            ArrayList<String> docVar = new ArrayList<String>();
+                            ArrayList<String> docVar = new ArrayList<>();
                             docVar.add("P" + i);
                             //TODO datasets and hosts are now connected by Distribution objects
                             if (datasets.get(i - 1).getDistributionList() != null){
@@ -1133,7 +1158,7 @@ public class DocumentConversionService {
                             catch (Exception e) {
                             }
 
-                            ArrayList<String> docVar = new ArrayList<String>();
+                            ArrayList<String> docVar = new ArrayList<>();
                             docVar.add(costList.get(i - 1).getTitle());
                             if (costList.get(i - 1).getType() != null)
                                 docVar.add(costList.get(i - 1).getType().toString());
