@@ -330,7 +330,8 @@ public class DocumentConversionService {
         final int digits = (string.length() - 1) % 3 + 1;
 
         // Build the string
-        char[] value = new char[4];
+        char[] value = new char[digits + 4];
+
         for(int i = 0; i < digits; i++) {
             value[i] = string.charAt(i);
         }
@@ -385,7 +386,7 @@ public class DocumentConversionService {
                 datasetType = String.format(dataset.getType()).toLowerCase().replace('_',' ');
             if (dataset.getSize() != null)
                 datasetVol = format(dataset.getSize())+"B";
-            if (dataset.getLicense() != null)
+            if (dataset.getLicense() != null) {
                 switch (dataset.getLicense()) {
                     case "https://creativecommons.org/licenses/by/4.0/":
                         datasetLicense = "CC BY 4.0";
@@ -406,6 +407,7 @@ public class DocumentConversionService {
                         datasetLicense = "CC BY";
                         break;
                 }
+            }
             if (dataset.getStart() != null)
                 datasetPubdate = formatter.format(dataset.getStart());
             if (dataset.getDistributionList() != null){
@@ -496,16 +498,20 @@ public class DocumentConversionService {
 
         String metadata = "";
 
-        if (dmp.getMetadata() == null
-                || dmp.getMetadata().equals("")) {
+        if (dmp.getMetadata() == null) {
             map.put("[metadata]", "As there are no domain specific metadata standards applicable, we will provide a README file with an explanation of all values and terms used next to each file with data.");
         }
         else {
-            metadata = dmp.getMetadata().toLowerCase();
-            if (metadata.charAt(metadata.length()-1)!='.') {
-                metadata = metadata + '.';
+            if (dmp.getMetadata().equals("")) {
+                map.put("[metadata]", "As there are no domain specific metadata standards applicable, we will provide a README file with an explanation of all values and terms used next to each file with data.");
             }
-            map.put("[metadata]", "To help others identify, discover and reuse the data, " + metadata);
+            else {
+                metadata = dmp.getMetadata().toLowerCase();
+                if (metadata.charAt(metadata.length()-1)!='.') {
+                    metadata = metadata + '.';
+                }
+                map.put("[metadata]", "To help others identify, discover and reuse the data, " + metadata);
+            }
         }
     }
 
@@ -682,12 +688,16 @@ public class DocumentConversionService {
                 legalRestrictionSentence = "Legal restrictions on how data is processed and shared are specified in the data processing agreement. The restrictions relate to datasets ";
             }
 
-            if (dmp.getLegalRestrictionsComment() == null
-                    || dmp.getLegalRestrictionsComment().equals("")) {
+            if (dmp.getLegalRestrictionsComment() == null) {
                 legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " and are based on trade secrets.";
             }
             else {
-                legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " and are based on trade secrets. " + dmp.getLegalRestrictionsComment();
+                if (dmp.getLegalRestrictionsComment().equals("")) {
+                legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " and are based on trade secrets.";
+                }
+                else {
+                    legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " and are based on trade secrets. " + dmp.getLegalRestrictionsComment();
+                }
             }
 
             legalRestriction.concat(";");
@@ -715,17 +725,22 @@ public class DocumentConversionService {
                     "They are described in detail in separate documents.";
             String ethicalComplianceStatement = "";
 
-            if (dmp.getEthicalComplianceStatement() != null
-                    || !dmp.getEthicalComplianceStatement().equals("")) {
-                ethicalComplianceStatement = " " + dmp.getEthicalComplianceStatement();
+            if (dmp.getEthicalComplianceStatement() != null) {
+                if (!dmp.getEthicalComplianceStatement().equals("")) {
+                    ethicalComplianceStatement = " " + dmp.getEthicalComplianceStatement();
+                }
             }
 
-            if (dmp.getEthicsReport() == null
-                    || dmp.getEthicsReport().equals("")) {
+            if (dmp.getEthicsReport() == null) {
                 ethicalIssues = ethicalSentence + ethicalComplianceStatement;
             }
             else {
-                ethicalIssues = ethicalSentence + ethicalComplianceStatement + " Relevant ethical guidelines in this project are " + dmp.getEthicsReport() + ".";
+                if (dmp.getEthicsReport().equals("")) {
+                    ethicalIssues = ethicalSentence + ethicalComplianceStatement;
+                }
+                else {
+                    ethicalIssues = ethicalSentence + ethicalComplianceStatement + " Relevant ethical guidelines in this project are " + dmp.getEthicsReport() + ".";
+                }
             }
 
             if (ethicalIssues.charAt(ethicalIssues.length()-1) == ' ')
