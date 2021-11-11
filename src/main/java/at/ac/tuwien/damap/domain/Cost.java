@@ -27,7 +27,7 @@ public class Cost extends PanacheEntity {
 
     private String title;
 
-    private Long value;
+    private Float value;
 
     @Column(name = "currency_code")
     private String currencyCode; // controlled vocabulary: ISO 4217

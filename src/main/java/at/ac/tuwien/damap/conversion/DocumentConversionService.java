@@ -800,7 +800,7 @@ public class DocumentConversionService {
         map.put("[costs]", costs);
 
         //mapping cost information
-        Long totalCost = 0L;
+        Float totalCost = 0f;
 
         for (Cost cost : costList) {
             int idx = costList.indexOf(cost) + 1;

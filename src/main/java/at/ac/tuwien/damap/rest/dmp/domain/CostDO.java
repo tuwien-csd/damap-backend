@@ -9,7 +9,7 @@ public class CostDO {
 
     private Long id;
     private String title;
-    private Long value;
+    private Float value;
     private String currencyCode; // controlled vocabulary: ISO 4217
     private String description;
     private String type;
