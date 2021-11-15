@@ -58,19 +58,18 @@ public class DocumentConversionServiceTest {
     }
 
     @Test
-    public void testPreSection() throws Exception{
+    public void testEmptyDmp() throws Exception{
         DmpDO dmp = this.createDmpDO();
-        log.debug(dmp.getTitle());
-        log.debug("test");
-        log.debug(dmp.getId());
         Long id = dmp.getId();
+        log.info("Mock DMP title: " + dmp.getTitle());
+        log.info("Mock DMP ID: " + dmp.getId());
 
         XWPFDocument document = documentConversionService.getFWFTemplate(id);
     }
 
     private DmpDO createDmpDO() {
         DmpDO dmpDO = new DmpDO();
-        dmpDO.setTitle("Mock Dmp");
+        dmpDO.setTitle("Mock Dmp Empty");
         dmpDO.setId(123L);
 
         return dmpDO;
