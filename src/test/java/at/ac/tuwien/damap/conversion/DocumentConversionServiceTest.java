@@ -70,7 +70,6 @@ public class DocumentConversionServiceTest {
     private DmpDO createDmpDO() {
         DmpDO dmpDO = new DmpDO();
         dmpDO.setTitle("Mock Dmp Empty");
-        dmpDO.setTitle("Mock Dmp");
         dmpDO.setId(123L);
 
         return dmpDO;
