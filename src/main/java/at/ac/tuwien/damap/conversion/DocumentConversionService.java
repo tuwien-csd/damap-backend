@@ -510,8 +510,12 @@ public class DocumentConversionService {
             map.put("[dataset1publicaccess]", "");
         }
 
-        if (dmp.getDataGeneration() != null)
+        if (dmp.getDataGeneration() != null) {
             map.put("[datageneration]", dmp.getDataGeneration());
+        }
+        else {
+            map.put("[datageneration]", "");
+        }
     }
 
     private void sectionTwo(Dmp dmp, Map<String, String> map) {
