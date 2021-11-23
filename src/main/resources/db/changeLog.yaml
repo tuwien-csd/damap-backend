@@ -1806,3 +1806,33 @@ databaseChangeLog:
                   constraints:
                     foreignKeyName: fk_dataset_aud_public_ar
                     references: e_access_right(type)
+
+
+  - changeSet:
+      id: 4
+      author: Clara Schuster
+      changes:
+        - addColumn:
+            tableName: dataset
+            columns:
+                - column:
+                    name: delete
+                    type: BOOLEAN
+                - column:
+                    name: date_of_deletion
+                    type: DATE
+                - column:
+                    name: reason_for_deletion
+                    type: VARCHAR(4000)
+        - addColumn:
+            tableName: dataset_aud
+            columns:
+              - column:
+                  name: delete
+                  type: BOOLEAN
+              - column:
+                  name: date_of_deletion
+                  type: DATE
+              - column:
+                  name: reason_for_deletion
+                  type: VARCHAR(4000)
