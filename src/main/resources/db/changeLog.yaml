@@ -1816,7 +1816,7 @@ databaseChangeLog:
             tableName: dataset
             columns:
                 - column:
-                    name: delete
+                    name: delete_data
                     type: BOOLEAN
                 - column:
                     name: date_of_deletion
@@ -1828,7 +1828,7 @@ databaseChangeLog:
             tableName: dataset_aud
             columns:
               - column:
-                  name: delete
+                  name: delete_data
                   type: BOOLEAN
               - column:
                   name: date_of_deletion
