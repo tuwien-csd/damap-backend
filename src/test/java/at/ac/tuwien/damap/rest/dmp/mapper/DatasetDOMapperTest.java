@@ -42,6 +42,9 @@ class DatasetDOMapperTest {
         dataset.setSelectedProjectMembersAccess(EAccessRight.WRITE);
         dataset.setOtherProjectMembersAccess(EAccessRight.READ);
         dataset.setPublicAccess(null);
+        dataset.setDelete(true);
+        dataset.setDateOfDeletion(new Date(200000));
+        dataset.setReasonForDeletion("because");
         return dataset;
     }
     private DatasetDO createDatasetDO(){
@@ -61,6 +64,9 @@ class DatasetDOMapperTest {
         datasetDO.setSelectedProjectMembersAccess("writing");
         datasetDO.setOtherProjectMembersAccess("reading only");
         datasetDO.setPublicAccess(null);
+        datasetDO.setDelete(true);
+        datasetDO.setDateOfDeletion(new Date(200000));
+        datasetDO.setReasonForDeletion("because");
         return datasetDO;
     }
 }

@@ -21,6 +21,9 @@ public class DatasetDOMapper {
         datasetDO.setLicense(dataset.getLicense());
         datasetDO.setStartDate(dataset.getStart());
         datasetDO.setReferenceHash(dataset.getReferenceHash());
+        datasetDO.setDelete(dataset.getDelete());
+        datasetDO.setDateOfDeletion(dataset.getDateOfDeletion());
+        datasetDO.setReasonForDeletion(dataset.getReasonForDeletion());
         if (dataset.getDataAccess() != null)
             datasetDO.setDataAccess(dataset.getDataAccess().getValue());
         if (dataset.getSelectedProjectMembersAccess() != null)
@@ -50,6 +53,9 @@ public class DatasetDOMapper {
         dataset.setSelectedProjectMembersAccess(EAccessRight.getByValue(datasetDO.getSelectedProjectMembersAccess()));
         dataset.setOtherProjectMembersAccess(EAccessRight.getByValue(datasetDO.getOtherProjectMembersAccess()));
         dataset.setPublicAccess(EAccessRight.getByValue(datasetDO.getPublicAccess()));
+        dataset.setDelete(datasetDO.getDelete());
+        dataset.setDateOfDeletion(datasetDO.getDateOfDeletion());
+        dataset.setReasonForDeletion(datasetDO.getReasonForDeletion());
 
         return dataset;
     }}
