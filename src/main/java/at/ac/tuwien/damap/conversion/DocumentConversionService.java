@@ -460,7 +460,9 @@ public class DocumentConversionService {
             }
             if (dataset.getLegalRestrictions() != null) {
                 if (dataset.getLegalRestrictions()) {
-                    datasetRestriction = dmp.getLegalRestrictionsComment();
+                    if (dmp.getLegalRestrictionsComment() != null) {
+                        datasetRestriction = dmp.getLegalRestrictionsComment();
+                    }
                 }
             }
 
@@ -730,12 +732,12 @@ public class DocumentConversionService {
                     }
                 }
 
-                legalRestriction.concat(";");
+                legalRestriction = legalRestriction.concat(";");
                 if (dmp.getContact().getAffiliation() != null) {
-                    legalRestriction.concat(dmp.getContact().getAffiliation() + " has rights to the produced data and controls access.");
+                    legalRestriction = legalRestriction.concat(dmp.getContact().getAffiliation() + " has rights to the produced data and controls access.");
                 }
                 else { //manually assign the organization
-                    legalRestriction.concat("TU Wien has rights to the produced data and controls access.");
+                    legalRestriction = legalRestriction.concat("TU Wien has rights to the produced data and controls access.");
                 }
 
                 if (legalRestriction.charAt(legalRestriction.length()-1)!='.')
@@ -920,11 +922,12 @@ public class DocumentConversionService {
                                 docVar.add("");
                             }
 
-                            if (datasets.get(i-1).getSensitiveData()) {
-                                docVar.add("yes");
-                            }
-                            else {
-                                docVar.add("no");
+                            if (datasets.get(i-1).getSensitiveData() != null) {
+                                if (datasets.get(i - 1).getSensitiveData()) {
+                                    docVar.add("yes");
+                                } else {
+                                    docVar.add("no");
+                                }
                             }
 
                             List<XWPFTableCell> cells = newRow.getTableCells();
@@ -1036,8 +1039,13 @@ public class DocumentConversionService {
                                 docVar.add("");
                             }
 
-                            if (datasets.get(i - 1).getLegalRestrictions() != null && datasets.get(i - 1).getLegalRestrictions()) {
-                                docVar.add(dmp.getLegalRestrictionsComment());
+                            if (datasets.get(i - 1).getLegalRestrictions() != null) {
+                                if (datasets.get(i - 1).getLegalRestrictions()) {
+                                    if (dmp.getLegalRestrictionsComment() != null)
+                                        docVar.add(dmp.getLegalRestrictionsComment());
+                                    else
+                                        docVar.add("");
+                                }
                             } else {
                                 docVar.add("");
                             }
