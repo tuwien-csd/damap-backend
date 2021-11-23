@@ -695,20 +695,19 @@ public class DocumentConversionService {
                 String legalRestrictionDataset = "";
                 List<String> datasetList = new ArrayList<>();
 
-                for (Dataset dataset: datasets) {
+                for (Dataset dataset : datasets) {
 
-                    int idx = datasets.indexOf(dataset)+1;
+                    int idx = datasets.indexOf(dataset) + 1;
                     if (dataset.getLegalRestrictions()) {
                         legalRestrictionDataset = "P" + idx + " (" + dataset.getTitle() + ")";
                         datasetList.add(legalRestrictionDataset);
                     }
                 }
 
-                if (datasetList.size()>0) {
-                    if (datasetList.size()==2) {
+                if (datasetList.size() > 0) {
+                    if (datasetList.size() == 2) {
                         legalRestrictionDataset = String.join(" and ", datasetList);
-                    }
-                    else {
+                    } else {
                         legalRestrictionDataset = multipleVariable(datasetList);
                     }
                     legalRestrictionSentence = "Legal restrictions on how data is processed and shared are specified in the data processing agreement. The restrictions relate to datasets ";
@@ -716,26 +715,23 @@ public class DocumentConversionService {
 
                 if (dmp.getLegalRestrictionsComment() == null) {
                     legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " and are based on trade secrets.";
-                }
-                else {
+                } else {
                     if (dmp.getLegalRestrictionsComment().equals("")) {
                         legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " and are based on trade secrets.";
-                    }
-                    else {
+                    } else {
                         legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " and are based on trade secrets. " + dmp.getLegalRestrictionsComment();
                     }
                 }
 
-                legalRestriction.concat(";");
+                legalRestriction = legalRestriction.concat(";");
                 if (dmp.getContact().getAffiliation() != null) {
-                    legalRestriction.concat(dmp.getContact().getAffiliation() + " has rights to the produced data and controls access.");
-                }
-                else { //manually assign the organization
-                    legalRestriction.concat("TU Wien has rights to the produced data and controls access.");
-                }
+                    legalRestriction = legalRestriction.concat(dmp.getContact().getAffiliation() + " has rights to the produced data and controls access.");
+                } else { //manually assign the organization
+                    legalRestriction = legalRestriction.concat("TU Wien has rights to the produced data and controls access.");
 
-                if (legalRestriction.charAt(legalRestriction.length()-1)!='.')
-                    legalRestriction = legalRestriction + ".";
+                    if (legalRestriction.charAt(legalRestriction.length() - 1) != '.')
+                        legalRestriction = legalRestriction + ".";
+                }
             }
             else {
                 legalRestriction = "There are no legal restrictions on the processing and disclosure of our data.";
@@ -1033,7 +1029,10 @@ public class DocumentConversionService {
                             }
 
                             if (datasets.get(i - 1).getLegalRestrictions() != null && datasets.get(i - 1).getLegalRestrictions()) {
-                                docVar.add(dmp.getLegalRestrictionsComment());
+                                if (dmp.getLegalRestrictionsComment() != null)
+                                    docVar.add(dmp.getLegalRestrictionsComment());
+                                else
+                                    docVar.add("");
                             } else {
                                 docVar.add("");
                             }
