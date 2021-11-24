@@ -651,10 +651,11 @@ public class DocumentConversionService {
                 datasetSentence = " will containing sensitive data. ";
             }
 
-            if (dmp.getSensitiveDataSecurity() != null && !dmp.getSensitiveDataSecurity().equals(""))
+            // FIXME
+            /*if (dmp.getSensitiveDataSecurity() != null && !dmp.getSensitiveDataSecurity().equals(""))
                 sensitiveData = sensitiveDataSentence + sensitiveDataset + datasetSentence + "To ensure that the dataset containing sensitive data stored and transferred safe, " + dmp.getSensitiveDataSecurity().toLowerCase() + " will be taken.";
             else
-                sensitiveData = sensitiveDataSentence + sensitiveDataset + datasetSentence;
+                sensitiveData = sensitiveDataSentence + sensitiveDataset + datasetSentence;*/
 
         } else {
             sensitiveData = "At this stage, it is not foreseen to process any sensitive data in the project. If this changes, advice will be sought from the data protection specialist at TU Wien (Verena Dolovai), and the DMP will be updated.";
@@ -725,7 +726,8 @@ public class DocumentConversionService {
                     "They are described in detail in separate documents.";
             String ethicalComplianceStatement = "";
 
-            if (dmp.getEthicalComplianceStatement() != null) {
+            // FIXME
+            /*if (dmp.getEthicalComplianceStatement() != null) {
                 if (!dmp.getEthicalComplianceStatement().equals("")) {
                     ethicalComplianceStatement = " " + dmp.getEthicalComplianceStatement();
                 }
@@ -741,7 +743,7 @@ public class DocumentConversionService {
                 else {
                     ethicalIssues = ethicalSentence + ethicalComplianceStatement + " Relevant ethical guidelines in this project are " + dmp.getEthicsReport() + ".";
                 }
-            }
+            }*/
 
             if (ethicalIssues.charAt(ethicalIssues.length()-1) == ' ')
                 ethicalIssues = ethicalIssues.substring(0,ethicalIssues.length()-1);
