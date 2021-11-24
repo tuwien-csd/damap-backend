@@ -46,33 +46,18 @@ public class DocumentConversionServiceTest {
     DocumentConversionService documentConversionService;
 
     @InjectMock
-    DmpService dmpService;
-
-    @InjectMock
     DmpRepo dmpRepo;
 
     @BeforeEach
     public void setup() {
-        Mockito.when(dmpService.getDmpById(anyLong())).thenReturn(this.createDmpDO());
         Mockito.when(dmpRepo.findById(anyLong())).thenReturn(this.createDmp());
     }
 
     @Test
     public void testEmptyDmp() throws Exception{
-        DmpDO dmp = this.createDmpDO();
-        Long id = dmp.getId();
-        log.info("Mock DMP title: " + dmp.getTitle());
-        log.info("Mock DMP ID: " + dmp.getId());
+        Long id = 123L;
 
         XWPFDocument document = documentConversionService.getFWFTemplate(id);
-    }
-
-    private DmpDO createDmpDO() {
-        DmpDO dmpDO = new DmpDO();
-        dmpDO.setTitle("Mock Dmp Empty");
-        dmpDO.setId(123L);
-
-        return dmpDO;
     }
 
     private Dmp createDmp() {
