@@ -57,43 +57,44 @@ public class DocumentConversionService {
 
         //Pre Section including general information from the project,
         // e.g. project title, coordinator, contact person, project and grant number.
-        log.debug("Pre section");
+        log.info("Export steps: Pre section");
         preSection(dmp, map, formatter);
 
         //Section 1 contains the dataset information table and how data is generated or used
-        log.debug("Section 1");
+        log.info("Export steps: Section 1");
         sectionOne(dmp, map, datasets, formatter);
 
         //Section 2 contains about the documentation and data quality including versioning and used metadata.
-        log.debug("Section 2");
+        log.info("Export steps: Section 2");
         sectionTwo(dmp, map);
 
         //Section 3 contains storage and backup that will be used for the data in the research
         // including the data access and sensitive aspect.
-        log.debug("Section 3");
+        log.info("Export steps: Section 3");
         sectionThree(dmp, map, datasets);
 
         //Section 4 contains legal and ethical requirements.
-        log.debug("Section 4");
+        log.info("Export steps: Section 4");
         sectionFour(dmp, map, datasets);
 
         //Section 5 contains information about data publication and long term preservation.
-        log.debug("Section 5");
+        log.info("Export steps: Section 5");
         sectionFive(dmp, map);
 
         //Section 6 contains resources and cost information if necessary.
-        log.debug("Section 6");
+        log.info("Export steps: Section 6");
         sectionSix(dmp, map, costList);
 
         //variables replacement
-        log.debug("Replace in paragraph");
+        log.info("Export steps: Replace in paragraph");
         replaceInParagraphs(xwpfParagraphs, map);
 
         //Dynamic table in all sections will be added from row number two until the end of data list.
         //TO DO: combine the function with the first row generation to avoid double code of similar modification.
-        log.debug("Replace in table");
+        log.info("Export steps: Replace in table");
         tableContent(dmp, xwpfParagraphs, map, tables, datasets, costList, formatter);
 
+        log.info("Export steps: Export finished");
         return document;
     }
 
@@ -117,9 +118,6 @@ public class DocumentConversionService {
             //variable project end date
             if (dmp.getProject().getEnd() != null)
                 map.put("[enddate]", formatter.format(dmp.getProject().getEnd()));
-            //add funding name to funding item variables
-            if (projectService.getProjectDetails(dmp.getProject().getUniversityId()).getFunding().getFundingName() != null)
-                fundingItems.add(projectService.getProjectDetails(dmp.getProject().getUniversityId()).getFunding().getFundingName());
             //add funding program to funding item variables
             if (projectService.getProjectDetails(dmp.getProject().getUniversityId()).getFunding().getFundingProgram() != null)
                 fundingItems.add(projectService.getProjectDetails(dmp.getProject().getUniversityId()).getFunding().getFundingProgram());
@@ -212,39 +210,35 @@ public class DocumentConversionService {
 
         if (!projectMember.isEmpty()) {
             for (ProjectMemberDO member : projectMember) {
-                if (member.isProjectLeader()) {
-                    if (member.getPerson().getFirstName() != null && member.getPerson().getLastName() != null)
-                        coordinatorProperties.add(member.getPerson().getFirstName() + " " + member.getPerson().getLastName());
+                if (member != null) {
+                    if (member.isProjectLeader()) {
+                        if (member.getPerson().getFirstName() != null && member.getPerson().getLastName() != null)
+                            coordinatorProperties.add(member.getPerson().getFirstName() + " " + member.getPerson().getLastName());
 
-                    if (member.getPerson().getMbox() != null)
-                        coordinatorProperties.add(member.getPerson().getMbox());
+                        if (member.getPerson().getMbox() != null)
+                            coordinatorProperties.add(member.getPerson().getMbox());
 
-                    if (member.getPerson().getPersonId() != null) {
-                        coordinatorIdentifierId = member.getPerson().getPersonId().getIdentifier();
+                        if (member.getPerson().getPersonId() != null) {
+                            coordinatorIdentifierId = member.getPerson().getPersonId().getIdentifier();
 
-                        if (member.getPerson().getPersonId().getType().toString().equals("orcid")) {
-                            String coordinatorIdentifierType = "ORCID iD: ";
-                            String coordinatorId = coordinatorIdentifierType + coordinatorIdentifierId;
-                            coordinatorProperties.add(coordinatorId);
+                            if (member.getPerson().getPersonId().getType().toString().equals("orcid")) {
+                                String coordinatorIdentifierType = "ORCID iD: ";
+                                String coordinatorId = coordinatorIdentifierType + coordinatorIdentifierId;
+                                coordinatorProperties.add(coordinatorId);
+                            }
                         }
 
-                        if (member.getPerson().getPersonId().getType().toString().equals("ror")) {
-                            String coordinatorIdentifierType = "ROR: ";
-                            String coordinatorId = coordinatorIdentifierType + coordinatorIdentifierId;
-                            coordinatorProperties.add(coordinatorId);
-                        }
-                    }
+                        if (member.getPerson().getAffiliation() != null)
+                            coordinatorProperties.add(member.getPerson().getAffiliation());
 
-                    if (member.getPerson().getAffiliation() != null)
-                        coordinatorProperties.add(member.getPerson().getAffiliation());
+                        if (member.getPerson().getAffiliationId() != null) {
+                            coordinatorAffiliationIdentifierId = member.getPerson().getAffiliationId().getIdentifier();
 
-                    if (member.getPerson().getAffiliationId() != null) {
-                        coordinatorAffiliationIdentifierId = member.getPerson().getAffiliationId().getIdentifier();
-
-                        if (member.getPerson().getAffiliationId().getType().toString().equals("ror")) {
-                            String coordinatorAffiliationIdentifierType = "ROR: ";
-                            String coordinatorAffiliationId = coordinatorAffiliationIdentifierType + coordinatorAffiliationIdentifierId;
-                            coordinatorProperties.add(coordinatorAffiliationId);
+                            if (member.getPerson().getAffiliationId().getType().toString().equals("ror")) {
+                                String coordinatorAffiliationIdentifierType = "ROR: ";
+                                String coordinatorAffiliationId = coordinatorAffiliationIdentifierType + coordinatorAffiliationIdentifierId;
+                                coordinatorProperties.add(coordinatorAffiliationId);
+                            }
                         }
                     }
                 }
@@ -876,12 +870,15 @@ public class DocumentConversionService {
     }
 
     private void tableContent(Dmp dmp, List<XWPFParagraph> xwpfParagraphs, Map<String, String> map, List<XWPFTable> tables, List<Dataset> datasets, List<Cost> costList, SimpleDateFormat formatter) {
+
         for (XWPFTable xwpfTable : tables) {
             if (xwpfTable.getRow(1) != null) {
 
                 //dynamic table rows code for dataset (1a)
                 //notes: dataset number 2 until the end will be written directly to the table
                 if (xwpfTable.getRow(1).getCell(1).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[dataset1name]")) {
+
+                    log.info("Export steps: Table 1a");
 
                     if (datasets.size() > 1) {
                         for (int i = 2; i < datasets.size() + 1; i++) {
@@ -929,6 +926,9 @@ public class DocumentConversionService {
                                     docVar.add("no");
                                 }
                             }
+                            else {
+                                docVar.add("no");
+                            }
 
                             List<XWPFTableCell> cells = newRow.getTableCells();
 
@@ -954,6 +954,8 @@ public class DocumentConversionService {
                 //table 3b
                 //notes: dataset number 2 until the end will be written directly to the table
                 if (xwpfTable.getRow(1).getCell(1).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[dataset1selectedaccess]")) {
+
+                    log.info("Export steps: Table 3b");
 
                     if (datasets.size() > 1) {
                         for (int i = 2; i < datasets.size() + 1; i++) {
@@ -1017,6 +1019,8 @@ public class DocumentConversionService {
                 //notes: dataset number 2 until the end will be written directly to the table
                 if (xwpfTable.getRow(1).getCell(1).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[dataset1access]")) {
 
+                    log.info("Export steps: Table 5a");
+
                     if (datasets.size() > 1) {
                         for (int i = 2; i < datasets.size() + 1; i++) {
 
@@ -1046,6 +1050,9 @@ public class DocumentConversionService {
                                     else
                                         docVar.add("");
                                 }
+                                else {
+                                    docVar.add("");
+                                }
                             } else {
                                 docVar.add("");
                             }
@@ -1060,11 +1067,13 @@ public class DocumentConversionService {
                             if (datasets.get(i - 1).getDistributionList() != null){
                                 List<Distribution> distributions = datasets.get(i - 1).getDistributionList();
                                 List<String> repositories = new ArrayList<>();
-                                for (Distribution distribution: distributions) {
-                                    if (distribution.getHost().getHostId() != null)
-                                        if (distribution.getHost().getHostId().contains("r3")) {
-                                            repositories.add(distribution.getHost().getTitle());
-                                        }
+                                if (distributions.size() > 0) {
+                                    for (Distribution distribution: distributions) {
+                                        if (distribution.getHost().getHostId() != null)
+                                            if (distribution.getHost().getHostId().contains("r3")) {
+                                                repositories.add(distribution.getHost().getTitle());
+                                            }
+                                    }
                                 }
                                 if (repositories.size() > 0) {
                                     docVar.add(String.join(", ", repositories));
@@ -1073,7 +1082,11 @@ public class DocumentConversionService {
                                     docVar.add("");
                                 }
                             }
+                            else {
+                                docVar.add("");
+                            }
 
+                            //TODO: PID not yet defined
                             docVar.add("");
 
                             if (datasets.get(i - 1).getLicense() != null) {
@@ -1126,6 +1139,8 @@ public class DocumentConversionService {
                 //notes: dataset number 2 until the end will be written directly to the table
                 if (xwpfTable.getRow(1).getCell(1).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[dataset1repo]")) {
 
+                    log.info("Export steps: Table 5b");
+
                     if (datasets.size() > 1) {
                         for (int i = 2; i < datasets.size() + 1; i++) {
 
@@ -1157,7 +1172,12 @@ public class DocumentConversionService {
                                     docVar.add("");
                                 }
                             }
+                            else {
+                                docVar.add("");
+                            }
+
                             docVar.add("");
+
                             if (datasets.get(i - 1).getDmp().getTargetAudience() != null) {
                                 docVar.add(datasets.get(i - 1).getDmp().getTargetAudience());
                             }
@@ -1188,6 +1208,9 @@ public class DocumentConversionService {
                 //dynamic table rows code for cost
                 //notes: cost number 2 until the end will be written directly to the table
                 if (xwpfTable.getRow(1).getCell(0).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[cost1title]")) {
+
+                    log.info("Export steps: Table 6b");
+
                     if (costList.size() > 1) {
                         for (int i = 2; i < costList.size() + 1; i++) {
 
