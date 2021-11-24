@@ -15,6 +15,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.*;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 @Path("/api/document")
 @Authenticated
@@ -39,6 +41,9 @@ public class DmpDocumentResource {
     public Response getFWFTemplate(@PathParam("dmpId") long dmpId) throws Exception {
         log.info("Return DMP document file for DMP with id=" + dmpId);
 
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+
         // TODO: check permission
         String personId = this.getPersonId();
 
@@ -56,7 +61,7 @@ public class DmpDocumentResource {
         };
 
         return Response.ok(streamingOutput)
-                .header("Content-Disposition", "attachment;filename=" + filename + ".docx")
+                .header("Content-Disposition", "attachment;filename=DMP_" + filename + "_" + formatter.format(date).toString() + ".docx")
                 .header("Access-Control-Expose-Headers","Content-Disposition")
                 .build();
     }
