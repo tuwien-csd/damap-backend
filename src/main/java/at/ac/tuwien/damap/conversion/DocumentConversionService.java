@@ -174,11 +174,6 @@ public class DocumentConversionService {
                     contactId = contactIdentifierType + contactIdentifierId;
                     contactItems.add(contactId);
                 }
-                if (dmp.getContact().getPersonIdentifier().getIdentifierType().toString().equals("ror")) {
-                    contactIdentifierType = "ROR: ";
-                    contactId = contactIdentifierType + contactIdentifierId;
-                    contactItems.add(contactId);
-                }
             }
 
             if (dmp.getContact().getAffiliation() != null) {
@@ -281,11 +276,6 @@ public class DocumentConversionService {
                         contributorIdentifierId = contributor.getContributor().getPersonIdentifier().getIdentifier();
                         if (contributor.getContributor().getPersonIdentifier().getIdentifierType().toString().equals("orcid")) {
                             contributorIdentifierType = "ORCID iD: ";
-                            contributorId = contributorIdentifierType + contributorIdentifierId;
-                            contributorProperties.add(contributorId);
-                        }
-                        if (contributor.getContributor().getPersonIdentifier().getIdentifierType().toString().equals("ror")) {
-                            contributorIdentifierType = "ROR: ";
                             contributorId = contributorIdentifierType + contributorIdentifierId;
                             contributorProperties.add(contributorId);
                         }
