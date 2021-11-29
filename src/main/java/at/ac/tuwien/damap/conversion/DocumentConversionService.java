@@ -1310,6 +1310,9 @@ public class DocumentConversionService {
     }
 
     private String multipleVariable(List<String> variableList) {
-        return String.join(", ", variableList);
+        if (variableList.size() == 2)
+            return String.join(" and ", variableList);
+        else
+            return String.join(", ", variableList);
     }
 }
