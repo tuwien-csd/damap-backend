@@ -6,6 +6,7 @@ import java.text.NumberFormat;
 
 import at.ac.tuwien.damap.domain.*;
 import at.ac.tuwien.damap.enums.EComplianceType;
+import at.ac.tuwien.damap.enums.ESecurityMeasure;
 import at.ac.tuwien.damap.repo.DmpRepo;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectMemberDO;
 import at.ac.tuwien.damap.rest.dmp.service.DmpService;
@@ -616,24 +617,24 @@ public class DocumentConversionService {
 
     private void sectionFour(Dmp dmp, Map<String, String> map, List<Dataset> datasets) {
         //Section 4a: personal data
+        log.info("personal data part");
         String personalData = "";
         if (dmp.getPersonalData() != null) {
             if (dmp.getPersonalData()) {
                 String personalDataSentence = "In this project, we will process personal data (see section 1a). ";
                 String personalDataset = "";
                 String datasetSentence = "";
-                List<String> datasetList = new ArrayList<>();
+                List<String> personalDatasetList = new ArrayList<>();
 
                 for (Dataset dataset: datasets) {
-
                     int idx = datasets.indexOf(dataset)+1;
                     if (dataset.getPersonalData()) {
-                        datasetList.add("P" + idx + " (" + dataset.getTitle() + ")");
+                        personalDatasetList.add("P" + idx + " (" + dataset.getTitle() + ")");
                     }
                 }
 
-                if (datasetList.size()>0) {
-                    personalDataset = multipleVariable(datasetList);
+                if (personalDatasetList.size()>0) {
+                    personalDataset = multipleVariable(personalDatasetList);
                     datasetSentence = " will containing personal data. ";
                 }
 
@@ -663,32 +664,54 @@ public class DocumentConversionService {
         map.put("[personaldata]", personalData);
 
         //Section 4a: sensitive data
+        log.info("sensitive data part");
+
         String sensitiveData = "";
         if (dmp.getSensitiveData() != null) {
             if (dmp.getSensitiveData()) {
-                String sensitiveDataSentence = "";
+                String sensitiveDataSentence = "In this project there will be sensitive data";
                 String sensitiveDataset = "";
                 String datasetSentence = "";
-                List<String> datasetList = new ArrayList<>();
+                String sensitiveDataMeasure = "";
+                List<String> sensitiveDatasetList = new ArrayList<>();
 
                 for (Dataset dataset: datasets) {
-
                     int idx = datasets.indexOf(dataset)+1;
                     if (dataset.getSensitiveData()) {
                         sensitiveDataset = "P" + idx + " (" + dataset.getTitle() + ")";
-                        datasetList.add(sensitiveDataset);
+                        sensitiveDatasetList.add(sensitiveDataset);
                     }
                 }
 
-                if (datasetList.size()>0) {
-                    sensitiveDataset = String.join(", ", datasetList);
-                    datasetSentence = " will containing sensitive data. ";
+                if (sensitiveDatasetList.size() > 0) {
+                    datasetSentence = " on dataset ";
+                    sensitiveDataset = multipleVariable(sensitiveDatasetList) + ". ";
+                }
+                else {
+                    datasetSentence = ". ";
                 }
 
-                if (dmp.getSensitiveDataSecurity() != null && !dmp.getSensitiveDataSecurity().equals(""))
-                    sensitiveData = sensitiveDataSentence + sensitiveDataset + datasetSentence + "To ensure that the dataset containing sensitive data stored and transferred safe, " + dmp.getSensitiveDataSecurity().toLowerCase() + " will be taken.";
-                else
-                    sensitiveData = sensitiveDataSentence + sensitiveDataset + datasetSentence;
+                List<String> dataSecurityList = new ArrayList<>();
+
+                if (dmp.getSensitiveDataSecurity() != null) {
+                    for (ESecurityMeasure securityMeasure : dmp.getSensitiveDataSecurity()) {
+                        dataSecurityList.add(securityMeasure.toString());
+                    }
+                }
+
+                if (dataSecurityList.size() > 1) {
+                    sensitiveDataMeasure = "Additional security measures that will be used are " + multipleVariable(dataSecurityList) + ".";
+                }
+
+                if (dataSecurityList.size() == 1) {
+                    sensitiveDataMeasure = "Additional security measures that will be used is " + multipleVariable(dataSecurityList) + ".";
+                }
+
+                if (dataSecurityList.size() == 0) {
+                    sensitiveDataMeasure = "There are no additional security measures defined at the moment.";
+                }
+
+                sensitiveData = sensitiveDataSentence + datasetSentence + sensitiveDataset + sensitiveDataMeasure;
 
             } else {
                 sensitiveData = "At this stage, it is not foreseen to process any sensitive data in the project. If this changes, advice will be sought from the data protection specialist at TU Wien (Verena Dolovai), and the DMP will be updated.";
@@ -699,7 +722,12 @@ public class DocumentConversionService {
 
         //Section 4b: legal restriction
 
+        log.info("legal restriction part");
+
+        String legalRestrictionComplete = "";
         String legalRestriction = "";
+        List<String> legalRestrictionList = new ArrayList<>();
+
         if (dmp.getLegalRestrictions() != null) {
             if (dmp.getLegalRestrictions()) {
                 String legalRestrictionSentence = "";
@@ -716,13 +744,11 @@ public class DocumentConversionService {
                 }
 
                 if (datasetList.size() > 0) {
-                    if (datasetList.size() == 2) {
-                        legalRestrictionDataset = String.join(" and ", datasetList);
-                    } else {
-                        legalRestrictionDataset = multipleVariable(datasetList);
-                    }
-                    legalRestrictionSentence = "Legal restrictions on how data is processed and shared are specified in the data processing agreement. The restrictions relate to datasets ";
+                    legalRestrictionDataset = ". The restrictions relate to datasets ";
+                    legalRestrictionDataset = legalRestrictionDataset + multipleVariable(datasetList);
                 }
+
+                legalRestrictionSentence = "Legal restrictions on how data is processed and shared are specified in the data processing agreement";
 
                 if (dmp.getLegalRestrictionsComment() == null) {
                     legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " and are based on trade secrets.";
@@ -734,63 +760,78 @@ public class DocumentConversionService {
                     }
                 }
 
-                legalRestriction = legalRestriction.concat(";");
-                if (dmp.getContact().getAffiliation() != null) {
-                    legalRestriction = legalRestriction.concat(dmp.getContact().getAffiliation() + " has rights to the produced data and controls access.");
-                } else { //manually assign the organization
-                    legalRestriction = legalRestriction.concat("TU Wien has rights to the produced data and controls access.");
+                String affiliationRights = "";
 
-                    if (legalRestriction.charAt(legalRestriction.length() - 1) != '.')
-                        legalRestriction = legalRestriction + ".";
+                if (dmp.getContact().getAffiliation() != null) {
+                    affiliationRights = dmp.getContact().getAffiliation() + " has rights to the produced data and controls access.";
+                } else { //manually assign the organization
+                    affiliationRights = "TU Wien has rights to the produced data and controls access.";
                 }
-                if (legalRestriction.charAt(legalRestriction.length()-1)!='.')
-                    legalRestriction = legalRestriction + ".";
+
+                legalRestrictionList.add(legalRestriction);
+                legalRestrictionList.add(affiliationRights);
+
+                legalRestrictionComplete = String.join(";", legalRestrictionList);
+
+                if (legalRestrictionComplete.charAt(legalRestrictionComplete.length() - 1) != '.')
+                    legalRestrictionComplete = legalRestrictionComplete + ".";
+
+                if (legalRestrictionComplete.charAt(legalRestrictionComplete.length()-1)!='.')
+                    legalRestrictionComplete = legalRestrictionComplete + ".";
             }
             else {
-                legalRestriction = "There are no legal restrictions on the processing and disclosure of our data.";
+                legalRestrictionComplete = "There are no legal restrictions on the processing and disclosure of our data.";
             }
         }
 
-        map.put("[legalrestriction]", legalRestriction);
+        map.put("[legalrestriction]", legalRestrictionComplete);
 
         //Section 4c: ethical issues
 
+        log.info("ethical part");
+
         String ethicalIssues = "";
+        String ethicalStatement = "";
+        String otherEthicalIssues = "";
+        String committeeReviewed = "";
+
+        if (dmp.getHumanParticipants() != null) {
+            if (dmp.getHumanParticipants()) {
+                ethicalStatement = "This project will involve human participants. ";
+            }
+        }
+
         if (dmp.getEthicalIssuesExist() != null) {
             if (dmp.getEthicalIssuesExist()) {
-                String ethicalSentence = "Ethical issues in the project have been identified and discussed with the Research Ethics Coordinator at TU Wien (https://www.tuwien.at/en/research/rti-support/research-ethics/). " +
-                        "They are described in detail in separate documents.";
-                String ethicalComplianceStatement = "";
-
-                if (dmp.getEthicalComplianceStatement() != null) {
-                    if (!dmp.getEthicalComplianceStatement().equals("")) {
-                        ethicalComplianceStatement = " " + dmp.getEthicalComplianceStatement();
-                    }
-                }
-
-                if (dmp.getEthicsReport() == null) {
-                    ethicalIssues = ethicalSentence + ethicalComplianceStatement;
-                }
-                else {
-                    if (dmp.getEthicsReport().equals("")) {
-                        ethicalIssues = ethicalSentence + ethicalComplianceStatement;
-                    }
-                    else {
-                        ethicalIssues = ethicalSentence + ethicalComplianceStatement + " Relevant ethical guidelines in this project are " + dmp.getEthicsReport() + ".";
-                    }
-                }
-
-                if (ethicalIssues.charAt(ethicalIssues.length()-1) == ' ')
-                    ethicalIssues = ethicalIssues.substring(0,ethicalIssues.length()-1);
-
-                if (ethicalIssues.charAt(ethicalIssues.length()-1) != '.')
-                    ethicalIssues = ethicalIssues + ".";
-
-                ethicalIssues.concat(";");
-                ethicalIssues.concat("The research plan of the project was reviewed by an ethics committee / the TU Wien Pilot Research Ethics Committee / a similar body.");
-            } else {
-                ethicalIssues = "No particular ethical issue is foreseen with the data to be used or produced by the project. This section will be updated if issues arise.";
+                otherEthicalIssues = "There are other ethical issues associated with this research. ";
             }
+        }
+
+        if (dmp.getCommitteeReviewed() != null) {
+            if (dmp.getCommitteeReviewed()) {
+                committeeReviewed = "The research plan of the project was reviewed by an ethics committee / the TU Wien Pilot Research Ethics Committee / a similar body. ";
+            }
+            else {
+                committeeReviewed = "The research has not been reviewed yet by any ethics committee. ";
+            }
+        }
+
+        String ethicalSentence = "Ethical issues in the project have been identified and discussed with the Research Ethics Coordinator at TU Wien (https://www.tuwien.at/en/research/rti-support/research-ethics/). " +
+                "They are described in detail in separate documents.";
+
+        ethicalIssues = ethicalStatement + otherEthicalIssues + committeeReviewed;
+
+        if (ethicalIssues != "") {
+
+            ethicalIssues = ethicalSentence + ethicalIssues;
+
+            if (ethicalIssues.charAt(ethicalIssues.length()-1) == ' ')
+                ethicalIssues = ethicalIssues.substring(0,ethicalIssues.length()-1);
+
+            if (ethicalIssues.charAt(ethicalIssues.length()-1) != '.')
+                ethicalIssues = ethicalIssues + ".";
+        } else {
+            ethicalIssues = "No particular ethical issue is foreseen with the data to be used or produced by the project. This section will be updated if issues arise.";
         }
 
         map.put("[ethicalissues]", ethicalIssues);
