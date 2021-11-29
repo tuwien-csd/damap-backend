@@ -8,6 +8,7 @@ import at.ac.tuwien.damap.domain.*;
 import at.ac.tuwien.damap.enums.EComplianceType;
 import at.ac.tuwien.damap.repo.DmpRepo;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectMemberDO;
+import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
 import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -32,6 +33,9 @@ public class DocumentConversionService {
 
     @Inject
     ProjectService projectService;
+
+    @Inject
+    DmpService dmpService;
 
     public XWPFDocument getFWFTemplate(long dmpId) throws Exception {
 
@@ -509,18 +513,35 @@ public class DocumentConversionService {
         String metadata = "";
 
         if (dmp.getMetadata() == null) {
-            map.put("[metadata]", "As there are no domain specific metadata standards applicable, we will provide a README file with an explanation of all values and terms used next to each file with data.");
+            map.put("[metadata]", "There is no specific metadata has been defined yet for this project.");
         }
         else {
             if (dmp.getMetadata().equals("")) {
-                map.put("[metadata]", "As there are no domain specific metadata standards applicable, we will provide a README file with an explanation of all values and terms used next to each file with data.");
+                map.put("[metadata]", "There is no specific metadata has been defined yet for this project.");
             }
             else {
                 metadata = dmp.getMetadata().toLowerCase();
                 if (metadata.charAt(metadata.length()-1)!='.') {
                     metadata = metadata + '.';
                 }
-                map.put("[metadata]", "To help others identify, discover and reuse the data, " + metadata);
+                map.put("[metadata]", metadata + " This will help others to identify, discover and reuse our data.");
+            }
+        }
+
+        if (dmp.getStructure() == null) {
+            map.put("[dataorganisation]", "There is no specific document structure has been defined yet for this project.");
+        }
+        else {
+            if (dmp.getStructure().equals("")) {
+                map.put("[dataorganisation]", "There is no specific document structure has been defined yet for this project.");
+            }
+            else {
+                if (dmp.getStructure().contains("[add document name]")) {
+                    map.put("[dataorganisation]", dmp.getStructure().replace("[add document name]", dmpService.getDefaultFileName(dmp.id)));
+                }
+                else {
+                    map.put("[dataorganisation]", dmp.getStructure());
+                }
             }
         }
     }
