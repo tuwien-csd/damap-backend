@@ -110,10 +110,50 @@ public class DocumentConversionService {
         //mapping general information
         if (dmp.getProject() != null) {
             List<String> fundingItems = new ArrayList<>();
+            Integer titleLength = 0;
+            Integer coverSpace = 0;
+            String coverSpaceVar = "";
 
             //variable project name
-            if (dmp.getProject().getTitle() != null)
-                map.put("[projectname]", dmp.getProject().getTitle());
+            if (dmp.getProject().getTitle() != null) {
+                titleLength = dmp.getProject().getTitle().length();
+                if (titleLength/25 > 3)
+                    map.put("[projectname]", dmp.getProject().getTitle() + "#oversize");
+                else
+                    map.put("[projectname]", dmp.getProject().getTitle());
+            }
+
+            //handling space in the cover depends on the title length
+            switch (titleLength/25) {
+                case 0:
+                    coverSpace = 2;
+                    break;
+                case 1:
+                    coverSpace = 1;
+                    break;
+                case 2:
+                    coverSpace = 1;
+                    break;
+                case 3:
+                    coverSpace = 1;
+                    break;
+                case 4:
+                    coverSpace = 2;
+                    break;
+                default:
+                    coverSpace = 1;
+            }
+
+            if (titleLength/25 < 6) {
+                for (int i = 0; i < coverSpace; i++) {
+                    coverSpaceVar = coverSpaceVar.concat(" ;");
+                }
+            }
+            if (titleLength/25 < 3)
+                coverSpaceVar = coverSpaceVar.concat(" ");
+
+            map.put("[coverspace]", coverSpaceVar);
+
             //variable project acronym from API
             if (projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym() != null)
                 map.put("[acronym]", projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym());
@@ -1350,7 +1390,7 @@ public class DocumentConversionService {
                 for (Map.Entry<String, String> entry : replacements.entrySet()) {
                     if (xwpfRunText != null && xwpfRunText.contains(entry.getKey())) {
                         //handle new line for contributor list and storage information
-                        if (entry.getKey().equals("[contributors]") || entry.getKey().equals("[storage]")){
+                        if (entry.getValue().contains(";")){
                             String[] value=entry.getValue().split(";");
                             for(String text : value){
                                 xwpfParagraph.setAlignment(ParagraphAlignment.LEFT);
@@ -1362,7 +1402,13 @@ public class DocumentConversionService {
                         }
                         //general case for non contributor list
                         else {
-                            xwpfRunText = xwpfRunText.replace(entry.getKey(), entry.getValue());
+                            if (entry.getKey().equals("[projectname]") && entry.getValue().contains("#oversize")) { //resize title to be smaller
+                                xwpfRun.setFontSize(xwpfRun.getFontSize()-4);
+                                xwpfRunText = xwpfRunText.replace(entry.getKey(), entry.getValue().replace("#oversize", ""));
+                            }
+                            else {
+                                xwpfRunText = xwpfRunText.replace(entry.getKey(), entry.getValue());
+                            }
                         }
                     }
                 }
