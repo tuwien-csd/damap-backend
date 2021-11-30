@@ -521,7 +521,7 @@ public class DocumentConversionService {
                 map.put("[metadata]", "There is no specific metadata has been defined yet for this project.");
             }
             else {
-                metadata = dmp.getMetadata().toLowerCase();
+                metadata = dmp.getMetadata();
                 if (metadata.charAt(metadata.length()-1)!='.') {
                     metadata = metadata + '.';
                 }
