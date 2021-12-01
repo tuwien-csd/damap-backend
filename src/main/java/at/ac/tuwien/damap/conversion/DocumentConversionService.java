@@ -11,6 +11,7 @@ import at.ac.tuwien.damap.repo.DmpRepo;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectMemberDO;
 import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
+import lombok.ToString;
 import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
@@ -19,6 +20,7 @@ import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
+import org.apache.poi.xwpf.usermodel.XWPFFooter;
 
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
 
@@ -41,7 +43,9 @@ public class DocumentConversionService {
     public XWPFDocument getFWFTemplate(long dmpId) throws Exception {
 
         //Loading a template file in resources folder
+
         String template = "template/template.docx";
+
         ClassLoader classLoader = getClass().getClassLoader();
 
         //Extract document using Apache POI https://poi.apache.org/
@@ -59,11 +63,12 @@ public class DocumentConversionService {
 
         //List of document variables mapping
         Map<String, String> map = new HashMap<>();
+        Map<String, String> footerMap = new HashMap<>();
 
         //Pre Section including general information from the project,
         // e.g. project title, coordinator, contact person, project and grant number.
         log.info("Export steps: Pre section");
-        preSection(dmp, map, formatter);
+        preSection(dmp, map, footerMap, formatter);
 
         //Section 1 contains the dataset information table and how data is generated or used
         log.info("Export steps: Section 1");
@@ -99,11 +104,13 @@ public class DocumentConversionService {
         log.info("Export steps: Replace in table");
         tableContent(dmp, xwpfParagraphs, map, tables, datasets, costList, formatter);
 
+        replaceTextInFooter(document, footerMap);
+
         log.info("Export steps: Export finished");
         return document;
     }
 
-    private void preSection(Dmp dmp, Map<String, String> map, SimpleDateFormat formatter) {
+    private void preSection(Dmp dmp, Map<String, String> map, Map<String, String> footerMap, SimpleDateFormat formatter) {
         //project member list
         List<ProjectMemberDO> projectMember = new ArrayList<>();
 
@@ -155,8 +162,10 @@ public class DocumentConversionService {
             map.put("[coverspace]", coverSpaceVar);
 
             //variable project acronym from API
-            if (projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym() != null)
+            if (projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym() != null) {
                 map.put("[acronym]", projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym());
+                footerMap.put("[acronym]", projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym());
+            }
             //variable project start date
             if (dmp.getProject().getStart() != null)
                 map.put("[startdate]", formatter.format(dmp.getProject().getStart()));
@@ -182,6 +191,12 @@ public class DocumentConversionService {
             //get project member from the project ID
             if (dmp.getProject().getUniversityId() != null)
                 projectMember = projectService.getProjectStaff(dmp.getProject().getUniversityId());
+
+            //variable dmp version
+            Long dmpVersion = dmp.getVersion();
+            if (dmpVersion != null) {
+                footerMap.put("[version]", "" + dmpVersion);
+            }
         }
 
         //variable dmp date version
@@ -1413,6 +1428,22 @@ public class DocumentConversionService {
                     }
                 }
                 xwpfRun.setText(xwpfRunText, 0);
+            }
+        }
+    }
+
+    private void replaceTextInFooter(XWPFDocument doc, Map<String, String> replacements) {
+        for (XWPFFooter footer : doc.getFooterList()) {
+            for (XWPFParagraph xwpfParagraph : footer.getParagraphs()) {
+                for (XWPFRun xwpfRun : xwpfParagraph.getRuns()) {
+                    String xwpfRunText = xwpfRun.getText(xwpfRun.getTextPosition());
+                    for (Map.Entry<String, String> entry : replacements.entrySet()) {
+                        if (xwpfRunText != null && xwpfRunText.contains(entry.getKey())) {
+                            xwpfRunText = xwpfRunText.replace(entry.getKey(), entry.getValue());
+                        }
+                    }
+                    xwpfRun.setText(xwpfRunText, 0);
+                }
             }
         }
     }
