@@ -3,20 +3,22 @@ package at.ac.tuwien.damap.rest;
 import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import at.ac.tuwien.damap.rest.madmp.dto.MaDmp;
 import at.ac.tuwien.damap.rest.madmp.service.MaDmpService;
+import at.ac.tuwien.damap.security.SecurityService;
 import at.ac.tuwien.damap.validation.AccessValidator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.AuthenticationFailedException;
 import io.quarkus.security.ForbiddenException;
 import lombok.extern.jbosslog.JBossLog;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("/madmp")
+@Path("/api/madmp")
 @Authenticated
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -24,7 +26,7 @@ import javax.ws.rs.core.Response;
 public class MaDmpResource {
 
     @Inject
-    JsonWebToken jsonWebToken;
+    SecurityService securityService;
 
     @Inject
     AccessValidator accessValidator;
@@ -59,17 +61,24 @@ public class MaDmpResource {
         }
 
         String filename = dmpService.getDefaultFileName(id);
-
-        Response.ResponseBuilder response = Response.ok((Object) maDmpService.getById(id));
+        MaDmp maDMP = maDmpService.getById(id);
+        String prettyMaDMP = maDMP.toString();
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            prettyMaDMP = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(maDMP);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        Response.ResponseBuilder response = Response.ok((Object) prettyMaDMP);
         response.header("Content-Disposition", "attachment; filename=" + filename + ".json")
                 .header("Access-Control-Expose-Headers","Content-Disposition");
         return response.build();
     }
 
     private String getPersonId() {
-        if (jsonWebToken.claim(authUser).isEmpty()) {
+        if (securityService == null) {
             throw new AuthenticationFailedException("User ID is missing.");
         }
-        return String.valueOf(jsonWebToken.claim(authUser).get());
+        return securityService.getUserId();
     }
 }

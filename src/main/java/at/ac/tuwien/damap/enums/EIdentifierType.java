@@ -15,7 +15,8 @@ public enum EIdentifierType {
     DOI("doi"),
     ARK("ark"),
     URL("url"),
-    FUNDREF("fundref");
+    FUNDREF("fundref"),
+    ROR("ror");
 
     private final String type;
 
@@ -72,6 +73,7 @@ public enum EIdentifierType {
         return metadataIdentifierType;
     }
 
+    @Override
     @JsonValue
     public String toString() {
         return type;

@@ -4,11 +4,10 @@ import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectMemberDO;
 import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
+import at.ac.tuwien.damap.security.SecurityService;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.AuthenticationFailedException;
 import lombok.extern.jbosslog.JBossLog;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -16,7 +15,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-@Path("/projects")
+@Path("/api/projects")
 @Authenticated
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -24,16 +23,13 @@ import java.util.List;
 public class ProjectResource {
 
     @Inject
-    JsonWebToken jsonWebToken;
+    SecurityService securityService;
 
     @Inject
     ProjectService projectService;
 
     @Inject
     DmpService dmpService;
-
-    @ConfigProperty(name = "damap.auth.user")
-    String authUser;
 
     @GET
     @RolesAllowed("user")
@@ -54,9 +50,9 @@ public class ProjectResource {
     }
 
     private String getPersonId() {
-        if (jsonWebToken.claim(authUser).isEmpty()) {
+        if (securityService == null) {
             throw new AuthenticationFailedException("User ID is missing.");
         }
-        return String.valueOf(jsonWebToken.claim(authUser).get());
+        return securityService.getUserId();
     }
 }

@@ -1,0 +1,20 @@
+pipelines:
+  openshift:
+    stages:
+      deploy:
+        enabled: false
+  maven:
+    stages:
+      publish:
+        enabled: false
+
+whenBranch:
+  "next":
+    pipelines:
+      maven:
+        stages:
+          publish:
+            enabled: true
+    post:
+      success:
+        trigger: [ "CSD/damap-tuw-be/next" ]

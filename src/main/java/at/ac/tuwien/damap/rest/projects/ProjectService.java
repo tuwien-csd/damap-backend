@@ -10,4 +10,6 @@ public interface ProjectService {
     List<ProjectDO> getProjectList(String personId);
 
     List<ProjectMemberDO> getProjectStaff(String projectId);
+
+    ProjectDO getProjectDetails(String projectId);
 }

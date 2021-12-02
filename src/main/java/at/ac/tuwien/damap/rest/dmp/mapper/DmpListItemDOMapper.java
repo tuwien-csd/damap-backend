@@ -16,7 +16,9 @@ public class DmpListItemDOMapper {
         dmpListItemDO.setCreated(dmp.getCreated());
         dmpListItemDO.setModified(dmp.getModified());
         dmpListItemDO.setDescription(dmp.getDescription());
-        dmpListItemDO.setAccessType(access.getRole());
+        if (access != null) {
+            dmpListItemDO.setAccessType(access.getRole());
+        }
 
         if (dmp.getContact() != null) {
             PersonDO contactDO = new PersonDO();

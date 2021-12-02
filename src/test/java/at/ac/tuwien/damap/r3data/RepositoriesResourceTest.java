@@ -11,7 +11,7 @@ public class RepositoriesResourceTest {
     @Test
     public void testRepositoriesEndpoint() {
         given()
-                .when().get("/repositories")
+                .when().get("/api/repositories")
                 .then()
                 .statusCode(401);
     }
@@ -19,7 +19,7 @@ public class RepositoriesResourceTest {
     @Test
     public void testRepositoryByIdEndpoint() {
         given()
-                .when().get("/repositories/1")
+                .when().get("/api/repositories/1")
                 .then()
                 .statusCode(401);
     }
@@ -27,7 +27,7 @@ public class RepositoriesResourceTest {
     @Test
     public void testRepositoriesSearchEndpoint() {
         given()
-                .when().get("/repositories/search?pidSystems=DOI")
+                .when().get("/api/repositories/search?pidSystems=DOI")
                 .then()
                 .statusCode(401);
     }
