@@ -15,7 +15,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-//@Audited
+@Audited
 @Table(name = "access_management")
 public class Access extends PanacheEntity {
 

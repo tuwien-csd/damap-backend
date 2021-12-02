@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-//@Audited
+@Audited
 public class Person extends PanacheEntity {
 
     @Version
@@ -35,4 +35,10 @@ public class Person extends PanacheEntity {
 
     @Column(name = "last_name")
     private String lastName;
+
+    private String affiliation;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "affiliation_id")
+    private Identifier affiliationId;
 }

@@ -9,7 +9,9 @@ import lombok.Data;
 public class FundingDO {
 
     private Long id;
-    private IdentifierDO funder_id;
-    private IdentifierDO grant_id;
-    private EFundingState funding_status;
+    private String fundingName;
+    private String fundingProgram;
+    private IdentifierDO funderId;
+    private IdentifierDO grantId;
+    private EFundingState fundingStatus;
 }

@@ -2,6 +2,7 @@ package at.ac.tuwien.damap.domain;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.Access;
 import javax.persistence.*;
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(callSuper = true)
 @DiscriminatorValue("STORAGE")
 @Access(AccessType.FIELD)
-//@Audited
+@Audited
 public class Storage extends Host {
 
     private String url;

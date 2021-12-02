@@ -3,6 +3,7 @@ package at.ac.tuwien.damap.domain;
 import at.ac.tuwien.damap.enums.ECostType;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
@@ -11,7 +12,8 @@ import javax.persistence.*;
 @EqualsAndHashCode(callSuper = true, exclude = {"dmp"})
 @ToString(exclude = {"dmp"})
 @Entity
-//@Audited
+@Inheritance(strategy=InheritanceType.JOINED)
+@Audited
 public class Cost extends PanacheEntity {
 
     @Version
@@ -25,7 +27,7 @@ public class Cost extends PanacheEntity {
 
     private String title;
 
-    private Long value;
+    private Float value;
 
     @Column(name = "currency_code")
     private String currencyCode; // controlled vocabulary: ISO 4217

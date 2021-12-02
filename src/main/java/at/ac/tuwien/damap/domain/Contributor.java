@@ -13,7 +13,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(callSuper = true, exclude = "dmp")
 @ToString(exclude = "dmp")
 @Entity
-//@Audited
+@Audited
 public class Contributor extends PanacheEntity {
 
     @Version

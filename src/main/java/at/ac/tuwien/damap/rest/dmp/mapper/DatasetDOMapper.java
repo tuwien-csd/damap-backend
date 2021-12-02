@@ -1,6 +1,7 @@
 package at.ac.tuwien.damap.rest.dmp.mapper;
 
 import at.ac.tuwien.damap.domain.Dataset;
+import at.ac.tuwien.damap.enums.EAccessRight;
 import at.ac.tuwien.damap.enums.EDataAccessType;
 import at.ac.tuwien.damap.rest.dmp.domain.*;
 import lombok.experimental.UtilityClass;
@@ -20,8 +21,17 @@ public class DatasetDOMapper {
         datasetDO.setLicense(dataset.getLicense());
         datasetDO.setStartDate(dataset.getStart());
         datasetDO.setReferenceHash(dataset.getReferenceHash());
+        datasetDO.setDelete(dataset.getDelete());
+        datasetDO.setDateOfDeletion(dataset.getDateOfDeletion());
+        datasetDO.setReasonForDeletion(dataset.getReasonForDeletion());
         if (dataset.getDataAccess() != null)
             datasetDO.setDataAccess(dataset.getDataAccess().getValue());
+        if (dataset.getSelectedProjectMembersAccess() != null)
+            datasetDO.setSelectedProjectMembersAccess(dataset.getSelectedProjectMembersAccess().getValue());
+        if (dataset.getOtherProjectMembersAccess() != null)
+            datasetDO.setOtherProjectMembersAccess(dataset.getOtherProjectMembersAccess().getValue());
+        if (dataset.getPublicAccess() != null)
+            datasetDO.setPublicAccess(dataset.getPublicAccess().getValue());
 
         return datasetDO;
     }
@@ -40,6 +50,12 @@ public class DatasetDOMapper {
         dataset.setStart(datasetDO.getStartDate());
         dataset.setReferenceHash(datasetDO.getReferenceHash());
         dataset.setDataAccess(EDataAccessType.getByValue(datasetDO.getDataAccess()));
+        dataset.setSelectedProjectMembersAccess(EAccessRight.getByValue(datasetDO.getSelectedProjectMembersAccess()));
+        dataset.setOtherProjectMembersAccess(EAccessRight.getByValue(datasetDO.getOtherProjectMembersAccess()));
+        dataset.setPublicAccess(EAccessRight.getByValue(datasetDO.getPublicAccess()));
+        dataset.setDelete(datasetDO.getDelete());
+        dataset.setDateOfDeletion(datasetDO.getDateOfDeletion());
+        dataset.setReasonForDeletion(datasetDO.getReasonForDeletion());
 
         return dataset;
     }}

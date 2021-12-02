@@ -7,7 +7,7 @@ COPY src ./src
 COPY ./pom.xml .
 
 VOLUME ["/home/app/.m2/repository"]
-RUN mvn -Duser.home=$BUILD_HOME -B package -DskipTests
+RUN mvn -Duser.home=$BUILD_HOME -B package -DskipTests -Dquarkus.profile=oracle
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3 as runner
 ARG JAVA_PACKAGE=java-11-openjdk-headless
