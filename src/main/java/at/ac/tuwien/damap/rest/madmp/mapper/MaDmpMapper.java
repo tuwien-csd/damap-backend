@@ -18,7 +18,8 @@ public class MaDmpMapper {
         maDmp.setCreated(dmp.getCreated());
         maDmp.setModified(dmp.getModified());
         maDmp.setEthical_issues_exist(dmp.getEthicalIssuesExist());
-        maDmp.setEthical_issues_report(dmp.getEthicsReport());
+        // FIXME
+        /*maDmp.setEthical_issues_report(dmp.getEthicsReport());*/
 
         if (dmp.getContact() != null) {
             MaDmpContact maDmpContact = new MaDmpContact();

@@ -18,7 +18,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-@Path("/dmps")
+@Path("/api/dmps")
 @Authenticated
 @Produces(MediaType.APPLICATION_JSON)
 @JBossLog

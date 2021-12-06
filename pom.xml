@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>at.ac.tuwien</groupId>
   <artifactId>damap-backend</artifactId>
-  <version>0.6.0-SNAPSHOT</version>
+  <version>0.7.0</version>
 
   <properties>
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
@@ -17,7 +17,7 @@
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
     <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-    <quarkus.platform.version>2.0.3.Final</quarkus.platform.version>
+    <quarkus.platform.version>2.4.1.Final</quarkus.platform.version>
     <sonar.version>3.9.0.2155</sonar.version>
   </properties>
 

@@ -1806,3 +1806,273 @@ databaseChangeLog:
                   constraints:
                     foreignKeyName: fk_dataset_aud_public_ar
                     references: e_access_right(type)
+
+
+  - changeSet:
+      id: 4
+      author: Clara Schuster
+      changes:
+        - addColumn:
+            tableName: dataset
+            columns:
+                - column:
+                    name: delete_data
+                    type: BOOLEAN
+                - column:
+                    name: date_of_deletion
+                    type: DATE
+                - column:
+                    name: reason_for_deletion
+                    type: VARCHAR(4000)
+        - addColumn:
+            tableName: dataset_aud
+            columns:
+              - column:
+                  name: delete_data
+                  type: BOOLEAN
+              - column:
+                  name: date_of_deletion
+                  type: DATE
+              - column:
+                  name: reason_for_deletion
+                  type: VARCHAR(4000)
+
+  - changeSet:
+      id: 5
+      author: Clara Schuster
+      changes:
+      - dropColumn:
+          tableName: dmp
+          columns:
+            - column:
+                name: personal_data_access
+            - column:
+                name: sensitive_data_security
+            - column:
+                name: ethics_report
+            - column:
+                name: ethical_compliance_statement
+      - dropColumn:
+          tableName: dmp_aud
+          columns:
+            - column:
+                name: personal_data_access
+            - column:
+                name: sensitive_data_security
+            - column:
+                name: ethics_report
+            - column:
+                name: ethical_compliance_statement
+
+      - renameColumn:
+          tableName: dmp
+          newColumnName: committee_reviewed
+          oldColumnName: committee_approved
+      - renameColumn:
+          tableName: dmp_aud
+          newColumnName: committee_reviewed
+          oldColumnName: committee_approved
+
+      - addColumn:
+          tableName: dmp
+          columns:
+            - column:
+                name: other_data_sec_measures
+                type: VARCHAR(4000)
+            - column:
+                name: sensitive_data_access
+                type: VARCHAR(4000)
+            - column:
+                name: other_legal_r_documents
+                type: VARCHAR(4000)
+            - column:
+                name: data_rights_access_control
+                type: VARCHAR(4000)
+            - column:
+                name: human_participants
+                type: BOOLEAN
+      - addColumn:
+          tableName: dmp_aud
+          columns:
+            - column:
+                name: other_data_sec_measures
+                type: VARCHAR(4000)
+            - column:
+                name: sensitive_data_access
+                type: VARCHAR(4000)
+            - column:
+                name: other_legal_r_documents
+                type: VARCHAR(4000)
+            - column:
+                name: data_rights_access_control
+                type: VARCHAR(4000)
+            - column:
+                name: human_participants
+                type: BOOLEAN
+
+      - createTable:
+          tableName: e_security_measure
+          columns:
+            - column:
+                name: security_measure
+                type: VARCHAR(255)
+                constraints:
+                  primaryKey: true
+                  nullable: false
+      - insert:
+          columns:
+            - column:
+                name: security_measure
+                value: 'INDIVIDUAL_LOGIN'
+          tableName: e_security_measure
+      - insert:
+          columns:
+            - column:
+                name: security_measure
+                value: 'ADDITIONAL_LOGIN'
+          tableName: e_security_measure
+      - insert:
+          columns:
+            - column:
+                name: security_measure
+                value: 'AUTOMATIC_LOCKING_OF_CLIENTS'
+          tableName: e_security_measure
+      - insert:
+          columns:
+            - column:
+                name: security_measure
+                value: 'ENCRYPTION_OF_SYSTEMS'
+          tableName: e_security_measure
+      - insert:
+          columns:
+            - column:
+                name: security_measure
+                value: 'LOCKED_STORAGE'
+          tableName: e_security_measure
+      - insert:
+          columns:
+            - column:
+                name: security_measure
+                value: 'OTHER'
+          tableName: e_security_measure
+
+      - createTable:
+          tableName: e_agreement
+          columns:
+            - column:
+                name: agreement
+                type: VARCHAR(255)
+                constraints:
+                  primaryKey: true
+                  nullable: false
+      - insert:
+          columns:
+            - column:
+                name: agreement
+                value: 'CONSORTIUM_AGREEMENT'
+          tableName: e_agreement
+      - insert:
+          columns:
+            - column:
+                name: agreement
+                value: 'DATA_PROCESSING_AGREEMENT'
+          tableName: e_agreement
+      - insert:
+          columns:
+            - column:
+                name: agreement
+                value: 'JOINT_CONTROL_AGREEMENT'
+          tableName: e_agreement
+      - insert:
+          columns:
+            - column:
+                name: agreement
+                value: 'CONFIDENTIALITY_AGREEMENT'
+          tableName: e_agreement
+      - insert:
+          columns:
+            - column:
+                name: agreement
+                value: 'OTHER'
+          tableName: e_agreement
+
+      - createTable:
+          tableName: sensitive_data_security
+          columns:
+            - column:
+                name: dmp_id
+                type: NUMBER(20,0)
+                constraints:
+                  foreignKeyName: fk_sec_measure_dmp
+                  references: dmp(id)
+            - column:
+                name: security_measure
+                type: VARCHAR(255)
+                constraints:
+                  foreignKeyName: fk_security_measure
+                  references: e_security_measure(security_measure)
+      - createTable:
+          tableName: sensitive_data_security_aud
+          columns:
+            -  column:
+                 name:  REV
+                 type:  NUMBER(20,0)
+                 constraints:
+                   foreignKeyName:  fk_sensitive_data_sec_revinfo
+                   references:  revinfo(id)
+            -  column:
+                 name:  REVTYPE
+                 type:  NUMBER(20,0)
+            - column:
+                name: dmp_id
+                type: NUMBER(20,0)
+                constraints:
+                  foreignKeyName: fk_sec_measure_dmp_aud
+                  references: dmp(id)
+            - column:
+                name: security_measure
+                type: VARCHAR(255)
+                constraints:
+                  foreignKeyName: fk_security_measure_aud
+                  references: e_security_measure(security_measure)
+
+
+      - createTable:
+          tableName: legal_restr_documents
+          columns:
+            - column:
+                name: dmp_id
+                type: NUMBER(20,0)
+                constraints:
+                  foreignKeyName: fk_legal_restr_doc_dmp
+                  references: dmp(id)
+            - column:
+                name: agreement
+                type: VARCHAR(255)
+                constraints:
+                  foreignKeyName: fk_agreement
+                  references: e_agreement(agreement)
+      - createTable:
+          tableName: legal_restr_documents_aud
+          columns:
+            -  column:
+                 name:  REV
+                 type:  NUMBER(20,0)
+                 constraints:
+                   foreignKeyName:  fk_legal_r_doc_aud_revinfo
+                   references:  revinfo(id)
+            -  column:
+                 name:  REVTYPE
+                 type:  NUMBER(20,0)
+            - column:
+                name: dmp_id
+                type: NUMBER(20,0)
+                constraints:
+                  foreignKeyName: fk_legal_restr_doc_dmp_aud
+                  references: dmp(id)
+            - column:
+                name: agreement
+                type: VARCHAR(255)
+                constraints:
+                  foreignKeyName: fk_agreement_aud
+                  references: e_agreement(agreement)

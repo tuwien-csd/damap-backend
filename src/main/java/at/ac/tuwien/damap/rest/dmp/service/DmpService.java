@@ -9,11 +9,13 @@ import at.ac.tuwien.damap.rest.dmp.domain.DmpListItemDO;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
 import at.ac.tuwien.damap.rest.dmp.mapper.DmpDOMapper;
 import at.ac.tuwien.damap.rest.dmp.mapper.DmpListItemDOMapper;
+import at.ac.tuwien.damap.rest.projects.ProjectService;
 import lombok.extern.jbosslog.JBossLog;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,15 +30,17 @@ public class DmpService {
     @Inject
     AccessRepo accessRepo;
 
+    @Inject
+    ProjectService projectService;
+
     public List<DmpListItemDO> getAll() {
 
         List<Dmp> dmpList = dmpRepo.getAll();
-        List<DmpListItemDO> dmpDOList = new ArrayList<>();
-        // FIXME
-        /*dmpList.forEach(dmp -> {
-            dmpDOList.add(DmpDOMapper.mapEntityToDO(dmp, new DmpListItemDO()));
-        });*/
-        return dmpDOList;
+        List<DmpListItemDO> dmpListItemDOList = new ArrayList<>();
+        dmpList.forEach(dmp -> {
+            dmpListItemDOList.add(DmpListItemDOMapper.mapEntityToDO(null, dmp, new DmpListItemDO()));
+        });
+        return dmpListItemDOList;
     }
 
     public List<DmpListItemDO> getDmpListByPersonId(String personId) {
@@ -85,17 +89,27 @@ public class DmpService {
     }
 
     public String getDefaultFileName(long id){
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+
         String filename = "My Data Management Plan";
 
         Dmp dmp = dmpRepo.findById(id);
         if (dmp != null){
-            if (dmp.getTitle() != null)
-                filename = dmp.getTitle();
-            else if (dmp.getProject() != null){
-                if (dmp.getProject().getTitle() != null)
-                    filename = dmp.getProject().getTitle();
+            if (projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym() != null) {
+                filename = "DMP_" + projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym() + "_" + formatter.format(date).toString();
+            }
+            else {
+                if (dmp.getTitle() != null)
+                    filename = dmp.getTitle();
+                else if (dmp.getProject() != null){
+                    if (dmp.getProject().getTitle() != null)
+                        filename = "DMP_" + dmp.getProject().getTitle()  + "_" + formatter.format(date).toString();
+                }
             }
         }
+
+        filename = filename.replaceAll("[\"',\\s]+", "_");
 
         return filename;
     }
