@@ -61,7 +61,7 @@ public class DmpDocumentResource {
         };
 
         return Response.ok(streamingOutput)
-                .header("Content-Disposition", "attachment;filename=DMP_" + filename + "_" + formatter.format(date).toString() + ".docx")
+                .header("Content-Disposition", "attachment;filename=" + filename + ".docx")
                 .header("Access-Control-Expose-Headers","Content-Disposition")
                 .build();
     }
