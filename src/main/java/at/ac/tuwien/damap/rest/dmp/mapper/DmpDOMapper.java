@@ -1,7 +1,9 @@
 package at.ac.tuwien.damap.rest.dmp.mapper;
 
 import at.ac.tuwien.damap.domain.*;
+import at.ac.tuwien.damap.enums.EAgreement;
 import at.ac.tuwien.damap.enums.EComplianceType;
+import at.ac.tuwien.damap.enums.ESecurityMeasure;
 import at.ac.tuwien.damap.rest.dmp.domain.*;
 import lombok.experimental.UtilityClass;
 
@@ -40,16 +42,17 @@ public class DmpDOMapper {
         dmpDO.setTools(dmp.getTools());
         dmpDO.setRestrictedDataAccess(dmp.getRestrictedDataAccess());
         dmpDO.setPersonalData(dmp.getPersonalData());
-        dmpDO.setPersonalDataAccess(dmp.getPersonalDataAccess());
         dmpDO.setOtherPersonalDataCompliance(dmp.getOtherPersonalDataCompliance());
         dmpDO.setSensitiveData(dmp.getSensitiveData());
-        dmpDO.setSensitiveDataSecurity(dmp.getSensitiveDataSecurity());
+        dmpDO.setOtherDataSecurityMeasures(dmp.getOtherDataSecurityMeasures());
+        dmpDO.setSensitiveDataAccess(dmp.getSensitiveDataAccess());
         dmpDO.setLegalRestrictions(dmp.getLegalRestrictions());
+        dmpDO.setOtherLegalRestrictionsDocument(dmp.getOtherLegalRestrictionsDocument());
         dmpDO.setLegalRestrictionsComment(dmp.getLegalRestrictionsComment());
+        dmpDO.setDataRightsAndAccessControl(dmp.getDataRightsAndAccessControl());
+        dmpDO.setHumanParticipants(dmp.getHumanParticipants());
         dmpDO.setEthicalIssuesExist(dmp.getEthicalIssuesExist());
-        dmpDO.setCommitteeApproved(dmp.getCommitteeApproved());
-        dmpDO.setEthicsReport(dmp.getEthicsReport());
-        dmpDO.setEthicalComplianceStatement(dmp.getEthicalComplianceStatement());
+        dmpDO.setCommitteeReviewed(dmp.getCommitteeReviewed());
         dmpDO.setExternalStorageInfo(dmp.getExternalStorageInfo());
         dmpDO.setRestrictedAccessInfo(dmp.getRestrictedAccessInfo());
         dmpDO.setClosedAccessInfo(dmp.getClosedAccessInfo());
@@ -64,10 +67,22 @@ public class DmpDOMapper {
         dmpDO.setContributors(contributorDOList);
 
         List<String> personalDataComplianceDOList = new ArrayList<>();
-        dmp.getPersonalDataCompliance().forEach(option -> {
-            personalDataComplianceDOList.add(option.getValue());
-        });
+        dmp.getPersonalDataCompliance().forEach(option ->
+                personalDataComplianceDOList.add(option.getValue())
+        );
         dmpDO.setPersonalDataCompliance(personalDataComplianceDOList);
+
+        List<String> sensitiveDataSecurityDOList = new ArrayList<>();
+        dmp.getSensitiveDataSecurity().forEach(option ->
+                sensitiveDataSecurityDOList.add(option.getValue())
+        );
+        dmpDO.setSensitiveDataSecurity(sensitiveDataSecurityDOList);
+
+        List<String> legalRestrictionsDocumentsDOList = new ArrayList<>();
+        dmp.getLegalRestrictionsDocuments().forEach(option ->
+                legalRestrictionsDocumentsDOList.add(option.getValue())
+        );
+        dmpDO.setLegalRestrictionsDocuments(legalRestrictionsDocumentsDOList);
 
         List<DatasetDO> datasetDOList = new ArrayList<>();
         dmp.getDatasetList().forEach(dataset -> {
@@ -164,16 +179,17 @@ public class DmpDOMapper {
         dmp.setTools(dmpDO.getTools());
         dmp.setRestrictedDataAccess(dmpDO.getRestrictedDataAccess());
         dmp.setPersonalData(dmpDO.getPersonalData());
-        dmp.setPersonalDataAccess(dmpDO.getPersonalDataAccess());
         dmp.setOtherPersonalDataCompliance(dmpDO.getOtherPersonalDataCompliance());
-        dmp.setSensitiveDataSecurity(dmpDO.getSensitiveDataSecurity());
         dmp.setSensitiveData(dmpDO.getSensitiveData());
+        dmp.setOtherDataSecurityMeasures(dmpDO.getOtherDataSecurityMeasures());
+        dmp.setSensitiveDataAccess(dmpDO.getSensitiveDataAccess());
         dmp.setLegalRestrictions(dmpDO.getLegalRestrictions());
+        dmp.setOtherLegalRestrictionsDocument(dmpDO.getOtherLegalRestrictionsDocument());
         dmp.setLegalRestrictionsComment(dmpDO.getLegalRestrictionsComment());
+        dmp.setDataRightsAndAccessControl(dmpDO.getDataRightsAndAccessControl());
+        dmp.setHumanParticipants(dmpDO.getHumanParticipants());
         dmp.setEthicalIssuesExist(dmpDO.getEthicalIssuesExist());
-        dmp.setCommitteeApproved(dmpDO.getCommitteeApproved());
-        dmp.setEthicsReport(dmpDO.getEthicsReport());
-        dmp.setEthicalComplianceStatement(dmpDO.getEthicalComplianceStatement());
+        dmp.setCommitteeReviewed(dmpDO.getCommitteeReviewed());
         dmp.setExternalStorageInfo(dmpDO.getExternalStorageInfo());
         dmp.setRestrictedAccessInfo(dmpDO.getRestrictedAccessInfo());
         dmp.setClosedAccessInfo(dmpDO.getClosedAccessInfo());
@@ -200,6 +216,22 @@ public class DmpDOMapper {
             }
         });
         dmp.setPersonalDataCompliance(personalDataComplianceList);
+
+        List<ESecurityMeasure> sensitiveDataSecurityList = new ArrayList<>();
+        dmpDO.getSensitiveDataSecurity().forEach(option -> {
+            if (option != null) {
+                sensitiveDataSecurityList.add(ESecurityMeasure.getByValue(option));
+            }
+        });
+        dmp.setSensitiveDataSecurity(sensitiveDataSecurityList);
+
+        List<EAgreement> legalRestrictionsDocumentsList = new ArrayList<>();
+        dmpDO.getLegalRestrictionsDocuments().forEach(option -> {
+            if (option != null) {
+                legalRestrictionsDocumentsList.add(EAgreement.getByValue(option));
+            }
+        });
+        dmp.setLegalRestrictionsDocuments(legalRestrictionsDocumentsList);
 
         //update existing Contributor objects and create new ones
         dmpDO.getContributors().forEach(contributorDO -> {

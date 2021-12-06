@@ -78,6 +78,15 @@ public class Dataset extends PanacheEntity {
     @Column(name = "public_access")
     private EAccessRight publicAccess;
 
+    @Column(name = "delete_data")
+    private Boolean delete;
+
+    @Column(name = "date_of_deletion")
+    private Date dateOfDeletion;
+
+    @Column(name = "reason_for_deletion")
+    private String reasonForDeletion;
+
     @EqualsAndHashCode.Include
     public Long getId() {
         return id;

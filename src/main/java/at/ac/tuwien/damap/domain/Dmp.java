@@ -1,7 +1,9 @@
 package at.ac.tuwien.damap.domain;
 
+import at.ac.tuwien.damap.enums.EAgreement;
 import at.ac.tuwien.damap.enums.EComplianceType;
 import at.ac.tuwien.damap.enums.EDataKind;
+import at.ac.tuwien.damap.enums.ESecurityMeasure;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -68,9 +70,6 @@ public class Dmp extends PanacheEntity {
     @Column(name = "personal_data")
     private Boolean personalData;
 
-    @Column(name = "personal_data_access")
-    private String personalDataAccess;
-
     @ElementCollection(targetClass = EComplianceType.class, fetch = FetchType.LAZY)
     @CollectionTable(name="personal_data_compliance")
     @Column(name = "compliance_type")
@@ -83,26 +82,44 @@ public class Dmp extends PanacheEntity {
     @Column(name = "sensitive_data")
     private Boolean sensitiveData;
 
-    @Column(name = "sensitive_data_security")
-    private String sensitiveDataSecurity;
+    @ElementCollection(targetClass = ESecurityMeasure.class, fetch = FetchType.LAZY)
+    @CollectionTable(name="sensitive_data_security")
+    @Column(name = "security_measure")
+    @Enumerated(EnumType.STRING)
+    private List<ESecurityMeasure> sensitiveDataSecurity;
+
+@Column(name = "other_data_sec_measures")
+    private String otherDataSecurityMeasures;
+
+    @Column(name = "sensitive_data_access")
+    private String sensitiveDataAccess;
 
     @Column(name = "legal_restrictions")
     private Boolean legalRestrictions;
 
+    @ElementCollection(targetClass = EAgreement.class, fetch = FetchType.LAZY)
+    @CollectionTable(name="legal_restr_documents")
+    @Column(name = "agreement")
+    @Enumerated(EnumType.STRING)
+    private List<EAgreement> legalRestrictionsDocuments;
+
+    @Column(name = "other_legal_r_documents")
+    private String otherLegalRestrictionsDocument;
+
     @Column(name = "legal_restrictions_comment")
     private String legalRestrictionsComment;
+
+    @Column(name = "data_rights_access_control")
+    private String dataRightsAndAccessControl;
+
+    @Column(name = "human_participants")
+    private Boolean humanParticipants;
 
     @Column(name = "ethical_issues_exist")
     private Boolean ethicalIssuesExist;
 
-    @Column(name = "committee_approved")
-    private Boolean committeeApproved;
-
-    @Column(name = "ethics_report")
-    private String ethicsReport;
-
-    @Column(name = "ethical_compliance_statement")
-    private String ethicalComplianceStatement;
+    @Column(name = "committee_reviewed")
+    private Boolean committeeReviewed;
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)
