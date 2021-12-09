@@ -32,6 +32,8 @@ public class DocumentConversionService {
     @Inject
     DmpRepo dmpRepo;
 
+    //Convert the date for readable format for the document
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 /*
     public XWPFDocument getFWFTemplate(long dmpId, String template) throws Exception {
 
@@ -1383,27 +1385,23 @@ public class DocumentConversionService {
         return document;
     }
 
-    public void addReplacement(Map<String, String> replacements, String var, Object dmpContent) throws NullPointerException{
+    public void addReplacement(Map<String, String> replacements, String var, Object dmpContent) {
 //        if (content != null) {
 //            replacements.put(var, content);
 //        }
 //        else
 //            replacements.put(var,"");
         log.info(var);
-        String content = "";
-        try {
-            log.info("try");
-            content = dmpContent.toString();
+        String content = (dmpContent == null) ? "" : String.valueOf(dmpContent);
+        log.info(content);
+        if (content != "") {
+            if (dmpContent.getClass() == java.sql.Timestamp.class || dmpContent.getClass() == Date.class) {
+                content = formatter.format(dmpContent);
+                log.info(content);
+            }
         }
-        catch (NullPointerException e){
-            log.info("catch");
-            System.err.println("Null value on parameters " + dmpContent.toString());
-        }
-        finally {
-            log.info("finally");
-            log.info(content);
-            replacements.put(var, content);
-        }
+        replacements.put(var, content);
+        log.info("passed");
     }
 
     public void replaceInParagraphs(List<XWPFParagraph> xwpfParagraphs, Map<String, String> replacements) {

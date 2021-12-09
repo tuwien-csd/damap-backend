@@ -3,6 +3,8 @@ package at.ac.tuwien.damap.conversion;
 import at.ac.tuwien.damap.domain.*;
 import at.ac.tuwien.damap.enums.EComplianceType;
 import at.ac.tuwien.damap.enums.ESecurityMeasure;
+import at.ac.tuwien.damap.rest.projects.ProjectService;
+import at.ac.tuwien.damap.rest.dmp.domain.ProjectMemberDO;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -12,19 +14,23 @@ import org.apache.poi.xwpf.usermodel.*;
 import lombok.extern.jbosslog.JBossLog;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 @ApplicationScoped
 @JBossLog
 public class ExportFWFTemplate extends DocumentConversionService{
+    @Inject
+    ProjectService projectService;
 
     public XWPFDocument exportTemplate(long dmpId) throws Exception {
+
         // TODO: replace template link with template uploaded from frontend
         String template = setTemplate("template/template.docx");
+        XWPFDocument document = loadTemplate(template);
 
         Map<String, String> replacements = new HashMap<>();
         Map<String, String> footerMap = new HashMap<>();
 
-        XWPFDocument document = loadTemplate(template);
         List<XWPFParagraph> xwpfParagraphs = document.getParagraphs();
         List<XWPFTable> tables = document.getTables();
 
@@ -39,7 +45,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
         //Pre Section including general information from the project,
         // e.g. project title, coordinator, contact person, project and grant number.
         log.info("Export steps: Pre section");
-        preSection(dmp, replacements, formatter);
+        preSection(dmp, replacements, footerMap, formatter);
 
         //Section 1 contains the dataset information table and how data is generated or used
         log.info("Export steps: Section 1");
@@ -81,68 +87,83 @@ public class ExportFWFTemplate extends DocumentConversionService{
         return document;
     }
 
-    private void preSection(Dmp dmp, Map<String, String> replacements, SimpleDateFormat formatter) {
-/*
-        //mapping general information
-        if (dmp.getProject() != null) {
-            if (dmp.getProject().getTitle() != null)
-                map.put("[projectname]", dmp.getProject().getTitle());
-            if (dmp.getProject().getStart() != null)
-                map.put("[startdate]", formatter.format(dmp.getProject().getStart()));
-            if (dmp.getProject().getEnd() != null)
-                map.put("[enddate]", formatter.format(dmp.getProject().getEnd()));
-            if (dmp.getProject().getFunding().getGrantIdentifier() != null &&
-                    dmp.getProject().getFunding().getGrantIdentifier().getIdentifier() != null)
-                map.put("[grantid]", dmp.getProject().getFunding().getGrantIdentifier().getIdentifier());
-
-
-        }
-
-        if (dmp.getCreated() != null) {
-            map.put("[datever1]", formatter.format(dmp.getCreated()));
-        }
-
-      //mapping contact information
-        if (dmp.getContact() != null) {
-            //TO DO: add affiliation and ROR (currently not stored in TISS)
-            //Now affiliation assigned manually with TU Wien
-            String contactName = "";
-            String contactMail = "";
-            String contactId = "";
-            String contactAffiliation = "TU Wien";
-            String identifierType = "";
-            String identifierID = "";
-
-            if (dmp.getContact().getFirstName() != null && dmp.getContact().getFirstName() != null)
-                contactName = dmp.getContact().getFirstName() + " " + dmp.getContact().getLastName();
-            if (dmp.getContact().getMbox() != null)
-                contactMail = dmp.getContact().getMbox();
-            //TO DO: Create mapping for multiple identifier type
-            if (dmp.getContact().getPersonIdentifier() != null) {
-                identifierID = dmp.getContact().getPersonIdentifier().getIdentifier();
-                if (dmp.getContact().getPersonIdentifier().getIdentifierType().toString().equals("orcid")) {
-                    identifierType = "ORCID iD: ";
-                }
-                contactId = identifierType + identifierID;
-            }
-
-            map.put("[contactname]", contactName);
-            map.put("[contactmail]", contactMail);
-            map.put("[contactid]", contactId);
-            map.put("[contactaffiliation]", contactAffiliation);
-            map.put("[contactror]", "");
-        }
-        */
+    private void preSection(Dmp dmp, Map<String, String> replacements, Map<String, String> footerMap, SimpleDateFormat formatter) {
+        //project member list
+        List<ProjectMemberDO> projectMember = new ArrayList<>();
 
         //mapping general information
         System.out.println("test1");
         System.out.println(replacements);
-        addReplacement(replacements,"[projectname]", dmp.getProject().getTitle());
-        System.out.println("test2");
-        addReplacement(replacements,"[startdate]", formatter.format(dmp.getProject().getStart()));
-        addReplacement(replacements,"[enddate]", formatter.format(dmp.getProject().getEnd()));
-        addReplacement(replacements,"[grantid]", dmp.getProject().getFunding().getGrantIdentifier().getIdentifier());
-        addReplacement(replacements,"[datever1]", formatter.format(dmp.getCreated()));
+        if (dmp.getProject() != null) {
+            Integer titleLength = (dmp.getProject().getTitle() == null) ? 0 : dmp.getProject().getTitle().length();
+            Integer coverSpace = 0;
+            String coverSpaceVar = "";
+
+            //variable project name
+            if (titleLength/25 > 3) //Title too long, need to be resized
+                addReplacement(replacements, "[projectname]", dmp.getProject().getTitle() + "#oversize");
+            else
+                addReplacement(replacements, "[projectname]", dmp.getProject().getTitle());
+
+            //handling space in the cover depends on the title length
+            switch (titleLength/25) {
+                case 0:
+                case 4:
+                    coverSpace = 2;
+                    break;
+                default:
+                    coverSpace = 1;
+            }
+
+            if (titleLength/25 < 6) {
+                for (int i = 0; i < coverSpace; i++) {
+                    coverSpaceVar = coverSpaceVar.concat(" ;");
+                }
+            }
+            if (titleLength/25 < 3)
+                coverSpaceVar = coverSpaceVar.concat(" ");
+
+            addReplacement(replacements, "[coverspace]", coverSpaceVar);
+
+            System.out.println("test2");
+
+            //variable project acronym from API
+                addReplacement(replacements, "[acronym]", projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym());
+                addReplacement(footerMap, "[acronym]", projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym());
+
+            //variable project start date and end date
+            addReplacement(replacements, "[startdate]", formatter.format(dmp.getProject().getStart()));
+            addReplacement(replacements, "[enddate]", formatter.format(dmp.getProject().getEnd()));
+
+            List<String> fundingItems = new ArrayList<>();
+
+            //add funding program to funding item variables
+            if (projectService.getProjectDetails(dmp.getProject().getUniversityId()).getFunding().getFundingProgram() != null)
+                fundingItems.add(projectService.getProjectDetails(dmp.getProject().getUniversityId()).getFunding().getFundingProgram());
+            //add grant number to funding item variables
+            if (dmp.getProject().getFunding().getGrantIdentifier().getIdentifier() != null)
+                fundingItems.add(dmp.getProject().getFunding().getGrantIdentifier().getIdentifier());
+            //variable project funding, combination from funding item variables
+            if (!fundingItems.isEmpty()) {
+                addReplacement(replacements, "[grantid]", multipleVariable(fundingItems));
+            }
+            else {
+                addReplacement(replacements, "[grantid]", "");
+            }
+
+            //variable project ID
+            addReplacement(replacements, "[projectid]", dmp.getProject().getUniversityId());
+            //get project member from the project ID
+            if (dmp.getProject().getUniversityId() != null)
+                projectMember = projectService.getProjectStaff(dmp.getProject().getUniversityId());
+
+            //variable dmp version
+            Long dmpVersion = dmp.getVersion();
+            addReplacement(footerMap, "[version]", "" + dmpVersion);
+        }
+
+//        addReplacement(replacements,"[datever1]", formatter.format(dmp.getCreated()));
+        addReplacement(replacements,"[datever1]", dmp.getCreated());
 
         //mapping contact information
         //TO DO: add affiliation and ROR (currently not stored in TISS)
@@ -184,7 +205,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
         addReplacement(replacements,"[contactaffiliation]", contactAffiliation);
         addReplacement(replacements,"[contactror]", "");
 
-        System.out.println("test3");
+        System.out.println("test4");
 
         //checkline
 
@@ -198,10 +219,13 @@ public class ExportFWFTemplate extends DocumentConversionService{
         if (dmp.getContributorList() != null) {
             String contributorPerson = "";
 
+            System.out.println("test5");
+
             List<Contributor> contributors = dmp.getContributorList();
             List<String> contributorList = new ArrayList<>();
             for(Contributor contributor : contributors) {
                 //TO DO: add affiliation and ROR (currently not stored in TISS)
+                System.out.println(contributor.getContributor().getFirstName());
 
                 String contributorName = "";
                 String contributorMail = "";
@@ -213,32 +237,40 @@ public class ExportFWFTemplate extends DocumentConversionService{
 
                 if (contributor.getContributor().getFirstName() != null && contributor.getContributor().getLastName() != null)
                     contributorName = contributor.getContributor().getFirstName() + " " + contributor.getContributor().getLastName();
+                System.out.println("test5.1");
                 if (contributor.getContributor().getMbox() != null)
                     contributorMail = contributor.getContributor().getMbox();
-                if (contributor.getContributor().getPersonIdentifier() != null) {
-                    identifierID = contributor.getContributor().getPersonIdentifier().getIdentifier();
-                    if (contributor.getContributor().getPersonIdentifier().getIdentifierType().toString().equals("orcid")) {
-                        identifierType = "ORCID iD: ";
-                    }
-                    contributorId = identifierType + identifierID;
-                }
-                if (contributor.getContributorRole().getRole() != null) {
+//                if (contributor.getContributor().getPersonIdentifier() != null) {
+//                    identifierID = contributor.getContributor().getPersonIdentifier().getIdentifier();
+//                    if (contributor.getContributor().getPersonIdentifier().getIdentifierType().toString().equals("orcid")) {
+//                        identifierType = "ORCID iD: ";
+//                    }
+//                    contributorId = identifierType + identifierID;
+//                }
+                System.out.println("test5.2");
+                if (contributor.getContributorRole() != null) {
                     contributorRole = contributor.getContributorRole().getRole();
+                    System.out.println("test5.3");
                     if ((contributorRole.equals("Project Leader") || contributorRole.equals("Project Manager")) && coordinatorName.equals("")) {
                         coordinatorName = contributorName;
                         coordinatorMail = contributorMail;
-                        coordinatorId = contributorId;
+//                        coordinatorId = contributorId;
                     }
                 }
+                System.out.println("test5.4");
                 contributorPerson = contributorName + ", " + contributorMail + ", " + contributorId + ", " + "TU Wien" + ", " + contributorRole;
                 contributorList.add(contributorPerson);
             }
+            System.out.println("test6");
             String contributorValue = String.join(";", contributorList);
             replacements.put("[contributors]", contributorValue);
         }
         else {
+            System.out.println("test7");
             replacements.put("[contributors]", "");
         }
+
+        System.out.println("test8");
 
         replacements.put("[coordinatorname]", coordinatorName);
         replacements.put("[coordinatormail]", coordinatorMail);
