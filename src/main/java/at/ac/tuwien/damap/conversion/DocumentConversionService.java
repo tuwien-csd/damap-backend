@@ -2,11 +2,9 @@ package at.ac.tuwien.damap.conversion;
 
 import java.util.*;
 import java.text.SimpleDateFormat;
-import java.text.NumberFormat;
 
 import at.ac.tuwien.damap.domain.*;
-import at.ac.tuwien.damap.enums.EComplianceType;
-import at.ac.tuwien.damap.enums.ESecurityMeasure;
+
 import at.ac.tuwien.damap.repo.DmpRepo;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectMemberDO;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
@@ -30,10 +28,6 @@ public class DocumentConversionService {
 
     @Inject
     DmpRepo dmpRepo;
-
-<<<<<<< HEAD
-    String template;
-    Map<String, String> replacements;
 
 /*
     public XWPFDocument getFWFTemplate(long dmpId, String template) throws Exception {
@@ -1319,21 +1313,39 @@ public class DocumentConversionService {
 */
 
     public XWPFDocument loadTemplate (String template) throws Exception{
+        //Loading a template file in resources folder
         ClassLoader classLoader = getClass().getClassLoader();
+
+        //Extract document using Apache POI https://poi.apache.org/
         XWPFDocument document = new XWPFDocument(classLoader.getResourceAsStream(template));
 
         return document;
     }
 
-    public void addReplacement(String var, String content) {
-        if (content != null) {
+    public void addReplacement(Map<String, String> replacements, String var, Object dmpContent) throws NullPointerException{
+//        if (content != null) {
+//            replacements.put(var, content);
+//        }
+//        else
+//            replacements.put(var,"");
+        log.info(var);
+        String content = "";
+        try {
+            log.info("try");
+            content = dmpContent.toString();
+        }
+        catch (NullPointerException e){
+            log.info("catch");
+            System.err.println("Null value on parameters " + dmpContent.toString());
+        }
+        finally {
+            log.info("finally");
+            log.info(content);
             replacements.put(var, content);
         }
-        else
-            replacements.put(var,"");
     }
 
-    public void replaceInParagraphs(List<XWPFParagraph> xwpfParagraphs) {
+    public void replaceInParagraphs(List<XWPFParagraph> xwpfParagraphs, Map<String, String> replacements) {
 
         /*
             Each XWPFRun will contain part of a text. These are split weirdly (by Word?).
@@ -1369,7 +1381,6 @@ public class DocumentConversionService {
         }
     }
 
-<<<<<<< HEAD
     public XWPFTableRow insertNewTableRow(XWPFTableRow sourceTableRow, int pos) throws Exception {
         XWPFTable table = sourceTableRow.getTable();
         CTRow newCTRrow = CTRow.Factory.parse(sourceTableRow.getCtRow().newInputStream());
@@ -1385,11 +1396,11 @@ public class DocumentConversionService {
         }
     }
 
-
-
-=======
-    private String multipleVariable(List<String> variableList) {
+    public String multipleVariable(List<String> variableList) {
         return String.join(", ", variableList);
     }
->>>>>>> next
+
+    public String setTemplate (String template) {
+        return template;
+    }
 }

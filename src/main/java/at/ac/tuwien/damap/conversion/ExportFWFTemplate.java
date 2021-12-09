@@ -1,35 +1,28 @@
 package at.ac.tuwien.damap.conversion;
 
 import at.ac.tuwien.damap.domain.*;
-import org.apache.poi.xwpf.usermodel.*;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import at.ac.tuwien.damap.enums.EComplianceType;
+import at.ac.tuwien.damap.enums.ESecurityMeasure;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.text.NumberFormat;
 
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.apache.poi.xwpf.usermodel.XWPFTable;
-import org.apache.poi.xwpf.usermodel.XWPFTableCell;
-import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.apache.poi.xwpf.usermodel.*;
+import lombok.extern.jbosslog.JBossLog;
 
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
+@JBossLog
 public class ExportFWFTemplate extends DocumentConversionService{
 
-    // TODO: replace template link with template uploaded from frontend
-    String template = "template/template.docx";
-    Map<String, String> replacements = new HashMap<>();
-
     public XWPFDocument exportTemplate(long dmpId) throws Exception {
+        // TODO: replace template link with template uploaded from frontend
+        String template = setTemplate("template/template.docx");
 
-        //Loading a template file in resources folder
-        //String template = "template/template.docx";
-        //ClassLoader classLoader = getClass().getClassLoader();
+        Map<String, String> replacements = new HashMap<>();
 
-        //Extract document using Apache POI https://poi.apache.org/
-        //XWPFDocument document = new XWPFDocument(classLoader.getResourceAsStream(template));
         XWPFDocument document = loadTemplate(template);
         List<XWPFParagraph> xwpfParagraphs = document.getParagraphs();
         List<XWPFTable> tables = document.getTables();
@@ -42,40 +35,46 @@ public class ExportFWFTemplate extends DocumentConversionService{
         //Convert the date for readable format for the document
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
-        //List of document variables mapping
-//        Map<String, String> map = new HashMap<>();
-        //Map<String, String> map = replacements;
-
         //Pre Section including general information from the project,
         // e.g. project title, coordinator, contact person, project and grant number.
+        log.info("Export steps: Pre section");
         preSection(dmp, replacements, formatter);
 
         //Section 1 contains the dataset information table and how data is generated or used
+        log.info("Export steps: Section 1");
         sectionOne(dmp, replacements, datasets, formatter);
 
         //Section 2 contains about the documentation and data quality including versioning and used metadata.
+        log.info("Export steps: Section 2");
         sectionTwo(dmp, replacements);
 
         //Section 3 contains storage and backup that will be used for the data in the research
         // including the data access and sensitive aspect.
+        log.info("Export steps: Section 3");
         sectionThree(dmp, replacements, datasets);
 
         //Section 4 contains legal and ethical requirements.
+        log.info("Export steps: Section 4");
         sectionFour(dmp, replacements, datasets);
 
         //Section 5 contains information about data publication and long term preservation.
+        log.info("Export steps: Section 5");
         sectionFive(dmp, replacements);
 
         //Section 6 contains resources and cost information if necessary.
+        log.info("Export steps: Section 6");
         sectionSix(dmp, replacements, costList);
 
         //variables replacement
-        replaceInParagraphs(xwpfParagraphs);
+        log.info("Export steps: Replace in paragraph");
+        replaceInParagraphs(xwpfParagraphs, replacements);
 
         //Dynamic table in all sections will be added from row number two until the end of data list.
         //TO DO: combine the function with the first row generation to avoid double code of similar modification.
+        log.info("Export steps: Replace in table");
         tableContent(xwpfParagraphs, replacements, tables, datasets, costList, formatter);
 
+        log.info("Export steps: Export finished");
         return document;
     }
 
@@ -134,11 +133,13 @@ public class ExportFWFTemplate extends DocumentConversionService{
 
         //mapping general information
         System.out.println("test1");
-        addReplacement("[projectname]", dmp.getProject().getTitle());
-        addReplacement("[startdate]", formatter.format(dmp.getProject().getStart()));
-        addReplacement("[enddate]", formatter.format(dmp.getProject().getEnd()));
-        addReplacement("[grantid]", dmp.getProject().getFunding().getGrantIdentifier().getIdentifier());
-        addReplacement("[datever1]", formatter.format(dmp.getCreated()));
+        System.out.println(replacements);
+        addReplacement(replacements,"[projectname]", dmp.getProject().getTitle());
+        System.out.println("test2");
+        addReplacement(replacements,"[startdate]", formatter.format(dmp.getProject().getStart()));
+        addReplacement(replacements,"[enddate]", formatter.format(dmp.getProject().getEnd()));
+        addReplacement(replacements,"[grantid]", dmp.getProject().getFunding().getGrantIdentifier().getIdentifier());
+        addReplacement(replacements,"[datever1]", formatter.format(dmp.getCreated()));
 
         //mapping contact information
         //TO DO: add affiliation and ROR (currently not stored in TISS)
@@ -152,6 +153,8 @@ public class ExportFWFTemplate extends DocumentConversionService{
         String contactAffiliation = "TU Wien";
         String identifierType = "";
         String identifierID = "";
+
+
 
         if (dmp.getContact() != null)
         {
@@ -172,11 +175,11 @@ public class ExportFWFTemplate extends DocumentConversionService{
 
         System.out.println("test3");
 
-        addReplacement("[contactname]", contactName);
-        addReplacement("[contactmail]", contactMail);
-        addReplacement("[contactid]", contactId);
-        addReplacement("[contactaffiliation]", contactAffiliation);
-        addReplacement("[contactror]", "");
+        addReplacement(replacements,"[contactname]", contactName);
+        addReplacement(replacements,"[contactmail]", contactMail);
+        addReplacement(replacements,"[contactid]", contactId);
+        addReplacement(replacements,"[contactaffiliation]", contactAffiliation);
+        addReplacement(replacements,"[contactror]", "");
 
         System.out.println("test3");
 
@@ -419,105 +422,225 @@ public class ExportFWFTemplate extends DocumentConversionService{
     }
 
     private void sectionFour(Dmp dmp, Map<String, String> map, List<Dataset> datasets) {
-        //Section 4a: personal data
+//Section 4a: personal data
+        log.info("personal data part");
         String personalData = "";
-        if (dmp.getPersonalData()) {
-            String personalDataSentence = "Personal data will be collected/used as part of the project. ";
-            String personalDataset = "";
-            String datasetSentence = "";
-            List<String> datasetList = new ArrayList<>();
+        if (dmp.getPersonalData() != null) {
+            if (dmp.getPersonalData()) {
+                String personalDataSentence = "In this project, we will process personal data (see section 1a). ";
+                String personalDataset = "";
+                String datasetSentence = "";
+                List<String> personalDatasetList = new ArrayList<>();
 
-            for (Dataset dataset: datasets) {
-
-                int idx = datasets.indexOf(dataset)+1;
-                if (dataset.getPersonalData()) {
-                    personalDataset = personalDataset + "P" + idx + " (" + dataset.getTitle() + ")";
-                    datasetList.add(personalDataset);
+                for (Dataset dataset: datasets) {
+                    int idx = datasets.indexOf(dataset)+1;
+                    if (dataset.getPersonalData()) {
+                        personalDatasetList.add("P" + idx + " (" + dataset.getTitle() + ")");
+                    }
                 }
+
+                if (personalDatasetList.size()>0) {
+                    personalDataset = multipleVariable(personalDatasetList);
+                    datasetSentence = " will containing personal data. ";
+                }
+
+                List<String> dataComplianceList = new ArrayList<>();
+                String personalDataCompliance = "";
+
+                if (!dmp.getPersonalDataCompliance().isEmpty()) {
+                    for (EComplianceType personalCompliance : dmp.getPersonalDataCompliance()) {
+                        dataComplianceList.add(personalCompliance.toString().replace("by ", ""));
+                    }
+
+                    personalDataCompliance = multipleVariable(dataComplianceList);
+                }
+
+                if (!personalDataCompliance.equals("")) {
+                    personalData = personalDataSentence + personalDataset + datasetSentence + "To ensure compliance with data protection laws, " + personalDataCompliance + " will be used.";
+                }
+                else {
+                    personalData = personalDataSentence + personalDataset + datasetSentence;
+                }
+
+            } else {
+                personalData = "At this stage, it is not foreseen to process any personal data in the project. If this changes, advice will be sought from the data protection specialist at TU Wien (Verena Dolovai), and the DMP will be updated.";
             }
-
-            if (datasetList.size()>0) {
-                personalDataset = String.join(",", datasetList);
-                datasetSentence = " will containing personal data. ";
-            }
-
-            personalData = personalDataSentence + " " + personalDataset + datasetSentence + "To ensure that only authorised users can access personal data, " + dmp.getPersonalDataAccess() + " will be used.";
-
-        } else {
-            personalData = "At this stage, it is not foreseen to process any personal data in the project. If this changes, advice will be sought from the data protection specialist at TU Wien (Verena Dolovai), and the DMP will be updated.";
         }
+
         map.put("[personaldata]", personalData);
 
         //Section 4a: sensitive data
+        log.info("sensitive data part");
 
         String sensitiveData = "";
-        if (dmp.getSensitiveData()) {
-            String sensitiveDataSentence = "";
-            String sensitiveDataset = "";
-            String datasetSentence = "";
-            List<String> datasetList = new ArrayList<>();
+        if (dmp.getSensitiveData() != null) {
+            if (dmp.getSensitiveData()) {
+                String sensitiveDataSentence = "In this project there will be sensitive data";
+                String sensitiveDataset = "";
+                String datasetSentence = "";
+                String sensitiveDataMeasure = "";
+                List<String> sensitiveDatasetList = new ArrayList<>();
 
-            for (Dataset dataset: datasets) {
-
-                int idx = datasets.indexOf(dataset)+1;
-                if (dataset.getSensitiveData()) {
-                    sensitiveDataset = sensitiveDataset + "P" + idx + " (" + dataset.getTitle() + ")";
-                    datasetList.add(sensitiveDataset);
+                for (Dataset dataset: datasets) {
+                    int idx = datasets.indexOf(dataset)+1;
+                    if (dataset.getSensitiveData()) {
+                        sensitiveDataset = "P" + idx + " (" + dataset.getTitle() + ")";
+                        sensitiveDatasetList.add(sensitiveDataset);
+                    }
                 }
+
+                if (sensitiveDatasetList.size() > 0) {
+                    datasetSentence = " on dataset ";
+                    sensitiveDataset = multipleVariable(sensitiveDatasetList) + ". ";
+                }
+                else {
+                    datasetSentence = ". ";
+                }
+
+                List<String> dataSecurityList = new ArrayList<>();
+
+                if (dmp.getSensitiveDataSecurity() != null) {
+                    for (ESecurityMeasure securityMeasure : dmp.getSensitiveDataSecurity()) {
+                        dataSecurityList.add(securityMeasure.toString());
+                    }
+                }
+
+                if (dataSecurityList.size() > 1) {
+                    sensitiveDataMeasure = "Additional security measures that will be used are " + multipleVariable(dataSecurityList) + ".";
+                }
+
+                if (dataSecurityList.size() == 1) {
+                    sensitiveDataMeasure = "Additional security measures that will be used is " + multipleVariable(dataSecurityList) + ".";
+                }
+
+                if (dataSecurityList.size() == 0) {
+                    sensitiveDataMeasure = "There are no additional security measures defined at the moment.";
+                }
+
+                sensitiveData = sensitiveDataSentence + datasetSentence + sensitiveDataset + sensitiveDataMeasure;
+
+            } else {
+                sensitiveData = "At this stage, it is not foreseen to process any sensitive data in the project. If this changes, advice will be sought from the data protection specialist at TU Wien (Verena Dolovai), and the DMP will be updated.";
             }
-
-            if (datasetList.size()>0) {
-                sensitiveDataset = String.join(",", datasetList);
-                datasetSentence = " will containing sensitive data. ";
-            }
-
-            sensitiveData = sensitiveDataSentence + sensitiveDataset + datasetSentence + "To ensure that the dataset containing sensitive data stored and transfered safe, " + dmp.getSensitiveDataSecurity() + " will be taken.";
-
-        } else {
-            sensitiveData = "At this stage, it is not foreseen to process any sensitive data in the project. If this changes, advice will be sought from the data protection specialist at TU Wien (Verena Dolovai), and the DMP will be updated.";
         }
+
         map.put("[sensitivedata]", sensitiveData);
 
         //Section 4b: legal restriction
 
+        log.info("legal restriction part");
+
+        String legalRestrictionComplete = "";
         String legalRestriction = "";
-        if (dmp.getLegalRestrictions()) {
-            String legalRestrictionSentence = "";
-            String legalRestrictionDataset = "";
-            List<String> datasetList = new ArrayList<>();
+        List<String> legalRestrictionList = new ArrayList<>();
 
-            for (Dataset dataset: datasets) {
+        if (dmp.getLegalRestrictions() != null) {
+            if (dmp.getLegalRestrictions()) {
+                String legalRestrictionSentence = "";
+                String legalRestrictionDataset = "";
+                List<String> datasetList = new ArrayList<>();
 
-                int idx = datasets.indexOf(dataset)+1;
-                if (dataset.getLegalRestrictions()) {
-                    legalRestrictionDataset = legalRestrictionDataset + "P" + idx + " (" + dataset.getTitle() + ")";
-                    datasetList.add(legalRestrictionDataset);
+                for (Dataset dataset : datasets) {
+
+                    int idx = datasets.indexOf(dataset) + 1;
+                    if (dataset.getLegalRestrictions()) {
+                        legalRestrictionDataset = "P" + idx + " (" + dataset.getTitle() + ")";
+                        datasetList.add(legalRestrictionDataset);
+                    }
                 }
+
+                if (datasetList.size() > 0) {
+                    legalRestrictionDataset = ". The restrictions relate to datasets ";
+                    legalRestrictionDataset = legalRestrictionDataset + multipleVariable(datasetList);
+                }
+
+                legalRestrictionSentence = "Legal restrictions on how data is processed and shared are specified in the data processing agreement";
+
+                if (dmp.getLegalRestrictionsComment() == null) {
+                    legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " and are based on trade secrets.";
+                } else {
+                    if (dmp.getLegalRestrictionsComment().equals("")) {
+                        legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " and are based on trade secrets.";
+                    } else {
+                        legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " and are based on trade secrets. " + dmp.getLegalRestrictionsComment();
+                    }
+                }
+
+                String affiliationRights = "";
+
+                if (dmp.getContact().getAffiliation() != null) {
+                    affiliationRights = dmp.getContact().getAffiliation() + " has rights to the produced data and controls access.";
+                } else { //manually assign the organization
+                    affiliationRights = "TU Wien has rights to the produced data and controls access.";
+                }
+
+                legalRestrictionList.add(legalRestriction);
+                legalRestrictionList.add(affiliationRights);
+
+                legalRestrictionComplete = String.join(";", legalRestrictionList);
+
+                if (legalRestrictionComplete.charAt(legalRestrictionComplete.length() - 1) != '.')
+                    legalRestrictionComplete = legalRestrictionComplete + ".";
+
+                if (legalRestrictionComplete.charAt(legalRestrictionComplete.length()-1)!='.')
+                    legalRestrictionComplete = legalRestrictionComplete + ".";
             }
-
-            if (datasetList.size()>0) {
-                legalRestrictionDataset = String.join(",", datasetList);
-                legalRestrictionSentence = "There is a concern of legal restriction for dataset ";
+            else {
+                legalRestrictionComplete = "There are no legal restrictions on the processing and disclosure of our data.";
             }
-
-            legalRestriction = legalRestrictionSentence + legalRestrictionDataset + ". " + dmp.getLegalRestrictionsComment() + ".";
-
         }
 
-        map.put("[legalrestriction]", legalRestriction);
+        map.put("[legalrestriction]", legalRestrictionComplete);
 
         //Section 4c: ethical issues
 
+        log.info("ethical part");
+
         String ethicalIssues = "";
-        if (dmp.getEthicalIssuesExist()) {
-            String ethicalSentence = "Ethical issues in the project have been identified and discussed with the Research Ethics Coordinator at TU Wien (https://www.tuwien.at/en/research/rti-support/research-ethics/).";
-            ethicalIssues = ethicalSentence + " " + dmp.getEthicalComplianceStatement() + "Relevant ethical guidelines in this project are " + dmp.getEthicsReport() + ".";
+        String ethicalStatement = "";
+        String otherEthicalIssues = "";
+        String committeeReviewed = "";
+
+        if (dmp.getHumanParticipants() != null) {
+            if (dmp.getHumanParticipants()) {
+                ethicalStatement = "This project will involve human participants. ";
+            }
+        }
+
+        if (dmp.getEthicalIssuesExist() != null) {
+            if (dmp.getEthicalIssuesExist()) {
+                otherEthicalIssues = "There are other ethical issues associated with this research. ";
+            }
+        }
+
+        if (dmp.getCommitteeReviewed() != null) {
+            if (dmp.getCommitteeReviewed()) {
+                committeeReviewed = "The research plan of the project was reviewed by an ethics committee / the TU Wien Pilot Research Ethics Committee / a similar body. ";
+            }
+            else {
+                committeeReviewed = "The research has not been reviewed yet by any ethics committee. ";
+            }
+        }
+
+        String ethicalSentence = "Ethical issues in the project have been identified and discussed with the Research Ethics Coordinator at TU Wien (https://www.tuwien.at/en/research/rti-support/research-ethics/). " +
+                "They are described in detail in separate documents.";
+
+        ethicalIssues = ethicalStatement + otherEthicalIssues + committeeReviewed;
+
+        if (ethicalIssues != "") {
+
+            ethicalIssues = ethicalSentence + ethicalIssues;
+
+            if (ethicalIssues.charAt(ethicalIssues.length()-1) == ' ')
+                ethicalIssues = ethicalIssues.substring(0,ethicalIssues.length()-1);
+
+            if (ethicalIssues.charAt(ethicalIssues.length()-1) != '.')
+                ethicalIssues = ethicalIssues + ".";
         } else {
             ethicalIssues = "No particular ethical issue is foreseen with the data to be used or produced by the project. This section will be updated if issues arise.";
         }
-        map.put("[ethicalissues]", ethicalIssues);
 
-    }
+        map.put("[ethicalissues]", ethicalIssues);    }
 
     private void sectionFive(Dmp dmp, Map<String, String> map) {
 
@@ -538,19 +661,31 @@ public class ExportFWFTemplate extends DocumentConversionService{
     private void sectionSix(Dmp dmp, Map<String, String> map, List<Cost> costList) {
 
         String costs = "";
+        String costTitle = "";
+        String costType = "";
+        String costDescription = "";
+        String costCurrency = "";
+        String costValue = "";
+        String costCurrencyTotal = "";
 
-        if (dmp.getCostsExist() != null) {
-            if (dmp.getCostsExist()) {
-                costs = "There are costs dedicated to data management and ensuring that data will be FAIR as outlined below.";
-            } else {
-                costs = "There are no costs dedicated to data management and ensuring that data will be FAIR.";
-            }
+        if (dmp.getCostsExist() != null && dmp.getCostsExist()) {
+            costs = "There are costs dedicated to data management and ensuring that data will be FAIR as outlined below.";
+        }
+        else {
+            costs = "There are no costs dedicated to data management and ensuring that data will be FAIR.";
+            map.put("[cost1title]", costTitle);
+            map.put("[cost1type]", costType);
+            map.put("[cost1desc]", costDescription);
+            map.put("[cost1currency]", costCurrency);
+            map.put("[cost1value]", costValue);
+            map.put("[costcurrency]", "");
+            map.put("[costtotal]", "");
         }
 
         map.put("[costs]", costs);
 
         //mapping cost information
-        Long totalCost = 0L;
+        Float totalCost = 0f;
 
         for (Cost cost : costList) {
             int idx = costList.indexOf(cost) + 1;
@@ -559,12 +694,6 @@ public class ExportFWFTemplate extends DocumentConversionService{
             String docVar3 = "[cost" + idx + "desc]";
             String docVar4 = "[cost" + idx + "currency]";
             String docVar5 = "[cost" + idx + "value]";
-            String costTitle = "";
-            String costType = "";
-            String costDescription = "";
-            String costCurrency = "";
-            String costValue = "";
-            String costCurrencyTotal = "";
 
             if (cost.getTitle() != null)
                 costTitle = cost.getTitle();
@@ -580,7 +709,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
                 }
             }
             if (cost.getValue() != null) {
-                costValue = cost.getValue().toString();
+                costValue = NumberFormat.getNumberInstance(Locale.GERMAN).format(cost.getValue());
                 totalCost = totalCost + cost.getValue();
             }
 
@@ -591,8 +720,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
             map.put(docVar5, costValue);
         }
 
-        map.put("[costtotal]", totalCost.toString());
-
+        map.put("[costtotal]", NumberFormat.getNumberInstance(Locale.GERMAN).format(totalCost));
     }
 
     private void tableContent(List<XWPFParagraph> xwpfParagraphs, Map<String, String> map, List<XWPFTable> tables, List<Dataset> datasets, List<Cost> costList, SimpleDateFormat formatter) {
@@ -856,7 +984,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
                         .getTableCells();
                 for (XWPFTableCell xwpfTableCell : tableCells) {
                     xwpfParagraphs = xwpfTableCell.getParagraphs();
-                    replaceInParagraphs(xwpfParagraphs);
+                    replaceInParagraphs(xwpfParagraphs, replacements);
                 }
             }
         }

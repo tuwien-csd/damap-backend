@@ -33,37 +33,41 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.enterprise.inject.Instance;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.anyString;
 
 @QuarkusTest
 
-@JBossLog
 public class DocumentConversionServiceTest {
 
     @Inject
-    DocumentConversionService documentConversionService;
+    Instance<DocumentConversionService> documentConversionServices;
 
-    @InjectMock
-    DmpRepo dmpRepo;
+//    @InjectMock
+//    DmpRepo dmpRepo;
+//
+//    @BeforeEach
+//    public void setup() {
+//        Mockito.when(dmpRepo.findById(anyLong())).thenReturn(this.createDmp());
+//    }
 
-    @BeforeEach
-    public void setup() {
-        Mockito.when(dmpRepo.findById(anyLong())).thenReturn(this.createDmp());
-    }
 
     @Test
-    public void testEmptyDmp() throws Exception{
-        Long id = 123L;
+    public void testEmptyDmp() throws Exception {
+        for (DocumentConversionService documentConversionService : documentConversionServices) {
+//    public void testEmptyDmp(){
+//        Long id = 123L;
 
-        XWPFDocument document = documentConversionService.getFWFTemplate(id);
+            System.out.println("Test passed");
+            XWPFDocument document = documentConversionService.loadTemplate("template/template.docx");
+        }
     }
-
-    private Dmp createDmp() {
-        Dmp dmp = new Dmp();
-        dmp.setTitle("Mock Dmp");
-
-        return dmp;
-    }
+//    private Dmp createDmp() {
+//        Dmp dmp = new Dmp();
+//        dmp.setTitle("Mock Dmp");
+//
+//        return dmp;
+//    }
 }
