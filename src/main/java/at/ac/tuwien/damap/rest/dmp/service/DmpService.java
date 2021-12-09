@@ -15,6 +15,7 @@ import lombok.extern.jbosslog.JBossLog;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -88,19 +89,22 @@ public class DmpService {
     }
 
     public String getDefaultFileName(long id){
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+
         String filename = "My Data Management Plan";
 
         Dmp dmp = dmpRepo.findById(id);
         if (dmp != null){
             if (projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym() != null) {
-                filename = projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym();
+                filename = "DMP_" + projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym() + "_" + formatter.format(date).toString();
             }
             else {
                 if (dmp.getTitle() != null)
                     filename = dmp.getTitle();
                 else if (dmp.getProject() != null){
                     if (dmp.getProject().getTitle() != null)
-                        filename = dmp.getProject().getTitle();
+                        filename = "DMP_" + dmp.getProject().getTitle()  + "_" + formatter.format(date).toString();
                 }
             }
         }

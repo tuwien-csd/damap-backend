@@ -22,6 +22,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
         String template = setTemplate("template/template.docx");
 
         Map<String, String> replacements = new HashMap<>();
+        Map<String, String> footerMap = new HashMap<>();
 
         XWPFDocument document = loadTemplate(template);
         List<XWPFParagraph> xwpfParagraphs = document.getParagraphs();
@@ -74,11 +75,13 @@ public class ExportFWFTemplate extends DocumentConversionService{
         log.info("Export steps: Replace in table");
         tableContent(xwpfParagraphs, replacements, tables, datasets, costList, formatter);
 
+        replaceTextInFooter(document, footerMap);
+
         log.info("Export steps: Export finished");
         return document;
     }
 
-    private void preSection(Dmp dmp, Map<String, String> map, SimpleDateFormat formatter) {
+    private void preSection(Dmp dmp, Map<String, String> replacements, SimpleDateFormat formatter) {
 /*
         //mapping general information
         if (dmp.getProject() != null) {
@@ -231,17 +234,17 @@ public class ExportFWFTemplate extends DocumentConversionService{
                 contributorList.add(contributorPerson);
             }
             String contributorValue = String.join(";", contributorList);
-            map.put("[contributors]", contributorValue);
+            replacements.put("[contributors]", contributorValue);
         }
         else {
-            map.put("[contributors]", "");
+            replacements.put("[contributors]", "");
         }
 
-        map.put("[coordinatorname]", coordinatorName);
-        map.put("[coordinatormail]", coordinatorMail);
-        map.put("[coordinatorid]", coordinatorId);
-        map.put("[coordinatoraffiliation]", coordinatorAffiliation);
-        map.put("[coordinatorror]", coordinatorRor);
+        replacements.put("[coordinatorname]", coordinatorName);
+        replacements.put("[coordinatormail]", coordinatorMail);
+        replacements.put("[coordinatorid]", coordinatorId);
+        replacements.put("[coordinatoraffiliation]", coordinatorAffiliation);
+        replacements.put("[coordinatorror]", coordinatorRor);
     }
 
     //Number conversion for data size in section 1
@@ -984,7 +987,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
                         .getTableCells();
                 for (XWPFTableCell xwpfTableCell : tableCells) {
                     xwpfParagraphs = xwpfTableCell.getParagraphs();
-                    replaceInParagraphs(xwpfParagraphs, replacements);
+                    replaceInParagraphs(xwpfParagraphs, map);
                 }
             }
         }

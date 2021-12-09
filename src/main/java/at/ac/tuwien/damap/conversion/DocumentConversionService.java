@@ -7,7 +7,9 @@ import at.ac.tuwien.damap.domain.*;
 
 import at.ac.tuwien.damap.repo.DmpRepo;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectMemberDO;
+import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
+import lombok.ToString;
 import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
@@ -16,6 +18,7 @@ import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
+import org.apache.poi.xwpf.usermodel.XWPFFooter;
 
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
 
@@ -31,15 +34,15 @@ public class DocumentConversionService {
 
 /*
     public XWPFDocument getFWFTemplate(long dmpId, String template) throws Exception {
-=======
+
     @Inject
     ProjectService projectService;
 
-    public XWPFDocument getFWFTemplate(long dmpId) throws Exception {
->>>>>>> next
+    @Inject
+    DmpService dmpService;
 
-        //Loading a template file in resources folder
-        //String template = "template/template.docx";
+    public XWPFDocument getFWFTemplate(long dmpId) throws Exception {
+
         ClassLoader classLoader = getClass().getClassLoader();
 
         //Extract document using Apache POI https://poi.apache.org/
@@ -57,11 +60,12 @@ public class DocumentConversionService {
 
         //List of document variables mapping
         Map<String, String> map = new HashMap<>();
+        Map<String, String> footerMap = new HashMap<>();
 
         //Pre Section including general information from the project,
         // e.g. project title, coordinator, contact person, project and grant number.
         log.info("Export steps: Pre section");
-        preSection(dmp, map, formatter);
+        preSection(dmp, map, footerMap, formatter);
 
         //Section 1 contains the dataset information table and how data is generated or used
         log.info("Export steps: Section 1");
@@ -97,24 +101,68 @@ public class DocumentConversionService {
         log.info("Export steps: Replace in table");
         tableContent(dmp, xwpfParagraphs, map, tables, datasets, costList, formatter);
 
+        replaceTextInFooter(document, footerMap);
+
         log.info("Export steps: Export finished");
         return document;
     }
 
-    private void preSection(Dmp dmp, Map<String, String> map, SimpleDateFormat formatter) {
+    private void preSection(Dmp dmp, Map<String, String> map, Map<String, String> footerMap, SimpleDateFormat formatter) {
         //project member list
         List<ProjectMemberDO> projectMember = new ArrayList<>();
 
         //mapping general information
         if (dmp.getProject() != null) {
             List<String> fundingItems = new ArrayList<>();
+            Integer titleLength = 0;
+            Integer coverSpace = 0;
+            String coverSpaceVar = "";
 
             //variable project name
-            if (dmp.getProject().getTitle() != null)
-                map.put("[projectname]", dmp.getProject().getTitle());
+            if (dmp.getProject().getTitle() != null) {
+                titleLength = dmp.getProject().getTitle().length();
+                if (titleLength/25 > 3)
+                    map.put("[projectname]", dmp.getProject().getTitle() + "#oversize");
+                else
+                    map.put("[projectname]", dmp.getProject().getTitle());
+            }
+
+            //handling space in the cover depends on the title length
+            switch (titleLength/25) {
+                case 0:
+                    coverSpace = 2;
+                    break;
+                case 1:
+                    coverSpace = 1;
+                    break;
+                case 2:
+                    coverSpace = 1;
+                    break;
+                case 3:
+                    coverSpace = 1;
+                    break;
+                case 4:
+                    coverSpace = 2;
+                    break;
+                default:
+                    coverSpace = 1;
+            }
+
+            if (titleLength/25 < 6) {
+                for (int i = 0; i < coverSpace; i++) {
+                    coverSpaceVar = coverSpaceVar.concat(" ;");
+                }
+            }
+            if (titleLength/25 < 3)
+                coverSpaceVar = coverSpaceVar.concat(" ");
+
+            map.put("[coverspace]", coverSpaceVar);
+
             //variable project acronym from API
-            if (projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym() != null)
+            if (projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym() != null) {
                 map.put("[acronym]", projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym());
+                footerMap.put("[acronym]", projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym());
+            }
             //variable project start date
             if (dmp.getProject().getStart() != null)
                 map.put("[startdate]", formatter.format(dmp.getProject().getStart()));
@@ -140,6 +188,12 @@ public class DocumentConversionService {
             //get project member from the project ID
             if (dmp.getProject().getUniversityId() != null)
                 projectMember = projectService.getProjectStaff(dmp.getProject().getUniversityId());
+
+            //variable dmp version
+            Long dmpVersion = dmp.getVersion();
+            if (dmpVersion != null) {
+                footerMap.put("[version]", "" + dmpVersion);
+            }
         }
 
         //variable dmp date version
@@ -174,11 +228,6 @@ public class DocumentConversionService {
                 contactIdentifierId = dmp.getContact().getPersonIdentifier().getIdentifier();
                 if (dmp.getContact().getPersonIdentifier().getIdentifierType().toString().equals("orcid")) {
                     contactIdentifierType = "ORCID iD: ";
-                    contactId = contactIdentifierType + contactIdentifierId;
-                    contactItems.add(contactId);
-                }
-                if (dmp.getContact().getPersonIdentifier().getIdentifierType().toString().equals("ror")) {
-                    contactIdentifierType = "ROR: ";
                     contactId = contactIdentifierType + contactIdentifierId;
                     contactItems.add(contactId);
                 }
@@ -284,11 +333,6 @@ public class DocumentConversionService {
                         contributorIdentifierId = contributor.getContributor().getPersonIdentifier().getIdentifier();
                         if (contributor.getContributor().getPersonIdentifier().getIdentifierType().toString().equals("orcid")) {
                             contributorIdentifierType = "ORCID iD: ";
-                            contributorId = contributorIdentifierType + contributorIdentifierId;
-                            contributorProperties.add(contributorId);
-                        }
-                        if (contributor.getContributor().getPersonIdentifier().getIdentifierType().toString().equals("ror")) {
-                            contributorIdentifierType = "ROR: ";
                             contributorId = contributorIdentifierType + contributorIdentifierId;
                             contributorProperties.add(contributorId);
                         }
@@ -522,18 +566,35 @@ public class DocumentConversionService {
         String metadata = "";
 
         if (dmp.getMetadata() == null) {
-            map.put("[metadata]", "As there are no domain specific metadata standards applicable, we will provide a README file with an explanation of all values and terms used next to each file with data.");
+            map.put("[metadata]", "There is no specific metadata has been defined yet for this project.");
         }
         else {
             if (dmp.getMetadata().equals("")) {
-                map.put("[metadata]", "As there are no domain specific metadata standards applicable, we will provide a README file with an explanation of all values and terms used next to each file with data.");
+                map.put("[metadata]", "There is no specific metadata has been defined yet for this project.");
             }
             else {
-                metadata = dmp.getMetadata().toLowerCase();
+                metadata = dmp.getMetadata();
                 if (metadata.charAt(metadata.length()-1)!='.') {
                     metadata = metadata + '.';
                 }
-                map.put("[metadata]", "To help others identify, discover and reuse the data, " + metadata);
+                map.put("[metadata]", metadata + " This will help others to identify, discover and reuse our data.");
+            }
+        }
+
+        if (dmp.getStructure() == null) {
+            map.put("[dataorganisation]", "There is no specific document structure has been defined yet for this project.");
+        }
+        else {
+            if (dmp.getStructure().equals("")) {
+                map.put("[dataorganisation]", "There is no specific document structure has been defined yet for this project.");
+            }
+            else {
+                if (dmp.getStructure().contains("[add document name]")) {
+                    map.put("[dataorganisation]", dmp.getStructure().replace("[add document name]", dmpService.getDefaultFileName(dmp.id)));
+                }
+                else {
+                    map.put("[dataorganisation]", dmp.getStructure());
+                }
             }
         }
     }
@@ -1360,7 +1421,7 @@ public class DocumentConversionService {
                 for (Map.Entry<String, String> entry : replacements.entrySet()) {
                     if (xwpfRunText != null && xwpfRunText.contains(entry.getKey())) {
                         //handle new line for contributor list and storage information
-                        if (entry.getKey().equals("[contributors]") || entry.getKey().equals("[storage]")){
+                        if (entry.getValue().contains(";")){
                             String[] value=entry.getValue().split(";");
                             for(String text : value){
                                 xwpfParagraph.setAlignment(ParagraphAlignment.LEFT);
@@ -1372,7 +1433,13 @@ public class DocumentConversionService {
                         }
                         //general case for non contributor list
                         else {
-                            xwpfRunText = xwpfRunText.replace(entry.getKey(), entry.getValue());
+                            if (entry.getKey().equals("[projectname]") && entry.getValue().contains("#oversize")) { //resize title to be smaller
+                                xwpfRun.setFontSize(xwpfRun.getFontSize()-4);
+                                xwpfRunText = xwpfRunText.replace(entry.getKey(), entry.getValue().replace("#oversize", ""));
+                            }
+                            else {
+                                xwpfRunText = xwpfRunText.replace(entry.getKey(), entry.getValue());
+                            }
                         }
                     }
                 }
@@ -1396,8 +1463,27 @@ public class DocumentConversionService {
         }
     }
 
+    public void replaceTextInFooter(XWPFDocument doc, Map<String, String> replacements) {
+        for (XWPFFooter footer : doc.getFooterList()) {
+            for (XWPFParagraph xwpfParagraph : footer.getParagraphs()) {
+                for (XWPFRun xwpfRun : xwpfParagraph.getRuns()) {
+                    String xwpfRunText = xwpfRun.getText(xwpfRun.getTextPosition());
+                    for (Map.Entry<String, String> entry : replacements.entrySet()) {
+                        if (xwpfRunText != null && xwpfRunText.contains(entry.getKey())) {
+                            xwpfRunText = xwpfRunText.replace(entry.getKey(), entry.getValue());
+                        }
+                    }
+                    xwpfRun.setText(xwpfRunText, 0);
+                }
+            }
+        }
+    }
+
     public String multipleVariable(List<String> variableList) {
-        return String.join(", ", variableList);
+        if (variableList.size() == 2)
+            return String.join(" and ", variableList);
+        else
+            return String.join(", ", variableList);
     }
 
     public String setTemplate (String template) {
