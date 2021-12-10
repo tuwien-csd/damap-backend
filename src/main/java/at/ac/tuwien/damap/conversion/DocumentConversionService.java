@@ -64,350 +64,7 @@ public class DocumentConversionService {
         Map<String, String> map = new HashMap<>();
         Map<String, String> footerMap = new HashMap<>();
 
-        //Pre Section including general information from the project,
-        // e.g. project title, coordinator, contact person, project and grant number.
-        log.info("Export steps: Pre section");
-        preSection(dmp, map, footerMap, formatter);
-
-        //Section 1 contains the dataset information table and how data is generated or used
-        log.info("Export steps: Section 1");
-        sectionOne(dmp, map, datasets, formatter);
-
-        //Section 2 contains about the documentation and data quality including versioning and used metadata.
-        log.info("Export steps: Section 2");
-        sectionTwo(dmp, map);
-
-        //Section 3 contains storage and backup that will be used for the data in the research
-        // including the data access and sensitive aspect.
-        log.info("Export steps: Section 3");
-        sectionThree(dmp, map, datasets);
-
-        //Section 4 contains legal and ethical requirements.
-        log.info("Export steps: Section 4");
-        sectionFour(dmp, map, datasets);
-
-        //Section 5 contains information about data publication and long term preservation.
-        log.info("Export steps: Section 5");
-        sectionFive(dmp, map);
-
-        //Section 6 contains resources and cost information if necessary.
-        log.info("Export steps: Section 6");
-        sectionSix(dmp, map, costList);
-
-        //variables replacement
-        log.info("Export steps: Replace in paragraph");
-        replaceInParagraphs(xwpfParagraphs, map);
-
-        //Dynamic table in all sections will be added from row number two until the end of data list.
-        //TO DO: combine the function with the first row generation to avoid double code of similar modification.
-        log.info("Export steps: Replace in table");
-        tableContent(dmp, xwpfParagraphs, map, tables, datasets, costList, formatter);
-
-        replaceTextInFooter(document, footerMap);
-
-        log.info("Export steps: Export finished");
-        return document;
-    }
-
-    private void preSection(Dmp dmp, Map<String, String> map, Map<String, String> footerMap, SimpleDateFormat formatter) {
-        //project member list
-        List<ProjectMemberDO> projectMember = new ArrayList<>();
-
-        //mapping general information
-        if (dmp.getProject() != null) {
-            List<String> fundingItems = new ArrayList<>();
-            Integer titleLength = 0;
-            Integer coverSpace = 0;
-            String coverSpaceVar = "";
-
-            //variable project name
-            if (dmp.getProject().getTitle() != null) {
-                titleLength = dmp.getProject().getTitle().length();
-                if (titleLength/25 > 3)
-                    map.put("[projectname]", dmp.getProject().getTitle() + "#oversize");
-                else
-                    map.put("[projectname]", dmp.getProject().getTitle());
-            }
-
-            //handling space in the cover depends on the title length
-            switch (titleLength/25) {
-                case 0:
-                    coverSpace = 2;
-                    break;
-                case 1:
-                    coverSpace = 1;
-                    break;
-                case 2:
-                    coverSpace = 1;
-                    break;
-                case 3:
-                    coverSpace = 1;
-                    break;
-                case 4:
-                    coverSpace = 2;
-                    break;
-                default:
-                    coverSpace = 1;
-            }
-
-            if (titleLength/25 < 6) {
-                for (int i = 0; i < coverSpace; i++) {
-                    coverSpaceVar = coverSpaceVar.concat(" ;");
-                }
-            }
-            if (titleLength/25 < 3)
-                coverSpaceVar = coverSpaceVar.concat(" ");
-
-            map.put("[coverspace]", coverSpaceVar);
-
-            //variable project acronym from API
-            if (projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym() != null) {
-                map.put("[acronym]", projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym());
-                footerMap.put("[acronym]", projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym());
-            }
-            //variable project start date
-            if (dmp.getProject().getStart() != null)
-                map.put("[startdate]", formatter.format(dmp.getProject().getStart()));
-            //variable project end date
-            if (dmp.getProject().getEnd() != null)
-                map.put("[enddate]", formatter.format(dmp.getProject().getEnd()));
-            //add funding program to funding item variables
-            if (projectService.getProjectDetails(dmp.getProject().getUniversityId()).getFunding().getFundingProgram() != null)
-                fundingItems.add(projectService.getProjectDetails(dmp.getProject().getUniversityId()).getFunding().getFundingProgram());
-            //add grant number to funding item variables
-            if (dmp.getProject().getFunding().getGrantIdentifier().getIdentifier() != null)
-                fundingItems.add(dmp.getProject().getFunding().getGrantIdentifier().getIdentifier());
-            //variable project funding, combination from funding item variables
-            if (!fundingItems.isEmpty()) {
-                map.put("[grantid]", multipleVariable(fundingItems));
-            }
-            else {
-                map.put("[grantid]", "");
-            }
-            //variable project ID
-            if (dmp.getProject().getUniversityId() != null)
-                map.put("[projectid]", dmp.getProject().getUniversityId());
-            //get project member from the project ID
-            if (dmp.getProject().getUniversityId() != null)
-                projectMember = projectService.getProjectStaff(dmp.getProject().getUniversityId());
-
-            //variable dmp version
-            Long dmpVersion = dmp.getVersion();
-            if (dmpVersion != null) {
-                footerMap.put("[version]", "" + dmpVersion);
-            }
-        }
-
-        //variable dmp date version
-        if (dmp.getCreated() != null) {
-            map.put("[datever1]", formatter.format(dmp.getCreated()));
-        }
-
-        //mapping contact information
-        if (dmp.getContact() != null) {
-            List<String> contactItems = new ArrayList<>();
-            String contactName = "";
-            String contactMail = "";
-            String contactId = "";
-            String contactIdentifierType = "";
-            String contactIdentifierId = "";
-            String contactAffiliation = "";
-            String contactAffiliationId = "";
-            String contactAffiliationIdentifierType = "";
-            String contactAffiliationIdentifierId = "";
-
-            if (dmp.getContact().getFirstName() != null && dmp.getContact().getLastName() != null) {
-                contactName = dmp.getContact().getFirstName() + " " + dmp.getContact().getLastName();
-                contactItems.add(contactName);
-            }
-
-            if (dmp.getContact().getMbox() != null) {
-                contactMail = dmp.getContact().getMbox();
-                contactItems.add(contactMail);
-            }
-
-            if (dmp.getContact().getPersonIdentifier() != null) {
-                contactIdentifierId = dmp.getContact().getPersonIdentifier().getIdentifier();
-                if (dmp.getContact().getPersonIdentifier().getIdentifierType().toString().equals("orcid")) {
-                    contactIdentifierType = "ORCID iD: ";
-                    contactId = contactIdentifierType + contactIdentifierId;
-                    contactItems.add(contactId);
-                }
-            }
-
-            if (dmp.getContact().getAffiliation() != null) {
-                contactAffiliation = dmp.getContact().getAffiliation();
-                contactItems.add(contactAffiliation);
-            }
-
-            if (dmp.getContact().getAffiliationId() != null) {
-                contactAffiliationIdentifierId = dmp.getContact().getAffiliationId().getIdentifier();
-                if (dmp.getContact().getAffiliationId().getIdentifierType().toString().equals("ror")) {
-                    contactAffiliationIdentifierType = "ROR: ";
-                    contactAffiliationId = contactAffiliationIdentifierType + contactAffiliationIdentifierId;
-                    contactItems.add(contactAffiliationId);
-                }
-            }
-
-            if (!contactItems.isEmpty()) {
-                map.put("[contact]", multipleVariable(contactItems));
-            }
-            else {
-                map.put("[contact]", "");
-            }
-        }
-
-        //mapping project coordinator information
-        List<String> coordinatorProperties = new ArrayList<>();
-        String coordinatorIdentifierId = "";
-        String coordinatorAffiliationIdentifierId = "";
-
-        if (!projectMember.isEmpty()) {
-            for (ProjectMemberDO member : projectMember) {
-                if (member != null) {
-                    if (member.isProjectLeader()) {
-                        if (member.getPerson().getFirstName() != null && member.getPerson().getLastName() != null)
-                            coordinatorProperties.add(member.getPerson().getFirstName() + " " + member.getPerson().getLastName());
-
-                        if (member.getPerson().getMbox() != null)
-                            coordinatorProperties.add(member.getPerson().getMbox());
-
-                        if (member.getPerson().getPersonId() != null) {
-                            coordinatorIdentifierId = member.getPerson().getPersonId().getIdentifier();
-
-                            if (member.getPerson().getPersonId().getType().toString().equals("orcid")) {
-                                String coordinatorIdentifierType = "ORCID iD: ";
-                                String coordinatorId = coordinatorIdentifierType + coordinatorIdentifierId;
-                                coordinatorProperties.add(coordinatorId);
-                            }
-                        }
-
-                        if (member.getPerson().getAffiliation() != null)
-                            coordinatorProperties.add(member.getPerson().getAffiliation());
-
-                        if (member.getPerson().getAffiliationId() != null) {
-                            coordinatorAffiliationIdentifierId = member.getPerson().getAffiliationId().getIdentifier();
-
-                            if (member.getPerson().getAffiliationId().getType().toString().equals("ror")) {
-                                String coordinatorAffiliationIdentifierType = "ROR: ";
-                                String coordinatorAffiliationId = coordinatorAffiliationIdentifierType + coordinatorAffiliationIdentifierId;
-                                coordinatorProperties.add(coordinatorAffiliationId);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        //mapping contributor information
-
-        if (dmp.getContributorList() != null) {
-            String contributorPerson = "";
-
-            List<Contributor> contributors = dmp.getContributorList();
-            List<String> contributorList = new ArrayList<>();
-
-            if (!contributors.isEmpty()) {
-                for(Contributor contributor : contributors) {
-                    List<String> contributorProperties = new ArrayList<>();
-                    String contributorName = "";
-                    String contributorMail = "";
-                    String contributorId = "";
-                    String contributorIdentifierType = "";
-                    String contributorIdentifierId = "";
-                    String contributorRole = "";
-                    String contributorAffiliation = "";
-                    String contributorAffiliationId = "";
-                    String contributorAffiliationIdentifierType = "";
-                    String contributorAffiliationIdentifierId = "";
-
-                    if (contributor.getContributor().getFirstName() != null && contributor.getContributor().getLastName() != null) {
-                        contributorName = contributor.getContributor().getFirstName() + " " + contributor.getContributor().getLastName();
-                        contributorProperties.add(contributorName);
-                    }
-
-                    if (contributor.getContributor().getMbox() != null) {
-                        contributorMail = contributor.getContributor().getMbox();
-                        contributorProperties.add(contributorMail);
-                    }
-
-                    if (contributor.getContributor().getPersonIdentifier() != null) {
-                        contributorIdentifierId = contributor.getContributor().getPersonIdentifier().getIdentifier();
-                        if (contributor.getContributor().getPersonIdentifier().getIdentifierType().toString().equals("orcid")) {
-                            contributorIdentifierType = "ORCID iD: ";
-                            contributorId = contributorIdentifierType + contributorIdentifierId;
-                            contributorProperties.add(contributorId);
-                        }
-                    }
-
-                    if (contributor.getContributor().getAffiliation() != null) {
-                        contributorAffiliation = contributor.getContributor().getAffiliation();
-                        contributorProperties.add(contributorAffiliation);
-                    }
-
-                    if (contributor.getContributor().getAffiliationId() != null) {
-                        contributorAffiliationIdentifierId = contributor.getContributor().getAffiliationId().getIdentifier();
-                        if (contributor.getContributor().getAffiliationId().getIdentifierType().toString().equals("ror")) {
-                            contributorAffiliationIdentifierType = "ROR: ";
-                            contributorAffiliationId = contributorAffiliationIdentifierType + contributorAffiliationIdentifierId;
-                            contributorProperties.add(contributorAffiliationId);
-                        }
-                    }
-
-                    if (contributor.getContributorRole() != null) {
-                        contributorRole = contributor.getContributorRole().getRole();
-                        contributorProperties.add(contributorRole);
-                    }
-
-                    contributorPerson = multipleVariable(contributorProperties);
-                    contributorList.add(contributorPerson);
-                }
-            }
-
-            map.put("[contributors]", String.join(";", contributorList));
-        }
-        else {
-            map.put("[contributors]", "");
-        }
-
-        if (!coordinatorProperties.isEmpty()) {
-            map.put("[coordinator]", multipleVariable(coordinatorProperties));
-        }
-        else {
-            map.put("[coordinator]", "");
-        }
-    }
-
-    //Number conversion for data size in section 1
-    private static final char[] SUFFIXES = {'K', 'M', 'G', 'T', 'P', 'E' };
-    private static String format(long number) {
-        if(number < 1000) {
-            // No need to format this
-            return String.valueOf(number);
-        }
-        // Convert to a string
-        final String string = String.valueOf(number);
-        // The suffix we're using, 1-based
-        final int magnitude = (string.length() - 1) / 3;
-        // The number of digits we must show before the prefix
-        final int digits = (string.length() - 1) % 3 + 1;
-
-        // Build the string
-        char[] value = new char[digits + 4];
-
-        for(int i = 0; i < digits; i++) {
-            value[i] = string.charAt(i);
-        }
-        int valueLength = digits;
-        // Can and should we add a decimal point and an additional number?
-        if(digits == 1 && string.charAt(1) != '0') {
-            value[valueLength++] = '.';
-            value[valueLength++] = string.charAt(1);
-        }
-        value[valueLength++] = ' ';
-        value[valueLength++] = SUFFIXES[magnitude - 1];
-        return new String(value, 0, valueLength);
-    }
+----- wip
 
     private void sectionOne(Dmp dmp, Map<String, String> map, List<Dataset> datasets, SimpleDateFormat formatter) {
         for (Dataset dataset : datasets) {
@@ -1375,6 +1032,10 @@ public class DocumentConversionService {
     }
 */
 
+    public String setTemplate (String template) {
+        return template;
+    }
+
     public XWPFDocument loadTemplate (String template) throws Exception{
         //Loading a template file in resources folder
         ClassLoader classLoader = getClass().getClassLoader();
@@ -1386,12 +1047,8 @@ public class DocumentConversionService {
     }
 
     public void addReplacement(Map<String, String> replacements, String var, Object dmpContent) {
-//        if (content != null) {
-//            replacements.put(var, content);
-//        }
-//        else
-//            replacements.put(var,"");
         log.info(var);
+        //null case handling
         String content = (dmpContent == null) ? "" : String.valueOf(dmpContent);
         log.info(content);
         if (content != "") {
@@ -1478,13 +1135,13 @@ public class DocumentConversionService {
     }
 
     public String multipleVariable(List<String> variableList) {
-        if (variableList.size() == 2)
-            return String.join(" and ", variableList);
-        else
-            return String.join(", ", variableList);
-    }
-
-    public String setTemplate (String template) {
-        return template;
+        switch (variableList.size()) {
+            case 0:
+                return "";
+            case 2:
+                return String.join(" and ", variableList);
+            default:
+                return String.join(", ", variableList);
+        }
     }
 }
