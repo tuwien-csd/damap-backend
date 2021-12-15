@@ -63,7 +63,7 @@ public class DmpService {
         log.info("Creating new DMP");
         Dmp dmp = DmpDOMapper.mapDOtoEntity(dmpWrapper.getDmp(), new Dmp());
         dmp.setCreated(new Date());
-        dmp.persist();
+        dmp.persistAndFlush();
         createAccess(dmp, dmpWrapper.getEdited_by());
         return getDmpById(dmp.id);
     }
@@ -75,7 +75,7 @@ public class DmpService {
         Dmp dmp = dmpRepo.findById(dmpWrapper.getDmp().getId());
         DmpDOMapper.mapDOtoEntity(dmpWrapper.getDmp(), dmp);
         dmp.setModified(new Date());
-        dmp.persist();
+        dmp.persistAndFlush();
         return getDmpById(dmp.id);
     }
 
@@ -85,7 +85,7 @@ public class DmpService {
         access.setRole(EFunctionRole.OWNER);
         access.setDmp(dmp);
         access.setStart(new Date());
-        access.persist();
+        access.persistAndFlush();
     }
 
     public String getDefaultFileName(long id){
