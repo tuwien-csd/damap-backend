@@ -46,6 +46,8 @@ public class ExportFWFTemplate extends DocumentConversionService{
         //Convert the date for readable format for the document
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
+        //First step of the export: create a mapping of variables and its desired replacement values
+
         //Pre Section including general information from the project,
         // e.g. project title, coordinator, contact person, project and grant number.
         log.info("Export steps: Pre section");
@@ -76,21 +78,27 @@ public class ExportFWFTemplate extends DocumentConversionService{
         log.info("Export steps: Section 6");
         sectionSix(dmp, map, costList);
 
-        //variables replacement
+        //Second step of the export: variables replacement with a mapping reference that has been defined
         log.info("Export steps: Replace in paragraph");
         replaceInParagraphs(xwpfParagraphs, map);
 
-        //Dynamic table in all sections will be added from row number two until the end of data list.
+        //Third step of the export: dynamic table in all sections will be added from row number two until the end of data list.
         //TO DO: combine the function with the first row generation to avoid double code of similar modification.
         log.info("Export steps: Replace in table");
         tableContent(dmp, xwpfParagraphs, map, tables, datasets, costList, formatter);
 
+        //Fourth step of the export: modify the content of the document's footer
+        log.info("Export steps: Replace in footer");
         replaceTextInFooter(document, footerMap);
 
         log.info("Export steps: Export finished");
         return document;
     }
 
+
+    //Variable replacements flow for each section start from here
+
+    //Pre section variables replacement
     private void preSection(Dmp dmp, Map<String, String> replacements, Map<String, String> footerMap, SimpleDateFormat formatter) {
         //project member list
         List<ProjectMemberDO> projectMember = new ArrayList<>();
@@ -358,6 +366,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
         return new String(value, 0, valueLength);
     }
 
+    //Section 1 variables replacement
     private void sectionOne(Dmp dmp, Map<String, String> replacements, List<Dataset> datasets, SimpleDateFormat formatter) {
         for (Dataset dataset : datasets) {
             int idx = datasets.indexOf(dataset) + 1;
@@ -521,6 +530,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
         addReplacement(replacements, "[datageneration]", dmp.getDataGeneration());
     }
 
+    //Section 2 variables replacement
     private void sectionTwo(Dmp dmp, Map<String, String> replacements) {
 
         String metadata = "";
@@ -561,6 +571,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
         }
     }
 
+    //Section 3 variables replacement
     private void sectionThree(Dmp dmp, Map<String, String> replacements, List<Dataset> datasets) {
 
         List<Host> hostList = dmp.getHostList();
@@ -631,6 +642,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
         addReplacement(replacements,"[storage]", storageVar);
     }
 
+    //Section 4 variables replacement
     private void sectionFour(Dmp dmp, Map<String, String> replacements, List<Dataset> datasets) {
         //Section 4a: personal data
         log.info("personal data part");
@@ -853,12 +865,14 @@ public class ExportFWFTemplate extends DocumentConversionService{
         addReplacement(replacements, "[ethicalissues]", ethicalIssues);
     }
 
+    //Section 5 variables replacement
     private void sectionFive(Dmp dmp, Map<String, String> replacements) {
 
         addReplacement(replacements, "[targetaudience]", dmp.getTargetAudience());
         addReplacement(replacements, "[tools]", dmp.getTools());
     }
 
+    //Section 6 variables replacement
     private void sectionSix(Dmp dmp, Map<String, String> replacements, List<Cost> costList) {
 
         String costs = "";
@@ -931,6 +945,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
         addReplacement(replacements, "[costtotal]", NumberFormat.getNumberInstance(Locale.GERMAN).format(totalCost));
     }
 
+    //All tables variables replacement
     private void tableContent(Dmp dmp, List<XWPFParagraph> xwpfParagraphs, Map<String, String> replacements, List<XWPFTable> tables, List<Dataset> datasets, List<Cost> costList, SimpleDateFormat formatter) {
 
         for (XWPFTable xwpfTable : tables) {

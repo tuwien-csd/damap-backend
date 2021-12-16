@@ -29,10 +29,12 @@ public class DocumentConversionService {
     //Convert the date for readable format for the document
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
+    //Method to set the export template
     public String setTemplate (String template) {
         return template;
     }
 
+    //Method to load the export template
     public XWPFDocument loadTemplate (String template) throws Exception{
         //Loading a template file in resources folder
         ClassLoader classLoader = getClass().getClassLoader();
@@ -43,6 +45,7 @@ public class DocumentConversionService {
         return document;
     }
 
+    //Method to replace variable in the document's paragraphs
     public void replaceInParagraphs(List<XWPFParagraph> xwpfParagraphs, Map<String, String> replacements) {
 
         /*
@@ -85,6 +88,7 @@ public class DocumentConversionService {
         }
     }
 
+    //Method to do a replacement of variable with desired value
     public void addReplacement(Map<String, String> replacements, String var, Object dmpContent) {
         //null case handling
         String content = (dmpContent == null) ? "" : String.valueOf(dmpContent);
@@ -96,6 +100,7 @@ public class DocumentConversionService {
         replacements.put(var, content);
     }
 
+    //Method to add new row in a table
     public XWPFTableRow insertNewTableRow(XWPFTableRow sourceTableRow, int pos) throws Exception {
         XWPFTable table = sourceTableRow.getTable();
         CTRow newCTRrow = CTRow.Factory.parse(sourceTableRow.getCtRow().newInputStream());
@@ -104,6 +109,7 @@ public class DocumentConversionService {
         return tableRow;
     }
 
+    //Method that is required to be executed for table content modification
     static void commitTableRows(XWPFTable table) {
         int rowNr = 0;
         for (XWPFTableRow tableRow : table.getRows()) {
@@ -111,6 +117,7 @@ public class DocumentConversionService {
         }
     }
 
+    //Method to do a replacement specific in document's footer area
     public void replaceTextInFooter(XWPFDocument doc, Map<String, String> replacements) {
         for (XWPFFooter footer : doc.getFooterList()) {
             for (XWPFParagraph xwpfParagraph : footer.getParagraphs()) {
@@ -127,6 +134,7 @@ public class DocumentConversionService {
         }
     }
 
+    //Method to combine multiple values become one string. Can be used for generate values from a list of object or replace one variable with multiple values in one execution.
     public String multipleVariable(List<String> variableList) {
         switch (variableList.size()) {
             case 0:
