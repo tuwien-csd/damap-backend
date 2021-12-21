@@ -640,6 +640,71 @@ public class ExportFWFTemplate extends DocumentConversionService{
         }
 
         addReplacement(replacements,"[storage]", storageVar);
+
+
+        //Section 3b: sensitive data
+        log.info("sensitive data part");
+
+        String sensitiveData = "";
+        if (dmp.getSensitiveData() != null) {
+            if (dmp.getSensitiveData()) {
+                String sensitiveDataSentence = "In this project there will be sensitive data";
+                String sensitiveDataset = "";
+                String datasetSentence = "";
+                String sensitiveDataMeasure = "";
+                String authorisedAccess = "";
+                List<String> sensitiveDatasetList = new ArrayList<>();
+
+                for (Dataset dataset: datasets) {
+                    int idx = datasets.indexOf(dataset)+1;
+                    if (dataset.getSensitiveData()) {
+                        sensitiveDataset = "P" + idx + " (" + dataset.getTitle() + ")";
+                        sensitiveDatasetList.add(sensitiveDataset);
+                    }
+                }
+
+                if (sensitiveDatasetList.size() > 0) {
+                    datasetSentence = " on dataset ";
+                    sensitiveDataset = multipleVariable(sensitiveDatasetList) + ". ";
+                }
+                else {
+                    datasetSentence = ". ";
+                }
+
+                List<String> dataSecurityList = new ArrayList<>();
+
+                if (dmp.getSensitiveDataSecurity() != null) {
+                    for (ESecurityMeasure securityMeasure : dmp.getSensitiveDataSecurity()) {
+                        dataSecurityList.add(securityMeasure.toString());
+                    }
+                }
+
+                if (dataSecurityList.isEmpty()) {
+                    sensitiveDataMeasure = "There are no additional security measures defined at the moment.";
+                }
+                else {
+                    //security measurement size defined is/or usage
+                    if (dataSecurityList.size() == 1) {
+                        sensitiveDataMeasure = "To ensure that storage and transfer of sensitive data is safe, additional security measures such as " + multipleVariable(dataSecurityList) + "is taken.";
+                    } else {
+                        sensitiveDataMeasure = "To ensure that storage and transfer of sensitive data is safe, additional security measures such as " + multipleVariable(dataSecurityList) + "are taken.";
+                    }
+                }
+
+                if (dmp.getSensitiveDataAccess() != null) {
+                    if (!dmp.getSensitiveDataAccess().isEmpty()) {
+                        authorisedAccess = "Only " + dmp.getSensitiveDataAccess() + " will be authorised to access sensitive data.";
+                    }
+                }
+
+                sensitiveData = sensitiveDataSentence + datasetSentence + sensitiveDataset + sensitiveDataMeasure + authorisedAccess;
+
+            } else {
+                sensitiveData = "At this stage, it is not foreseen to process any sensitive data in the project. If this changes, advice will be sought from the data protection specialist at TU Wien (Verena Dolovai), and the DMP will be updated.";
+            }
+        }
+
+        addReplacement(replacements, "[sensitivedata]", sensitiveData);
     }
 
     //Section 4 variables replacement
@@ -690,63 +755,6 @@ public class ExportFWFTemplate extends DocumentConversionService{
         }
 
         addReplacement(replacements, "[personaldata]", personalData);
-
-        //Section 4a: sensitive data
-        log.info("sensitive data part");
-
-        String sensitiveData = "";
-        if (dmp.getSensitiveData() != null) {
-            if (dmp.getSensitiveData()) {
-                String sensitiveDataSentence = "In this project there will be sensitive data";
-                String sensitiveDataset = "";
-                String datasetSentence = "";
-                String sensitiveDataMeasure = "";
-                List<String> sensitiveDatasetList = new ArrayList<>();
-
-                for (Dataset dataset: datasets) {
-                    int idx = datasets.indexOf(dataset)+1;
-                    if (dataset.getSensitiveData()) {
-                        sensitiveDataset = "P" + idx + " (" + dataset.getTitle() + ")";
-                        sensitiveDatasetList.add(sensitiveDataset);
-                    }
-                }
-
-                if (sensitiveDatasetList.size() > 0) {
-                    datasetSentence = " on dataset ";
-                    sensitiveDataset = multipleVariable(sensitiveDatasetList) + ". ";
-                }
-                else {
-                    datasetSentence = ". ";
-                }
-
-                List<String> dataSecurityList = new ArrayList<>();
-
-                if (dmp.getSensitiveDataSecurity() != null) {
-                    for (ESecurityMeasure securityMeasure : dmp.getSensitiveDataSecurity()) {
-                        dataSecurityList.add(securityMeasure.toString());
-                    }
-                }
-
-                if (dataSecurityList.size() > 1) {
-                    sensitiveDataMeasure = "Additional security measures that will be used are " + multipleVariable(dataSecurityList) + ".";
-                }
-
-                if (dataSecurityList.size() == 1) {
-                    sensitiveDataMeasure = "Additional security measures that will be used is " + multipleVariable(dataSecurityList) + ".";
-                }
-
-                if (dataSecurityList.size() == 0) {
-                    sensitiveDataMeasure = "There are no additional security measures defined at the moment.";
-                }
-
-                sensitiveData = sensitiveDataSentence + datasetSentence + sensitiveDataset + sensitiveDataMeasure;
-
-            } else {
-                sensitiveData = "At this stage, it is not foreseen to process any sensitive data in the project. If this changes, advice will be sought from the data protection specialist at TU Wien (Verena Dolovai), and the DMP will be updated.";
-            }
-        }
-
-        addReplacement(replacements, "[sensitivedata]", sensitiveData);
 
         //Section 4b: legal restriction
 
@@ -869,7 +877,15 @@ public class ExportFWFTemplate extends DocumentConversionService{
     private void sectionFive(Dmp dmp, Map<String, String> replacements) {
 
         addReplacement(replacements, "[targetaudience]", dmp.getTargetAudience());
-        addReplacement(replacements, "[tools]", dmp.getTools());
+
+        if (dmp.getTools() != null) {
+            if (dmp.getTools() != "") {
+                addReplacement(replacements, "[tools]", "Specific tool or software is required to access and reuse the data: " + dmp.getTools());
+            }
+            else {
+                addReplacement(replacements, "[tools]", "No specific tool or software is required to access and reuse the data");
+            }
+        }
     }
 
     //Section 6 variables replacement
