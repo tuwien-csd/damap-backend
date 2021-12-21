@@ -1,6 +1,7 @@
 package at.ac.tuwien.damap.rest;
 
 import at.ac.tuwien.damap.conversion.DocumentConversionService;
+import at.ac.tuwien.damap.conversion.ExportFWFTemplate;
 import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import at.ac.tuwien.damap.security.SecurityService;
 import io.quarkus.security.Authenticated;
@@ -27,8 +28,11 @@ public class DmpDocumentResource {
     @Inject
     SecurityService securityService;
 
+    //@Inject
+    //DocumentConversionService documentConversionService;
+
     @Inject
-    DocumentConversionService documentConversionService;
+    ExportFWFTemplate exportFWFTemplate;
 
     @Inject
     DmpService dmpService;
@@ -38,7 +42,8 @@ public class DmpDocumentResource {
 
     @GET
     @Path("/{dmpId}")
-    public Response getFWFTemplate(@PathParam("dmpId") long dmpId) throws Exception {
+
+    public Response exportTemplate(@PathParam("dmpId") long dmpId) throws Exception {
         log.info("Return DMP document file for DMP with id=" + dmpId);
 
         Date date = new Date();
@@ -49,7 +54,7 @@ public class DmpDocumentResource {
 
         String filename = dmpService.getDefaultFileName(dmpId);
 
-        XWPFDocument document = documentConversionService.getFWFTemplate(dmpId);
+        XWPFDocument document = exportFWFTemplate.exportTemplate(dmpId);
 
         StreamingOutput streamingOutput = new StreamingOutput() {
             @Override
