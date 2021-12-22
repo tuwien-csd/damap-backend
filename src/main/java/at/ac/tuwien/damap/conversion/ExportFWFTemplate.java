@@ -154,7 +154,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
                 fundingItems.add(dmp.getProject().getFunding().getGrantIdentifier().getIdentifier());
             //variable project funding, combination from funding item variables
             if (!fundingItems.isEmpty()) {
-                addReplacement(replacements, "[grantid]", multipleVariable(fundingItems));
+                addReplacement(replacements, "[grantid]", String.join(", ", fundingItems));
             }
             else {
                 addReplacement(replacements, "[grantid]", "");
