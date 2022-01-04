@@ -45,6 +45,7 @@ class DatasetDOMapperTest {
         dataset.setDelete(true);
         dataset.setDateOfDeletion(new Date(200000));
         dataset.setReasonForDeletion("because");
+        dataset.setRetentionPeriod(10);
         return dataset;
     }
     private DatasetDO createDatasetDO(){
@@ -67,6 +68,7 @@ class DatasetDOMapperTest {
         datasetDO.setDelete(true);
         datasetDO.setDateOfDeletion(new Date(200000));
         datasetDO.setReasonForDeletion("because");
+        datasetDO.setRetentionPeriod(10);
         return datasetDO;
     }
 }
