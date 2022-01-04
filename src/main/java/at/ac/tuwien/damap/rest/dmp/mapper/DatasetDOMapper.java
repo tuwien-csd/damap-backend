@@ -24,6 +24,7 @@ public class DatasetDOMapper {
         datasetDO.setDelete(dataset.getDelete());
         datasetDO.setDateOfDeletion(dataset.getDateOfDeletion());
         datasetDO.setReasonForDeletion(dataset.getReasonForDeletion());
+        datasetDO.setRetentionPeriod(dataset.getRetentionPeriod());
         if (dataset.getDataAccess() != null)
             datasetDO.setDataAccess(dataset.getDataAccess().getValue());
         if (dataset.getSelectedProjectMembersAccess() != null)
@@ -56,6 +57,7 @@ public class DatasetDOMapper {
         dataset.setDelete(datasetDO.getDelete());
         dataset.setDateOfDeletion(datasetDO.getDateOfDeletion());
         dataset.setReasonForDeletion(datasetDO.getReasonForDeletion());
+        dataset.setRetentionPeriod(datasetDO.getRetentionPeriod());
 
         return dataset;
     }}
