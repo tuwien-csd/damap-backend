@@ -16,7 +16,7 @@ public class RepositoryDetails {
     private String repositoryName;
     private List<String> repositoryLanguages;
     private String description;
-    private Boolean versioning;
+//    private Boolean versioning;
     private List<String> contentTypes;
     private List<String> metadataStandards;
 
