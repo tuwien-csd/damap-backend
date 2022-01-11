@@ -19,7 +19,7 @@ public class RepositoryMapper {
             repositoryDetails.setRepositoryName(repo.getRepositoryName().getValue());
             repositoryDetails.setRepositoryURL(repo.getRepositoryURL());
             repositoryDetails.setDescription(repo.getDescription().getValue());
-//            repositoryDetails.setVersioning(mapYesNoToBoolean(repo.getVersioning()));
+            repositoryDetails.setVersioning(mapYesNoToBoolean(repo.getVersioning()));
             repositoryDetails.setRepositoryIdentifier(repo.getRepositoryIdentifier());
 
             if(repo.getRepositoryLanguage().size() > 0) {
@@ -51,6 +51,7 @@ public class RepositoryMapper {
     }
 
     public Boolean mapYesNoToBoolean(Yesno value) {
+        if (value == null) return null;
         return value.value().equals(Yesno.YES.value());
     }
 }
