@@ -9,6 +9,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.List;
+import at.ac.tuwien.damap.r3data.mapper.RepositoryMapper;
 
 @ApplicationScoped
 public class RepositoriesService {
@@ -46,6 +47,10 @@ public class RepositoriesService {
                 subjects, contentTypes, countries, certificates, pidSystems,
                 aidSystems, repositoryAccess, dataAccess, dataUpload, dataLicenses,
                 repositoryTypes, institutionTypes, versioning, metadataStandards);
+    }
+
+    public String getDescription(String id) {
+        return RepositoryMapper.mapToRepositoryDetails(getById(id)).getDescription();
     }
 
 }
