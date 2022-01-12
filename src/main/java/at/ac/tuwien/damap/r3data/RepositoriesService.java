@@ -53,4 +53,8 @@ public class RepositoriesService {
         return RepositoryMapper.mapToRepositoryDetails(getById(id)).getDescription();
     }
 
+    public String getRepositoryURL(String id) {
+        return RepositoryMapper.mapToRepositoryDetails(getById(id)).getRepositoryURL();
+    }
+
 }
