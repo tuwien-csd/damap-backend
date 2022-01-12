@@ -51,6 +51,7 @@ public class RepositoryMapper {
     }
 
     public Boolean mapYesNoToBoolean(Yesno value) {
+        if (value == null) return null;
         return value.value().equals(Yesno.YES.value());
     }
 }

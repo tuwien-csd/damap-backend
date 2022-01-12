@@ -1,11 +1,13 @@
 package at.ac.tuwien.damap.conversion;
 
 import at.ac.tuwien.damap.domain.*;
+import at.ac.tuwien.damap.r3data.mapper.RepositoryMapper;
 import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import at.ac.tuwien.damap.enums.EComplianceType;
 import at.ac.tuwien.damap.enums.ESecurityMeasure;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectMemberDO;
+import at.ac.tuwien.damap.r3data.RepositoriesService;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -25,6 +27,9 @@ public class ExportFWFTemplate extends DocumentConversionService{
 
     @Inject
     DmpService dmpService;
+
+    @Inject
+    RepositoriesService repositoriesService;
 
     public XWPFDocument exportTemplate(long dmpId) throws Exception {
 
@@ -72,7 +77,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
 
         //Section 5 contains information about data publication and long term preservation.
         log.info("Export steps: Section 5");
-        sectionFive(dmp, map);
+        sectionFive(dmp, map, datasets);
 
         //Section 6 contains resources and cost information if necessary.
         log.info("Export steps: Section 6");
@@ -874,7 +879,31 @@ public class ExportFWFTemplate extends DocumentConversionService{
     }
 
     //Section 5 variables replacement
-    private void sectionFive(Dmp dmp, Map<String, String> replacements) {
+    private void sectionFive(Dmp dmp, Map<String, String> replacements, List<Dataset> datasets) {
+
+        String repoSentence = "";
+        String repoInformation = "";
+
+        for (Dataset dataset : datasets) {
+            if (dataset.getDistributionList() != null){
+                List<Distribution> distributions = dataset.getDistributionList();
+                List<String> repositories = new ArrayList<>();
+
+                for (Distribution distribution: distributions) {
+                    if (distribution.getHost().getHostId() != null)
+                        if (distribution.getHost().getHostId().contains("r3")) { //repository
+                            repositories.add(repositoriesService.getDescription(distribution.getHost().getHostId()) + " " + repositoriesService.getRepositoryURL(distribution.getHost().getHostId()));
+                        }
+                }
+                if (repositories.size() > 0)
+                    repoSentence = "The repository used in this project described in the following paragraph.";
+                    repositories.add(0,repoSentence);
+                    repoInformation = String.join("; ", repositories);
+            }
+        }
+
+
+        addReplacement(replacements, "[repoinformation]", repoInformation);
 
         addReplacement(replacements, "[targetaudience]", dmp.getTargetAudience());
 
