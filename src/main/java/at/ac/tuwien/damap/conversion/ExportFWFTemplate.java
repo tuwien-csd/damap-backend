@@ -915,6 +915,9 @@ public class ExportFWFTemplate extends DocumentConversionService{
                 addReplacement(replacements, "[tools]", "No specific tool or software is required to access and reuse the data");
             }
         }
+        else {
+            addReplacement(replacements, "[tools]", "No specific tool or software is required to access and reuse the data");
+        }
     }
 
     //Section 6 variables replacement
