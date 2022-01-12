@@ -77,7 +77,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
 
         //Section 5 contains information about data publication and long term preservation.
         log.info("Export steps: Section 5");
-        sectionFive(dmp, map);
+        sectionFive(dmp, map, datasets);
 
         //Section 6 contains resources and cost information if necessary.
         log.info("Export steps: Section 6");
@@ -457,8 +457,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
                 for (Distribution distribution: distributions) {
                     if (distribution.getHost().getHostId() != null)
                         if (distribution.getHost().getHostId().contains("r3")) { //repository
-                            String repoDescription = repositoriesService.getDescription(distribution.getHost().getHostId());
-                            repositories.add(distribution.getHost().getTitle() + " (" + repoDescription + ")");
+                            repositories.add(distribution.getHost().getTitle());
                         } else { //storage
                             storage.add(distribution.getHost().getTitle());
                         }
@@ -594,29 +593,28 @@ public class ExportFWFTemplate extends DocumentConversionService{
 
                 if (host.getTitle() != null) {
                     hostVar = host.getTitle();
-//                    storageDescription = repositoriesService.getDescription(host.getHostId());
-//                    if (host.getTitle().equals("TUfiles")) {
-//                        storageDescription = ", a central and readily available network drive with daily backups and regular snapshots provided by TU.it. " +
-//                                "TUfiles is suitable for storing data with moderate access requirements, but high availability demands that allows full control of allocating authorisations. " +
-//                                "Only authorized staff members will have access.";
-//                    }
-//                    if (host.getTitle().equals("Server Housing")) {
-//                        storageDescription = ". The server is housed in a dedicated TU.it server room with limited access and operated by our institute.";
-//                    }
-//                    if (host.getTitle().equals("TUproCloud")) {
-//                        storageDescription = ", a sync&share service for projects provided by TU.it. " +
-//                                "Only authorized staff members and project partners will have access to the TUproCloud folders. " +
-//                                "Deleted files can be recovered within 180 days by using the bin function.";
-//                    }
-//                    if (host.getTitle().equals("TUhost")) {
-//                        storageDescription = ", the central and highly available TU.it virtualisation platform, hosted on VMware ESXi. Hardware. " +
-//                                "Storage and backup will be provided by TU.it and our institute will be responsible for the server operation.";
-//                    }
-//                    if (host.getTitle().equals("TUgitLab")) {
-//                        storageDescription = ", an application for managing repositories based on Git provided and managed by TU.it. " +
-//                                "Our institute’s administrators will manage GitLab groups, assign project permissions, and assign external project partners as additional GitLab users. " +
-//                                "This service is highly available and scalable on the Kubernetes platform.";
-//                    }
+                    if (host.getTitle().equals("TUfiles")) {
+                        storageDescription = ", a central and readily available network drive with daily backups and regular snapshots provided by TU.it. " +
+                                "TUfiles is suitable for storing data with moderate access requirements, but high availability demands that allows full control of allocating authorisations. " +
+                                "Only authorized staff members will have access.";
+                    }
+                    if (host.getTitle().equals("Server Housing")) {
+                        storageDescription = ". The server is housed in a dedicated TU.it server room with limited access and operated by our institute.";
+                    }
+                    if (host.getTitle().equals("TUproCloud")) {
+                        storageDescription = ", a sync&share service for projects provided by TU.it. " +
+                                "Only authorized staff members and project partners will have access to the TUproCloud folders. " +
+                                "Deleted files can be recovered within 180 days by using the bin function.";
+                    }
+                    if (host.getTitle().equals("TUhost")) {
+                        storageDescription = ", the central and highly available TU.it virtualisation platform, hosted on VMware ESXi. Hardware. " +
+                                "Storage and backup will be provided by TU.it and our institute will be responsible for the server operation.";
+                    }
+                    if (host.getTitle().equals("TUgitLab")) {
+                        storageDescription = ", an application for managing repositories based on Git provided and managed by TU.it. " +
+                                "Our institute’s administrators will manage GitLab groups, assign project permissions, and assign external project partners as additional GitLab users. " +
+                                "This service is highly available and scalable on the Kubernetes platform.";
+                    }
                 }
 
                 for (Distribution dist: distributions) {
@@ -873,7 +871,31 @@ public class ExportFWFTemplate extends DocumentConversionService{
     }
 
     //Section 5 variables replacement
-    private void sectionFive(Dmp dmp, Map<String, String> replacements) {
+    private void sectionFive(Dmp dmp, Map<String, String> replacements, List<Dataset> datasets) {
+
+        String repoSentence = "";
+        String repoInformation = "";
+
+        for (Dataset dataset : datasets) {
+            if (dataset.getDistributionList() != null){
+                List<Distribution> distributions = dataset.getDistributionList();
+                List<String> repositories = new ArrayList<>();
+
+                for (Distribution distribution: distributions) {
+                    if (distribution.getHost().getHostId() != null)
+                        if (distribution.getHost().getHostId().contains("r3")) { //repository
+                            repositories.add(repositoriesService.getDescription(distribution.getHost().getHostId()) + " " + repositoriesService.getRepositoryURL(distribution.getHost().getHostId()));
+                        }
+                }
+                if (repositories.size() > 0)
+                    repoSentence = "The repository used in this project described in the following paragraph.";
+                    repositories.add(0,repoSentence);
+                    repoInformation = String.join("; ", repositories);
+            }
+        }
+
+
+        addReplacement(replacements, "[repoinformation]", repoInformation);
 
         addReplacement(replacements, "[targetaudience]", dmp.getTargetAudience());
         addReplacement(replacements, "[tools]", dmp.getTools());
