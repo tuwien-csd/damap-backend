@@ -639,8 +639,15 @@ public class ExportFWFTemplate extends DocumentConversionService{
                     }
                 }
 
-                if (hostList.indexOf(host)+1 < hostList.size() && (host.getHostId() == null || !host.getHostId().contains("r3")))
-                    storageVar = storageVar.concat(";");
+                if (hostList.indexOf(host)+1 < hostList.size())
+                    if (host.getHostId() != null) {
+                        if (!host.getHostId().contains("r3")) { //only write information related to the storage, repository will be written in section 5)
+                            storageVar = storageVar.concat(";");
+                        }
+                    }
+                    else { //case for external storage, will have null host Id
+                        storageVar = storageVar.concat(";");
+                    }
             }
         }
 
