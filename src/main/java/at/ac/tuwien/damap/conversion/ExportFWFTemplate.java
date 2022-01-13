@@ -639,7 +639,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
                     }
                 }
 
-                if (hostList.indexOf(host)+1 < hostList.size() && !host.getHostId().contains("r3"))
+                if (hostList.indexOf(host)+1 < hostList.size() && (host.getHostId() == null || !host.getHostId().contains("r3")))
                     storageVar = storageVar.concat(";");
             }
         }
