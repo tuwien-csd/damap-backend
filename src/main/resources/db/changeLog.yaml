@@ -21,7 +21,7 @@ databaseChangeLog:
                       nullable:  false
                -  column:
                     name:  timestamp
-                    type:  DATE
+                    type:  TIMESTAMP
                -  column:
                     name:  changed_by
                     type:  VARCHAR(255)
@@ -705,10 +705,10 @@ databaseChangeLog:
                       references:  funding(id)
                -  column:
                     name:  project_start
-                    type:  DATE
+                    type:  TIMESTAMP
                -  column:
                     name:  project_end
-                    type:  DATE
+                    type:  TIMESTAMP
 
         -  createTable:
              tableName:  project_aud
@@ -744,10 +744,10 @@ databaseChangeLog:
                     type:  NUMBER(20,0)
                -  column:
                     name:  project_start
-                    type:  DATE
+                    type:  TIMESTAMP
                -  column:
                     name:  project_end
-                    type:  DATE
+                    type:  TIMESTAMP
 
         -  createTable:
              tableName:  dmp
@@ -765,10 +765,10 @@ databaseChangeLog:
                       nullable:  false
                -  column:
                     name:  created
-                    type:  DATE
+                    type:  TIMESTAMP
                -  column:
                     name:  modified
-                    type:  DATE
+                    type:  TIMESTAMP
                -  column:
                     name:  title
                     type:  VARCHAR(255)
@@ -882,10 +882,10 @@ databaseChangeLog:
                     type:  NUMBER(20,0)
                -  column:
                     name:  created
-                    type:  DATE
+                    type:  TIMESTAMP
                -  column:
                     name:  modified
-                    type:  DATE
+                    type:  TIMESTAMP
                -  column:
                     name:  title
                     type:  VARCHAR(255)
@@ -1152,7 +1152,7 @@ databaseChangeLog:
                     type:  VARCHAR(255)
                -  column:
                     name:  retrieval_date
-                    type:  DATE
+                    type:  TIMESTAMP
                -  column:
                     name:  discriminator
                     type:  VARCHAR(255)
@@ -1188,7 +1188,7 @@ databaseChangeLog:
                     type:  VARCHAR(255)
                -  column:
                     name:  retrieval_date
-                    type:  DATE
+                    type:  TIMESTAMP
                -  column:
                     name:  discriminator
                     type:  VARCHAR(255)
@@ -1386,7 +1386,7 @@ databaseChangeLog:
                     type:  VARCHAR(255)
                -  column:
                     name:  start_date
-                    type:  DATE
+                    type:  TIMESTAMP
                -  column:
                     name:  reference_hash
                     type:  VARCHAR(255)
@@ -1446,7 +1446,7 @@ databaseChangeLog:
                     type:  VARCHAR(255)
                -  column:
                     name:  start_date
-                    type:  DATE
+                    type:  TIMESTAMP
                -  column:
                     name:  reference_hash
                     type:  VARCHAR(255)
@@ -1520,10 +1520,10 @@ databaseChangeLog:
                       references:  e_function_role(role)
                -  column:
                     name:  start_date
-                    type:  DATE
+                    type:  TIMESTAMP
                -  column:
                     name:  until_date
-                    type:  DATE
+                    type:  TIMESTAMP
 
         -  createTable:
              tableName:  administration_aud
@@ -1556,10 +1556,10 @@ databaseChangeLog:
                       references:  e_function_role(role)
                -  column:
                     name:  start_date
-                    type:  DATE
+                    type:  TIMESTAMP
                -  column:
                     name:  until_date
-                    type:  DATE
+                    type:  TIMESTAMP
 
         -  createTable:
              tableName:  access_management
@@ -1598,10 +1598,10 @@ databaseChangeLog:
                       references:  e_function_role(role)
                -  column:
                     name:  start_date
-                    type:  DATE
+                    type:  TIMESTAMP
                -  column:
                     name:  until_date
-                    type:  DATE
+                    type:  TIMESTAMP
 
         -  createTable:
              tableName:  access_management_aud
@@ -1640,10 +1640,10 @@ databaseChangeLog:
                       references:  e_function_role(role)
                -  column:
                     name:  start_date
-                    type:  DATE
+                    type:  TIMESTAMP
                -  column:
                     name:  until_date
-                    type:  DATE
+                    type:  TIMESTAMP
 
         -  createTable:
              tableName:  distribution
@@ -1820,7 +1820,7 @@ databaseChangeLog:
                     type: BOOLEAN
                 - column:
                     name: date_of_deletion
-                    type: DATE
+                    type: TIMESTAMP
                 - column:
                     name: reason_for_deletion
                     type: VARCHAR(4000)
@@ -1832,7 +1832,7 @@ databaseChangeLog:
                   type: BOOLEAN
               - column:
                   name: date_of_deletion
-                  type: DATE
+                  type: TIMESTAMP
               - column:
                   name: reason_for_deletion
                   type: VARCHAR(4000)
