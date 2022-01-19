@@ -29,8 +29,10 @@ public class Dmp extends PanacheEntity {
     @Setter(AccessLevel.NONE)
     private long version;
 
+    @Temporal(TemporalType.TIMESTAMP)
     private Date created;
 
+    @Temporal(TemporalType.TIMESTAMP)
     private Date modified;
 
     private String title;

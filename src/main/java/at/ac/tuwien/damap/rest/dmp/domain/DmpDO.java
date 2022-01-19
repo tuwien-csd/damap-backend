@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.json.bind.annotation.JsonbDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class DmpDO {
     private ProjectDO project;
     private PersonDO contact;
     private EDataKind dataKind;
-    private List<ContributorDO> contributors;
+    private List<ContributorDO> contributors = new ArrayList<ContributorDO>();
     private String noDataExplanation;
     private String metadata;
     private String dataGeneration;
@@ -31,27 +32,27 @@ public class DmpDO {
     private String tools;
     private String restrictedDataAccess;
     private Boolean personalData;
-    private List<String> personalDataCompliance;
+    private List<String> personalDataCompliance = new ArrayList<String>();
     private String otherPersonalDataCompliance;
     private Boolean sensitiveData;
-    private List<String> sensitiveDataSecurity;
+    private List<String> sensitiveDataSecurity = new ArrayList<String>();
     private String otherDataSecurityMeasures;
     private String sensitiveDataAccess;
     private Boolean legalRestrictions;
-    private List<String> legalRestrictionsDocuments;
+    private List<String> legalRestrictionsDocuments = new ArrayList<String>();
     private String otherLegalRestrictionsDocument;
     private String legalRestrictionsComment;
     private String dataRightsAndAccessControl;
     private Boolean humanParticipants;
     private Boolean ethicalIssuesExist;
     private Boolean committeeReviewed;
-    private List<DatasetDO> datasets;
-    private List<HostDO> hosts;
-    private List<StorageDO> storage;
-    private List<StorageDO> externalStorage;
+    private List<DatasetDO> datasets = new ArrayList<DatasetDO>();
+    private List<HostDO> hosts = new ArrayList<HostDO>();
+    private List<StorageDO> storage = new ArrayList<StorageDO>();
+    private List<StorageDO> externalStorage = new ArrayList<StorageDO>();
     private String externalStorageInfo;
     private String restrictedAccessInfo;
     private String closedAccessInfo;
     private Boolean costsExist;
-    private List<CostDO> costs;
+    private List<CostDO> costs = new ArrayList<CostDO>();
 }
