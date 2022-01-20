@@ -150,6 +150,7 @@ public class TestDOFactory {
         dataset.setType("Dataset Type");
         dataset.setSize(50000L);
         dataset.setComment("Comments related to the dataset.");
+        dataset.setRetentionPeriod(10);
         dataset.setPersonalData(true);
         dataset.setSensitiveData(true);
         dataset.setLegalRestrictions(true);
