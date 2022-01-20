@@ -2076,3 +2076,33 @@ databaseChangeLog:
                 constraints:
                   foreignKeyName: fk_agreement_aud
                   references: e_agreement(agreement)
+
+
+  - changeSet:
+      id: 6
+      author: Clara Schuster
+      changes:
+        - addColumn:
+            tableName: dataset
+            columns:
+              - column:
+                  name: retention_period
+                  type: INTEGER
+        - addColumn:
+            tableName: dataset_aud
+            columns:
+              - column:
+                  name: retention_period
+                  type: INTEGER
+        - dropColumn:
+            tableName: host
+            columns:
+              - column:
+                  name: retrieval_date
+                  type: TIMESTAMP
+        - dropColumn:
+            tableName: host_aud
+            columns:
+              - column:
+                  name: retrieval_date
+                  type: TIMESTAMP

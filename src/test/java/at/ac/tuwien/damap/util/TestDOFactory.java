@@ -150,6 +150,7 @@ public class TestDOFactory {
         dataset.setType("Dataset Type");
         dataset.setSize(50000L);
         dataset.setComment("Comments related to the dataset.");
+        dataset.setRetentionPeriod(10);
         dataset.setPersonalData(true);
         dataset.setSensitiveData(true);
         dataset.setLegalRestrictions(true);
@@ -170,7 +171,6 @@ public class TestDOFactory {
         HostDO host = new HostDO();
         host.setHostId("r3d100013557");
         host.setTitle("TU Data");
-        host.setDate(new Date());
         host.setDatasets(List.of("referenceHash123456"));
         return List.of(host);
     }
@@ -179,7 +179,6 @@ public class TestDOFactory {
         StorageDO storage = new StorageDO();
         storage.setHostId("123456");
         storage.setTitle("Internal Host");
-        storage.setDate(new Date());
         storage.setDatasets(List.of("referenceHash123456"));
         storage.setUrl("Link to the storage service");
         storage.setBackupFrequency("Frequency of data backups.");
@@ -192,7 +191,6 @@ public class TestDOFactory {
         StorageDO storage = new StorageDO();
         storage.setHostId(null);
         storage.setTitle("External Host");
-        storage.setDate(new Date());
         storage.setDatasets(List.of("referenceHash123456"));
         storage.setUrl("Link to the storage service");
         storage.setBackupFrequency("Frequency of data backups.");
