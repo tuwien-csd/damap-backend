@@ -502,13 +502,13 @@ public class ExportFWFTemplate extends DocumentConversionService{
             addReplacement(replacements, docVar12, datasetSelectedAccess);
 
             if (dataset.getOtherProjectMembersAccess() != null) {
-                datasetAllAccess = dataset.getSelectedProjectMembersAccess().toString().toLowerCase();
+                datasetAllAccess = dataset.getOtherProjectMembersAccess().toString().toLowerCase();
             }
 
             addReplacement(replacements, docVar13, datasetAllAccess);
 
             if (dataset.getPublicAccess() != null) {
-                datasetPublicAccess = dataset.getSelectedProjectMembersAccess().toString().toLowerCase();
+                datasetPublicAccess = dataset.getPublicAccess().toString().toLowerCase();
             }
 
             addReplacement(replacements, docVar14, datasetPublicAccess);
