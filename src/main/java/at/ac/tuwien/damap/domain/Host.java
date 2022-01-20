@@ -35,9 +35,6 @@ public class Host extends PanacheEntity {
 
     private String title;
 
-    @Column(name = "retrieval_date")
-    private Date date;
-
     @OneToMany(mappedBy = "host", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<Distribution> distributionList = new ArrayList<>();
 }

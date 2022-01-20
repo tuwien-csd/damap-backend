@@ -11,7 +11,6 @@ public class HostDOMapper {
         hostDO.setId(host.id);
         hostDO.setHostId(host.getHostId());
         hostDO.setTitle(host.getTitle());
-        hostDO.setDate(host.getDate());
 
         return hostDO;
     }
@@ -21,7 +20,6 @@ public class HostDOMapper {
             host.id = hostDO.getId();
         host.setHostId(hostDO.getHostId());
         host.setTitle(hostDO.getTitle());
-        host.setDate(hostDO.getDate());
 
         return host;
     }

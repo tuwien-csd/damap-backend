@@ -30,4 +30,5 @@ public class DatasetDO {
     @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private Date dateOfDeletion;
     private String reasonForDeletion;
+    private Integer retentionPeriod;
 }
