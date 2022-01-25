@@ -14,8 +14,6 @@ public class HostDO {
     private Long id;
     private String hostId;
     private String title;
-    @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    private Date date;
     //referenceHashes
     private List<String> datasets;
 }

@@ -87,6 +87,9 @@ public class Dataset extends PanacheEntity {
     @Column(name = "reason_for_deletion")
     private String reasonForDeletion;
 
+    @Column(name = "retention_period")
+    private Integer retentionPeriod;
+
     @EqualsAndHashCode.Include
     public Long getId() {
         return id;
