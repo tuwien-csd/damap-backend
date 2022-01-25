@@ -25,7 +25,7 @@ public class PersonDOMapper {
         if (person.getAffiliationId() != null) {
             IdentifierDO affiliationIdentifierDO = new IdentifierDO();
             IdentifierDOMapper.mapEntityToDO(person.getAffiliationId(), affiliationIdentifierDO);
-            personDO.setPersonId(affiliationIdentifierDO);
+            personDO.setAffiliationId(affiliationIdentifierDO);
         }
 
         return personDO;
