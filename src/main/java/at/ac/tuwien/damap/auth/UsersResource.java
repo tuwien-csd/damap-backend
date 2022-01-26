@@ -3,7 +3,6 @@ package at.ac.tuwien.damap.auth;
 import io.quarkus.security.identity.SecurityIdentity;
 import org.jboss.resteasy.annotations.cache.NoCache;
 
-import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -18,7 +17,6 @@ public class UsersResource {
 
     @GET
     @Path("/me")
-    @RolesAllowed("user")
     @NoCache
     public String me() {
         return securityIdentity.getPrincipal().getName();
