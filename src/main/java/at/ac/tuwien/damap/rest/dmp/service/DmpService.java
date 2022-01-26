@@ -71,7 +71,6 @@ public class DmpService {
     @Transactional
     public DmpDO update(SaveDmpWrapper dmpWrapper) {
         log.info("Updating DMP with id " + dmpWrapper.getDmp().getId());
-        // TODO: check privileges
         Dmp dmp = dmpRepo.findById(dmpWrapper.getDmp().getId());
         DmpDOMapper.mapDOtoEntity(dmpWrapper.getDmp(), dmp);
         dmp.setModified(new Date());
