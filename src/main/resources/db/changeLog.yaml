@@ -2106,3 +2106,94 @@ databaseChangeLog:
               - column:
                   name: retrieval_date
                   type: TIMESTAMP
+
+
+
+  - changeSet:
+      id: 7
+      author: Zeno Casellato
+      changes:
+        - addColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name:  personal_data_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name:  personal_data_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name:  sensitive_data_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name:  sensitive_data_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name:  legal_restrictions_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name:  legal_restrictions_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name:  human_participants_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name:  human_participants_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name:  ethical_issues_exist_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name:  ethical_issues_exist_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name:  committee_reviewed_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name:  committee_reviewed_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name:  costs_exist_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name:  costs_exist_cris
+                  type:  BOOLEAN

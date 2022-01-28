@@ -1,12 +1,11 @@
 package at.ac.tuwien.damap.conversion;
 
 import at.ac.tuwien.damap.domain.*;
-import at.ac.tuwien.damap.r3data.mapper.RepositoryMapper;
 import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import at.ac.tuwien.damap.enums.EComplianceType;
 import at.ac.tuwien.damap.enums.ESecurityMeasure;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
-import at.ac.tuwien.damap.rest.dmp.domain.ProjectMemberDO;
+import at.ac.tuwien.damap.rest.projects.ProjectMemberDO;
 import at.ac.tuwien.damap.r3data.RepositoriesService;
 
 import java.text.SimpleDateFormat;

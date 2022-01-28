@@ -1,7 +1,6 @@
 package at.ac.tuwien.damap.rest.projects;
 
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
-import at.ac.tuwien.damap.rest.dmp.domain.ProjectMemberDO;
 import io.quarkus.arc.DefaultBean;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -27,6 +26,11 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectDO getProjectDetails(String projectId) {
+        return null;
+    }
+
+    @Override
+    public ProjectSupplementDO getProjectSupplement(String projectId) {
         return null;
     }
 }
