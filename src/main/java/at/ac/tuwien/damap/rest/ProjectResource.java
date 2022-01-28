@@ -9,7 +9,6 @@ import io.quarkus.security.Authenticated;
 import io.quarkus.security.AuthenticationFailedException;
 import lombok.extern.jbosslog.JBossLog;
 
-import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -32,7 +31,6 @@ public class ProjectResource {
     DmpService dmpService;
 
     @GET
-    @RolesAllowed("user")
     public List<ProjectDO> getProjectList() {
         log.info("Get project suggestions");
         String personId = this.getPersonId();
