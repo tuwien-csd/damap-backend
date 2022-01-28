@@ -72,6 +72,9 @@ public class Dmp extends PanacheEntity {
     @Column(name = "personal_data")
     private Boolean personalData;
 
+    @Column(name = "personal_data_cris")
+    private Boolean personalDataCris;
+
     @ElementCollection(targetClass = EComplianceType.class, fetch = FetchType.LAZY)
     @CollectionTable(name="personal_data_compliance")
     @Column(name = "compliance_type")
@@ -84,13 +87,16 @@ public class Dmp extends PanacheEntity {
     @Column(name = "sensitive_data")
     private Boolean sensitiveData;
 
+    @Column(name = "sensitive_data_cris")
+    private Boolean sensitiveDataCris;
+
     @ElementCollection(targetClass = ESecurityMeasure.class, fetch = FetchType.LAZY)
     @CollectionTable(name="sensitive_data_security")
     @Column(name = "security_measure")
     @Enumerated(EnumType.STRING)
     private List<ESecurityMeasure> sensitiveDataSecurity;
 
-@Column(name = "other_data_sec_measures")
+    @Column(name = "other_data_sec_measures")
     private String otherDataSecurityMeasures;
 
     @Column(name = "sensitive_data_access")
@@ -98,6 +104,9 @@ public class Dmp extends PanacheEntity {
 
     @Column(name = "legal_restrictions")
     private Boolean legalRestrictions;
+
+    @Column(name = "legal_restrictions_cris")
+    private Boolean legalRestrictionsCris;
 
     @ElementCollection(targetClass = EAgreement.class, fetch = FetchType.LAZY)
     @CollectionTable(name="legal_restr_documents")
@@ -117,11 +126,20 @@ public class Dmp extends PanacheEntity {
     @Column(name = "human_participants")
     private Boolean humanParticipants;
 
+    @Column(name = "human_participants_cris")
+    private Boolean humanParticipantsCris;
+
     @Column(name = "ethical_issues_exist")
     private Boolean ethicalIssuesExist;
 
+    @Column(name = "ethical_issues_exist_cris")
+    private Boolean ethicalIssuesExistCris;
+
     @Column(name = "committee_reviewed")
     private Boolean committeeReviewed;
+
+    @Column(name = "committee_reviewed_cris")
+    private Boolean committeeReviewedCris;
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)
@@ -154,6 +172,9 @@ public class Dmp extends PanacheEntity {
 
     @Column(name = "costs_exist")
     private Boolean costsExist;
+
+    @Column(name = "costs_exist_cris")
+    private Boolean costsExistCris;
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)

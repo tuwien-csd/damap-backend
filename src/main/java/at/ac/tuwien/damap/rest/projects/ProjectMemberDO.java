@@ -1,5 +1,6 @@
-package at.ac.tuwien.damap.rest.dmp.domain;
+package at.ac.tuwien.damap.rest.projects;
 
+import at.ac.tuwien.damap.rest.dmp.domain.PersonDO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 

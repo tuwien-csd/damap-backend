@@ -42,21 +42,28 @@ public class DmpDOMapper {
         dmpDO.setTools(dmp.getTools());
         dmpDO.setRestrictedDataAccess(dmp.getRestrictedDataAccess());
         dmpDO.setPersonalData(dmp.getPersonalData());
+        dmpDO.setPersonalDataCris(dmp.getPersonalDataCris());
         dmpDO.setOtherPersonalDataCompliance(dmp.getOtherPersonalDataCompliance());
         dmpDO.setSensitiveData(dmp.getSensitiveData());
+        dmpDO.setSensitiveDataCris(dmp.getSensitiveDataCris());
         dmpDO.setOtherDataSecurityMeasures(dmp.getOtherDataSecurityMeasures());
         dmpDO.setSensitiveDataAccess(dmp.getSensitiveDataAccess());
         dmpDO.setLegalRestrictions(dmp.getLegalRestrictions());
+        dmpDO.setLegalRestrictionsCris(dmp.getLegalRestrictionsCris());
         dmpDO.setOtherLegalRestrictionsDocument(dmp.getOtherLegalRestrictionsDocument());
         dmpDO.setLegalRestrictionsComment(dmp.getLegalRestrictionsComment());
         dmpDO.setDataRightsAndAccessControl(dmp.getDataRightsAndAccessControl());
         dmpDO.setHumanParticipants(dmp.getHumanParticipants());
+        dmpDO.setHumanParticipantsCris(dmp.getHumanParticipantsCris());
         dmpDO.setEthicalIssuesExist(dmp.getEthicalIssuesExist());
+        dmpDO.setEthicalIssuesExistCris(dmp.getEthicalIssuesExistCris());
         dmpDO.setCommitteeReviewed(dmp.getCommitteeReviewed());
+        dmpDO.setCommitteeReviewedCris(dmp.getCommitteeReviewedCris());
         dmpDO.setExternalStorageInfo(dmp.getExternalStorageInfo());
         dmpDO.setRestrictedAccessInfo(dmp.getRestrictedAccessInfo());
         dmpDO.setClosedAccessInfo(dmp.getClosedAccessInfo());
         dmpDO.setCostsExist(dmp.getCostsExist());
+        dmpDO.setCostsExistCris(dmp.getCostsExistCris());
 
         List<ContributorDO> contributorDOList = new ArrayList<>();
         dmp.getContributorList().forEach(contributor -> {
@@ -170,21 +177,28 @@ public class DmpDOMapper {
         dmp.setTools(dmpDO.getTools());
         dmp.setRestrictedDataAccess(dmpDO.getRestrictedDataAccess());
         dmp.setPersonalData(dmpDO.getPersonalData());
+        dmp.setPersonalDataCris(dmpDO.getPersonalDataCris());
         dmp.setOtherPersonalDataCompliance(dmpDO.getOtherPersonalDataCompliance());
         dmp.setSensitiveData(dmpDO.getSensitiveData());
+        dmp.setSensitiveDataCris(dmpDO.getSensitiveDataCris());
         dmp.setOtherDataSecurityMeasures(dmpDO.getOtherDataSecurityMeasures());
         dmp.setSensitiveDataAccess(dmpDO.getSensitiveDataAccess());
         dmp.setLegalRestrictions(dmpDO.getLegalRestrictions());
+        dmp.setLegalRestrictionsCris(dmpDO.getLegalRestrictionsCris());
         dmp.setOtherLegalRestrictionsDocument(dmpDO.getOtherLegalRestrictionsDocument());
         dmp.setLegalRestrictionsComment(dmpDO.getLegalRestrictionsComment());
         dmp.setDataRightsAndAccessControl(dmpDO.getDataRightsAndAccessControl());
         dmp.setHumanParticipants(dmpDO.getHumanParticipants());
+        dmp.setHumanParticipantsCris(dmpDO.getHumanParticipantsCris());
         dmp.setEthicalIssuesExist(dmpDO.getEthicalIssuesExist());
+        dmp.setEthicalIssuesExistCris(dmpDO.getEthicalIssuesExistCris());
         dmp.setCommitteeReviewed(dmpDO.getCommitteeReviewed());
+        dmp.setCommitteeReviewedCris(dmpDO.getCommitteeReviewedCris());
         dmp.setExternalStorageInfo(dmpDO.getExternalStorageInfo());
         dmp.setRestrictedAccessInfo(dmpDO.getRestrictedAccessInfo());
         dmp.setClosedAccessInfo(dmpDO.getClosedAccessInfo());
         dmp.setCostsExist(dmpDO.getCostsExist());
+        dmp.setCostsExistCris(dmpDO.getCostsExistCris());
 
         //TODO also check for existing contributors based on Identifier, not just universityId
 
