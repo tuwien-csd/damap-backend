@@ -88,7 +88,6 @@ public class DataManagementPlanResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed("user")
     public DmpDO saveDmp(DmpDO dmpDO) {
         log.info("Save dmp");
         String personId = this.getPersonId();

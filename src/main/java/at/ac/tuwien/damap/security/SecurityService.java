@@ -36,4 +36,8 @@ public class SecurityService {
             return null;
         return ((OidcJwtCallerPrincipal) principal).getName();
     }
+
+    public boolean isAdmin() {
+        return securityIdentity.hasRole("Damap Admin");
+    }
 }
