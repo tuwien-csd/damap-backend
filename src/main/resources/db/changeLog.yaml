@@ -2106,3 +2106,26 @@ databaseChangeLog:
               - column:
                   name: retrieval_date
                   type: TIMESTAMP
+
+  - changeSet:
+      id: 7
+      author: Hardani Maulana
+      changes:
+        - addColumn:
+            tableName: consent
+            columns:
+              - column:
+                  name: id
+                  type: NUMBER(20,0)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: university_id
+                  type: VARCHAR(255)
+              - column:
+                  name: consent_given
+                  type: BOOLEAN
+              - column:
+                  name: given_date
+                  type: TIMESTAMP
