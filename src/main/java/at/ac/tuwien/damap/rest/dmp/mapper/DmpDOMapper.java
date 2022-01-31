@@ -66,22 +66,13 @@ public class DmpDOMapper {
         });
         dmpDO.setContributors(contributorDOList);
 
-        List<String> personalDataComplianceDOList = new ArrayList<>();
-        dmp.getPersonalDataCompliance().forEach(option ->
-                personalDataComplianceDOList.add(option.getValue())
-        );
+        List<EComplianceType> personalDataComplianceDOList = new ArrayList<>(dmp.getPersonalDataCompliance());
         dmpDO.setPersonalDataCompliance(personalDataComplianceDOList);
 
-        List<String> sensitiveDataSecurityDOList = new ArrayList<>();
-        dmp.getSensitiveDataSecurity().forEach(option ->
-                sensitiveDataSecurityDOList.add(option.getValue())
-        );
+        List<ESecurityMeasure> sensitiveDataSecurityDOList = new ArrayList<>(dmp.getSensitiveDataSecurity());
         dmpDO.setSensitiveDataSecurity(sensitiveDataSecurityDOList);
 
-        List<String> legalRestrictionsDocumentsDOList = new ArrayList<>();
-        dmp.getLegalRestrictionsDocuments().forEach(option ->
-                legalRestrictionsDocumentsDOList.add(option.getValue())
-        );
+        List<EAgreement> legalRestrictionsDocumentsDOList = new ArrayList<>(dmp.getLegalRestrictionsDocuments());
         dmpDO.setLegalRestrictionsDocuments(legalRestrictionsDocumentsDOList);
 
         List<DatasetDO> datasetDOList = new ArrayList<>();
@@ -212,7 +203,7 @@ public class DmpDOMapper {
         List<EComplianceType> personalDataComplianceList = new ArrayList<>();
         dmpDO.getPersonalDataCompliance().forEach(option -> {
             if (option != null) {
-                personalDataComplianceList.add(EComplianceType.getByValue(option));
+                personalDataComplianceList.add(option);
             }
         });
         dmp.setPersonalDataCompliance(personalDataComplianceList);
@@ -220,7 +211,7 @@ public class DmpDOMapper {
         List<ESecurityMeasure> sensitiveDataSecurityList = new ArrayList<>();
         dmpDO.getSensitiveDataSecurity().forEach(option -> {
             if (option != null) {
-                sensitiveDataSecurityList.add(ESecurityMeasure.getByValue(option));
+                sensitiveDataSecurityList.add(option);
             }
         });
         dmp.setSensitiveDataSecurity(sensitiveDataSecurityList);
@@ -228,7 +219,7 @@ public class DmpDOMapper {
         List<EAgreement> legalRestrictionsDocumentsList = new ArrayList<>();
         dmpDO.getLegalRestrictionsDocuments().forEach(option -> {
             if (option != null) {
-                legalRestrictionsDocumentsList.add(EAgreement.getByValue(option));
+                legalRestrictionsDocumentsList.add(option);
             }
         });
         dmp.setLegalRestrictionsDocuments(legalRestrictionsDocumentsList);

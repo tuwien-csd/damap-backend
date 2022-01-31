@@ -1,7 +1,6 @@
 package at.ac.tuwien.damap.rest.dmp.mapper;
 
 import at.ac.tuwien.damap.domain.Cost;
-import at.ac.tuwien.damap.enums.ECostType;
 import at.ac.tuwien.damap.rest.dmp.domain.CostDO;
 import lombok.experimental.UtilityClass;
 
@@ -15,7 +14,7 @@ public class CostDOMapper {
         costDO.setCurrencyCode(cost.getCurrencyCode());
         costDO.setDescription(cost.getDescription());
         if (cost.getType() != null)
-            costDO.setType(cost.getType().getValue());
+            costDO.setType(cost.getType());
         costDO.setCustomType(cost.getCustomType());
 
         return costDO;
@@ -26,7 +25,7 @@ public class CostDOMapper {
         cost.setValue(costDO.getValue());
         cost.setCurrencyCode(costDO.getCurrencyCode());
         cost.setDescription(costDO.getDescription());
-        cost.setType(ECostType.getByValue(costDO.getType()));
+        cost.setType(costDO.getType());
         cost.setCustomType(costDO.getCustomType());
 
         return cost;

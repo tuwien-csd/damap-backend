@@ -2,7 +2,6 @@ package at.ac.tuwien.damap.rest.dmp.mapper;
 
 import at.ac.tuwien.damap.domain.Contributor;
 import at.ac.tuwien.damap.domain.Person;
-import at.ac.tuwien.damap.enums.EContributorRole;
 import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.dmp.domain.PersonDO;
 import lombok.experimental.UtilityClass;
@@ -15,7 +14,7 @@ public class ContributorDOMapper {
         contributorDO.setId(contributor.id);
 
         if (contributor.getContributorRole() != null)
-            contributorDO.setRole(contributor.getContributorRole().getRole());
+            contributorDO.setRole(contributor.getContributorRole());
 
         if (contributor.getContributor() != null) {
             PersonDO personDO = new PersonDO();
@@ -30,7 +29,7 @@ public class ContributorDOMapper {
 
         if (contributorDO.getId() != null)
             contributor.id = contributorDO.getId();
-        contributor.setContributorRole(EContributorRole.getByRole(contributorDO.getRole()));
+        contributor.setContributorRole(contributorDO.getRole());
 
         if (contributorDO.getPerson() != null) {
             Person person = new Person();

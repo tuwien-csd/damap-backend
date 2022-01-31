@@ -1,9 +1,7 @@
 package at.ac.tuwien.damap.util;
 
 import at.ac.tuwien.damap.domain.Dmp;
-import at.ac.tuwien.damap.enums.EDataKind;
-import at.ac.tuwien.damap.enums.EFundingState;
-import at.ac.tuwien.damap.enums.EIdentifierType;
+import at.ac.tuwien.damap.enums.*;
 import at.ac.tuwien.damap.repo.DmpRepo;
 import at.ac.tuwien.damap.rest.dmp.domain.*;
 import at.ac.tuwien.damap.rest.dmp.mapper.DmpDOMapper;
@@ -76,17 +74,14 @@ public class TestDOFactory {
     }
 
 
-    private List<String> getComplianceTypeList() {
-        return Arrays.asList("by gaining informed consent for processing personal data",
-                "by anonymisation of personal data for preservation and/or sharing (truly anonymous data are no longer considered personal data)");
+    private List<EComplianceType> getComplianceTypeList() {
+        return Arrays.asList(EComplianceType.INFORMED_CONSENT, EComplianceType.ANONYMISATION);
     }
-    private List<String> getSensitiveDataSecurityList() {
-        return Arrays.asList("individual log-in and password",
-                "automatic locking of clients (timeout)");
+    private List<ESecurityMeasure> getSensitiveDataSecurityList() {
+        return Arrays.asList(ESecurityMeasure.INDIVIDUAL_LOGIN, ESecurityMeasure.AUTOMATIC_LOCKING_OF_CLIENTS);
     }
-    private List<String> getLegalRestrictionsDocuments() {
-        return Arrays.asList("consortium agreement",
-                "data processing agreement");
+    private List<EAgreement> getLegalRestrictionsDocuments() {
+        return Arrays.asList(EAgreement.CONSORTIUM_AGREEMENT, EAgreement.CONFIDENTIALITY_AGREEMENT);
     }
 
     private ProjectDO getTestProjectDO() {
@@ -133,14 +128,14 @@ public class TestDOFactory {
     private List<ContributorDO> getTestContributorList(){
         ContributorDO contributor = new ContributorDO();
         contributor.setPerson(getTestPersonDO());
-        contributor.setRole("Important Person");
+        contributor.setRole(EContributorRole.DATA_MANAGER);
 
         ContributorDO secondContributor = new ContributorDO();
         secondContributor.setPerson(getTestPersonDO());
         secondContributor.getPerson().setFirstName("John");
         secondContributor.getPerson().setLastName("Doe");
         secondContributor.getPerson().setMbox("john.doe@research.institution.com");
-        secondContributor.setRole("Important Person");
+        secondContributor.setRole(EContributorRole.DATA_COLLECTOR);
         return Arrays.asList(contributor, secondContributor);
     }
 
@@ -157,10 +152,10 @@ public class TestDOFactory {
         dataset.setLicense("Dataset License Link");
         dataset.setStartDate(new Date());
         dataset.setReferenceHash("referenceHash123456");
-        dataset.setDataAccess("Here the data can be accessed.");
-        dataset.setSelectedProjectMembersAccess("Here some project members can access.");
-        dataset.setOtherProjectMembersAccess("Here all project members can access the data");
-        dataset.setPublicAccess("Here the public can access the data");
+        dataset.setDataAccess(EDataAccessType.OPEN);
+        dataset.setSelectedProjectMembersAccess(EAccessRight.WRITE);
+        dataset.setOtherProjectMembersAccess(EAccessRight.READ);
+        dataset.setPublicAccess(EAccessRight.READ);
         dataset.setDelete(true);
         dataset.setDateOfDeletion(new Date());
         dataset.setReasonForDeletion("Explanation on why data is being deleted.");
@@ -205,7 +200,7 @@ public class TestDOFactory {
         cost.setValue(50000f);
         cost.setCurrencyCode("EUR");
         cost.setDescription("Descriptiopn of required expense");
-        cost.setType("Typology of expense");
+        cost.setType(ECostType.DATABASE);
         cost.setTitle("Custom Typology");
         return List.of(cost);
     }
