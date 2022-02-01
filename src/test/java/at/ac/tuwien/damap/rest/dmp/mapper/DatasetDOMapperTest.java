@@ -61,9 +61,9 @@ class DatasetDOMapperTest {
         datasetDO.setLicense("any License");
         datasetDO.setStartDate(new Date(100000));
         datasetDO.setReferenceHash("hex-hash");
-        datasetDO.setDataAccess("Closed");
-        datasetDO.setSelectedProjectMembersAccess("writing");
-        datasetDO.setOtherProjectMembersAccess("reading only");
+        datasetDO.setDataAccess(EDataAccessType.CLOSED);
+        datasetDO.setSelectedProjectMembersAccess(EAccessRight.WRITE);
+        datasetDO.setOtherProjectMembersAccess(EAccessRight.READ);
         datasetDO.setPublicAccess(null);
         datasetDO.setDelete(true);
         datasetDO.setDateOfDeletion(new Date(200000));

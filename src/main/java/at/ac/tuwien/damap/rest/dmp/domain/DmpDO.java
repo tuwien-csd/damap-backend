@@ -1,6 +1,9 @@
 package at.ac.tuwien.damap.rest.dmp.domain;
 
+import at.ac.tuwien.damap.enums.EAgreement;
+import at.ac.tuwien.damap.enums.EComplianceType;
 import at.ac.tuwien.damap.enums.EDataKind;
+import at.ac.tuwien.damap.enums.ESecurityMeasure;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
@@ -32,14 +35,14 @@ public class DmpDO {
     private String tools;
     private String restrictedDataAccess;
     private Boolean personalData;
-    private List<String> personalDataCompliance = new ArrayList<String>();
+    private List<EComplianceType> personalDataCompliance = new ArrayList<EComplianceType>();
     private String otherPersonalDataCompliance;
     private Boolean sensitiveData;
-    private List<String> sensitiveDataSecurity = new ArrayList<String>();
+    private List<ESecurityMeasure> sensitiveDataSecurity = new ArrayList<ESecurityMeasure>();
     private String otherDataSecurityMeasures;
     private String sensitiveDataAccess;
     private Boolean legalRestrictions;
-    private List<String> legalRestrictionsDocuments = new ArrayList<String>();
+    private List<EAgreement> legalRestrictionsDocuments = new ArrayList<EAgreement>();
     private String otherLegalRestrictionsDocument;
     private String legalRestrictionsComment;
     private String dataRightsAndAccessControl;
