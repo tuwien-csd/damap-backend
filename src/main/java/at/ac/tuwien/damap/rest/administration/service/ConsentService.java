@@ -22,7 +22,6 @@ public class ConsentService {
     ConsentRepo consentRepo;
 
     public ConsentDO getConsentByUser(String universityId) {
-        log.info(ConsentDOMapper.mapEntityToDO(consentRepo.getConsentByUniversityId(universityId), new ConsentDO()));
         return ConsentDOMapper.mapEntityToDO(consentRepo.getConsentByUniversityId(universityId), new ConsentDO());
     }
 
@@ -39,7 +38,6 @@ public class ConsentService {
         log.info("Updating consent for " + consentDO.getUniversityId());
         Consent consent = consentRepo.getConsentByUniversityId(consentDO.getUniversityId());
         ConsentDOMapper.mapDOtoEntity(consentDO, consent);
-        consent.setGivenDate(new Date());
         consent.persistAndFlush();
         return getConsentByUser(consent.getUniversityId());
     }
