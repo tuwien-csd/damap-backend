@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 @ApplicationScoped
 @JBossLog
-public class ExportFWFTemplate extends DocumentConversionService{
+public class ExportScienceEuropeTemplate extends DocumentConversionService{
     @Inject
     ProjectService projectService;
 
