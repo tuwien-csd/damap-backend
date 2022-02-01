@@ -1,8 +1,6 @@
 package at.ac.tuwien.damap.rest.dmp.mapper;
 
 import at.ac.tuwien.damap.domain.Dataset;
-import at.ac.tuwien.damap.enums.EAccessRight;
-import at.ac.tuwien.damap.enums.EDataAccessType;
 import at.ac.tuwien.damap.rest.dmp.domain.*;
 import lombok.experimental.UtilityClass;
 
@@ -26,13 +24,13 @@ public class DatasetDOMapper {
         datasetDO.setReasonForDeletion(dataset.getReasonForDeletion());
         datasetDO.setRetentionPeriod(dataset.getRetentionPeriod());
         if (dataset.getDataAccess() != null)
-            datasetDO.setDataAccess(dataset.getDataAccess().getValue());
+            datasetDO.setDataAccess(dataset.getDataAccess());
         if (dataset.getSelectedProjectMembersAccess() != null)
-            datasetDO.setSelectedProjectMembersAccess(dataset.getSelectedProjectMembersAccess().getValue());
+            datasetDO.setSelectedProjectMembersAccess(dataset.getSelectedProjectMembersAccess());
         if (dataset.getOtherProjectMembersAccess() != null)
-            datasetDO.setOtherProjectMembersAccess(dataset.getOtherProjectMembersAccess().getValue());
+            datasetDO.setOtherProjectMembersAccess(dataset.getOtherProjectMembersAccess());
         if (dataset.getPublicAccess() != null)
-            datasetDO.setPublicAccess(dataset.getPublicAccess().getValue());
+            datasetDO.setPublicAccess(dataset.getPublicAccess());
 
         return datasetDO;
     }
@@ -50,10 +48,10 @@ public class DatasetDOMapper {
         dataset.setLicense(datasetDO.getLicense());
         dataset.setStart(datasetDO.getStartDate());
         dataset.setReferenceHash(datasetDO.getReferenceHash());
-        dataset.setDataAccess(EDataAccessType.getByValue(datasetDO.getDataAccess()));
-        dataset.setSelectedProjectMembersAccess(EAccessRight.getByValue(datasetDO.getSelectedProjectMembersAccess()));
-        dataset.setOtherProjectMembersAccess(EAccessRight.getByValue(datasetDO.getOtherProjectMembersAccess()));
-        dataset.setPublicAccess(EAccessRight.getByValue(datasetDO.getPublicAccess()));
+        dataset.setDataAccess(datasetDO.getDataAccess());
+        dataset.setSelectedProjectMembersAccess(datasetDO.getSelectedProjectMembersAccess());
+        dataset.setOtherProjectMembersAccess(datasetDO.getOtherProjectMembersAccess());
+        dataset.setPublicAccess(datasetDO.getPublicAccess());
         dataset.setDelete(datasetDO.getDelete());
         dataset.setDateOfDeletion(datasetDO.getDateOfDeletion());
         dataset.setReasonForDeletion(datasetDO.getReasonForDeletion());
