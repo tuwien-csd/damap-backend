@@ -35,20 +35,26 @@ public class DmpDO {
     private String tools;
     private String restrictedDataAccess;
     private Boolean personalData;
+    private Boolean personalDataCris = false;
     private List<EComplianceType> personalDataCompliance = new ArrayList<EComplianceType>();
     private String otherPersonalDataCompliance;
     private Boolean sensitiveData;
+    private Boolean sensitiveDataCris = false;
     private List<ESecurityMeasure> sensitiveDataSecurity = new ArrayList<ESecurityMeasure>();
     private String otherDataSecurityMeasures;
     private String sensitiveDataAccess;
     private Boolean legalRestrictions;
+    private Boolean legalRestrictionsCris = false;
     private List<EAgreement> legalRestrictionsDocuments = new ArrayList<EAgreement>();
     private String otherLegalRestrictionsDocument;
     private String legalRestrictionsComment;
     private String dataRightsAndAccessControl;
     private Boolean humanParticipants;
+    private Boolean humanParticipantsCris = false;
     private Boolean ethicalIssuesExist;
+    private Boolean ethicalIssuesExistCris = false;
     private Boolean committeeReviewed;
+    private Boolean committeeReviewedCris = false;
     private List<DatasetDO> datasets = new ArrayList<DatasetDO>();
     private List<HostDO> hosts = new ArrayList<HostDO>();
     private List<StorageDO> storage = new ArrayList<StorageDO>();
@@ -57,5 +63,6 @@ public class DmpDO {
     private String restrictedAccessInfo;
     private String closedAccessInfo;
     private Boolean costsExist;
+    private Boolean costsExistCris = false;
     private List<CostDO> costs = new ArrayList<CostDO>();
 }
