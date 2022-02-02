@@ -1,7 +1,7 @@
 package at.ac.tuwien.damap.rest;
 
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
-import at.ac.tuwien.damap.rest.dmp.domain.ProjectMemberDO;
+import at.ac.tuwien.damap.rest.projects.ProjectMemberDO;
 import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
 import at.ac.tuwien.damap.security.SecurityService;

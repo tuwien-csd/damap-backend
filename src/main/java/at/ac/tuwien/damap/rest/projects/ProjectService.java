@@ -1,7 +1,6 @@
 package at.ac.tuwien.damap.rest.projects;
 
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
-import at.ac.tuwien.damap.rest.dmp.domain.ProjectMemberDO;
 
 import java.util.List;
 
@@ -12,4 +11,6 @@ public interface ProjectService {
     List<ProjectMemberDO> getProjectStaff(String projectId);
 
     ProjectDO getProjectDetails(String projectId);
+
+    ProjectSupplementDO getProjectSupplement(String projectId);
 }
