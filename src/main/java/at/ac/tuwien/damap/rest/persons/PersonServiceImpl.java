@@ -1,6 +1,6 @@
 package at.ac.tuwien.damap.rest.persons;
 
-import at.ac.tuwien.damap.rest.dmp.domain.PersonDO;
+import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import io.quarkus.arc.DefaultBean;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -14,7 +14,7 @@ import javax.enterprise.context.ApplicationScoped;
 public class PersonServiceImpl implements PersonService {
 
     @Override
-    public PersonDO getPersonById(String id) {
+    public ContributorDO getPersonById(String id) {
         return null;
     }
 }

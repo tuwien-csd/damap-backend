@@ -31,7 +31,6 @@ public class TestDOFactory {
         newTestDmpDO.setModified(new Date());
         newTestDmpDO.setDescription("This DMP is created for an automated test.");
         newTestDmpDO.setProject(getTestProjectDO());
-        newTestDmpDO.setContact(getTestPersonDO());
         newTestDmpDO.setDataKind(EDataKind.NONE);
         newTestDmpDO.setContributors(getTestContributorList());
         newTestDmpDO.setNoDataExplanation("This is why there are no datasets.");
@@ -113,29 +112,29 @@ public class TestDOFactory {
         return identifier;
     }
 
-    private PersonDO getTestPersonDO(){
-        PersonDO person = new PersonDO();
-        person.setUniversityId("Internal Identifier 123456");
-        person.setPersonId(getTestIdentifierDO(EIdentifierType.ORCID));
-        person.setFirstName("Jane");
-        person.setLastName("Doe");
-        person.setMbox("jane.doe@research.institution.com");
-        person.setAffiliation("Affiliated Institution");
-        person.setAffiliationId(getTestIdentifierDO(EIdentifierType.ROR));
-        return person;
+    private ContributorDO getTestContributorDO(){
+        ContributorDO contributor = new ContributorDO();
+        contributor.setUniversityId("Internal Identifier 123456");
+        contributor.setPersonId(getTestIdentifierDO(EIdentifierType.ORCID));
+        contributor.setFirstName("Jane");
+        contributor.setLastName("Doe");
+        contributor.setMbox("jane.doe@research.institution.com");
+        contributor.setAffiliation("Affiliated Institution");
+        contributor.setAffiliationId(getTestIdentifierDO(EIdentifierType.ROR));
+        contributor.setContact(true);
+        return contributor;
     }
 
     private List<ContributorDO> getTestContributorList(){
-        ContributorDO contributor = new ContributorDO();
-        contributor.setPerson(getTestPersonDO());
+        ContributorDO contributor = getTestContributorDO();
         contributor.setRole(EContributorRole.DATA_MANAGER);
 
-        ContributorDO secondContributor = new ContributorDO();
-        secondContributor.setPerson(getTestPersonDO());
-        secondContributor.getPerson().setFirstName("John");
-        secondContributor.getPerson().setLastName("Doe");
-        secondContributor.getPerson().setMbox("john.doe@research.institution.com");
+        ContributorDO secondContributor = getTestContributorDO();
+        secondContributor.setFirstName("John");
+        secondContributor.setLastName("Doe");
+        secondContributor.setMbox("john.doe@research.institution.com");
         secondContributor.setRole(EContributorRole.DATA_COLLECTOR);
+        secondContributor.setContact(false);
         return Arrays.asList(contributor, secondContributor);
     }
 

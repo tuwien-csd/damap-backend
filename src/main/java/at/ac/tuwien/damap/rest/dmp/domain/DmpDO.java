@@ -11,6 +11,7 @@ import javax.json.bind.annotation.JsonbDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -24,7 +25,6 @@ public class DmpDO {
     private Date modified;
     private String description;
     private ProjectDO project;
-    private PersonDO contact;
     private EDataKind dataKind;
     private List<ContributorDO> contributors = new ArrayList<ContributorDO>();
     private String noDataExplanation;
@@ -65,4 +65,9 @@ public class DmpDO {
     private Boolean costsExist;
     private Boolean costsExistCris = false;
     private List<CostDO> costs = new ArrayList<CostDO>();
+
+    public ContributorDO getContact(){
+        Optional<ContributorDO> contact = contributors.stream().filter(ContributorDO::isContact).findFirst();
+        return contact.orElse(null);
+    }
 }
