@@ -22,6 +22,7 @@ public class ConsentService {
     ConsentRepo consentRepo;
 
     public ConsentDO getConsentByUser(String universityId) {
+        log.info("Getting consent for " + universityId);
         return ConsentDOMapper.mapEntityToDO(consentRepo.getConsentByUniversityId(universityId), new ConsentDO());
     }
 
