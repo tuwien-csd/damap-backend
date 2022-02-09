@@ -17,6 +17,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -42,10 +43,6 @@ public class Dmp extends PanacheEntity {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "project_id")
     private Project project;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "contact_id")
-    private Person contact;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "data_kind")
@@ -179,4 +176,10 @@ public class Dmp extends PanacheEntity {
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<Cost> costs = new ArrayList<>();
+
+    public Contributor getContact(){
+        Optional<Contributor> contact = contributorList.stream().filter(contributor -> contributor.getContact() != null)
+                .filter(Contributor::getContact).findFirst();
+        return contact.orElse(null);
+    }
 }

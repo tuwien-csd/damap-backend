@@ -52,13 +52,13 @@ public class MaDmpMapper {
         return maDmp;
     }
 
-    public MaDmpContact mapEntityToMaDmp(Person person, MaDmpContact maDmpContact) {
-        maDmpContact.setName(person.getFirstName() + " " + person.getLastName());
-        maDmpContact.setMbox(person.getMbox());
+    public MaDmpContact mapEntityToMaDmp(Contributor contact, MaDmpContact maDmpContact) {
+        maDmpContact.setName(contact.getFirstName() + " " + contact.getLastName());
+        maDmpContact.setMbox(contact.getMbox());
 
-        if (person.getPersonIdentifier() != null) {
+        if (contact.getPersonIdentifier() != null) {
             MaDmpIdentifier maDmpIdentifier = new MaDmpIdentifier();
-            mapEntityToMaDmp(person.getPersonIdentifier(), maDmpIdentifier);
+            mapEntityToMaDmp(contact.getPersonIdentifier(), maDmpIdentifier);
             maDmpContact.setContact_id(maDmpIdentifier);
         }
 
@@ -66,13 +66,12 @@ public class MaDmpMapper {
     }
 
     public MaDmpContributor mapEntityToMaDmp(Contributor contributor, MaDmpContributor maDmpContributor) {
-        Person person = contributor.getContributor();
-        maDmpContributor.setName(person.getFirstName() + " " + person.getLastName());
-        maDmpContributor.setMbox(person.getMbox());
+        maDmpContributor.setName(contributor.getFirstName() + " " + contributor.getLastName());
+        maDmpContributor.setMbox(contributor.getMbox());
 
-        if (person.getPersonIdentifier() != null) {
+        if (contributor.getPersonIdentifier() != null) {
             MaDmpIdentifier maDmpIdentifier = new MaDmpIdentifier();
-            mapEntityToMaDmp(person.getPersonIdentifier(), maDmpIdentifier);
+            mapEntityToMaDmp(contributor.getPersonIdentifier(), maDmpIdentifier);
             maDmpContributor.setContributor_id(maDmpIdentifier);
         }
 

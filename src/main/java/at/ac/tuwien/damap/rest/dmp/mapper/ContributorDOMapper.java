@@ -1,9 +1,9 @@
 package at.ac.tuwien.damap.rest.dmp.mapper;
 
 import at.ac.tuwien.damap.domain.Contributor;
-import at.ac.tuwien.damap.domain.Person;
+import at.ac.tuwien.damap.domain.Identifier;
 import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
-import at.ac.tuwien.damap.rest.dmp.domain.PersonDO;
+import at.ac.tuwien.damap.rest.dmp.domain.IdentifierDO;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -12,15 +12,25 @@ public class ContributorDOMapper {
     public ContributorDO mapEntityToDO(Contributor contributor, ContributorDO contributorDO) {
 
         contributorDO.setId(contributor.id);
+        contributorDO.setFirstName(contributor.getFirstName());
+        contributorDO.setLastName(contributor.getLastName());
+        contributorDO.setMbox(contributor.getMbox());
+        contributorDO.setUniversityId(contributor.getUniversityId());
+        contributorDO.setAffiliation(contributor.getAffiliation());
 
+        if (contributor.getPersonIdentifier() != null) {
+            IdentifierDO identifierContributorDO = new IdentifierDO();
+            IdentifierDOMapper.mapEntityToDO(contributor.getPersonIdentifier(), identifierContributorDO);
+            contributorDO.setPersonId(identifierContributorDO);
+        }
+        if (contributor.getAffiliationId() != null) {
+            IdentifierDO affiliationIdentifierDO = new IdentifierDO();
+            IdentifierDOMapper.mapEntityToDO(contributor.getAffiliationId(), affiliationIdentifierDO);
+            contributorDO.setAffiliationId(affiliationIdentifierDO);
+        }
         if (contributor.getContributorRole() != null)
             contributorDO.setRole(contributor.getContributorRole());
-
-        if (contributor.getContributor() != null) {
-            PersonDO personDO = new PersonDO();
-            PersonDOMapper.mapEntityToDO(contributor.getContributor(), personDO);
-            contributorDO.setPerson(personDO);
-        }
+        contributorDO.setContact(contributor.getContact() != null && contributor.getContact());
 
         return contributorDO;
     }
@@ -29,16 +39,31 @@ public class ContributorDOMapper {
 
         if (contributorDO.getId() != null)
             contributor.id = contributorDO.getId();
-        contributor.setContributorRole(contributorDO.getRole());
+        contributor.setFirstName(contributorDO.getFirstName());
+        contributor.setLastName(contributorDO.getLastName());
+        contributor.setMbox(contributorDO.getMbox());
+        contributor.setUniversityId(contributorDO.getUniversityId());
+        contributor.setAffiliation(contributorDO.getAffiliation());
 
-        if (contributorDO.getPerson() != null) {
-            Person person = new Person();
-            if (contributor.getContributor() != null)
-                person = contributor.getContributor();
-            PersonDOMapper.mapDOtoEntity(contributorDO.getPerson(), person);
-            contributor.setContributor(person);
+        if (contributorDO.getPersonId() != null) {
+            Identifier identifierContributor = new Identifier();
+            if (contributor.getPersonIdentifier() != null)
+                identifierContributor = contributor.getPersonIdentifier();
+            IdentifierDOMapper.mapDOtoEntity(contributorDO.getPersonId(), identifierContributor);
+            contributor.setPersonIdentifier(identifierContributor);
         } else
-            contributor.setContributor(null);
+            contributor.setPersonIdentifier(null);
+
+        if (contributorDO.getAffiliationId() != null) {
+            Identifier affiliationIdentifier = new Identifier();
+            if (contributor.getAffiliationId() != null)
+                affiliationIdentifier = contributor.getAffiliationId();
+            IdentifierDOMapper.mapDOtoEntity(contributorDO.getAffiliationId(), affiliationIdentifier);
+            contributor.setAffiliationId(affiliationIdentifier);
+        } else
+            contributor.setAffiliationId(null);
+        contributor.setContact(contributorDO.isContact());
+        contributor.setContributorRole(contributorDO.getRole());
 
         return contributor;
     }

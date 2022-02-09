@@ -1,11 +1,11 @@
 package at.ac.tuwien.damap.conversion;
 
 import at.ac.tuwien.damap.domain.*;
+import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import at.ac.tuwien.damap.enums.EComplianceType;
 import at.ac.tuwien.damap.enums.ESecurityMeasure;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
-import at.ac.tuwien.damap.rest.projects.ProjectMemberDO;
 import at.ac.tuwien.damap.r3data.RepositoriesService;
 
 import java.text.SimpleDateFormat;
@@ -106,7 +106,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
     //Pre section variables replacement
     private void preSection(Dmp dmp, Map<String, String> replacements, Map<String, String> footerMap, SimpleDateFormat formatter) {
         //project member list
-        List<ProjectMemberDO> projectMember = new ArrayList<>();
+        ContributorDO projectCoordinator = null;
 
         //mapping general information
         if (dmp.getProject() != null) {
@@ -169,7 +169,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
             addReplacement(replacements, "[projectid]", dmp.getProject().getUniversityId());
             //get project member from the project ID
             if (dmp.getProject().getUniversityId() != null)
-                projectMember = projectService.getProjectStaff(dmp.getProject().getUniversityId());
+                projectCoordinator = projectService.getProjectLeader(dmp.getProject().getUniversityId());
 
             //variable dmp version
             Long dmpVersion = dmp.getVersion();
@@ -233,39 +233,33 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
         String coordinatorAffiliationIdentifierId = "";
 
         //mapping project coordinator information
-        if (!projectMember.isEmpty()) {
-            for (ProjectMemberDO member : projectMember) {
-                if (member != null) {
-                    if (member.isProjectLeader()) {
-                        if (member.getPerson().getFirstName() != null && member.getPerson().getLastName() != null)
-                            coordinatorProperties.add(member.getPerson().getFirstName() + " " + member.getPerson().getLastName());
+        if (projectCoordinator != null) {
+            if (projectCoordinator.getFirstName() != null && projectCoordinator.getLastName() != null)
+                coordinatorProperties.add(projectCoordinator.getFirstName() + " " + projectCoordinator.getLastName());
 
-                        if (member.getPerson().getMbox() != null)
-                            coordinatorProperties.add(member.getPerson().getMbox());
+            if (projectCoordinator.getMbox() != null)
+                coordinatorProperties.add(projectCoordinator.getMbox());
 
-                        if (member.getPerson().getPersonId() != null) {
-                            coordinatorIdentifierId = member.getPerson().getPersonId().getIdentifier();
+            if (projectCoordinator.getPersonId() != null) {
+                coordinatorIdentifierId = projectCoordinator.getPersonId().getIdentifier();
 
-                            if (member.getPerson().getPersonId().getType().toString().equals("orcid")) {
-                                String coordinatorIdentifierType = "ORCID iD: ";
-                                String coordinatorId = coordinatorIdentifierType + coordinatorIdentifierId;
-                                coordinatorProperties.add(coordinatorId);
-                            }
-                        }
+                if (projectCoordinator.getPersonId().getType().toString().equals("orcid")) {
+                    String coordinatorIdentifierType = "ORCID iD: ";
+                    String coordinatorId = coordinatorIdentifierType + coordinatorIdentifierId;
+                    coordinatorProperties.add(coordinatorId);
+                }
+            }
 
-                        if (member.getPerson().getAffiliation() != null)
-                            coordinatorProperties.add(member.getPerson().getAffiliation());
+            if (projectCoordinator.getAffiliation() != null)
+                coordinatorProperties.add(projectCoordinator.getAffiliation());
 
-                        if (member.getPerson().getAffiliationId() != null) {
-                            coordinatorAffiliationIdentifierId = member.getPerson().getAffiliationId().getIdentifier();
+            if (projectCoordinator.getAffiliationId() != null) {
+                coordinatorAffiliationIdentifierId = projectCoordinator.getAffiliationId().getIdentifier();
 
-                            if (member.getPerson().getAffiliationId().getType().toString().equals("ror")) {
-                                String coordinatorAffiliationIdentifierType = "ROR: ";
-                                String coordinatorAffiliationId = coordinatorAffiliationIdentifierType + coordinatorAffiliationIdentifierId;
-                                coordinatorProperties.add(coordinatorAffiliationId);
-                            }
-                        }
-                    }
+                if (projectCoordinator.getAffiliationId().getType().toString().equals("ror")) {
+                    String coordinatorAffiliationIdentifierType = "ROR: ";
+                    String coordinatorAffiliationId = coordinatorAffiliationIdentifierType + coordinatorAffiliationIdentifierId;
+                    coordinatorProperties.add(coordinatorAffiliationId);
                 }
             }
         }
@@ -294,33 +288,33 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                     String contributorAffiliationIdentifierType = "";
                     String contributorAffiliationIdentifierId = "";
 
-                    if (contributor.getContributor().getFirstName() != null && contributor.getContributor().getLastName() != null) {
-                        contributorName = contributor.getContributor().getFirstName() + " " + contributor.getContributor().getLastName();
+                    if (contributor.getFirstName() != null && contributor.getLastName() != null) {
+                        contributorName = contributor.getFirstName() + " " + contributor.getLastName();
                         contributorProperties.add(contributorName);
                     }
 
-                    if (contributor.getContributor().getMbox() != null) {
-                        contributorMail = contributor.getContributor().getMbox();
+                    if (contributor.getMbox() != null) {
+                        contributorMail = contributor.getMbox();
                         contributorProperties.add(contributorMail);
                     }
 
-                    if (contributor.getContributor().getPersonIdentifier() != null) {
-                        contributorIdentifierId = contributor.getContributor().getPersonIdentifier().getIdentifier();
-                        if (contributor.getContributor().getPersonIdentifier().getIdentifierType().toString().equals("orcid")) {
+                    if (contributor.getPersonIdentifier() != null) {
+                        contributorIdentifierId = contributor.getPersonIdentifier().getIdentifier();
+                        if (contributor.getPersonIdentifier().getIdentifierType().toString().equals("orcid")) {
                             contributorIdentifierType = "ORCID iD: ";
                             contributorId = contributorIdentifierType + contributorIdentifierId;
                             contributorProperties.add(contributorId);
                         }
                     }
 
-                    if (contributor.getContributor().getAffiliation() != null) {
-                        contributorAffiliation = contributor.getContributor().getAffiliation();
+                    if (contributor.getAffiliation() != null) {
+                        contributorAffiliation = contributor.getAffiliation();
                         contributorProperties.add(contributorAffiliation);
                     }
 
-                    if (contributor.getContributor().getAffiliationId() != null) {
-                        contributorAffiliationIdentifierId = contributor.getContributor().getAffiliationId().getIdentifier();
-                        if (contributor.getContributor().getAffiliationId().getIdentifierType().toString().equals("ror")) {
+                    if (contributor.getAffiliationId() != null) {
+                        contributorAffiliationIdentifierId = contributor.getAffiliationId().getIdentifier();
+                        if (contributor.getAffiliationId().getIdentifierType().toString().equals("ror")) {
                             contributorAffiliationIdentifierType = "ROR: ";
                             contributorAffiliationId = contributorAffiliationIdentifierType + contributorAffiliationIdentifierId;
                             contributorProperties.add(contributorAffiliationId);

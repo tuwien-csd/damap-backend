@@ -2197,3 +2197,133 @@ databaseChangeLog:
               - column:
                   name:  costs_exist_cris
                   type:  BOOLEAN
+
+
+  - changeSet:
+      id: 8
+      author: Zeno Casellato
+      changes:
+
+        - dropForeignKeyConstraint:
+            baseTableName: person
+            constraintName: fk_person_identifier
+        - dropForeignKeyConstraint:
+            baseTableName: person
+            constraintName: fk_person_affil_identifier
+
+        - addColumn:
+            tableName: contributor
+            columns:
+              - column:
+                  name: contributor_id
+                  type: NUMBER(20,0)
+                  constraints:
+                    foreignKeyName: fk_person_identifier
+                    references: identifier(id)
+              - column:
+                  name: university_id
+                  type: VARCHAR(255)
+              - column:
+                  name: mbox
+                  type: VARCHAR(255)
+              - column:
+                  name: first_name
+                  type: VARCHAR(255)
+              - column:
+                  name: last_name
+                  type: VARCHAR(255)
+              - column:
+                  name: contact
+                  type: BOOLEAN
+              - column:
+                  name: affiliation
+                  type: VARCHAR(255)
+              - column:
+                  name: affiliation_id
+                  type:  NUMBER(20,0)
+                  constraints:
+                    foreignKeyName:  fk_person_affil_identifier
+                    references:  identifier(id)
+        - addColumn:
+            tableName: contributor_aud
+            columns:
+              - column:
+                  name: contributor_id
+                  type: NUMBER(20,0)
+              - column:
+                  name: university_id
+                  type: VARCHAR(255)
+              - column:
+                  name: mbox
+                  type: VARCHAR(255)
+              - column:
+                  name: first_name
+                  type: VARCHAR(255)
+              - column:
+                  name: last_name
+                  type: VARCHAR(255)
+              - column:
+                  name: contact
+                  type: BOOLEAN
+              - column:
+                  name: affiliation
+                  type: VARCHAR(255)
+              - column:
+                  name: affiliation_id
+                  type: NUMBER(20,0)
+
+        - sql:
+            dbms: '!h2, oracle,  postgresql'
+            splitStatements: false
+            sql: UPDATE contributor con SET contributor_id = (select person_id from person pers where pers.id = con.person_id), university_id = (select university_id from person pers where pers.id = con.person_id), mbox = (select mbox from person pers where pers.id = con.person_id), first_name = (select first_name from person pers where pers.id = con.person_id), last_name = (select last_name from person pers where pers.id = con.person_id), affiliation = (select affiliation from person pers where pers.id = con.person_id), affiliation_id = (select affiliation_id from person pers where pers.id = con.person_id)
+            stripComments: true
+            comment: migrating existing contributors
+
+        - dropForeignKeyConstraint:
+            baseTableName: contributor
+            constraintName: fk_contributor_person
+        - dropColumn:
+            tableName: contributor
+            columns:
+              - column:
+                  name: person_id
+                  type: NUMBER(20,0)
+        - dropColumn:
+            tableName: contributor_aud
+            columns:
+              - column:
+                  name: person_id
+                  type: NUMBER(20,0)
+        - dropForeignKeyConstraint:
+            baseTableName: dmp
+            constraintName: fk_dmp_contact
+        - dropColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name: contact_id
+                  type: NUMBER(20,0)
+        - dropColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name: contact_id
+                  type: NUMBER(20,0)
+
+        -  renameColumn:
+             columnDataType:  NUMBER(20,0)
+             newColumnName:  person_id
+             oldColumnName:  contributor_id
+             tableName:  contributor
+        -  renameColumn:
+             columnDataType: NUMBER(20,0)
+             newColumnName: person_id
+             oldColumnName: contributor_id
+             tableName: contributor_aud
+
+        -  dropTable:
+             cascadeConstraints:  true
+             tableName:  person
+        -  dropTable:
+             cascadeConstraints:  true
+             tableName:  person_aud
