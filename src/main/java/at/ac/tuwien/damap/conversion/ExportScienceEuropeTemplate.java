@@ -488,6 +488,10 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
 
             addReplacement(replacements, docVar10, datasetRestriction);
 
+            if (dataset.getRetentionPeriod() != null) {
+                datasetPeriod = dataset.getRetentionPeriod() + " years";
+            }
+
             addReplacement(replacements, docVar11, datasetPeriod);
 
             if (dataset.getSelectedProjectMembersAccess() != null) {
@@ -561,12 +565,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                 addReplacement(replacements,"[dataorganisation]", "There is no specific document structure has been defined yet for this project.");
             }
             else {
-                if (dmp.getStructure().contains("[add document name]")) {
-                    addReplacement(replacements,"[dataorganisation]", dmp.getStructure().replace("[add document name]", dmpService.getDefaultFileName(dmp.id)));
-                }
-                else {
-                    addReplacement(replacements,"[dataorganisation]", dmp.getStructure());
-                }
+                addReplacement(replacements,"[dataorganisation]", dmp.getStructure());
             }
         }
     }
@@ -692,15 +691,15 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                 else {
                     //security measurement size defined is/or usage
                     if (dataSecurityList.size() == 1) {
-                        sensitiveDataMeasure = "To ensure that storage and transfer of sensitive data is safe, additional security measures such as " + multipleVariable(dataSecurityList) + "is taken.";
+                        sensitiveDataMeasure = "To ensure that storage and transfer of sensitive data is safe, additional security measures such as " + multipleVariable(dataSecurityList) + " is taken.";
                     } else {
-                        sensitiveDataMeasure = "To ensure that storage and transfer of sensitive data is safe, additional security measures such as " + multipleVariable(dataSecurityList) + "are taken.";
+                        sensitiveDataMeasure = "To ensure that storage and transfer of sensitive data is safe, additional security measures such as " + multipleVariable(dataSecurityList) + " are taken.";
                     }
                 }
 
                 if (dmp.getSensitiveDataAccess() != null) {
                     if (!dmp.getSensitiveDataAccess().isEmpty()) {
-                        authorisedAccess = "Only " + dmp.getSensitiveDataAccess() + " will be authorised to access sensitive data.";
+                        authorisedAccess = " Only " + dmp.getSensitiveDataAccess() + " will be authorised to access sensitive data.";
                     }
                 }
 
@@ -840,22 +839,22 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
 
         if (dmp.getHumanParticipants() != null) {
             if (dmp.getHumanParticipants()) {
-                ethicalStatement = "This project will involve human participants. ";
+                ethicalStatement = " This project will involve human participants.";
             }
         }
 
         if (dmp.getEthicalIssuesExist() != null) {
             if (dmp.getEthicalIssuesExist()) {
-                otherEthicalIssues = "There are other ethical issues associated with this research. ";
+                otherEthicalIssues = " There are other ethical issues associated with this research.";
             }
         }
 
         if (dmp.getCommitteeReviewed() != null) {
             if (dmp.getCommitteeReviewed()) {
-                committeeReviewed = "The research plan of the project was reviewed by an ethics committee / the TU Wien Pilot Research Ethics Committee / a similar body. ";
+                committeeReviewed = " The research plan of the project was reviewed by an ethics committee / the TU Wien Pilot Research Ethics Committee / a similar body.";
             }
             else {
-                committeeReviewed = "The research has not been reviewed yet by any ethics committee. ";
+                committeeReviewed = " The research has not been reviewed yet by any ethics committee.";
             }
         }
 
@@ -886,7 +885,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
         String repoSentence = "";
         String repoInformation = "";
         String deleteDatasetTitle = "";
-        Date deleteDatasetDate = new Date();
+        Date deleteDatasetDate = null;
         String deleteDatasetReason = "";
 
         //TODO: all datasets storage related information should be moved here
