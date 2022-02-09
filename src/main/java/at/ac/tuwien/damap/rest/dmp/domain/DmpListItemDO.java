@@ -13,7 +13,7 @@ public class DmpListItemDO {
 
     private long id;
     private String title;
-    private PersonDO contact;
+    private ContributorDO contact;
     @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private Date created;
     @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")

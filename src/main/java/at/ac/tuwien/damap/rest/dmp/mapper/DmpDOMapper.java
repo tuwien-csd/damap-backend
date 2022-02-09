@@ -27,12 +27,6 @@ public class DmpDOMapper {
             dmpDO.setProject(projectDO);
         }
 
-        if (dmp.getContact() != null) {
-            PersonDO contactDO = new PersonDO();
-            PersonDOMapper.mapEntityToDO(dmp.getContact(), contactDO);
-            dmpDO.setContact(contactDO);
-        }
-
         dmpDO.setDataKind(dmp.getDataKind());
         dmpDO.setNoDataExplanation(dmp.getNoDataExplanation());
         dmpDO.setMetadata(dmp.getMetadata());
@@ -151,22 +145,6 @@ public class DmpDOMapper {
             dmp.setProject(project);
         } else
             dmp.setProject(null);
-
-        if (dmpDO.getContact() != null) {
-            Person contact = new Person();
-            //check if contact is still the same, if so update their data, else skip and replace
-            // TODO current fix persists the contact ID to mantain DB integrity. We should change this behavior though. ref #73051
-            Long contactId = null;
-            if (dmp.getContact() != null) {
-                contactId = dmp.getContact().id;
-                contact = dmp.getContact();
-            }
-            PersonDOMapper.mapDOtoEntity(dmpDO.getContact(), contact);
-            if (dmp.getContact() != null)
-                contact.id = contactId;
-            dmp.setContact(contact);
-        } else
-            dmp.setContact(null);
 
         dmp.setDataKind(dmpDO.getDataKind());
         dmp.setNoDataExplanation(dmpDO.getNoDataExplanation());

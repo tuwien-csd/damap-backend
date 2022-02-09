@@ -1,5 +1,6 @@
 package at.ac.tuwien.damap.rest.projects;
 
+import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
 import io.quarkus.arc.DefaultBean;
 
@@ -20,7 +21,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectMemberDO> getProjectStaff(String projectId) {
+    public List<ContributorDO> getProjectStaff(String projectId) {
         return Collections.emptyList();
     }
 
@@ -31,6 +32,11 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectSupplementDO getProjectSupplement(String projectId) {
+        return null;
+    }
+
+    @Override
+    public ContributorDO getProjectLeader(String projectId) {
         return null;
     }
 }
