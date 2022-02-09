@@ -2274,9 +2274,8 @@ databaseChangeLog:
 
         - sql:
             dbms: '!h2, oracle,  postgresql'
-            endDelimiter:  \nGO
-            splitStatements: true
-            sql: UPDATE contributor con SET contributor_id = pers.person_id, university_id = pers.university_id, mbox = pers.mbox, first_name = pers.first_name, last_name = pers.last_name, affiliation = pers.affiliation, affiliation_id = pers.affiliation_id from damap.person pers where con.person_id = pers.id
+            splitStatements: false
+            sql: UPDATE contributor con SET contributor_id = (select person_id from person pers where pers.id = con.person_id), university_id = (select university_id from person pers where pers.id = con.person_id), mbox = (select mbox from person pers where pers.id = con.person_id), first_name = (select first_name from person pers where pers.id = con.person_id), last_name = (select last_name from person pers where pers.id = con.person_id), affiliation = (select affiliation from person pers where pers.id = con.person_id), affiliation_id = (select affiliation_id from person pers where pers.id = con.person_id)
             stripComments: true
             comment: migrating existing contributors
 
