@@ -12,6 +12,14 @@ import lombok.Data;
 public class ContributorDO {
 
     private Long id;
+    private String universityId;
+    private IdentifierDO personId;
+    private String firstName;
+    private String lastName;
+    private String mbox;
+    private String affiliation;
+    private IdentifierDO affiliationId;
+    private boolean contact = false;
     private EContributorRole role;
-    private PersonDO person;
+    private String roleInProject;
 }

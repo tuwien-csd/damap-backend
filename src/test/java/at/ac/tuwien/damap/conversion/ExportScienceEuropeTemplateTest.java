@@ -15,10 +15,10 @@ import javax.inject.Inject;
 
 @QuarkusTest
 
-public class ExportFWFTemplateTest {
+public class ExportScienceEuropeTemplateTest {
 
     @Inject
-    ExportFWFTemplate exportFWFTemplate;
+    ExportScienceEuropeTemplate exportScienceEuropeTemplate;
 
     @InjectMock
     DmpRepo dmpRepo;
@@ -34,7 +34,7 @@ public class ExportFWFTemplateTest {
         Long id = 123L;
 
         //testing the export document return not a null document
-        XWPFDocument document = exportFWFTemplate.exportTemplate(id);
+        XWPFDocument document = exportScienceEuropeTemplate.exportTemplate(id);
         Assertions.assertNotNull(document);
     }
 

@@ -2,8 +2,8 @@ package at.ac.tuwien.damap.rest.dmp.mapper;
 
 import at.ac.tuwien.damap.domain.Access;
 import at.ac.tuwien.damap.domain.Dmp;
+import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpListItemDO;
-import at.ac.tuwien.damap.rest.dmp.domain.PersonDO;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
 import lombok.experimental.UtilityClass;
 
@@ -21,8 +21,8 @@ public class DmpListItemDOMapper {
         }
 
         if (dmp.getContact() != null) {
-            PersonDO contactDO = new PersonDO();
-            PersonDOMapper.mapEntityToDO(dmp.getContact(), contactDO);
+            ContributorDO contactDO = new ContributorDO();
+            ContributorDOMapper.mapEntityToDO(dmp.getContact(), contactDO);
             dmpListItemDO.setContact(contactDO);
         }
 
