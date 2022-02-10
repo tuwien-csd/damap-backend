@@ -1,6 +1,6 @@
 package at.ac.tuwien.damap.rest;
 
-import at.ac.tuwien.damap.rest.dmp.domain.PersonDO;
+import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.persons.PersonService;
 import io.quarkus.security.Authenticated;
 import lombok.extern.jbosslog.JBossLog;
@@ -24,7 +24,7 @@ public class PersonResource {
 
     @GET
     @Path("/{id}")
-    public PersonDO getPersonById(@PathParam("id") String id) {
+    public ContributorDO getPersonById(@PathParam("id") String id) {
         log.info("Return person details for id=" + id);
         return personService.getPersonById(id);
     }

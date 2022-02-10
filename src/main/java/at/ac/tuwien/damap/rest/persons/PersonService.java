@@ -1,7 +1,7 @@
 package at.ac.tuwien.damap.rest.persons;
 
-import at.ac.tuwien.damap.rest.dmp.domain.PersonDO;
+import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 
 public interface PersonService {
-    PersonDO getPersonById(String id);
+    ContributorDO getPersonById(String id);
 }
