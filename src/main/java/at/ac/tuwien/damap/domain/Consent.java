@@ -12,7 +12,6 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Audited
 
 public class Consent extends PanacheEntity {
 

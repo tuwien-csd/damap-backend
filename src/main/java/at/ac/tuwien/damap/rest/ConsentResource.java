@@ -30,20 +30,29 @@ public class ConsentResource {
     @Inject
     SecurityService securityService;
 
+    @Inject
+    ConsentRepo consentRepo;
+
     @GET
-    @RolesAllowed("user")
     public ConsentDO getConsent() {
-        log.info("Get user consent");
-        return consentService.getConsentByUser(this.getPersonId()) ;
+        if (consentRepo.getConsentByUniversityId(this.getPersonId()) != null) {
+            return consentService.getConsentByUser(this.getPersonId()) ;
+        }
+        else {
+            ConsentDO consent = new ConsentDO();
+            String personId = this.getPersonId();
+            consent.setUniversityId(personId);
+            consent.setGivenDate(new Date());
+            consent.setConsentGiven(false);
+            return consentService.create(consent);
+        }
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public ConsentDO saveConsent(ConsentDO consentDO) {
-        log.info("Save consent");
         String personId = this.getPersonId();
         consentDO.setUniversityId(personId);
-        consentDO.setConsentGiven(true);
         consentDO.setGivenDate(new Date());
         if (consentService.getConsentByUser(this.getPersonId()) != null) {
             return consentService.update(consentDO);
