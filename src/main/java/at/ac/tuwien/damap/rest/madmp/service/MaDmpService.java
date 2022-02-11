@@ -1,7 +1,10 @@
 package at.ac.tuwien.damap.rest.madmp.service;
 
+import at.ac.tuwien.damap.r3data.RepositoriesService;
 import at.ac.tuwien.damap.repo.DmpRepo;
-import at.ac.tuwien.damap.rest.madmp.dto.MaDmp;
+import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
+import at.ac.tuwien.damap.rest.dmp.mapper.DmpDOMapper;
+import at.ac.tuwien.damap.rest.madmp.dto.Dmp;
 import at.ac.tuwien.damap.rest.madmp.mapper.MaDmpMapper;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -13,8 +16,11 @@ public class MaDmpService {
     @Inject
     DmpRepo dmpRepo;
 
-    public MaDmp getById(long id) {
+    @Inject
+    RepositoriesService repositoriesService;
+
+    public Dmp getById(long id) {
         // TODO: check permission
-        return MaDmpMapper.mapEntityToMaDmp(dmpRepo.findById(id), new MaDmp());
+        return MaDmpMapper.mapToMaDmp(DmpDOMapper.mapEntityToDO(dmpRepo.findById(id), new DmpDO()), new Dmp(), repositoriesService);
     }
 }

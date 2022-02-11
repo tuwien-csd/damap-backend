@@ -148,7 +148,7 @@ public class TestDOFactory {
         dataset.setPersonalData(true);
         dataset.setSensitiveData(true);
         dataset.setLegalRestrictions(true);
-        dataset.setLicense("Dataset License Link");
+        dataset.setLicense("https://creativecommons.org/licenses/by/4.0/");
         dataset.setStartDate(new Date());
         dataset.setReferenceHash("referenceHash123456");
         dataset.setDataAccess(EDataAccessType.OPEN);
@@ -174,7 +174,7 @@ public class TestDOFactory {
         storage.setHostId("123456");
         storage.setTitle("Internal Host");
         storage.setDatasets(List.of("referenceHash123456"));
-        storage.setUrl("Link to the storage service");
+        storage.setUrl("storage.url");
         storage.setBackupFrequency("Frequency of data backups.");
         storage.setStorageLocation("Location of Storages");
         storage.setBackupLocation("Location of Backups");
@@ -186,7 +186,7 @@ public class TestDOFactory {
         storage.setHostId(null);
         storage.setTitle("External Host");
         storage.setDatasets(List.of("referenceHash123456"));
-        storage.setUrl("Link to the storage service");
+        storage.setUrl("external.storage.url");
         storage.setBackupFrequency("Frequency of data backups.");
         storage.setStorageLocation("Location of Storages");
         storage.setBackupLocation("Location of Backups");
@@ -218,5 +218,20 @@ public class TestDOFactory {
 
         dmpRepo.persistAndFlush(DmpDOMapper.mapDOtoEntity(newTestDmpDO, new Dmp()));
         return getOrCreateTestDmpDOEmpty();
+    }
+
+
+    @Transactional
+    public DmpDO getOrCreateTestDmpDOInvalidData() {
+        DmpDO newInvalidTestDmpDO = getOrCreateTestDmpDO();
+        newInvalidTestDmpDO.setTitle("MalformedTestDmp");
+
+        newInvalidTestDmpDO.getDatasets().get(0).setLicense("License Address");
+        newInvalidTestDmpDO.getCosts().get(0).setCurrencyCode("DOUBLOONS");
+        newInvalidTestDmpDO.getHosts().get(0).setHostId("Arbitrary Host ID");
+        newInvalidTestDmpDO.getStorage().get(0).setUrl("Link to the storage service");
+        newInvalidTestDmpDO.getExternalStorage().get(0).setUrl("Link to the storage service");
+
+        return newInvalidTestDmpDO;
     }
 }
