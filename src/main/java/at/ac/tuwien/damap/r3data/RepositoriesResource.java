@@ -1,5 +1,7 @@
 package at.ac.tuwien.damap.r3data;
 
+import at.ac.tuwien.damap.r3data.dto.RepositoryDetails;
+import at.ac.tuwien.damap.r3data.mapper.RepositoryMapper;
 import generated.Repository;
 import io.quarkus.security.Authenticated;
 import lombok.extern.jbosslog.JBossLog;
@@ -33,9 +35,9 @@ public class RepositoriesResource {
 
     @GET
     @Path("/{id}")
-    public Re3Data getById(@PathParam String id) {
+    public RepositoryDetails getById(@PathParam String id) {
         log.info("Get repository with id: " + id);
-        return repositoriesService.getById(id);
+        return RepositoryMapper.mapToRepositoryDetails(repositoriesService.getById(id), id);
     }
 
     @GET

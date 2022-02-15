@@ -50,11 +50,10 @@ public class RepositoriesService {
     }
 
     public String getDescription(String id) {
-        return RepositoryMapper.mapToRepositoryDetails(getById(id)).getDescription();
+        return RepositoryMapper.mapToRepositoryDetails(getById(id), id).getDescription();
     }
 
     public String getRepositoryURL(String id) {
-        return RepositoryMapper.mapToRepositoryDetails(getById(id)).getRepositoryURL();
+        return RepositoryMapper.mapToRepositoryDetails(getById(id), id).getRepositoryURL();
     }
-
 }

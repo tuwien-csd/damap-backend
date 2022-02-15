@@ -11,36 +11,36 @@ import java.util.ArrayList;
 @UtilityClass
 public class RepositoryMapper {
 
-    public RepositoryDetails mapToRepositoryDetails(Re3Data re3Data) {
+    public RepositoryDetails mapToRepositoryDetails(Re3Data re3Data, String id) {
         RepositoryDetails repositoryDetails = new RepositoryDetails();
         if (re3Data.getRepository().size() > 0) {
             Re3Data.Repository repo = re3Data.getRepository().get(0);
-            repositoryDetails.setRepositoryIdentifier(repo.getRepositoryIdentifier());
-            repositoryDetails.setRepositoryName(repo.getRepositoryName().getValue());
+            repositoryDetails.setId(id);
+            repositoryDetails.setName(repo.getRepositoryName().getValue());
             repositoryDetails.setRepositoryURL(repo.getRepositoryURL());
             repositoryDetails.setDescription(repo.getDescription().getValue());
             repositoryDetails.setVersioning(mapYesNoToBoolean(repo.getVersioning()));
             repositoryDetails.setRepositoryIdentifier(repo.getRepositoryIdentifier());
 
-            if(repo.getRepositoryLanguage().size() > 0) {
+            if (repo.getRepositoryLanguage().size() > 0) {
                 ArrayList<String> languages = new ArrayList<>();
-                for(Languages lang : repo.getRepositoryLanguage()) {
+                for (Languages lang : repo.getRepositoryLanguage()) {
                     languages.add(lang.value());
                 }
                 repositoryDetails.setRepositoryLanguages(languages);
             }
 
-            if(repo.getMetadataStandard().size() > 0) {
+            if (repo.getMetadataStandard().size() > 0) {
                 ArrayList<String> metadata = new ArrayList<>();
-                for(Re3Data.Repository.MetadataStandard mds : repo.getMetadataStandard()) {
+                for (Re3Data.Repository.MetadataStandard mds : repo.getMetadataStandard()) {
                     metadata.add(mds.getMetadataStandardName().getValue().value());
                 }
                 repositoryDetails.setMetadataStandards(metadata);
             }
 
-            if(repo.getContentType().size() > 0) {
+            if (repo.getContentType().size() > 0) {
                 ArrayList<String> types = new ArrayList<>();
-                for(Re3Data.Repository.ContentType ct : repo.getContentType()) {
+                for (Re3Data.Repository.ContentType ct : repo.getContentType()) {
                     types.add(ct.getValue().value());
                 }
                 repositoryDetails.setContentTypes(types);
