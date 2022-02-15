@@ -1,7 +1,7 @@
 package at.ac.tuwien.damap.rest;
 
 import at.ac.tuwien.damap.rest.dmp.service.DmpService;
-import at.ac.tuwien.damap.rest.madmp.dto.MaDmp;
+import at.ac.tuwien.damap.rest.madmp.dto.Dmp;
 import at.ac.tuwien.damap.rest.madmp.service.MaDmpService;
 import at.ac.tuwien.damap.security.SecurityService;
 import at.ac.tuwien.damap.validation.AccessValidator;
@@ -42,7 +42,7 @@ public class MaDmpResource {
 
     @GET
     @Path("/{id}")
-    public MaDmp getById(@PathParam("id") long id) {
+    public Dmp getById(@PathParam("id") long id) {
         log.info("Return maDMP for DMP with id: " + id);
         String personId = this.getPersonId();
         if(!accessValidator.canViewDmp(id, personId)){
@@ -61,7 +61,7 @@ public class MaDmpResource {
         }
 
         String filename = dmpService.getDefaultFileName(id);
-        MaDmp maDMP = maDmpService.getById(id);
+        Dmp maDMP = maDmpService.getById(id);
         String prettyMaDMP = maDMP.toString();
         ObjectMapper mapper = new ObjectMapper();
         try {
