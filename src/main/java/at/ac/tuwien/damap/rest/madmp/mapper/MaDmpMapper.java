@@ -90,7 +90,8 @@ public class MaDmpMapper {
         contributor.setName(contributorDO.getFirstName() + " " + contributorDO.getLastName());
 
         Set<String> role = new LinkedHashSet<String>();
-        role.add(contributorDO.getRole().getRole());
+        if (contributorDO.getRole() != null)
+            role.add(contributorDO.getRole().getRole());
         contributor.setRole(role);
 
         return contributor;
@@ -110,7 +111,8 @@ public class MaDmpMapper {
 
     public Cost mapToMaDmp(CostDO costDO, Cost cost) {
 
-        cost.setCurrencyCode(Cost.CurrencyCode.fromValue(costDO.getCurrencyCode()));
+        if (costDO.getCurrencyCode() != null)
+            cost.setCurrencyCode(Cost.CurrencyCode.fromValue(costDO.getCurrencyCode()));
         cost.setDescription(costDO.getDescription());
         cost.setTitle(costDO.getTitle());
         cost.setValue(cost.getValue());
@@ -160,7 +162,8 @@ public class MaDmpMapper {
             distribution.setAvailableUntil(datasetDO.getDateOfDeletion().toString());
         if (datasetDO.getSize() != null)
             distribution.setByteSize(datasetDO.getSize().intValue());
-        distribution.setDataAccess(getDataAccess(datasetDO.getDataAccess()));
+        if (datasetDO.getDataAccess() != null)
+            distribution.setDataAccess(getDataAccess(datasetDO.getDataAccess()));
         distribution.setDescription(datasetDO.getComment());
         distribution.setDownloadUrl(null);
         if (datasetDO.getType() != null)
@@ -201,7 +204,8 @@ public class MaDmpMapper {
         host.setBackupFrequency(null);
         host.setBackupType(null);
         host.setCertifiedWith(getCertifiedWith(repository.getCertificate()));
-        host.setDescription(repository.getDescription().getValue());
+        if (repository.getDescription() != null)
+            host.setDescription(repository.getDescription().getValue());
         host.setGeoLocation(null);
 
         List<PidSystem> pidSystemList = new ArrayList<>();
@@ -211,7 +215,8 @@ public class MaDmpMapper {
         host.setPidSystem(pidSystemList);
         repository.getType().stream().findFirst().ifPresent(repositoryTypes -> host.setStorageType(repositoryTypes.value()));
         host.setSupportVersioning(getSupportVersioning(repository.getVersioning()));
-        host.setTitle(repository.getRepositoryName().getValue());
+        if (repository.getRepositoryName() != null)
+            host.setTitle(repository.getRepositoryName().getValue());
         if (repository.getRepositoryURL() != null)
             host.setUrl(URI.create(repository.getRepositoryURL()));
         return host;
