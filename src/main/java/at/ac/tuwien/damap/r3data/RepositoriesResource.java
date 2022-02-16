@@ -6,7 +6,6 @@ import generated.Repository;
 import io.quarkus.security.Authenticated;
 import lombok.extern.jbosslog.JBossLog;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
-import org.re3data.schema._2_2.Re3Data;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -31,6 +30,13 @@ public class RepositoriesResource {
     public List<Repository> getAll() {
         log.info("Get all repositories");
         return repositoriesService.getAll();
+    }
+
+    @GET
+    @Path("/recommended")
+    public List<RepositoryDetails> getRecommended() {
+        log.info("Get recommended repositories");
+        return repositoriesService.getRecommended();
     }
 
     @GET
