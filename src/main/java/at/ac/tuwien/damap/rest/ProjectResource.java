@@ -1,7 +1,7 @@
 package at.ac.tuwien.damap.rest;
 
+import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
-import at.ac.tuwien.damap.rest.dmp.domain.ProjectMemberDO;
 import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
 import at.ac.tuwien.damap.security.SecurityService;
@@ -42,7 +42,7 @@ public class ProjectResource {
     /* TODO: Strategy for permission check required for restricted projects */
     @GET
     @Path("/{id}/staff")
-    public List<ProjectMemberDO> getProjectMembers(@PathParam("id") String projectId) {
+    public List<ContributorDO> getProjectMembers(@PathParam("id") String projectId) {
         log.info(String.format("Get Project Staff for Project ID=%s", projectId));
         return projectService.getProjectStaff(projectId);
     }

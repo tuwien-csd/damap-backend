@@ -3,7 +3,7 @@ databaseChangeLog:
       id: 1
       author: Zeno Casellato
       changes:
-#        setup for hibernate
+        #        setup for hibernate
         - createSequence:
             sequenceName: hibernate_sequence
             incrementBy: 1
@@ -42,7 +42,7 @@ databaseChangeLog:
                     name:  entityname
                     type:  VARCHAR(255)
 
-#        create enum tables
+        #        create enum tables
         -  createTable:
              tableName:  e_identifier_type
              columns:
@@ -484,7 +484,7 @@ databaseChangeLog:
             tableName:  e_function_role
 
 
-#        create data tables
+        #        create data tables
         -  createTable:
              tableName:  identifier
              columns:
@@ -1815,15 +1815,15 @@ databaseChangeLog:
         - addColumn:
             tableName: dataset
             columns:
-                - column:
-                    name: delete_data
-                    type: BOOLEAN
-                - column:
-                    name: date_of_deletion
-                    type: TIMESTAMP
-                - column:
-                    name: reason_for_deletion
-                    type: VARCHAR(4000)
+              - column:
+                  name: delete_data
+                  type: BOOLEAN
+              - column:
+                  name: date_of_deletion
+                  type: TIMESTAMP
+              - column:
+                  name: reason_for_deletion
+                  type: VARCHAR(4000)
         - addColumn:
             tableName: dataset_aud
             columns:
@@ -1841,241 +1841,241 @@ databaseChangeLog:
       id: 5
       author: Clara Schuster
       changes:
-      - dropColumn:
-          tableName: dmp
-          columns:
-            - column:
-                name: personal_data_access
-            - column:
-                name: sensitive_data_security
-            - column:
-                name: ethics_report
-            - column:
-                name: ethical_compliance_statement
-      - dropColumn:
-          tableName: dmp_aud
-          columns:
-            - column:
-                name: personal_data_access
-            - column:
-                name: sensitive_data_security
-            - column:
-                name: ethics_report
-            - column:
-                name: ethical_compliance_statement
+        - dropColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name: personal_data_access
+              - column:
+                  name: sensitive_data_security
+              - column:
+                  name: ethics_report
+              - column:
+                  name: ethical_compliance_statement
+        - dropColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name: personal_data_access
+              - column:
+                  name: sensitive_data_security
+              - column:
+                  name: ethics_report
+              - column:
+                  name: ethical_compliance_statement
 
-      - renameColumn:
-          tableName: dmp
-          newColumnName: committee_reviewed
-          oldColumnName: committee_approved
-      - renameColumn:
-          tableName: dmp_aud
-          newColumnName: committee_reviewed
-          oldColumnName: committee_approved
+        - renameColumn:
+            tableName: dmp
+            newColumnName: committee_reviewed
+            oldColumnName: committee_approved
+        - renameColumn:
+            tableName: dmp_aud
+            newColumnName: committee_reviewed
+            oldColumnName: committee_approved
 
-      - addColumn:
-          tableName: dmp
-          columns:
-            - column:
-                name: other_data_sec_measures
-                type: VARCHAR(4000)
-            - column:
-                name: sensitive_data_access
-                type: VARCHAR(4000)
-            - column:
-                name: other_legal_r_documents
-                type: VARCHAR(4000)
-            - column:
-                name: data_rights_access_control
-                type: VARCHAR(4000)
-            - column:
-                name: human_participants
-                type: BOOLEAN
-      - addColumn:
-          tableName: dmp_aud
-          columns:
-            - column:
-                name: other_data_sec_measures
-                type: VARCHAR(4000)
-            - column:
-                name: sensitive_data_access
-                type: VARCHAR(4000)
-            - column:
-                name: other_legal_r_documents
-                type: VARCHAR(4000)
-            - column:
-                name: data_rights_access_control
-                type: VARCHAR(4000)
-            - column:
-                name: human_participants
-                type: BOOLEAN
+        - addColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name: other_data_sec_measures
+                  type: VARCHAR(4000)
+              - column:
+                  name: sensitive_data_access
+                  type: VARCHAR(4000)
+              - column:
+                  name: other_legal_r_documents
+                  type: VARCHAR(4000)
+              - column:
+                  name: data_rights_access_control
+                  type: VARCHAR(4000)
+              - column:
+                  name: human_participants
+                  type: BOOLEAN
+        - addColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name: other_data_sec_measures
+                  type: VARCHAR(4000)
+              - column:
+                  name: sensitive_data_access
+                  type: VARCHAR(4000)
+              - column:
+                  name: other_legal_r_documents
+                  type: VARCHAR(4000)
+              - column:
+                  name: data_rights_access_control
+                  type: VARCHAR(4000)
+              - column:
+                  name: human_participants
+                  type: BOOLEAN
 
-      - createTable:
-          tableName: e_security_measure
-          columns:
-            - column:
-                name: security_measure
-                type: VARCHAR(255)
-                constraints:
-                  primaryKey: true
-                  nullable: false
-      - insert:
-          columns:
-            - column:
-                name: security_measure
-                value: 'INDIVIDUAL_LOGIN'
-          tableName: e_security_measure
-      - insert:
-          columns:
-            - column:
-                name: security_measure
-                value: 'ADDITIONAL_LOGIN'
-          tableName: e_security_measure
-      - insert:
-          columns:
-            - column:
-                name: security_measure
-                value: 'AUTOMATIC_LOCKING_OF_CLIENTS'
-          tableName: e_security_measure
-      - insert:
-          columns:
-            - column:
-                name: security_measure
-                value: 'ENCRYPTION_OF_SYSTEMS'
-          tableName: e_security_measure
-      - insert:
-          columns:
-            - column:
-                name: security_measure
-                value: 'LOCKED_STORAGE'
-          tableName: e_security_measure
-      - insert:
-          columns:
-            - column:
-                name: security_measure
-                value: 'OTHER'
-          tableName: e_security_measure
+        - createTable:
+            tableName: e_security_measure
+            columns:
+              - column:
+                  name: security_measure
+                  type: VARCHAR(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+        - insert:
+            columns:
+              - column:
+                  name: security_measure
+                  value: 'INDIVIDUAL_LOGIN'
+            tableName: e_security_measure
+        - insert:
+            columns:
+              - column:
+                  name: security_measure
+                  value: 'ADDITIONAL_LOGIN'
+            tableName: e_security_measure
+        - insert:
+            columns:
+              - column:
+                  name: security_measure
+                  value: 'AUTOMATIC_LOCKING_OF_CLIENTS'
+            tableName: e_security_measure
+        - insert:
+            columns:
+              - column:
+                  name: security_measure
+                  value: 'ENCRYPTION_OF_SYSTEMS'
+            tableName: e_security_measure
+        - insert:
+            columns:
+              - column:
+                  name: security_measure
+                  value: 'LOCKED_STORAGE'
+            tableName: e_security_measure
+        - insert:
+            columns:
+              - column:
+                  name: security_measure
+                  value: 'OTHER'
+            tableName: e_security_measure
 
-      - createTable:
-          tableName: e_agreement
-          columns:
-            - column:
-                name: agreement
-                type: VARCHAR(255)
-                constraints:
-                  primaryKey: true
-                  nullable: false
-      - insert:
-          columns:
-            - column:
-                name: agreement
-                value: 'CONSORTIUM_AGREEMENT'
-          tableName: e_agreement
-      - insert:
-          columns:
-            - column:
-                name: agreement
-                value: 'DATA_PROCESSING_AGREEMENT'
-          tableName: e_agreement
-      - insert:
-          columns:
-            - column:
-                name: agreement
-                value: 'JOINT_CONTROL_AGREEMENT'
-          tableName: e_agreement
-      - insert:
-          columns:
-            - column:
-                name: agreement
-                value: 'CONFIDENTIALITY_AGREEMENT'
-          tableName: e_agreement
-      - insert:
-          columns:
-            - column:
-                name: agreement
-                value: 'OTHER'
-          tableName: e_agreement
+        - createTable:
+            tableName: e_agreement
+            columns:
+              - column:
+                  name: agreement
+                  type: VARCHAR(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+        - insert:
+            columns:
+              - column:
+                  name: agreement
+                  value: 'CONSORTIUM_AGREEMENT'
+            tableName: e_agreement
+        - insert:
+            columns:
+              - column:
+                  name: agreement
+                  value: 'DATA_PROCESSING_AGREEMENT'
+            tableName: e_agreement
+        - insert:
+            columns:
+              - column:
+                  name: agreement
+                  value: 'JOINT_CONTROL_AGREEMENT'
+            tableName: e_agreement
+        - insert:
+            columns:
+              - column:
+                  name: agreement
+                  value: 'CONFIDENTIALITY_AGREEMENT'
+            tableName: e_agreement
+        - insert:
+            columns:
+              - column:
+                  name: agreement
+                  value: 'OTHER'
+            tableName: e_agreement
 
-      - createTable:
-          tableName: sensitive_data_security
-          columns:
-            - column:
-                name: dmp_id
-                type: NUMBER(20,0)
-                constraints:
-                  foreignKeyName: fk_sec_measure_dmp
-                  references: dmp(id)
-            - column:
-                name: security_measure
-                type: VARCHAR(255)
-                constraints:
-                  foreignKeyName: fk_security_measure
-                  references: e_security_measure(security_measure)
-      - createTable:
-          tableName: sensitive_data_security_aud
-          columns:
-            -  column:
-                 name:  REV
-                 type:  NUMBER(20,0)
-                 constraints:
-                   foreignKeyName:  fk_sensitive_data_sec_revinfo
-                   references:  revinfo(id)
-            -  column:
-                 name:  REVTYPE
-                 type:  NUMBER(20,0)
-            - column:
-                name: dmp_id
-                type: NUMBER(20,0)
-                constraints:
-                  foreignKeyName: fk_sec_measure_dmp_aud
-                  references: dmp(id)
-            - column:
-                name: security_measure
-                type: VARCHAR(255)
-                constraints:
-                  foreignKeyName: fk_security_measure_aud
-                  references: e_security_measure(security_measure)
+        - createTable:
+            tableName: sensitive_data_security
+            columns:
+              - column:
+                  name: dmp_id
+                  type: NUMBER(20,0)
+                  constraints:
+                    foreignKeyName: fk_sec_measure_dmp
+                    references: dmp(id)
+              - column:
+                  name: security_measure
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName: fk_security_measure
+                    references: e_security_measure(security_measure)
+        - createTable:
+            tableName: sensitive_data_security_aud
+            columns:
+              -  column:
+                   name:  REV
+                   type:  NUMBER(20,0)
+                   constraints:
+                     foreignKeyName:  fk_sensitive_data_sec_revinfo
+                     references:  revinfo(id)
+              -  column:
+                   name:  REVTYPE
+                   type:  NUMBER(20,0)
+              - column:
+                  name: dmp_id
+                  type: NUMBER(20,0)
+                  constraints:
+                    foreignKeyName: fk_sec_measure_dmp_aud
+                    references: dmp(id)
+              - column:
+                  name: security_measure
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName: fk_security_measure_aud
+                    references: e_security_measure(security_measure)
 
 
-      - createTable:
-          tableName: legal_restr_documents
-          columns:
-            - column:
-                name: dmp_id
-                type: NUMBER(20,0)
-                constraints:
-                  foreignKeyName: fk_legal_restr_doc_dmp
-                  references: dmp(id)
-            - column:
-                name: agreement
-                type: VARCHAR(255)
-                constraints:
-                  foreignKeyName: fk_agreement
-                  references: e_agreement(agreement)
-      - createTable:
-          tableName: legal_restr_documents_aud
-          columns:
-            -  column:
-                 name:  REV
-                 type:  NUMBER(20,0)
-                 constraints:
-                   foreignKeyName:  fk_legal_r_doc_aud_revinfo
-                   references:  revinfo(id)
-            -  column:
-                 name:  REVTYPE
-                 type:  NUMBER(20,0)
-            - column:
-                name: dmp_id
-                type: NUMBER(20,0)
-                constraints:
-                  foreignKeyName: fk_legal_restr_doc_dmp_aud
-                  references: dmp(id)
-            - column:
-                name: agreement
-                type: VARCHAR(255)
-                constraints:
-                  foreignKeyName: fk_agreement_aud
-                  references: e_agreement(agreement)
+        - createTable:
+            tableName: legal_restr_documents
+            columns:
+              - column:
+                  name: dmp_id
+                  type: NUMBER(20,0)
+                  constraints:
+                    foreignKeyName: fk_legal_restr_doc_dmp
+                    references: dmp(id)
+              - column:
+                  name: agreement
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName: fk_agreement
+                    references: e_agreement(agreement)
+        - createTable:
+            tableName: legal_restr_documents_aud
+            columns:
+              -  column:
+                   name:  REV
+                   type:  NUMBER(20,0)
+                   constraints:
+                     foreignKeyName:  fk_legal_r_doc_aud_revinfo
+                     references:  revinfo(id)
+              -  column:
+                   name:  REVTYPE
+                   type:  NUMBER(20,0)
+              - column:
+                  name: dmp_id
+                  type: NUMBER(20,0)
+                  constraints:
+                    foreignKeyName: fk_legal_restr_doc_dmp_aud
+                    references: dmp(id)
+              - column:
+                  name: agreement
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName: fk_agreement_aud
+                    references: e_agreement(agreement)
 
 
   - changeSet:
@@ -2106,3 +2106,245 @@ databaseChangeLog:
               - column:
                   name: retrieval_date
                   type: TIMESTAMP
+
+
+
+  - changeSet:
+      id: 7
+      author: Zeno Casellato
+      changes:
+        - addColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name:  personal_data_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name:  personal_data_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name:  sensitive_data_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name:  sensitive_data_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name:  legal_restrictions_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name:  legal_restrictions_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name:  human_participants_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name:  human_participants_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name:  ethical_issues_exist_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name:  ethical_issues_exist_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name:  committee_reviewed_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name:  committee_reviewed_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name:  costs_exist_cris
+                  type:  BOOLEAN
+        - addColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name:  costs_exist_cris
+                  type:  BOOLEAN
+
+
+  - changeSet:
+      id: 8
+      author: Zeno Casellato
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: person
+            constraintName: fk_person_identifier
+        - dropForeignKeyConstraint:
+            baseTableName: person
+            constraintName: fk_person_affil_identifier
+
+        - addColumn:
+            tableName: contributor
+            columns:
+              - column:
+                  name: contributor_id
+                  type: NUMBER(20,0)
+                  constraints:
+                    foreignKeyName: fk_person_identifier
+                    references: identifier(id)
+              - column:
+                  name: university_id
+                  type: VARCHAR(255)
+              - column:
+                  name: mbox
+                  type: VARCHAR(255)
+              - column:
+                  name: first_name
+                  type: VARCHAR(255)
+              - column:
+                  name: last_name
+                  type: VARCHAR(255)
+              - column:
+                  name: contact
+                  type: BOOLEAN
+              - column:
+                  name: affiliation
+                  type: VARCHAR(255)
+              - column:
+                  name: affiliation_id
+                  type:  NUMBER(20,0)
+                  constraints:
+                    foreignKeyName:  fk_person_affil_identifier
+                    references:  identifier(id)
+        - addColumn:
+            tableName: contributor_aud
+            columns:
+              - column:
+                  name: contributor_id
+                  type: NUMBER(20,0)
+              - column:
+                  name: university_id
+                  type: VARCHAR(255)
+              - column:
+                  name: mbox
+                  type: VARCHAR(255)
+              - column:
+                  name: first_name
+                  type: VARCHAR(255)
+              - column:
+                  name: last_name
+                  type: VARCHAR(255)
+              - column:
+                  name: contact
+                  type: BOOLEAN
+              - column:
+                  name: affiliation
+                  type: VARCHAR(255)
+              - column:
+                  name: affiliation_id
+                  type: NUMBER(20,0)
+
+        - sql:
+            dbms: '!h2, oracle,  postgresql'
+            splitStatements: false
+            sql: UPDATE contributor con SET contributor_id = (select person_id from person pers where pers.id = con.person_id), university_id = (select university_id from person pers where pers.id = con.person_id), mbox = (select mbox from person pers where pers.id = con.person_id), first_name = (select first_name from person pers where pers.id = con.person_id), last_name = (select last_name from person pers where pers.id = con.person_id), affiliation = (select affiliation from person pers where pers.id = con.person_id), affiliation_id = (select affiliation_id from person pers where pers.id = con.person_id)
+            stripComments: true
+            comment: migrating existing contributors
+
+        - dropForeignKeyConstraint:
+            baseTableName: contributor
+            constraintName: fk_contributor_person
+        - dropColumn:
+            tableName: contributor
+            columns:
+              - column:
+                  name: person_id
+                  type: NUMBER(20,0)
+        - dropColumn:
+            tableName: contributor_aud
+            columns:
+              - column:
+                  name: person_id
+                  type: NUMBER(20,0)
+        - dropForeignKeyConstraint:
+            baseTableName: dmp
+            constraintName: fk_dmp_contact
+        - dropColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name: contact_id
+                  type: NUMBER(20,0)
+        - dropColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name: contact_id
+                  type: NUMBER(20,0)
+
+        -  renameColumn:
+             columnDataType:  NUMBER(20,0)
+             newColumnName:  person_id
+             oldColumnName:  contributor_id
+             tableName:  contributor
+        -  renameColumn:
+             columnDataType: NUMBER(20,0)
+             newColumnName: person_id
+             oldColumnName: contributor_id
+             tableName: contributor_aud
+
+        -  dropTable:
+             cascadeConstraints:  true
+             tableName:  person
+        -  dropTable:
+             cascadeConstraints:  true
+             tableName:  person_aud
+
+  - changeSet:
+      id: 9
+      author: Hardani Maulana
+      createTable:
+        tableName: consent
+        columns:
+          - column:
+              name: id
+              type: NUMBER(20,0)
+              constraints:
+                primaryKey: true
+                nullable: false
+          - column:
+              name: university_id
+              type: VARCHAR(255)
+          - column:
+              name: consent_given
+              type: BOOLEAN
+          - column:
+              name: given_date
+              type: TIMESTAMP

@@ -4,7 +4,6 @@ import at.ac.tuwien.damap.enums.EContributorRole;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import lombok.*;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
@@ -20,7 +19,6 @@ public class Contributor extends PanacheEntity {
     @Setter(AccessLevel.NONE)
     private long version;
 
-//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @JsonbTransient
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dmp_id", nullable = false, updatable = false)
@@ -28,7 +26,26 @@ public class Contributor extends PanacheEntity {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id")
-    private Person contributor;
+    private Identifier personIdentifier;
+
+    @Column(name = "university_id")
+    private String universityId;
+
+    private String mbox;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    private String affiliation;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "affiliation_id")
+    private Identifier affiliationId;
+
+    private Boolean contact;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "contributor_role")

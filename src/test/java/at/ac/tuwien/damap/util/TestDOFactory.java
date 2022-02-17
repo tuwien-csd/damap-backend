@@ -1,9 +1,7 @@
 package at.ac.tuwien.damap.util;
 
 import at.ac.tuwien.damap.domain.Dmp;
-import at.ac.tuwien.damap.enums.EDataKind;
-import at.ac.tuwien.damap.enums.EFundingState;
-import at.ac.tuwien.damap.enums.EIdentifierType;
+import at.ac.tuwien.damap.enums.*;
 import at.ac.tuwien.damap.repo.DmpRepo;
 import at.ac.tuwien.damap.rest.dmp.domain.*;
 import at.ac.tuwien.damap.rest.dmp.mapper.DmpDOMapper;
@@ -33,7 +31,6 @@ public class TestDOFactory {
         newTestDmpDO.setModified(new Date());
         newTestDmpDO.setDescription("This DMP is created for an automated test.");
         newTestDmpDO.setProject(getTestProjectDO());
-        newTestDmpDO.setContact(getTestPersonDO());
         newTestDmpDO.setDataKind(EDataKind.NONE);
         newTestDmpDO.setContributors(getTestContributorList());
         newTestDmpDO.setNoDataExplanation("This is why there are no datasets.");
@@ -76,17 +73,14 @@ public class TestDOFactory {
     }
 
 
-    private List<String> getComplianceTypeList() {
-        return Arrays.asList("by gaining informed consent for processing personal data",
-                "by anonymisation of personal data for preservation and/or sharing (truly anonymous data are no longer considered personal data)");
+    private List<EComplianceType> getComplianceTypeList() {
+        return Arrays.asList(EComplianceType.INFORMED_CONSENT, EComplianceType.ANONYMISATION);
     }
-    private List<String> getSensitiveDataSecurityList() {
-        return Arrays.asList("individual log-in and password",
-                "automatic locking of clients (timeout)");
+    private List<ESecurityMeasure> getSensitiveDataSecurityList() {
+        return Arrays.asList(ESecurityMeasure.INDIVIDUAL_LOGIN, ESecurityMeasure.AUTOMATIC_LOCKING_OF_CLIENTS);
     }
-    private List<String> getLegalRestrictionsDocuments() {
-        return Arrays.asList("consortium agreement",
-                "data processing agreement");
+    private List<EAgreement> getLegalRestrictionsDocuments() {
+        return Arrays.asList(EAgreement.CONSORTIUM_AGREEMENT, EAgreement.CONFIDENTIALITY_AGREEMENT);
     }
 
     private ProjectDO getTestProjectDO() {
@@ -118,29 +112,29 @@ public class TestDOFactory {
         return identifier;
     }
 
-    private PersonDO getTestPersonDO(){
-        PersonDO person = new PersonDO();
-        person.setUniversityId("Internal Identifier 123456");
-        person.setPersonId(getTestIdentifierDO(EIdentifierType.ORCID));
-        person.setFirstName("Jane");
-        person.setLastName("Doe");
-        person.setMbox("jane.doe@research.institution.com");
-        person.setAffiliation("Affiliated Institution");
-        person.setAffiliationId(getTestIdentifierDO(EIdentifierType.ROR));
-        return person;
+    private ContributorDO getTestContributorDO(){
+        ContributorDO contributor = new ContributorDO();
+        contributor.setUniversityId("Internal Identifier 123456");
+        contributor.setPersonId(getTestIdentifierDO(EIdentifierType.ORCID));
+        contributor.setFirstName("Jane");
+        contributor.setLastName("Doe");
+        contributor.setMbox("jane.doe@research.institution.com");
+        contributor.setAffiliation("Affiliated Institution");
+        contributor.setAffiliationId(getTestIdentifierDO(EIdentifierType.ROR));
+        contributor.setContact(true);
+        return contributor;
     }
 
     private List<ContributorDO> getTestContributorList(){
-        ContributorDO contributor = new ContributorDO();
-        contributor.setPerson(getTestPersonDO());
-        contributor.setRole("Important Person");
+        ContributorDO contributor = getTestContributorDO();
+        contributor.setRole(EContributorRole.DATA_MANAGER);
 
-        ContributorDO secondContributor = new ContributorDO();
-        secondContributor.setPerson(getTestPersonDO());
-        secondContributor.getPerson().setFirstName("John");
-        secondContributor.getPerson().setLastName("Doe");
-        secondContributor.getPerson().setMbox("john.doe@research.institution.com");
-        secondContributor.setRole("Important Person");
+        ContributorDO secondContributor = getTestContributorDO();
+        secondContributor.setFirstName("John");
+        secondContributor.setLastName("Doe");
+        secondContributor.setMbox("john.doe@research.institution.com");
+        secondContributor.setRole(EContributorRole.DATA_COLLECTOR);
+        secondContributor.setContact(false);
         return Arrays.asList(contributor, secondContributor);
     }
 
@@ -154,13 +148,13 @@ public class TestDOFactory {
         dataset.setPersonalData(true);
         dataset.setSensitiveData(true);
         dataset.setLegalRestrictions(true);
-        dataset.setLicense("Dataset License Link");
+        dataset.setLicense("https://creativecommons.org/licenses/by/4.0/");
         dataset.setStartDate(new Date());
         dataset.setReferenceHash("referenceHash123456");
-        dataset.setDataAccess("Here the data can be accessed.");
-        dataset.setSelectedProjectMembersAccess("Here some project members can access.");
-        dataset.setOtherProjectMembersAccess("Here all project members can access the data");
-        dataset.setPublicAccess("Here the public can access the data");
+        dataset.setDataAccess(EDataAccessType.OPEN);
+        dataset.setSelectedProjectMembersAccess(EAccessRight.WRITE);
+        dataset.setOtherProjectMembersAccess(EAccessRight.READ);
+        dataset.setPublicAccess(EAccessRight.READ);
         dataset.setDelete(true);
         dataset.setDateOfDeletion(new Date());
         dataset.setReasonForDeletion("Explanation on why data is being deleted.");
@@ -180,7 +174,7 @@ public class TestDOFactory {
         storage.setHostId("123456");
         storage.setTitle("Internal Host");
         storage.setDatasets(List.of("referenceHash123456"));
-        storage.setUrl("Link to the storage service");
+        storage.setUrl("storage.url");
         storage.setBackupFrequency("Frequency of data backups.");
         storage.setStorageLocation("Location of Storages");
         storage.setBackupLocation("Location of Backups");
@@ -192,7 +186,7 @@ public class TestDOFactory {
         storage.setHostId(null);
         storage.setTitle("External Host");
         storage.setDatasets(List.of("referenceHash123456"));
-        storage.setUrl("Link to the storage service");
+        storage.setUrl("external.storage.url");
         storage.setBackupFrequency("Frequency of data backups.");
         storage.setStorageLocation("Location of Storages");
         storage.setBackupLocation("Location of Backups");
@@ -205,7 +199,7 @@ public class TestDOFactory {
         cost.setValue(50000f);
         cost.setCurrencyCode("EUR");
         cost.setDescription("Descriptiopn of required expense");
-        cost.setType("Typology of expense");
+        cost.setType(ECostType.DATABASE);
         cost.setTitle("Custom Typology");
         return List.of(cost);
     }
@@ -224,5 +218,20 @@ public class TestDOFactory {
 
         dmpRepo.persistAndFlush(DmpDOMapper.mapDOtoEntity(newTestDmpDO, new Dmp()));
         return getOrCreateTestDmpDOEmpty();
+    }
+
+
+    @Transactional
+    public DmpDO getOrCreateTestDmpDOInvalidData() {
+        DmpDO newInvalidTestDmpDO = getOrCreateTestDmpDO();
+        newInvalidTestDmpDO.setTitle("MalformedTestDmp");
+
+        newInvalidTestDmpDO.getDatasets().get(0).setLicense("License Address");
+        newInvalidTestDmpDO.getCosts().get(0).setCurrencyCode("DOUBLOONS");
+        newInvalidTestDmpDO.getHosts().get(0).setHostId("Arbitrary Host ID");
+        newInvalidTestDmpDO.getStorage().get(0).setUrl("Link to the storage service");
+        newInvalidTestDmpDO.getExternalStorage().get(0).setUrl("Link to the storage service");
+
+        return newInvalidTestDmpDO;
     }
 }

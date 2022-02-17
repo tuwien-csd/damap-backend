@@ -1,16 +1,21 @@
 package at.ac.tuwien.damap.r3data;
 
+import at.ac.tuwien.damap.r3data.dto.RepositoryDetails;
+import at.ac.tuwien.damap.r3data.mapper.RepositoryMapper;
 import generated.Repository;
 import io.quarkus.cache.CacheResult;
+import lombok.extern.jbosslog.JBossLog;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.re3data.schema._2_2.Re3Data;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedMap;
+import java.util.ArrayList;
 import java.util.List;
-import at.ac.tuwien.damap.r3data.mapper.RepositoryMapper;
 
+@JBossLog
 @ApplicationScoped
 public class RepositoriesService {
 
@@ -18,9 +23,28 @@ public class RepositoriesService {
     @RestClient
     RepositoriesRemoteResource repositoriesRemoteResource;
 
+    @ConfigProperty(name = "damap.repositories.recommendation")
+    String[] repositoriesRecommendation;
+
     @CacheResult(cacheName = "repositories")
     public List<Repository> getAll() {
         return repositoriesRemoteResource.getAll();
+    }
+
+    @CacheResult(cacheName = "recommendedRepositories")
+    public List<RepositoryDetails> getRecommended() {
+        List<RepositoryDetails> recommendedRepositories = new ArrayList<>();
+        for (String id : repositoriesRecommendation) {
+            if (id.startsWith("r3d")) {
+                try {
+                    Re3Data repo = this.getById(id);
+                    recommendedRepositories.add(RepositoryMapper.mapToRepositoryDetails(repo, id));
+                } catch (Exception e) {
+                    log.infov("Failed to retrieve repository for ID {0}, error: {1}", id, e.getMessage());
+                }
+            }
+        }
+        return recommendedRepositories;
     }
 
     @CacheResult(cacheName = "repository")
@@ -50,11 +74,10 @@ public class RepositoriesService {
     }
 
     public String getDescription(String id) {
-        return RepositoryMapper.mapToRepositoryDetails(getById(id)).getDescription();
+        return RepositoryMapper.mapToRepositoryDetails(getById(id), id).getDescription();
     }
 
     public String getRepositoryURL(String id) {
-        return RepositoryMapper.mapToRepositoryDetails(getById(id)).getRepositoryURL();
+        return RepositoryMapper.mapToRepositoryDetails(getById(id), id).getRepositoryURL();
     }
-
 }

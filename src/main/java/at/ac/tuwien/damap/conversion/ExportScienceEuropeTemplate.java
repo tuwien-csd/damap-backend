@@ -1,12 +1,11 @@
 package at.ac.tuwien.damap.conversion;
 
 import at.ac.tuwien.damap.domain.*;
-import at.ac.tuwien.damap.r3data.mapper.RepositoryMapper;
+import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import at.ac.tuwien.damap.enums.EComplianceType;
 import at.ac.tuwien.damap.enums.ESecurityMeasure;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
-import at.ac.tuwien.damap.rest.dmp.domain.ProjectMemberDO;
 import at.ac.tuwien.damap.r3data.RepositoriesService;
 
 import java.text.SimpleDateFormat;
@@ -21,7 +20,7 @@ import javax.inject.Inject;
 
 @ApplicationScoped
 @JBossLog
-public class ExportFWFTemplate extends DocumentConversionService{
+public class ExportScienceEuropeTemplate extends DocumentConversionService{
     @Inject
     ProjectService projectService;
 
@@ -47,6 +46,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
         Dmp dmp = dmpRepo.findById(dmpId);
         List<Dataset> datasets = dmp.getDatasetList();
         List<Cost> costList = dmp.getCosts();
+        List<Dataset> closedDatasets = getClosedDatasets(datasets);
 
         //Convert the date for readable format for the document
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -77,7 +77,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
 
         //Section 5 contains information about data publication and long term preservation.
         log.info("Export steps: Section 5");
-        sectionFive(dmp, map, datasets);
+        sectionFive(dmp, map, datasets, closedDatasets);
 
         //Section 6 contains resources and cost information if necessary.
         log.info("Export steps: Section 6");
@@ -90,7 +90,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
         //Third step of the export: dynamic table in all sections will be added from row number two until the end of data list.
         //TO DO: combine the function with the first row generation to avoid double code of similar modification.
         log.info("Export steps: Replace in table");
-        tableContent(dmp, xwpfParagraphs, map, tables, datasets, costList, formatter);
+        tableContent(dmp, xwpfParagraphs, map, tables, datasets, closedDatasets, costList, formatter);
 
         //Fourth step of the export: modify the content of the document's footer
         log.info("Export steps: Replace in footer");
@@ -106,7 +106,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
     //Pre section variables replacement
     private void preSection(Dmp dmp, Map<String, String> replacements, Map<String, String> footerMap, SimpleDateFormat formatter) {
         //project member list
-        List<ProjectMemberDO> projectMember = new ArrayList<>();
+        ContributorDO projectCoordinator = null;
 
         //mapping general information
         if (dmp.getProject() != null) {
@@ -169,7 +169,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
             addReplacement(replacements, "[projectid]", dmp.getProject().getUniversityId());
             //get project member from the project ID
             if (dmp.getProject().getUniversityId() != null)
-                projectMember = projectService.getProjectStaff(dmp.getProject().getUniversityId());
+                projectCoordinator = projectService.getProjectLeader(dmp.getProject().getUniversityId());
 
             //variable dmp version
             Long dmpVersion = dmp.getVersion();
@@ -232,39 +232,34 @@ public class ExportFWFTemplate extends DocumentConversionService{
         String coordinatorIdentifierId = "";
         String coordinatorAffiliationIdentifierId = "";
 
-        if (!projectMember.isEmpty()) {
-            for (ProjectMemberDO member : projectMember) {
-                if (member != null) {
-                    if (member.isProjectLeader()) {
-                        if (member.getPerson().getFirstName() != null && member.getPerson().getLastName() != null)
-                            coordinatorProperties.add(member.getPerson().getFirstName() + " " + member.getPerson().getLastName());
+        //mapping project coordinator information
+        if (projectCoordinator != null) {
+            if (projectCoordinator.getFirstName() != null && projectCoordinator.getLastName() != null)
+                coordinatorProperties.add(projectCoordinator.getFirstName() + " " + projectCoordinator.getLastName());
 
-                        if (member.getPerson().getMbox() != null)
-                            coordinatorProperties.add(member.getPerson().getMbox());
+            if (projectCoordinator.getMbox() != null)
+                coordinatorProperties.add(projectCoordinator.getMbox());
 
-                        if (member.getPerson().getPersonId() != null) {
-                            coordinatorIdentifierId = member.getPerson().getPersonId().getIdentifier();
+            if (projectCoordinator.getPersonId() != null) {
+                coordinatorIdentifierId = projectCoordinator.getPersonId().getIdentifier();
 
-                            if (member.getPerson().getPersonId().getType().toString().equals("orcid")) {
-                                String coordinatorIdentifierType = "ORCID iD: ";
-                                String coordinatorId = coordinatorIdentifierType + coordinatorIdentifierId;
-                                coordinatorProperties.add(coordinatorId);
-                            }
-                        }
+                if (projectCoordinator.getPersonId().getType().toString().equals("orcid")) {
+                    String coordinatorIdentifierType = "ORCID iD: ";
+                    String coordinatorId = coordinatorIdentifierType + coordinatorIdentifierId;
+                    coordinatorProperties.add(coordinatorId);
+                }
+            }
 
-                        if (member.getPerson().getAffiliation() != null)
-                            coordinatorProperties.add(member.getPerson().getAffiliation());
+            if (projectCoordinator.getAffiliation() != null)
+                coordinatorProperties.add(projectCoordinator.getAffiliation());
 
-                        if (member.getPerson().getAffiliationId() != null) {
-                            coordinatorAffiliationIdentifierId = member.getPerson().getAffiliationId().getIdentifier();
+            if (projectCoordinator.getAffiliationId() != null) {
+                coordinatorAffiliationIdentifierId = projectCoordinator.getAffiliationId().getIdentifier();
 
-                            if (member.getPerson().getAffiliationId().getType().toString().equals("ror")) {
-                                String coordinatorAffiliationIdentifierType = "ROR: ";
-                                String coordinatorAffiliationId = coordinatorAffiliationIdentifierType + coordinatorAffiliationIdentifierId;
-                                coordinatorProperties.add(coordinatorAffiliationId);
-                            }
-                        }
-                    }
+                if (projectCoordinator.getAffiliationId().getType().toString().equals("ror")) {
+                    String coordinatorAffiliationIdentifierType = "ROR: ";
+                    String coordinatorAffiliationId = coordinatorAffiliationIdentifierType + coordinatorAffiliationIdentifierId;
+                    coordinatorProperties.add(coordinatorAffiliationId);
                 }
             }
         }
@@ -293,33 +288,33 @@ public class ExportFWFTemplate extends DocumentConversionService{
                     String contributorAffiliationIdentifierType = "";
                     String contributorAffiliationIdentifierId = "";
 
-                    if (contributor.getContributor().getFirstName() != null && contributor.getContributor().getLastName() != null) {
-                        contributorName = contributor.getContributor().getFirstName() + " " + contributor.getContributor().getLastName();
+                    if (contributor.getFirstName() != null && contributor.getLastName() != null) {
+                        contributorName = contributor.getFirstName() + " " + contributor.getLastName();
                         contributorProperties.add(contributorName);
                     }
 
-                    if (contributor.getContributor().getMbox() != null) {
-                        contributorMail = contributor.getContributor().getMbox();
+                    if (contributor.getMbox() != null) {
+                        contributorMail = contributor.getMbox();
                         contributorProperties.add(contributorMail);
                     }
 
-                    if (contributor.getContributor().getPersonIdentifier() != null) {
-                        contributorIdentifierId = contributor.getContributor().getPersonIdentifier().getIdentifier();
-                        if (contributor.getContributor().getPersonIdentifier().getIdentifierType().toString().equals("orcid")) {
+                    if (contributor.getPersonIdentifier() != null) {
+                        contributorIdentifierId = contributor.getPersonIdentifier().getIdentifier();
+                        if (contributor.getPersonIdentifier().getIdentifierType().toString().equals("orcid")) {
                             contributorIdentifierType = "ORCID iD: ";
                             contributorId = contributorIdentifierType + contributorIdentifierId;
                             contributorProperties.add(contributorId);
                         }
                     }
 
-                    if (contributor.getContributor().getAffiliation() != null) {
-                        contributorAffiliation = contributor.getContributor().getAffiliation();
+                    if (contributor.getAffiliation() != null) {
+                        contributorAffiliation = contributor.getAffiliation();
                         contributorProperties.add(contributorAffiliation);
                     }
 
-                    if (contributor.getContributor().getAffiliationId() != null) {
-                        contributorAffiliationIdentifierId = contributor.getContributor().getAffiliationId().getIdentifier();
-                        if (contributor.getContributor().getAffiliationId().getIdentifierType().toString().equals("ror")) {
+                    if (contributor.getAffiliationId() != null) {
+                        contributorAffiliationIdentifierId = contributor.getAffiliationId().getIdentifier();
+                        if (contributor.getAffiliationId().getIdentifierType().toString().equals("ror")) {
                             contributorAffiliationIdentifierType = "ROR: ";
                             contributorAffiliationId = contributorAffiliationIdentifierType + contributorAffiliationIdentifierId;
                             contributorProperties.add(contributorAffiliationId);
@@ -493,6 +488,10 @@ public class ExportFWFTemplate extends DocumentConversionService{
 
             addReplacement(replacements, docVar10, datasetRestriction);
 
+            if (dataset.getRetentionPeriod() != null) {
+                datasetPeriod = dataset.getRetentionPeriod() + " years";
+            }
+
             addReplacement(replacements, docVar11, datasetPeriod);
 
             if (dataset.getSelectedProjectMembersAccess() != null) {
@@ -566,12 +565,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
                 addReplacement(replacements,"[dataorganisation]", "There is no specific document structure has been defined yet for this project.");
             }
             else {
-                if (dmp.getStructure().contains("[add document name]")) {
-                    addReplacement(replacements,"[dataorganisation]", dmp.getStructure().replace("[add document name]", dmpService.getDefaultFileName(dmp.id)));
-                }
-                else {
-                    addReplacement(replacements,"[dataorganisation]", dmp.getStructure());
-                }
+                addReplacement(replacements,"[dataorganisation]", dmp.getStructure());
             }
         }
     }
@@ -697,15 +691,15 @@ public class ExportFWFTemplate extends DocumentConversionService{
                 else {
                     //security measurement size defined is/or usage
                     if (dataSecurityList.size() == 1) {
-                        sensitiveDataMeasure = "To ensure that storage and transfer of sensitive data is safe, additional security measures such as " + multipleVariable(dataSecurityList) + "is taken.";
+                        sensitiveDataMeasure = "To ensure that storage and transfer of sensitive data is safe, additional security measures such as " + multipleVariable(dataSecurityList) + " is taken.";
                     } else {
-                        sensitiveDataMeasure = "To ensure that storage and transfer of sensitive data is safe, additional security measures such as " + multipleVariable(dataSecurityList) + "are taken.";
+                        sensitiveDataMeasure = "To ensure that storage and transfer of sensitive data is safe, additional security measures such as " + multipleVariable(dataSecurityList) + " are taken.";
                     }
                 }
 
                 if (dmp.getSensitiveDataAccess() != null) {
                     if (!dmp.getSensitiveDataAccess().isEmpty()) {
-                        authorisedAccess = "Only " + dmp.getSensitiveDataAccess() + " will be authorised to access sensitive data.";
+                        authorisedAccess = " Only " + dmp.getSensitiveDataAccess() + " will be authorised to access sensitive data.";
                     }
                 }
 
@@ -845,22 +839,22 @@ public class ExportFWFTemplate extends DocumentConversionService{
 
         if (dmp.getHumanParticipants() != null) {
             if (dmp.getHumanParticipants()) {
-                ethicalStatement = "This project will involve human participants. ";
+                ethicalStatement = " This project will involve human participants.";
             }
         }
 
         if (dmp.getEthicalIssuesExist() != null) {
             if (dmp.getEthicalIssuesExist()) {
-                otherEthicalIssues = "There are other ethical issues associated with this research. ";
+                otherEthicalIssues = " There are other ethical issues associated with this research.";
             }
         }
 
         if (dmp.getCommitteeReviewed() != null) {
             if (dmp.getCommitteeReviewed()) {
-                committeeReviewed = "The research plan of the project was reviewed by an ethics committee / the TU Wien Pilot Research Ethics Committee / a similar body. ";
+                committeeReviewed = " The research plan of the project was reviewed by an ethics committee / the TU Wien Pilot Research Ethics Committee / a similar body.";
             }
             else {
-                committeeReviewed = "The research has not been reviewed yet by any ethics committee. ";
+                committeeReviewed = " The research has not been reviewed yet by any ethics committee.";
             }
         }
 
@@ -886,21 +880,26 @@ public class ExportFWFTemplate extends DocumentConversionService{
     }
 
     //Section 5 variables replacement
-    private void sectionFive(Dmp dmp, Map<String, String> replacements, List<Dataset> datasets) {
+    private void sectionFive(Dmp dmp, Map<String, String> replacements, List<Dataset> datasets, List<Dataset> closedDatasets) {
 
         String repoSentence = "";
         String repoInformation = "";
+        String deleteDatasetTitle = "";
+        Date deleteDatasetDate = null;
+        String deleteDatasetReason = "";
 
+        //TODO: all datasets storage related information should be moved here
         for (Dataset dataset : datasets) {
             if (dataset.getDistributionList() != null){
                 List<Distribution> distributions = dataset.getDistributionList();
                 List<String> repositories = new ArrayList<>();
 
                 for (Distribution distribution: distributions) {
-                    if (distribution.getHost().getHostId() != null)
+                    if (distribution.getHost().getHostId() != null) {
                         if (distribution.getHost().getHostId().contains("r3")) { //repository
                             repositories.add(repositoriesService.getDescription(distribution.getHost().getHostId()) + " " + repositoriesService.getRepositoryURL(distribution.getHost().getHostId()));
                         }
+                    }
                 }
                 if (repositories.size() > 0)
                     repoSentence = "The repository used in this project described in the following paragraph.";
@@ -909,10 +908,19 @@ public class ExportFWFTemplate extends DocumentConversionService{
             }
         }
 
-
         addReplacement(replacements, "[repoinformation]", repoInformation);
 
         addReplacement(replacements, "[targetaudience]", dmp.getTargetAudience());
+
+        if (closedDatasets.size() > 0) {
+            deleteDatasetTitle = closedDatasets.get(0).getTitle();
+            deleteDatasetDate = closedDatasets.get(0).getDateOfDeletion();
+            deleteDatasetReason = closedDatasets.get(0).getReasonForDeletion();
+        }
+
+        addReplacement(replacements, "[dataset1delete]", deleteDatasetTitle);
+        addReplacement(replacements, "[delete1date]", deleteDatasetDate);
+        addReplacement(replacements, "[delete1reason]", deleteDatasetReason);
 
         if (dmp.getTools() != null) {
             if (dmp.getTools() != "") {
@@ -1001,7 +1009,7 @@ public class ExportFWFTemplate extends DocumentConversionService{
     }
 
     //All tables variables replacement
-    private void tableContent(Dmp dmp, List<XWPFParagraph> xwpfParagraphs, Map<String, String> replacements, List<XWPFTable> tables, List<Dataset> datasets, List<Cost> costList, SimpleDateFormat formatter) {
+    private void tableContent(Dmp dmp, List<XWPFParagraph> xwpfParagraphs, Map<String, String> replacements, List<XWPFTable> tables, List<Dataset> datasets, List<Dataset> closedDatasets, List<Cost> costList, SimpleDateFormat formatter) {
 
         for (XWPFTable xwpfTable : tables) {
             if (xwpfTable.getRow(1) != null) {
@@ -1266,11 +1274,11 @@ public class ExportFWFTemplate extends DocumentConversionService{
                     xwpfTable.removeRow(xwpfTable.getRows().size() - 1);
                 }
 
-                //table 5b
+                //table 5b: long term storage
                 //notes: dataset number 2 until the end will be written directly to the table
                 if (xwpfTable.getRow(1).getCell(1).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[dataset1repo]")) {
 
-                    log.info("Export steps: Table 5b");
+                    log.info("Export steps: Table 5b: long term storage");
 
                     if (datasets.size() > 1) {
                         for (int i = 2; i < datasets.size() + 1; i++) {
@@ -1336,7 +1344,52 @@ public class ExportFWFTemplate extends DocumentConversionService{
                     xwpfTable.removeRow(xwpfTable.getRows().size() - 1);
                 }
 
+                //table 5b: delete datasets
+                if (xwpfTable.getRow(1).getCell(0).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[dataset1delete]")) {
+
+                    log.info("Export steps: Table 5b: dataset deletion");
+
+                    if (closedDatasets.size() > 1) {
+                        for (int i = 2; i < closedDatasets.size() + 1; i++) {
+
+                            XWPFTableRow sourceTableRow = xwpfTable.getRow(i);
+                            XWPFTableRow newRow = new XWPFTableRow(sourceTableRow.getCtRow(), xwpfTable);
+
+                            try {
+                                newRow = insertNewTableRow(sourceTableRow, i);
+                            }
+                            catch (Exception e) {
+                            }
+
+                            ArrayList<String> docVar = new ArrayList<>();
+                            //TODO datasets and hosts are now connected by Distribution objects
+                            docVar.add(closedDatasets.get(i-1).getTitle());
+                            docVar.add(formatter.format(closedDatasets.get(i-1).getDateOfDeletion()));
+                            docVar.add(closedDatasets.get(i-1).getReasonForDeletion());
+                            docVar.add("");
+
+                            List<XWPFTableCell> cells = newRow.getTableCells();
+
+                            for (XWPFTableCell cell : cells) {
+
+                                for (XWPFParagraph paragraph : cell.getParagraphs()) {
+                                    for (XWPFRun run : paragraph.getRuns()) {
+                                        run.setText(docVar.get(cells.indexOf(cell)), 0);
+                                    }
+                                }
+                            }
+
+                            boolean weMustCommitTableRows = true;
+
+                            if (weMustCommitTableRows) commitTableRows(xwpfTable);
+                        }
+                    }
+                    //end of dynamic table rows code
+                    xwpfTable.removeRow(xwpfTable.getRows().size() - 1);
+                }
+
                 //dynamic table rows code for cost
+                //table 6b
                 //notes: cost number 2 until the end will be written directly to the table
                 if (xwpfTable.getRow(1).getCell(0).getParagraphs().get(0).getRuns().get(0).getText(0).equals("[cost1title]")) {
 
@@ -1399,5 +1452,19 @@ public class ExportFWFTemplate extends DocumentConversionService{
                 }
             }
         }
+    }
+
+    private List<Dataset> getClosedDatasets(List<Dataset> datasets) {
+
+        List<Dataset> closedDatasets = new ArrayList<>();
+
+        for (Dataset dataset : datasets) {
+            if (dataset.getDelete() != null) {
+                if (dataset.getDelete()) {
+                    closedDatasets.add(dataset);
+                }
+            }
+        }
+        return closedDatasets;
     }
 }
