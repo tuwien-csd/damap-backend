@@ -1,6 +1,9 @@
 package at.ac.tuwien.damap.rest.dmp.domain;
 
+import at.ac.tuwien.damap.enums.EAgreement;
+import at.ac.tuwien.damap.enums.EComplianceType;
 import at.ac.tuwien.damap.enums.EDataKind;
+import at.ac.tuwien.damap.enums.ESecurityMeasure;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
@@ -8,6 +11,7 @@ import javax.json.bind.annotation.JsonbDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -21,7 +25,6 @@ public class DmpDO {
     private Date modified;
     private String description;
     private ProjectDO project;
-    private PersonDO contact;
     private EDataKind dataKind;
     private List<ContributorDO> contributors = new ArrayList<ContributorDO>();
     private String noDataExplanation;
@@ -32,20 +35,26 @@ public class DmpDO {
     private String tools;
     private String restrictedDataAccess;
     private Boolean personalData;
-    private List<String> personalDataCompliance = new ArrayList<String>();
+    private Boolean personalDataCris = false;
+    private List<EComplianceType> personalDataCompliance = new ArrayList<EComplianceType>();
     private String otherPersonalDataCompliance;
     private Boolean sensitiveData;
-    private List<String> sensitiveDataSecurity = new ArrayList<String>();
+    private Boolean sensitiveDataCris = false;
+    private List<ESecurityMeasure> sensitiveDataSecurity = new ArrayList<ESecurityMeasure>();
     private String otherDataSecurityMeasures;
     private String sensitiveDataAccess;
     private Boolean legalRestrictions;
-    private List<String> legalRestrictionsDocuments = new ArrayList<String>();
+    private Boolean legalRestrictionsCris = false;
+    private List<EAgreement> legalRestrictionsDocuments = new ArrayList<EAgreement>();
     private String otherLegalRestrictionsDocument;
     private String legalRestrictionsComment;
     private String dataRightsAndAccessControl;
     private Boolean humanParticipants;
+    private Boolean humanParticipantsCris = false;
     private Boolean ethicalIssuesExist;
+    private Boolean ethicalIssuesExistCris = false;
     private Boolean committeeReviewed;
+    private Boolean committeeReviewedCris = false;
     private List<DatasetDO> datasets = new ArrayList<DatasetDO>();
     private List<HostDO> hosts = new ArrayList<HostDO>();
     private List<StorageDO> storage = new ArrayList<StorageDO>();
@@ -54,5 +63,11 @@ public class DmpDO {
     private String restrictedAccessInfo;
     private String closedAccessInfo;
     private Boolean costsExist;
+    private Boolean costsExistCris = false;
     private List<CostDO> costs = new ArrayList<CostDO>();
+
+    public ContributorDO getContact(){
+        Optional<ContributorDO> contact = contributors.stream().filter(ContributorDO::isContact).findFirst();
+        return contact.orElse(null);
+    }
 }

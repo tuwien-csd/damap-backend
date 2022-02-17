@@ -9,7 +9,9 @@ import at.ac.tuwien.damap.rest.dmp.domain.DmpListItemDO;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
 import at.ac.tuwien.damap.rest.dmp.mapper.DmpDOMapper;
 import at.ac.tuwien.damap.rest.dmp.mapper.DmpListItemDOMapper;
+import at.ac.tuwien.damap.rest.dmp.mapper.ProjectSupplementDOMapper;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
+import at.ac.tuwien.damap.rest.projects.ProjectSupplementDO;
 import lombok.extern.jbosslog.JBossLog;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -19,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @ApplicationScoped
 @JBossLog
@@ -63,6 +66,7 @@ public class DmpService {
         log.info("Creating new DMP");
         Dmp dmp = DmpDOMapper.mapDOtoEntity(dmpWrapper.getDmp(), new Dmp());
         dmp.setCreated(new Date());
+        updateDmpSupplementalInfo(dmp);
         dmp.persistAndFlush();
         createAccess(dmp, dmpWrapper.getEdited_by());
         return getDmpById(dmp.id);
@@ -72,8 +76,11 @@ public class DmpService {
     public DmpDO update(SaveDmpWrapper dmpWrapper) {
         log.info("Updating DMP with id " + dmpWrapper.getDmp().getId());
         Dmp dmp = dmpRepo.findById(dmpWrapper.getDmp().getId());
+        boolean projectSelectionChanged = projectSelectionChanged(dmp, dmpWrapper.getDmp());
         DmpDOMapper.mapDOtoEntity(dmpWrapper.getDmp(), dmp);
         dmp.setModified(new Date());
+        if (projectSelectionChanged)
+            updateDmpSupplementalInfo(dmp);
         dmp.persistAndFlush();
         return getDmpById(dmp.id);
     }
@@ -125,5 +132,24 @@ public class DmpService {
             }
         }
         return projectDOList;
+    }
+
+    private void updateDmpSupplementalInfo(Dmp dmp) {
+        if (dmp.getProject() != null) {
+            ProjectSupplementDO projectSupplementDO = projectService.getProjectSupplement(dmp.getProject().getUniversityId());
+            if (projectSupplementDO != null)
+                ProjectSupplementDOMapper.mapDOtoEntity(projectSupplementDO, dmp);
+        }
+    }
+
+    private boolean projectSelectionChanged(Dmp dmp, DmpDO dmpDO) {
+
+        if (dmpDO.getProject() == null)
+            return false;
+        if (dmp.getProject() == null)
+            return true;
+
+        return !Objects.equals(dmp.getProject().id, dmpDO.getProject().getId()) ||
+                !Objects.equals(dmp.getProject().getUniversityId(), dmpDO.getProject().getUniversityId());
     }
 }
