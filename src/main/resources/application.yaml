@@ -17,6 +17,8 @@ damap:
     url: jdbc:your-datasource-language:your-datasource.address
     username: your-datasource-username
     password: your-datasource-password
+  repositories:
+    recommendation: [ your-recommened-repositories ]
   projects-url: http://your.project.management.system.com
   persons-url: http://your.personnel.management.system.com
   fits-url: http://your.fits.service:1234

@@ -1,10 +1,11 @@
 package at.ac.tuwien.damap.r3data;
 
+import at.ac.tuwien.damap.r3data.dto.RepositoryDetails;
+import at.ac.tuwien.damap.r3data.mapper.RepositoryMapper;
 import generated.Repository;
 import io.quarkus.security.Authenticated;
 import lombok.extern.jbosslog.JBossLog;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
-import org.re3data.schema._2_2.Re3Data;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -32,10 +33,17 @@ public class RepositoriesResource {
     }
 
     @GET
+    @Path("/recommended")
+    public List<RepositoryDetails> getRecommended() {
+        log.info("Get recommended repositories");
+        return repositoriesService.getRecommended();
+    }
+
+    @GET
     @Path("/{id}")
-    public Re3Data getById(@PathParam String id) {
+    public RepositoryDetails getById(@PathParam String id) {
         log.info("Get repository with id: " + id);
-        return repositoriesService.getById(id);
+        return RepositoryMapper.mapToRepositoryDetails(repositoriesService.getById(id), id);
     }
 
     @GET
