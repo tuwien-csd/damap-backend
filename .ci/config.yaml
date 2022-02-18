@@ -9,7 +9,7 @@ pipelines:
         enabled: false
 
 whenBranch:
-  "next":
+  next:
     pipelines:
       maven:
         stages:
@@ -18,3 +18,9 @@ whenBranch:
     post:
       success:
         trigger: [ "CSD/damap-tuw-be/next" ]
+  master:
+    pipelines:
+      maven:
+        stages:
+          publish:
+            enabled: true
