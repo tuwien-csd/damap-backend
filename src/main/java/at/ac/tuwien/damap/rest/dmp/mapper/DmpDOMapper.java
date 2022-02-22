@@ -3,6 +3,7 @@ package at.ac.tuwien.damap.rest.dmp.mapper;
 import at.ac.tuwien.damap.domain.*;
 import at.ac.tuwien.damap.enums.EAgreement;
 import at.ac.tuwien.damap.enums.EComplianceType;
+import at.ac.tuwien.damap.enums.EDataQualityType;
 import at.ac.tuwien.damap.enums.ESecurityMeasure;
 import at.ac.tuwien.damap.rest.dmp.domain.*;
 import lombok.experimental.UtilityClass;
@@ -32,6 +33,7 @@ public class DmpDOMapper {
         dmpDO.setMetadata(dmp.getMetadata());
         dmpDO.setDataGeneration(dmp.getDataGeneration());
         dmpDO.setStructure(dmp.getStructure());
+        dmpDO.setOtherDataQuality(dmp.getOtherDataQuality());
         dmpDO.setTargetAudience(dmp.getTargetAudience());
         dmpDO.setTools(dmp.getTools());
         dmpDO.setRestrictedDataAccess(dmp.getRestrictedDataAccess());
@@ -66,6 +68,9 @@ public class DmpDOMapper {
             contributorDOList.add(contributorDO);
         });
         dmpDO.setContributors(contributorDOList);
+
+        List<EDataQualityType> dataQualityTypeDOList = new ArrayList<>(dmp.getDataQuality());
+        dmpDO.setDataQuality(dataQualityTypeDOList);
 
         List<EComplianceType> personalDataComplianceDOList = new ArrayList<>(dmp.getPersonalDataCompliance());
         dmpDO.setPersonalDataCompliance(personalDataComplianceDOList);
@@ -151,6 +156,7 @@ public class DmpDOMapper {
         dmp.setMetadata(dmpDO.getMetadata());
         dmp.setDataGeneration(dmpDO.getDataGeneration());
         dmp.setStructure(dmpDO.getStructure());
+        dmp.setOtherDataQuality(dmpDO.getOtherDataQuality());
         dmp.setTargetAudience(dmpDO.getTargetAudience());
         dmp.setTools(dmpDO.getTools());
         dmp.setRestrictedDataAccess(dmpDO.getRestrictedDataAccess());
@@ -191,6 +197,14 @@ public class DmpDOMapper {
             }
         });
         contributorList.removeAll(contributorListToRemove);
+
+        List<EDataQualityType> dataQualityTypeList = new ArrayList<>();
+        dmpDO.getDataQuality().forEach(option -> {
+            if (option != null) {
+                dataQualityTypeList.add(option);
+            }
+        });
+        dmp.setDataQuality(dataQualityTypeList);
 
         List<EComplianceType> personalDataComplianceList = new ArrayList<>();
         dmpDO.getPersonalDataCompliance().forEach(option -> {
