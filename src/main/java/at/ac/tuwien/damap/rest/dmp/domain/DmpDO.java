@@ -1,9 +1,6 @@
 package at.ac.tuwien.damap.rest.dmp.domain;
 
-import at.ac.tuwien.damap.enums.EAgreement;
-import at.ac.tuwien.damap.enums.EComplianceType;
-import at.ac.tuwien.damap.enums.EDataKind;
-import at.ac.tuwien.damap.enums.ESecurityMeasure;
+import at.ac.tuwien.damap.enums.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
@@ -31,6 +28,8 @@ public class DmpDO {
     private String metadata;
     private String dataGeneration;
     private String structure;
+    private List<EDataQualityType> dataQuality = new ArrayList<EDataQualityType>();
+    private String otherDataQuality;
     private String targetAudience;
     private String tools;
     private String restrictedDataAccess;
