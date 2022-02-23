@@ -55,9 +55,9 @@ public class DmpDO {
     private Boolean committeeReviewed;
     private Boolean committeeReviewedCris = false;
     private List<DatasetDO> datasets = new ArrayList<DatasetDO>();
-    private List<HostDO> hosts = new ArrayList<HostDO>();
+    private List<RepositoryDO> repositories = new ArrayList<RepositoryDO>();
     private List<StorageDO> storage = new ArrayList<StorageDO>();
-    private List<StorageDO> externalStorage = new ArrayList<StorageDO>();
+    private List<ExternalStorageDO> externalStorage = new ArrayList<ExternalStorageDO>();
     private String externalStorageInfo;
     private String restrictedAccessInfo;
     private String closedAccessInfo;

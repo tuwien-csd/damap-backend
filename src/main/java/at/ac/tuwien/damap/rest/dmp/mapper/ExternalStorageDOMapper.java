@@ -1,13 +1,13 @@
 package at.ac.tuwien.damap.rest.dmp.mapper;
 
 import at.ac.tuwien.damap.domain.ExternalStorage;
-import at.ac.tuwien.damap.rest.dmp.domain.StorageDO;
+import at.ac.tuwien.damap.rest.dmp.domain.ExternalStorageDO;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class ExternalStorageDOMapper {
 
-    public StorageDO mapEntityToDO(ExternalStorage storage, StorageDO storageDO) {
+    public ExternalStorageDO mapEntityToDO(ExternalStorage storage, ExternalStorageDO storageDO) {
         storageDO.setUrl(storage.getUrl());
         storageDO.setBackupFrequency(storage.getBackupFrequency());
         storageDO.setStorageLocation(storage.getStorageLocation());
@@ -16,7 +16,7 @@ public class ExternalStorageDOMapper {
         return storageDO;
     }
 
-    public ExternalStorage mapDOtoEntity(StorageDO storageDO, ExternalStorage storage){
+    public ExternalStorage mapDOtoEntity(ExternalStorageDO storageDO, ExternalStorage storage){
         storage.setUrl(storageDO.getUrl());
         storage.setBackupFrequency(storageDO.getBackupFrequency());
         storage.setStorageLocation(storageDO.getStorageLocation());

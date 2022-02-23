@@ -5,7 +5,6 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Parameters;
 
 import javax.enterprise.context.ApplicationScoped;
-import java.util.List;
 
 @ApplicationScoped
 public class ConsentRepo implements PanacheRepository<Consent> {

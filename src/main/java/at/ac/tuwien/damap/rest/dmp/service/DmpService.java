@@ -9,6 +9,7 @@ import at.ac.tuwien.damap.rest.dmp.domain.DmpListItemDO;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
 import at.ac.tuwien.damap.rest.dmp.mapper.DmpDOMapper;
 import at.ac.tuwien.damap.rest.dmp.mapper.DmpListItemDOMapper;
+import at.ac.tuwien.damap.rest.dmp.mapper.MapperService;
 import at.ac.tuwien.damap.rest.dmp.mapper.ProjectSupplementDOMapper;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
 import at.ac.tuwien.damap.rest.projects.ProjectSupplementDO;
@@ -35,6 +36,9 @@ public class DmpService {
 
     @Inject
     ProjectService projectService;
+
+    @Inject
+    MapperService mapperService;
 
     public List<DmpListItemDO> getAll() {
 
@@ -64,7 +68,7 @@ public class DmpService {
     @Transactional
     public DmpDO create(SaveDmpWrapper dmpWrapper) {
         log.info("Creating new DMP");
-        Dmp dmp = DmpDOMapper.mapDOtoEntity(dmpWrapper.getDmp(), new Dmp());
+        Dmp dmp = DmpDOMapper.mapDOtoEntity(dmpWrapper.getDmp(), new Dmp(), mapperService);
         dmp.setCreated(new Date());
         updateDmpSupplementalInfo(dmp);
         dmp.persistAndFlush();
@@ -77,7 +81,7 @@ public class DmpService {
         log.info("Updating DMP with id " + dmpWrapper.getDmp().getId());
         Dmp dmp = dmpRepo.findById(dmpWrapper.getDmp().getId());
         boolean projectSelectionChanged = projectSelectionChanged(dmp, dmpWrapper.getDmp());
-        DmpDOMapper.mapDOtoEntity(dmpWrapper.getDmp(), dmp);
+        DmpDOMapper.mapDOtoEntity(dmpWrapper.getDmp(), dmp, mapperService);
         dmp.setModified(new Date());
         if (projectSelectionChanged)
             updateDmpSupplementalInfo(dmp);

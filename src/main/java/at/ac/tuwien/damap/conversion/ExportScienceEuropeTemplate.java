@@ -458,12 +458,11 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                 List<String> storage = new ArrayList<>();
 
                 for (Distribution distribution: distributions) {
-                    if (distribution.getHost().getHostId() != null)
-                        if (distribution.getHost().getHostId().contains("r3")) { //repository
-                            repositories.add(distribution.getHost().getTitle());
-                        } else { //storage
-                            storage.add(distribution.getHost().getTitle());
-                        }
+                    if (Repository.class.isAssignableFrom(distribution.getHost().getClass())) { //repository
+                        repositories.add(distribution.getHost().getTitle());
+                    } else { //storage
+                        storage.add(distribution.getHost().getTitle());
+                    }
                 }
                 if (repositories.size() > 0)
                     datasetRepo = String.join(", ", repositories);
@@ -626,13 +625,11 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                         distVar = distVar + ", ";
                 }
 
-                if (host.getHostId() != null) {
-                    if (!host.getHostId().contains("r3")) { //only write information related to the storage, repository will be written in section 5
-                        if (!distVar.equals(""))
-                            storageVar = storageVar.concat(distVar + " " + loadResourceService.loadVariableFromResource(prop,"distributionStorage") + " " + hostVar + storageDescription);
-                    }
+                if (Storage.class.isAssignableFrom(host.getClass())) { //only write information related to the storage, repository will be written in section 5
+                    if (!distVar.equals(""))
+                        storageVar = storageVar.concat(distVar + " " + loadResourceService.loadVariableFromResource(prop,"distributionStorage") + " " + hostVar + storageDescription);
                 }
-                else { //case for external storage, will have null host Id
+                else if (ExternalStorage.class.isAssignableFrom(host.getClass())) { //case for external storage, will have null host Id
                     if (!distVar.equals("")) {
                         storageVar = storageVar.concat(distVar + " " + loadResourceService.loadVariableFromResource(prop,"distributionStorage") + " " + hostVar + ".");
                         if (dmp.getExternalStorageInfo() != null && !dmp.getExternalStorageInfo().equals("")) {
@@ -642,12 +639,10 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                 }
 
                 if (hostList.indexOf(host)+1 < hostList.size())
-                    if (host.getHostId() != null) {
-                        if (!host.getHostId().contains("r3")) { //only write information related to the storage, repository will be written in section 5)
-                            storageVar = storageVar.concat(";");
-                        }
+                    if (Storage.class.isAssignableFrom(host.getClass())) { //only write information related to the storage, repository will be written in section 5)
+                        storageVar = storageVar.concat(";");
                     }
-                    else { //case for external storage, will have null host Id
+                    else if (ExternalStorage.class.isAssignableFrom(host.getClass())) { //case for external storage, will have null host Id
                         storageVar = storageVar.concat(";");
                     }
             }
@@ -902,11 +897,8 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                 List<String> repositories = new ArrayList<>();
 
                 for (Distribution distribution: distributions) {
-                    if (distribution.getHost().getHostId() != null) {
-                        if (distribution.getHost().getHostId().contains("r3")) { //repository
-                            repositories.add(repositoriesService.getDescription(distribution.getHost().getHostId()) + " " + repositoriesService.getRepositoryURL(distribution.getHost().getHostId()));
-                        }
-                    }
+                    if (Repository.class.isAssignableFrom(distribution.getHost().getClass()))
+                        repositories.add(repositoriesService.getDescription(((Repository) distribution.getHost()).getRepositoryId()) + " " + repositoriesService.getRepositoryURL(((Repository) distribution.getHost()).getRepositoryId()));
                 }
                 if (repositories.size() > 0)
                     repoSentence = "repositories";
@@ -1215,10 +1207,8 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                                 List<String> repositories = new ArrayList<>();
                                 if (distributions.size() > 0) {
                                     for (Distribution distribution: distributions) {
-                                        if (distribution.getHost().getHostId() != null)
-                                            if (distribution.getHost().getHostId().contains("r3")) {
-                                                repositories.add(distribution.getHost().getTitle());
-                                            }
+                                        if (Repository.class.isAssignableFrom(distribution.getHost().getClass()))
+                                            repositories.add(distribution.getHost().getTitle());
                                     }
                                 }
                                 if (repositories.size() > 0) {
@@ -1306,10 +1296,8 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                                 List<Distribution> distributions = datasets.get(i - 1).getDistributionList();
                                 List<String> repositories = new ArrayList<>();
                                 for (Distribution distribution: distributions) {
-                                    if (distribution.getHost().getHostId() != null)
-                                        if (distribution.getHost().getHostId().contains("r3")) {
-                                            repositories.add(distribution.getHost().getTitle());
-                                        }
+                                    if (Repository.class.isAssignableFrom(distribution.getHost().getClass()))
+                                        repositories.add(distribution.getHost().getTitle());
                                 }
                                 if (repositories.size() > 0) {
                                     docVar.add(multipleVariable(repositories));

@@ -89,26 +89,27 @@ public class DmpDOMapper {
         });
         dmpDO.setDatasets(datasetDOList);
 
-        List<HostDO> repositoryDOList = new ArrayList<>();
+        List<RepositoryDO> repositoryDOList = new ArrayList<>();
         List<StorageDO> storageDOList = new ArrayList<>();
-        List<StorageDO> externalStorageDOList = new ArrayList<>();
+        List<ExternalStorageDO> externalStorageDOList = new ArrayList<>();
         dmp.getHostList().forEach(host -> {
             HostDO hostDO = null;
 
             if (Repository.class.isAssignableFrom(host.getClass())) {
-                hostDO = new HostDO();
+                hostDO = new RepositoryDO();
                 HostDOMapper.mapEntityToDO(host, hostDO);
-                repositoryDOList.add(hostDO);
+                RepositoryDOMapper.mapEntityToDO((Repository) host, (RepositoryDO) hostDO);
+                repositoryDOList.add((RepositoryDO) hostDO);
             } else if (Storage.class.isAssignableFrom(host.getClass())) {
                 hostDO = new StorageDO();
                 HostDOMapper.mapEntityToDO(host, hostDO);
                 StorageDOMapper.mapEntityToDO((Storage) host, (StorageDO) hostDO);
                 storageDOList.add((StorageDO) hostDO);
             } else if (ExternalStorage.class.isAssignableFrom(host.getClass())) {
-                hostDO = new StorageDO();
+                hostDO = new ExternalStorageDO();
                 HostDOMapper.mapEntityToDO(host, hostDO);
-                ExternalStorageDOMapper.mapEntityToDO((ExternalStorage) host, (StorageDO) hostDO);
-                externalStorageDOList.add((StorageDO) hostDO);
+                ExternalStorageDOMapper.mapEntityToDO((ExternalStorage) host, (ExternalStorageDO) hostDO);
+                externalStorageDOList.add((ExternalStorageDO) hostDO);
             }
 
             //add frontend referenceHash list to host
@@ -120,7 +121,7 @@ public class DmpDOMapper {
                 hostDO.setDatasets(referenceHashList);
 
         });
-        dmpDO.setHosts(repositoryDOList);
+        dmpDO.setRepositories(repositoryDOList);
         dmpDO.setStorage(storageDOList);
         dmpDO.setExternalStorage(externalStorageDOList);
 
@@ -136,7 +137,7 @@ public class DmpDOMapper {
         return dmpDO;
     }
 
-    public Dmp mapDOtoEntity(DmpDO dmpDO, Dmp dmp) {
+    public Dmp mapDOtoEntity(DmpDO dmpDO, Dmp dmp, MapperService mapperService) {
         if (dmpDO.getId() != null)
             dmp.id = dmpDO.getId();
         dmp.setTitle(dmpDO.getTitle());
@@ -278,7 +279,7 @@ public class DmpDOMapper {
         List<Host> hostList = dmp.getHostList();
         List<Host> hostListToRemove = new ArrayList<>();
         hostList.forEach(host -> {
-            Optional<HostDO> hostDOOptional = dmpDO.getHosts().stream().filter(hostDO ->
+            Optional<RepositoryDO> hostDOOptional = dmpDO.getRepositories().stream().filter(hostDO ->
                     hostDO.getId() != null &&
                             hostDO.getId().equals(host.id)).findFirst();
             if (Repository.class.isAssignableFrom(host.getClass())) {
@@ -298,7 +299,7 @@ public class DmpDOMapper {
             }
         });
         hostList.forEach(host -> {
-            Optional<StorageDO> hostDOOptional = dmpDO.getExternalStorage().stream().filter(hostDO ->
+            Optional<ExternalStorageDO> hostDOOptional = dmpDO.getExternalStorage().stream().filter(hostDO ->
                     hostDO.getId() != null &&
                             hostDO.getId().equals(host.id)).findFirst();
             if (ExternalStorage.class.isAssignableFrom(host.getClass())) {
@@ -309,8 +310,8 @@ public class DmpDOMapper {
         });
         hostList.removeAll(hostListToRemove);
 
-        //update existing Host objects and create new ones
-        dmpDO.getHosts().forEach(hostDO -> {
+        //update existing Repository objects and create new ones
+        dmpDO.getRepositories().forEach(hostDO -> {
             Optional<Host> hostOptional = hostList.stream().filter(host ->
                     hostDO.getId() != null &&
                             hostDO.getId().equals(host.id)).findFirst();
@@ -318,9 +319,11 @@ public class DmpDOMapper {
             if (hostOptional.isPresent()) {
                 host = (Repository) hostOptional.get();
                 HostDOMapper.mapDOtoEntity(hostDO, host);
+                RepositoryDOMapper.mapDOtoEntity(hostDO, host);
             } else {
                 host = new Repository();
                 HostDOMapper.mapDOtoEntity(hostDO, host);
+                RepositoryDOMapper.mapDOtoEntity(hostDO, host);
                 host.setDmp(dmp);
                 hostList.add(host);
             }
@@ -336,11 +339,11 @@ public class DmpDOMapper {
             if (hostOptional.isPresent()) {
                 host = (Storage) hostOptional.get();
                 HostDOMapper.mapDOtoEntity(hostDO, host);
-                StorageDOMapper.mapDOtoEntity(hostDO, host);
+                StorageDOMapper.mapDOtoEntity(hostDO, host, mapperService);
             } else {
                 host = new Storage();
                 HostDOMapper.mapDOtoEntity(hostDO, host);
-                StorageDOMapper.mapDOtoEntity(hostDO, host);
+                StorageDOMapper.mapDOtoEntity(hostDO, host, mapperService);
                 host.setDmp(dmp);
                 hostList.add(host);
             }
@@ -362,7 +365,6 @@ public class DmpDOMapper {
                 HostDOMapper.mapDOtoEntity(hostDO, host);
                 ExternalStorageDOMapper.mapDOtoEntity(hostDO, host);
                 host.setDmp(dmp);
-                host.setHostId(String.valueOf(System.currentTimeMillis()) + Math.random());
                 hostList.add(host);
             }
             determineDistributions(dmp, hostDO, host);

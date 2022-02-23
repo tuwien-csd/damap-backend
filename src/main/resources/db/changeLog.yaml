@@ -2458,3 +2458,611 @@ databaseChangeLog:
                   name: other_data_quality
                   type: VARCHAR(4000)
 
+
+
+  - changeSet:
+      id: 11
+      author: Zeno Casellato
+      changes:
+        -  createTable:
+             tableName:  internal_storage
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey: true
+                      nullable: false
+               - column:
+                   name: version
+                   type: NUMBER(10,0)
+                   constraints:
+                     nullable: false
+               -  column:
+                    name:  url
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  storage_location
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  backup_location
+                    type:  VARCHAR(255)
+
+        -  createTable:
+             tableName:  internal_storage_aud
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+                      foreignKeyName:  fk_inter_storage_aud_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  REVTYPE
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  url
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  storage_location
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  backup_location
+                    type:  VARCHAR(255)
+
+        -  dropTable:
+             cascadeConstraints:  true
+             tableName:  storage
+        -  dropTable:
+             cascadeConstraints:  true
+             tableName:  storage_aud
+
+        -  createTable:
+             tableName:  storage
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      foreignKeyName:  fk_storage_host
+                      references:  host(id)
+                      nullable:  false
+               -  column:
+                    name:  internal_storage_id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      foreignKeyName:  fk_storage_internal
+                      references:  internal_storage(id)
+        -  createTable:
+             tableName:  storage_aud
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+                      foreignKeyName:  fk_storage_aud_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  REVTYPE
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  internal_storage_id
+                    type:  NUMBER(20,0)
+
+        -  createTable:
+             tableName:  e_language
+             columns:
+               -  column:
+                    name:  language_code
+                    type:  VARCHAR(255)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  language_name
+                    type:  VARCHAR(255)
+
+        -  createTable:
+             tableName:  inter_storage_translation
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey: true
+                      nullable: false
+               - column:
+                   name: version
+                   type: NUMBER(10,0)
+                   constraints:
+                     nullable: false
+               -  column:
+                    name:  internal_storage_id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      foreignKeyName:  fk_trans_inter_storage
+                      references:  internal_storage(id)
+               -  column:
+                    name:  language_code
+                    type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_inter_storage_trans_lang
+                      references:  e_language(language_code)
+               -  column:
+                    name:  title
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  description
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  backup_frequency
+                    type:  VARCHAR(255)
+
+        -  createTable:
+             tableName:  inter_storage_translation_aud
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+                      foreignKeyName:  fk_int_sto_tra_aud_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  REVTYPE
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  internal_storage_id
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  language_code
+                    type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_int_storage_tran_lang_aud
+                      references:  e_language(language_code)
+               -  column:
+                    name:  title
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  description
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  backup_frequency
+                    type:  VARCHAR(255)
+        - dropColumn:
+            tableName: host
+            column:
+                name: host_id
+                type: NUMBER(20,0)
+        - dropColumn:
+            tableName: host_aud
+            column:
+                name: host_id
+                type: NUMBER(20,0)
+        - addColumn:
+            tableName: repository
+            columns:
+              - column:
+                  name: repository_id
+                  type: VARCHAR(255)
+        - addColumn:
+            tableName: repository_aud
+            columns:
+              - column:
+                  name: repository_id
+                  type: VARCHAR(255)
+
+  - changeSet:
+      id: 11_optional_languages
+      author: Zeno Casellato
+      changes:
+        - insert:
+            columns:
+              - column:
+                  name: language_code
+                  value: 'eng'
+              - column:
+                  name: language_name
+                  value: 'English'
+            tableName: e_language
+        - insert:
+            columns:
+              -  column:
+                   name:  language_code
+                   value: 'deu'
+              -  column:
+                   name:  language_name
+                   value: 'Deutsch'
+            tableName:  e_language
+
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  valueSequenceNext: hibernate_sequence
+              - column:
+                  name: version
+                  value: '0'
+              - column:
+                  name: url
+                  value: 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/data-storage/tufiles-file-service-for-employees'
+              - column:
+                  name: storage_location
+                  value: 'AUT'
+              - column:
+                  name: backup_location
+                  value: 'AUT'
+            tableName: internal_storage
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  valueSequenceNext: hibernate_sequence
+              - column:
+                  name: version
+                  value: '0'
+              - column:
+                  name: url
+                  value: 'https://www.it.tuwien.ac.at/en/services/network-infrastructure-and-server-services/server-services/server-housing'
+              - column:
+                  name: storage_location
+                  value: 'AUT'
+              - column:
+                  name: backup_location
+                  value: 'AUT'
+            tableName: internal_storage
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  valueSequenceNext: hibernate_sequence
+              - column:
+                  name: version
+                  value: '0'
+              - column:
+                  name: url
+                  value: 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/data-storage/tuowncloud-sync-and-share'
+              - column:
+                  name: storage_location
+                  value: 'AUT'
+              - column:
+                  name: backup_location
+                  value: 'AUT'
+            tableName: internal_storage
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  valueSequenceNext: hibernate_sequence
+              - column:
+                  name: version
+                  value: '0'
+              - column:
+                  name: url
+                  value: 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/collaboration/tuprocloud-sync-and-share-for-projects'
+              - column:
+                  name: storage_location
+                  value: 'AUT'
+              - column:
+                  name: backup_location
+                  value: 'AUT'
+            tableName: internal_storage
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  valueSequenceNext: hibernate_sequence
+              - column:
+                  name: version
+                  value: '0'
+              - column:
+                  name: url
+                  value: 'https://www.it.tuwien.ac.at/en/services/network-infrastructure-and-server-services/server-services/tuhost-virtual-server-hosting'
+              - column:
+                  name: storage_location
+                  value: 'AUT'
+              - column:
+                  name: backup_location
+                  value: 'AUT'
+            tableName: internal_storage
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  valueSequenceNext: hibernate_sequence
+              - column:
+                  name: version
+                  value: '0'
+              - column:
+                  name: url
+                  value: 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/data-storage/tugitlab'
+              - column:
+                  name: storage_location
+                  value: 'AUT'
+              - column:
+                  name: backup_location
+                  value: 'AUT'
+            tableName: internal_storage
+
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  valueSequenceNext: hibernate_sequence
+              - column:
+                  name: version
+                  value: '0'
+              - column:
+                  name: internal_storage_id
+                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/data-storage/tufiles-file-service-for-employees')"
+              - column:
+                  name: language_code
+                  value: 'eng'
+              - column:
+                  name: title
+                  value: 'TUfiles'
+              - column:
+                  name: description
+                  value: 'With TUfiles, we give you the opportunity to store data on a central and readily available network drive with backup (hosted on Windows servers). TUfiles is suitable for storing data with moderate access requirements, but high availability demands. TUfiles is not suitable for applications demanding high storage performance for a long period of time, such as high-performance databases, computer applications with high data access requirements and for storing local Microsoft Outlook PST files and backups.'
+            tableName: inter_storage_translation
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  valueSequenceNext: hibernate_sequence
+              - column:
+                  name: version
+                  value: '0'
+              - column:
+                  name: internal_storage_id
+                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/data-storage/tufiles-file-service-for-employees')"
+              - column:
+                  name: language_code
+                  value: 'deu'
+              - column:
+                  name: title
+                  value: 'TUfiles'
+              - column:
+                  name: description
+                  value: 'Mit TUfiles stellen wir Ihnen die Möglichkeit bereit, auf einem zentralen hochverfügbaren gebackupten Netzlaufwerk (gehostet auf Windows Servern) Daten abzulegen. TUfiles ist geeignet für die Speicherung von Daten mit mäßigen Zugriffsanforderungen, aber hohen Verfügbarkeitsanforderungen. Nicht geeignet ist TUfiles für Anwendungen, die längere Zeit eine hohe Storageperformance erfordern, wie z.B. hochperformante Datenbanken, Rechenanwendungen mit hohen Anforderungen an den Datenzugriff, sowie für das Ablegen von lokalen Microsoft Outlook PST-Files und Backups.'
+            tableName: inter_storage_translation
+
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  valueSequenceNext: hibernate_sequence
+              - column:
+                  name: version
+                  value: '0'
+              - column:
+                  name: internal_storage_id
+                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/network-infrastructure-and-server-services/server-services/server-housing')"
+              - column:
+                  name: language_code
+                  value: 'eng'
+              - column:
+                  name: title
+                  value: 'Server Housing'
+              - column:
+                  name: description
+                  value: 'TU.it provides the service recipients - institutes and organizational units - at four locations (Arsenal, Freihaus, Getreidemarkt and Gußhausstraße) with the accommodation of IT equipment in an access-protected, UPS-supplied and air-conditioned environment. This service is exclusively available for organizational units of the TU Vienna. The service is not designed for high availability. The operation and hardware and software maintenance of the installed components is the responsibility of the service recipient.'
+            tableName: inter_storage_translation
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  valueSequenceNext: hibernate_sequence
+              - column:
+                  name: version
+                  value: '0'
+              - column:
+                  name: internal_storage_id
+                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/network-infrastructure-and-server-services/server-services/server-housing')"
+              - column:
+                  name: language_code
+                  value: 'deu'
+              - column:
+                  name: title
+                  value: 'Server Housing'
+              - column:
+                  name: description
+                  value: 'TU.it stellt den Servicenehmern - Instituten und Organisationseinheiten - an vier Standorten (Arsenal. Freihaus. Getreidemarkt und Gußhausstraße) die Unterbringung von IT Equipment in einer zutrittsgeschützten, USV versorgten und klimatisierten Umgebung zur Verfügung. Dieses Service steht ausschließlich für Organisationseinheiten der TU-Wien zur Verfügung. Der Dienst ist nicht auf Hochverfügbarkeit ausgelegt.   Der Betrieb und die Hard- und Software-Wartung der eingebauten Komponenten liegt in der Verant­wortung des Servicenehmers.'
+            tableName: inter_storage_translation
+
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  valueSequenceNext: hibernate_sequence
+              - column:
+                  name: version
+                  value: '0'
+              - column:
+                  name: internal_storage_id
+                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/data-storage/tuowncloud-sync-and-share')"
+              - column:
+                  name: language_code
+                  value: 'eng'
+              - column:
+                  name: title
+                  value: 'TUownCloud'
+              - column:
+                  name: description
+                  value: 'With our File Sync and Share service, you can save your data to a "virtual memory stick". The open source software ownCloud runs on TU.it servers and basically offers the familiar features also provided by public cloud systems such as Dropbox.'
+            tableName: inter_storage_translation
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  valueSequenceNext: hibernate_sequence
+              - column:
+                  name: version
+                  value: '0'
+              - column:
+                  name: internal_storage_id
+                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/data-storage/tuowncloud-sync-and-share')"
+              - column:
+                  name: language_code
+                  value: 'deu'
+              - column:
+                  name: title
+                  value: 'TUownCloud'
+              - column:
+                  name: description
+                  value: 'Mit unserem File-Sync- und Share-Dienst können Sie ihre Daten auf einem "virtuellen Memory-Stick" speichern. Die Open Source Software ownCloud läuft auf Servern der TU.it und bietet Ihnen im Wesentlichen die auch von öffentlichen Cloudsystemen wie Dropbox bekannten Features.'
+            tableName: inter_storage_translation
+
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  valueSequenceNext: hibernate_sequence
+              - column:
+                  name: version
+                  value: '0'
+              - column:
+                  name: internal_storage_id
+                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/collaboration/tuprocloud-sync-and-share-for-projects')"
+              - column:
+                  name: language_code
+                  value: 'eng'
+              - column:
+                  name: title
+                  value: 'TUproCloud'
+              - column:
+                  name: description
+                  value: 'With our File Sync and Share service, your data can be stored in a "virtual TUproCloud" taking data security into account. The more extensive storage space that TUproCloud makes available to you for your projects is separate from and independent of your personal TUownCloud storage. In contrast to TUownCloud, people outside TU can also be authorised to read and write TUproCloud folders. Because data is stored on the servers of TU Wien, TUproCloud also supports the secure exchange of data with external project partners.'
+            tableName: inter_storage_translation
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  valueSequenceNext: hibernate_sequence
+              - column:
+                  name: version
+                  value: '0'
+              - column:
+                  name: internal_storage_id
+                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/collaboration/tuprocloud-sync-and-share-for-projects')"
+              - column:
+                  name: language_code
+                  value: 'deu'
+              - column:
+                  name: title
+                  value: 'TUproCloud'
+              - column:
+                  name: description
+                  value: 'Mit unserem File-Sync- und Share-Dienst können Ihre Daten in einer "virtuellen TUproCloud" unter Berücksichtigung der Datensicherheit gespeichert werden. TUproCloud stellt Ihnen für Projekte die Nutzung eines umfangreicheren, vom persönlichen TUownCloud-Speicher getrennten, und unabhängigen Speicherplatzes zur Verfügung. Es können - anders als bei TUownCloud - Ordner auch für TU-externe Personen zum Lesen und Schreiben freigegeben werden. Somit unterstützt TUproCloud auch mit externen Projektpartner_innen einen sicheren Datenaustausch durch Speicherung der Daten auf Servern der TU Wien.'
+            tableName: inter_storage_translation
+
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  valueSequenceNext: hibernate_sequence
+              - column:
+                  name: version
+                  value: '0'
+              - column:
+                  name: internal_storage_id
+                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/network-infrastructure-and-server-services/server-services/tuhost-virtual-server-hosting')"
+              - column:
+                  name: language_code
+                  value: 'eng'
+              - column:
+                  name: title
+                  value: 'TUhost'
+              - column:
+                  name: description
+                  value: 'You have the opportunity to operate virtual machines on the central and highly available TU.it virtualisation platform, hosted on VMware ESXi. TUhost is suitable for operating servers with moderate resource requirements, but high availability demands. The virtualisation platform is not suitable for operating servers that are to support applications demanding a particularly high computing capacity and/or storage performance, such as simulation calculations, high-performance databases or storage for vast quantities of data.'
+            tableName: inter_storage_translation
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  valueSequenceNext: hibernate_sequence
+              - column:
+                  name: version
+                  value: '0'
+              - column:
+                  name: internal_storage_id
+                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/network-infrastructure-and-server-services/server-services/tuhost-virtual-server-hosting')"
+              - column:
+                  name: language_code
+                  value: 'deu'
+              - column:
+                  name: title
+                  value: 'TUhost'
+              - column:
+                  name: description
+                  value: 'Sie haben die Möglichkeit, auf der zentralen hochverfügbaren Virtualisierungsplattform der TU.it, gehostet auf VM-Ware ESXi, virtuelle Maschinen zu betreiben. TUhost ist geeignet für den Betrieb von Servern mit mäßigen Ressourcenanforderungen, aber hohen Verfügbarkeitsanforderungen. Nicht geeignet ist die Virtualisierungsplattform für den Betrieb von Servern, die Anwendungen mit sehr hohen Anforderungen an Rechenleistung und/oder Storage-Performance unterstützen sollen, wie Simulationsrechnungen, hochperformante Datenbanken oder Speicher für sehr große Datenmengen.'
+            tableName: inter_storage_translation
+
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  valueSequenceNext: hibernate_sequence
+              - column:
+                  name: version
+                  value: '0'
+              - column:
+                  name: internal_storage_id
+                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/data-storage/tugitlab')"
+              - column:
+                  name: language_code
+                  value: 'eng'
+              - column:
+                  name: title
+                  value: 'TUgitLab'
+              - column:
+                  name: description
+                  value: 'Git is a software for distributed Version management of files (especially of source code). With TUgitLab, TU.it provides an application for managing repositories based on Git. TU members with an active TUaccount can use this service when working on GitLab projects. In TUgitLab, institute administrators activated in the Online Account Management can manage GitLab groups, assign project permissions, and assign external project partners as additional GitLab users.'
+            tableName: inter_storage_translation
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  valueSequenceNext: hibernate_sequence
+              - column:
+                  name: version
+                  value: '0'
+              - column:
+                  name: internal_storage_id
+                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/data-storage/tugitlab')"
+              - column:
+                  name: language_code
+                  value: 'deu'
+              - column:
+                  name: title
+                  value: 'TUgitLab'
+              - column:
+                  name: description
+                  value: 'Git ist eine Software zur verteilten Versionsverwaltung von Dateien (im Speziellen von Source-Code). Mit TUgitLab stellt TU.it eine Anwendung für die Verwaltung von Repositories auf Basis von Git zur Verfügung. TU-Angehörige mit einem aktiven TUaccount können dieses Service im Rahmen der Mitarbeit an GitLab-Projekten nützen. In TUgitLab können im Online Account Management freigeschaltete Institutsadministrator_innen GitLab-Gruppen verwalten, Projekt-Berechtigungen vergeben und externe Projektpartner_innen als zusätzliche GitLab-Benutzer_innen eintragen.'
+            tableName: inter_storage_translation
+
