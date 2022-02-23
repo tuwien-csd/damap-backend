@@ -1,10 +1,15 @@
 package at.ac.tuwien.damap.util;
 
 import at.ac.tuwien.damap.domain.Dmp;
+import at.ac.tuwien.damap.domain.InternalStorage;
+import at.ac.tuwien.damap.domain.InternalStorageTranslation;
 import at.ac.tuwien.damap.enums.*;
 import at.ac.tuwien.damap.repo.DmpRepo;
+import at.ac.tuwien.damap.repo.InternalStorageTranslationRepo;
 import at.ac.tuwien.damap.rest.dmp.domain.*;
 import at.ac.tuwien.damap.rest.dmp.mapper.DmpDOMapper;
+import at.ac.tuwien.damap.rest.dmp.mapper.MapperService;
+import lombok.extern.jbosslog.JBossLog;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -14,14 +19,24 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+@JBossLog
 @ApplicationScoped
 public class TestDOFactory {
 
     @Inject
     DmpRepo dmpRepo;
 
+    @Inject
+    InternalStorageTranslationRepo internalStorageTranslationRepo;
+
+    @Inject
+    MapperService mapperService;
+
     @Transactional
     public DmpDO getOrCreateTestDmpDO() {
+
+        prepareInternalStorageOption();
+
         final Optional<Dmp> testDmp = dmpRepo.getAll().stream()
                 .filter(a -> a.getTitle().equals("TestDmp"))
                 .findAny();
@@ -61,7 +76,7 @@ public class TestDOFactory {
         newTestDmpDO.setEthicalIssuesExist(true);
         newTestDmpDO.setCommitteeReviewed(true);
         newTestDmpDO.setDatasets(getTestDatasetList());
-        newTestDmpDO.setHosts(getTestHostList());
+        newTestDmpDO.setRepositories(getTestRepositoryList());
         newTestDmpDO.setStorage(getTestStorageList());
         newTestDmpDO.setExternalStorage(getTestExternalStorageList());
         newTestDmpDO.setExternalStorageInfo("Additional Info on the selected external storage.");
@@ -70,7 +85,7 @@ public class TestDOFactory {
         newTestDmpDO.setCostsExist(true);
         newTestDmpDO.setCosts(getTestCostList());
 
-        Dmp dmp = DmpDOMapper.mapDOtoEntity(newTestDmpDO, new Dmp());
+        Dmp dmp = DmpDOMapper.mapDOtoEntity(newTestDmpDO, new Dmp(), mapperService);
         dmp.setCreated(new Date());
         dmp.setModified(new Date());
         dmp.persistAndFlush();
@@ -171,29 +186,28 @@ public class TestDOFactory {
         return List.of(dataset);
     }
 
-    private List<HostDO> getTestHostList(){
-        HostDO host = new HostDO();
-        host.setHostId("r3d100013557");
-        host.setTitle("TU Data");
-        host.setDatasets(List.of("referenceHash123456"));
-        return List.of(host);
+    private List<RepositoryDO> getTestRepositoryList(){
+        RepositoryDO repository = new RepositoryDO();
+        repository.setRepositoryId("r3d100013557");
+        repository.setTitle("TU Data");
+        repository.setDatasets(List.of("referenceHash123456"));
+        return List.of(repository);
     }
 
     private List<StorageDO> getTestStorageList(){
         StorageDO storage = new StorageDO();
-        storage.setHostId("123456");
+        Optional<InternalStorageTranslation> testInternalStorage = internalStorageTranslationRepo.getAllInternalStorageByLanguage("eng").stream()
+                .filter(a -> a.getTitle().equals("Test Storage Title"))
+                .findAny();
+        testInternalStorage.ifPresent(storageTranslation -> storage.setInternalStorageId(storageTranslation.getInternalStorageId().id));
         storage.setTitle("Internal Host");
         storage.setDatasets(List.of("referenceHash123456"));
-        storage.setUrl("storage.url");
-        storage.setBackupFrequency("Frequency of data backups.");
-        storage.setStorageLocation("Location of Storages");
-        storage.setBackupLocation("Location of Backups");
+
         return List.of(storage);
     }
 
-    private List<StorageDO> getTestExternalStorageList(){
-        StorageDO storage = new StorageDO();
-        storage.setHostId(null);
+    private List<ExternalStorageDO> getTestExternalStorageList(){
+        ExternalStorageDO storage = new ExternalStorageDO();
         storage.setTitle("External Host");
         storage.setDatasets(List.of("referenceHash123456"));
         storage.setUrl("external.storage.url");
@@ -226,8 +240,24 @@ public class TestDOFactory {
         DmpDO newTestDmpDO = new DmpDO();
         newTestDmpDO.setTitle("EmptyTestDmp");
 
-        dmpRepo.persistAndFlush(DmpDOMapper.mapDOtoEntity(newTestDmpDO, new Dmp()));
+        dmpRepo.persistAndFlush(DmpDOMapper.mapDOtoEntity(newTestDmpDO, new Dmp(), mapperService));
         return getOrCreateTestDmpDOEmpty();
+    }
+
+    private void prepareInternalStorageOption(){
+
+        InternalStorage internalStorage = new InternalStorage();
+        internalStorage.setUrl("test.url.com");
+        internalStorage.setStorageLocation("AUT");
+        internalStorage.setBackupLocation("AUT");
+        internalStorage.persist();
+
+        InternalStorageTranslation internalStorageTranslation = new InternalStorageTranslation();
+        internalStorageTranslation.setInternalStorageId(internalStorage);
+        internalStorageTranslation.setTitle("Test Storage Title");
+        internalStorageTranslation.setDescription("Long winded yet brief description of the storage option");
+        internalStorageTranslation.setLanguageCode("eng");
+        internalStorageTranslation.persistAndFlush();
     }
 
 
@@ -238,8 +268,7 @@ public class TestDOFactory {
 
         newInvalidTestDmpDO.getDatasets().get(0).setLicense("License Address");
         newInvalidTestDmpDO.getCosts().get(0).setCurrencyCode("DOUBLOONS");
-        newInvalidTestDmpDO.getHosts().get(0).setHostId("Arbitrary Host ID");
-        newInvalidTestDmpDO.getStorage().get(0).setUrl("Link to the storage service");
+        newInvalidTestDmpDO.getRepositories().get(0).setRepositoryId("Arbitrary Host ID");
         newInvalidTestDmpDO.getExternalStorage().get(0).setUrl("Link to the storage service");
 
         return newInvalidTestDmpDO;

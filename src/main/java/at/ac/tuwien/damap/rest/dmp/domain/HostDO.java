@@ -12,7 +12,6 @@ import java.util.List;
 public class HostDO {
 
     private Long id;
-    private String hostId;
     private String title;
     //referenceHashes
     private List<String> datasets;

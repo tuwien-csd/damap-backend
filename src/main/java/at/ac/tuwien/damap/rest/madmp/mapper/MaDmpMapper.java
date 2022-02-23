@@ -4,19 +4,25 @@ import at.ac.tuwien.damap.enums.EAgreement;
 import at.ac.tuwien.damap.enums.EComplianceType;
 import at.ac.tuwien.damap.enums.EDataAccessType;
 import at.ac.tuwien.damap.enums.ESecurityMeasure;
-import at.ac.tuwien.damap.r3data.RepositoriesService;
 import at.ac.tuwien.damap.rest.dmp.domain.*;
+import at.ac.tuwien.damap.rest.dmp.mapper.MapperService;
 import at.ac.tuwien.damap.rest.madmp.dto.*;
+import at.ac.tuwien.damap.rest.storage.InternalStorageDO;
 import lombok.experimental.UtilityClass;
+import lombok.extern.jbosslog.JBossLog;
 import org.re3data.schema._2_2.*;
 
 import java.net.URI;
 import java.util.*;
 
+@JBossLog
 @UtilityClass
 public class MaDmpMapper {
 
-    public Dmp mapToMaDmp(DmpDO dmpDO, Dmp dmp, RepositoriesService repositoriesService) {
+    //TODO the language code should be sourced from the template that is being exported
+    static final String defaultLanguageCode = "eng";
+
+    public Dmp mapToMaDmp(DmpDO dmpDO, Dmp dmp, MapperService mapperService) {
 
         if (dmpDO.getContact() != null)
             dmp.setContact(mapToMaDmp(dmpDO.getContact(), new Contact()));
@@ -37,7 +43,7 @@ public class MaDmpMapper {
 
         List<Dataset> datasetList = new ArrayList<>();
         dmpDO.getDatasets().forEach(datasetDO -> {
-            datasetList.add(mapToMaDmp(dmpDO, datasetDO, new Dataset(), repositoriesService));
+            datasetList.add(mapToMaDmp(dmpDO, datasetDO, new Dataset(), mapperService));
         });
         dmp.setDataset(datasetList);
 
@@ -120,30 +126,30 @@ public class MaDmpMapper {
         return cost;
     }
 
-    public Dataset mapToMaDmp(DmpDO dmpDO, DatasetDO datasetDO, Dataset dataset, RepositoriesService repositoriesService) {
+    public Dataset mapToMaDmp(DmpDO dmpDO, DatasetDO datasetDO, Dataset dataset, MapperService mapperService) {
 
         dataset.setDataQualityAssurance(null);
         dataset.setDatasetId(null);
         dataset.setDescription(datasetDO.getComment());
 
         List<Distribution> distributionList = new ArrayList<>();
-        dmpDO.getHosts().stream().filter(hostDO ->
+        dmpDO.getRepositories().stream().filter(hostDO ->
             hostDO.getDatasets().contains(datasetDO.getReferenceHash())
-        ).forEach(hostDO -> {
+        ).forEach(repositoryDO -> {
             Distribution distribution = mapToMaDmp(datasetDO, new Distribution());
-            distributionList.add(mapToMaDmpFromHost(hostDO, distribution, repositoriesService));
+            distributionList.add(mapToMaDmpFromRepository(repositoryDO, distribution, mapperService));
         });
         dmpDO.getStorage().stream().filter(hostDO ->
                 hostDO.getDatasets().contains(datasetDO.getReferenceHash())
         ).forEach(storageDO -> {
             Distribution distribution = mapToMaDmp(datasetDO, new Distribution());
-            distributionList.add(mapToMaDmpFromStorage(storageDO, distribution));
+            distributionList.add(mapToMaDmpFromStorage(storageDO, distribution, mapperService));
         });
         dmpDO.getExternalStorage().stream().filter(hostDO ->
                 hostDO.getDatasets().contains(datasetDO.getReferenceHash())
-        ).forEach(storageDO -> {
+        ).forEach(externalStorageDO -> {
             Distribution distribution = mapToMaDmp(datasetDO, new Distribution());
-            distributionList.add(mapToMaDmpFromStorage(storageDO, distribution));
+            distributionList.add(mapToMaDmpFromExternalStorage(externalStorageDO, distribution));
         });
         dataset.setDistribution(distributionList);
 
@@ -180,18 +186,28 @@ public class MaDmpMapper {
         return distribution;
     }
 
-    public Distribution mapToMaDmpFromHost(HostDO hostDO, Distribution distribution, RepositoriesService repositoriesService) {
+    public Distribution mapToMaDmpFromRepository(RepositoryDO repositoryDO, Distribution distribution, MapperService mapperService) {
 
-        Re3Data.Repository repository = repositoriesService.getById(hostDO.getHostId()).getRepository().get(0);
+        Re3Data.Repository repository = mapperService.getRe3DataRepository(repositoryDO.getRepositoryId());
         distribution.setAccessUrl(repository.getRepositoryURL());
         distribution.setHost(mapToMaDmpFromRepository(repository, new Host()));
         return distribution;
     }
 
-    public Distribution mapToMaDmpFromStorage(StorageDO storageDO, Distribution distribution) {
+    public Distribution mapToMaDmpFromStorage(StorageDO storageDO, Distribution distribution, MapperService mapperService) {
 
-        distribution.setAccessUrl(storageDO.getUrl());
-        distribution.setHost(mapToMaDmpFromStorage(storageDO, new Host()));
+        InternalStorageDO internalStorageDO = mapperService.getInternalStorageDOById(storageDO.getInternalStorageId(), defaultLanguageCode);
+        if (internalStorageDO != null) {
+            distribution.setAccessUrl(internalStorageDO.getUrl());
+            distribution.setHost(mapToMaDmpFromInternalStorage(internalStorageDO, new Host()));
+        }
+        return distribution;
+    }
+
+    public Distribution mapToMaDmpFromExternalStorage(ExternalStorageDO externalStorageDO, Distribution distribution) {
+
+        distribution.setAccessUrl(externalStorageDO.getUrl());
+        distribution.setHost(mapToMaDmpFromExternalStorage(externalStorageDO, new Host()));
         return distribution;
     }
 
@@ -271,10 +287,27 @@ public class MaDmpMapper {
         return Host.SupportVersioning.UNKNOWN;
     }
 
-    public Host mapToMaDmpFromStorage(StorageDO storageDO, Host host) {
+    public Host mapToMaDmpFromInternalStorage(InternalStorageDO internalStorageDO, Host host) {
 
         host.setAvailability(null);
-        host.setBackupFrequency(storageDO.getBackupFrequency());
+        host.setBackupFrequency(internalStorageDO.getBackupFrequency());
+        host.setBackupType(null);
+        host.setCertifiedWith(null);
+        host.setDescription(internalStorageDO.getDescription());
+        host.setGeoLocation(null);
+        host.setPidSystem(null);
+        host.setStorageType(null);
+        host.setSupportVersioning(null);
+        host.setTitle(internalStorageDO.getTitle());
+        if (internalStorageDO.getUrl() != null)
+            host.setUrl(URI.create(internalStorageDO.getUrl()));
+        return host;
+    }
+
+    public Host mapToMaDmpFromExternalStorage(ExternalStorageDO externalStorageDO, Host host) {
+
+        host.setAvailability(null);
+        host.setBackupFrequency(externalStorageDO.getBackupFrequency());
         host.setBackupType(null);
         host.setCertifiedWith(null);
         host.setDescription(null);
@@ -283,8 +316,8 @@ public class MaDmpMapper {
         host.setStorageType(null);
         host.setSupportVersioning(null);
         host.setTitle(null);
-        if (storageDO.getUrl() != null)
-            host.setUrl(URI.create(storageDO.getUrl()));
+        if (externalStorageDO.getUrl() != null)
+            host.setUrl(URI.create(externalStorageDO.getUrl()));
         return host;
     }
 
