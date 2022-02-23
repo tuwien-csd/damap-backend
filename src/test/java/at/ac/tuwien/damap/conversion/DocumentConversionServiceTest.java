@@ -21,7 +21,7 @@ public class DocumentConversionServiceTest {
         for (DocumentConversionService documentConversionService : documentConversionServices) {
             //testing load template
             //TODO: generate blank document as a test
-            XWPFDocument document = documentConversionService.loadTemplate("template/template.docx");
+            XWPFDocument document = documentConversionService.loadTemplate("template/scienceEuropeTemplate.docx");
             Assertions.assertNotNull(document);
 
             //testing multiple variable handling
