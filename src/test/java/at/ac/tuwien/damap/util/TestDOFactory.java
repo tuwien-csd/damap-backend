@@ -9,7 +9,10 @@ import at.ac.tuwien.damap.rest.dmp.mapper.DmpDOMapper;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class TestDOFactory {
@@ -37,6 +40,8 @@ public class TestDOFactory {
         newTestDmpDO.setMetadata("String for metadata.");
         newTestDmpDO.setDataGeneration("Text on data generation.");
         newTestDmpDO.setStructure("Structure of the data.");
+        newTestDmpDO.setDataQuality(getDataQualityList());
+        newTestDmpDO.setOtherDataQuality("Other data quality measures.");
         newTestDmpDO.setTargetAudience("This is the target audience.");
         newTestDmpDO.setTools("Tools used for gathering data.");
         newTestDmpDO.setRestrictedDataAccess("Here is why access to the data is restricted.");
@@ -72,13 +77,18 @@ public class TestDOFactory {
         return getOrCreateTestDmpDO();
     }
 
+    private List<EDataQualityType> getDataQualityList() {
+        return Arrays.asList(EDataQualityType.REPRESENTATION_WITH_CONTROLLED_VOCABULARIES, EDataQualityType.OTHERS);
+    }
 
     private List<EComplianceType> getComplianceTypeList() {
         return Arrays.asList(EComplianceType.INFORMED_CONSENT, EComplianceType.ANONYMISATION);
     }
+
     private List<ESecurityMeasure> getSensitiveDataSecurityList() {
         return Arrays.asList(ESecurityMeasure.INDIVIDUAL_LOGIN, ESecurityMeasure.AUTOMATIC_LOCKING_OF_CLIENTS);
     }
+
     private List<EAgreement> getLegalRestrictionsDocuments() {
         return Arrays.asList(EAgreement.CONSORTIUM_AGREEMENT, EAgreement.CONFIDENTIALITY_AGREEMENT);
     }
