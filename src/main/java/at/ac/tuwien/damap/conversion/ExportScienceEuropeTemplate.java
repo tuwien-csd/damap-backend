@@ -120,7 +120,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
             String coverSpaceVar = "";
 
             //variable project name
-            if (titleLength/25 > 3) //Title too long, need to be resized
+            if (titleLength/25 > 2) //Title too long, need to be resized
                 addReplacement(replacements, "[projectname]", dmp.getProject().getTitle() + "#oversize");
             else
                 addReplacement(replacements, "[projectname]", dmp.getProject().getTitle());

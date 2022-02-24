@@ -2348,3 +2348,113 @@ databaseChangeLog:
           - column:
               name: given_date
               type: TIMESTAMP
+
+  - changeSet:
+      id: 10
+      author: Clara Schuster
+      changes:
+        - createTable:
+            tableName: e_data_quality_type
+            columns:
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'CALIBRATION'
+            tableName: e_data_quality_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'REPEATED_SAMPLES_OR_MEASUREMENTS'
+            tableName: e_data_quality_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'STANDARDISED_DATA_CAPTURE'
+            tableName: e_data_quality_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'DATA_ENTRY_VALIDATION'
+            tableName: e_data_quality_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'PEER_REVIEW_OF_DATA'
+            tableName: e_data_quality_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'REPRESENTATION_WITH_CONTROLLED_VOCABULARIES'
+            tableName: e_data_quality_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'OTHERS'
+            tableName: e_data_quality_type
+
+        - createTable:
+            tableName: data_quality
+            columns:
+              - column:
+                  name: dmp_id
+                  type: NUMBER(20,0)
+                  constraints:
+                    foreignKeyName: fk_data_quality_dmp
+                    references: dmp(id)
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName: fk_data_quality
+                    references: e_data_quality_type(type)
+        - createTable:
+            tableName: data_quality_aud
+            columns:
+              - column:
+                  name: REV
+                  type: NUMBER(20,0)
+                  constraints:
+                    foreignKeyName: fk_data_quality_revinfo
+                    references: revinfo(id)
+              - column:
+                  name: REVTYPE
+                  type: NUMBER(20,0)
+              - column:
+                  name: dmp_id
+                  type: NUMBER(20,0)
+                  constraints:
+                    foreignKeyName: fk_data_quality_dmp_aud
+                    references: dmp(id)
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName: fk_data_quality_aud
+                    references: e_data_quality_type(type)
+
+        - addColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name: other_data_quality
+                  type: VARCHAR(4000)
+        - addColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name: other_data_quality
+                  type: VARCHAR(4000)
+
