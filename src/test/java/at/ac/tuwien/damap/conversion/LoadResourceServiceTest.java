@@ -31,9 +31,6 @@ public class LoadResourceServiceTest {
         String dummyResource = "dummy.resources";
         Properties prop = loadResourceServices.loadResource(dummyResource);
 
-        System.out.println(prop.getProperty("var1"));
-        System.out.println(prop.getProperty("var2"));
-
         Assertions.assertEquals(prop.getProperty("var1"), createProperties().get("var1"));
         Assertions.assertEquals(prop.getProperty("var2"), createProperties().get("var2"));
     }

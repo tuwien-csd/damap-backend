@@ -547,11 +547,11 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
         //TODO: alternative replacement in addReplacement method
 
         if (dmp.getMetadata() == null) {
-            addReplacement(replacements, "[metadata]", loadResourceService.loadVariableFromResource(prop, "metadata.na"));
+            addReplacement(replacements, "[metadata]", loadResourceService.loadVariableFromResource(prop, "metadata.no"));
         }
         else {
             if (dmp.getMetadata().equals("")) {
-                addReplacement(replacements,"[metadata]", loadResourceService.loadVariableFromResource(prop, "metadata.na"));
+                addReplacement(replacements,"[metadata]", loadResourceService.loadVariableFromResource(prop, "metadata.no"));
             }
             else {
                 metadata = dmp.getMetadata();
@@ -563,11 +563,11 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
         }
 
         if (dmp.getStructure() == null) {
-            addReplacement(replacements,"[dataorganisation]", loadResourceService.loadVariableFromResource(prop, "dataOrganisation.na"));
+            addReplacement(replacements,"[dataorganisation]", loadResourceService.loadVariableFromResource(prop, "dataOrganisation.no"));
         }
         else {
             if (dmp.getStructure().equals("")) {
-                addReplacement(replacements,"[dataorganisation]", loadResourceService.loadVariableFromResource(prop, "dataOrganisation.na"));
+                addReplacement(replacements,"[dataorganisation]", loadResourceService.loadVariableFromResource(prop, "dataOrganisation.no"));
             }
             else {
                 addReplacement(replacements,"[dataorganisation]", dmp.getStructure());
@@ -691,14 +691,14 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                 }
 
                 if (dataSecurityList.isEmpty()) {
-                    sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.na");
+                    sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.no");
                 }
                 else {
                     //security measurement size defined is/or usage
                     if (dataSecurityList.size() == 1) {
-                        sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.na") + " " + multipleVariable(dataSecurityList) + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.singular");
+                        sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.no") + " " + multipleVariable(dataSecurityList) + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.singular");
                     } else {
-                        sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.na") + " " + multipleVariable(dataSecurityList) + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.multiple");
+                        sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.no") + " " + multipleVariable(dataSecurityList) + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.multiple");
                     }
                 }
 
@@ -711,7 +711,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                 sensitiveData = sensitiveDataSentence + datasetSentence + sensitiveDataset + sensitiveDataMeasure + authorisedAccess;
 
             } else {
-                sensitiveData = loadResourceService.loadVariableFromResource(prop,"sensitive.na");
+                sensitiveData = loadResourceService.loadVariableFromResource(prop,"sensitive.no");
             }
         }
 
@@ -761,7 +761,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                 }
 
             } else {
-                personalData = loadResourceService.loadVariableFromResource(prop,"personal.na");
+                personalData = loadResourceService.loadVariableFromResource(prop,"personal.no");
             }
         }
 
@@ -827,7 +827,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                     legalRestrictionComplete = legalRestrictionComplete + ".";
             }
             else {
-                legalRestrictionComplete = loadResourceService.loadVariableFromResource(prop,"legal.na");
+                legalRestrictionComplete = loadResourceService.loadVariableFromResource(prop,"legal.no");
             }
         }
 
@@ -859,7 +859,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                 committeeReviewed = " " + loadResourceService.loadVariableFromResource(prop,"ethicalReviewed.avail");
             }
             else {
-                committeeReviewed = " " + loadResourceService.loadVariableFromResource(prop,"ethicalReviewed.na");
+                committeeReviewed = " " + loadResourceService.loadVariableFromResource(prop,"ethicalReviewed.no");
             }
         }
 
@@ -877,7 +877,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
             if (ethicalIssues.charAt(ethicalIssues.length()-1) != '.')
                 ethicalIssues = ethicalIssues + ".";
         } else {
-            ethicalIssues = loadResourceService.loadVariableFromResource(prop,"ethical.na");
+            ethicalIssues = loadResourceService.loadVariableFromResource(prop,"ethical.no");
         }
 
         addReplacement(replacements, "[ethicalissues]", ethicalIssues);
@@ -931,11 +931,11 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                 addReplacement(replacements, "[tools]", loadResourceService.loadVariableFromResource(prop, "tools.avail") + dmp.getTools());
             }
             else {
-                addReplacement(replacements, "[tools]", loadResourceService.loadVariableFromResource(prop, "tools.na"));
+                addReplacement(replacements, "[tools]", loadResourceService.loadVariableFromResource(prop, "tools.no"));
             }
         }
         else {
-            addReplacement(replacements, "[tools]", loadResourceService.loadVariableFromResource(prop, "tools.na"));
+            addReplacement(replacements, "[tools]", loadResourceService.loadVariableFromResource(prop, "tools.no"));
         }
     }
 
@@ -955,7 +955,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                 costs = loadResourceService.loadVariableFromResource(prop, "costs.avail");
             }
             else {
-                costs = loadResourceService.loadVariableFromResource(prop, "costs.na");
+                costs = loadResourceService.loadVariableFromResource(prop, "costs.no");
                 addReplacement(replacements, "[cost1title]", costTitle);
                 addReplacement(replacements, "[cost1type]", costType);
                 addReplacement(replacements, "[cost1desc]", costDescription);
@@ -966,7 +966,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
             }
         }
         else {
-            costs = loadResourceService.loadVariableFromResource(prop, "costs.na");
+            costs = loadResourceService.loadVariableFromResource(prop, "costs.no");
             addReplacement(replacements, "[cost1title]", costTitle);
             addReplacement(replacements, "[cost1type]", costType);
             addReplacement(replacements, "[cost1desc]", costDescription);
