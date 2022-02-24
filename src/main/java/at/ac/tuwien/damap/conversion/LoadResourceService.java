@@ -33,7 +33,7 @@ public class LoadResourceService {
 
     public String loadVariableFromResource(Properties prop, String variable) {
         if (prop.getProperty(variable) == null) {
-            log.info("Variable resource " + prop + " is not found");
+            log.info("Variable resource " + variable + " is not found");
         }
 
         return(prop.getProperty(variable, ""));
