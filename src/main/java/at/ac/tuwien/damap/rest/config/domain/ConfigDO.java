@@ -11,4 +11,5 @@ public class ConfigDO {
     private String authClient;
     private String authScope;
     private String authUser;
+    private String env;
 }
