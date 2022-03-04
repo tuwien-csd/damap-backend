@@ -21,8 +21,8 @@ public class DocumentConversionServiceTest {
         for (DocumentConversionService documentConversionService : documentConversionServices) {
             //testing load template
             //TODO: generate blank document as a test
-            //TODO: notify when there is not template file available
-            XWPFDocument document = documentConversionService.loadTemplate("template/template.docx");
+            //TODO: notify when there is no template file available
+            XWPFDocument document = documentConversionService.loadTemplate("template/template.docx", "[", "]");
             Assertions.assertNotNull(document);
 
             //testing multiple variable handling
