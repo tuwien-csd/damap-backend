@@ -127,15 +127,21 @@ public class MaDmpMapper {
         dataset.setDescription(datasetDO.getComment());
 
         List<Distribution> distributionList = new ArrayList<>();
-        dmpDO.getHosts().forEach(hostDO -> {
+        dmpDO.getHosts().stream().filter(hostDO ->
+            hostDO.getDatasets().contains(datasetDO.getReferenceHash())
+        ).forEach(hostDO -> {
             Distribution distribution = mapToMaDmp(datasetDO, new Distribution());
             distributionList.add(mapToMaDmpFromHost(hostDO, distribution, repositoriesService));
         });
-        dmpDO.getStorage().forEach(storageDO -> {
+        dmpDO.getStorage().stream().filter(hostDO ->
+                hostDO.getDatasets().contains(datasetDO.getReferenceHash())
+        ).forEach(storageDO -> {
             Distribution distribution = mapToMaDmp(datasetDO, new Distribution());
             distributionList.add(mapToMaDmpFromStorage(storageDO, distribution));
         });
-        dmpDO.getExternalStorage().forEach(storageDO -> {
+        dmpDO.getExternalStorage().stream().filter(hostDO ->
+                hostDO.getDatasets().contains(datasetDO.getReferenceHash())
+        ).forEach(storageDO -> {
             Distribution distribution = mapToMaDmp(datasetDO, new Distribution());
             distributionList.add(mapToMaDmpFromStorage(storageDO, distribution));
         });
@@ -401,10 +407,17 @@ public class MaDmpMapper {
     public FunderId mapToMaDmp(IdentifierDO identifierDO, FunderId funderId) {
 
         funderId.setIdentifier(identifierDO.getIdentifier());
-        switch (identifierDO.getType()) {
-            case FUNDREF: funderId.setType(FunderId.Type.FUNDREF); break;
-            case URL: funderId.setType(FunderId.Type.URL); break;
-            default: funderId.setType(FunderId.Type.OTHER);
+        if (identifierDO.getType() != null) {
+            switch (identifierDO.getType()) {
+                case FUNDREF:
+                    funderId.setType(FunderId.Type.FUNDREF);
+                    break;
+                case URL:
+                    funderId.setType(FunderId.Type.URL);
+                    break;
+                default:
+                    funderId.setType(FunderId.Type.OTHER);
+            }
         }
         return funderId;
     }

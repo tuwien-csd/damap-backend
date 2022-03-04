@@ -30,14 +30,19 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
     @Inject
     RepositoriesService repositoriesService;
 
+    @Inject
+    LoadResourceService loadResourceService;
+
     public XWPFDocument exportTemplate(long dmpId) throws Exception {
 
         // TODO: replace template link with template uploaded from frontend, replace manual start and end character with input from user
-        String template = setTemplate("template/template.docx");
+        String template = setTemplate("template/scienceEuropeTemplate.docx");
         String startChar = "[";
         String endChar = "]";
         //templateFormatting(template);
         XWPFDocument document = loadTemplate(template, startChar, endChar);
+
+        Properties prop = loadResourceService.loadResource("template/scienceEuropeTemplate.resource");
 
         Map<String, String> map = new HashMap<>();
         Map<String, String> footerMap = new HashMap<>();
@@ -67,24 +72,24 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
 
         //Section 2 contains about the documentation and data quality including versioning and used metadata.
         log.info("Export steps: Section 2");
-        sectionTwo(dmp, map);
+        sectionTwo(dmp, map, prop);
 
         //Section 3 contains storage and backup that will be used for the data in the research
         // including the data access and sensitive aspect.
         log.info("Export steps: Section 3");
-        sectionThree(dmp, map, datasets);
+        sectionThree(dmp, map, datasets, prop);
 
         //Section 4 contains legal and ethical requirements.
         log.info("Export steps: Section 4");
-        sectionFour(dmp, map, datasets);
+        sectionFour(dmp, map, datasets, prop);
 
         //Section 5 contains information about data publication and long term preservation.
         log.info("Export steps: Section 5");
-        sectionFive(dmp, map, datasets, closedDatasets);
+        sectionFive(dmp, map, datasets, closedDatasets, prop);
 
         //Section 6 contains resources and cost information if necessary.
         log.info("Export steps: Section 6");
-        sectionSix(dmp, map, costList);
+        sectionSix(dmp, map, costList, prop);
 
         //Second step of the export: variables replacement with a mapping reference that has been defined
         log.info("Export steps: Replace in paragraph");
@@ -103,11 +108,11 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
         return document;
     }
 
-
     //Variable replacements flow for each section start from here
 
     //Pre section variables replacement
     private void preSection(Dmp dmp, Map<String, String> replacements, Map<String, String> footerMap, SimpleDateFormat formatter) {
+
         //project member list
         ContributorDO projectCoordinator = null;
 
@@ -538,34 +543,34 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
     }
 
     //Section 2 variables replacement
-    private void sectionTwo(Dmp dmp, Map<String, String> replacements) {
+    private void sectionTwo(Dmp dmp, Map<String, String> replacements, Properties prop) {
 
         String metadata = "";
 
         //TODO: alternative replacement in addReplacement method
 
         if (dmp.getMetadata() == null) {
-            addReplacement(replacements, "[metadata]", "There is no specific metadata has been defined yet for this project.");
+            addReplacement(replacements, "[metadata]", loadResourceService.loadVariableFromResource(prop, "metadata.no"));
         }
         else {
             if (dmp.getMetadata().equals("")) {
-                addReplacement(replacements,"[metadata]", "There is no specific metadata has been defined yet for this project.");
+                addReplacement(replacements,"[metadata]", loadResourceService.loadVariableFromResource(prop, "metadata.no"));
             }
             else {
                 metadata = dmp.getMetadata();
                 if (metadata.charAt(metadata.length()-1)!='.') {
                     metadata = metadata + '.';
                 }
-                addReplacement(replacements,"[metadata]", metadata + " This will help others to identify, discover and reuse our data.");
+                addReplacement(replacements,"[metadata]", metadata + " " + loadResourceService.loadVariableFromResource(prop, "metadata.avail"));
             }
         }
 
         if (dmp.getStructure() == null) {
-            addReplacement(replacements,"[dataorganisation]", "There is no specific document structure has been defined yet for this project.");
+            addReplacement(replacements,"[dataorganisation]", loadResourceService.loadVariableFromResource(prop, "dataOrganisation.no"));
         }
         else {
             if (dmp.getStructure().equals("")) {
-                addReplacement(replacements,"[dataorganisation]", "There is no specific document structure has been defined yet for this project.");
+                addReplacement(replacements,"[dataorganisation]", loadResourceService.loadVariableFromResource(prop, "dataOrganisation.no"));
             }
             else {
                 addReplacement(replacements,"[dataorganisation]", dmp.getStructure());
@@ -574,7 +579,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
     }
 
     //Section 3 variables replacement
-    private void sectionThree(Dmp dmp, Map<String, String> replacements, List<Dataset> datasets) {
+    private void sectionThree(Dmp dmp, Map<String, String> replacements, List<Dataset> datasets, Properties prop) {
 
         List<Host> hostList = dmp.getHostList();
         String storageVar = "";
@@ -624,14 +629,14 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                 if (host.getHostId() != null) {
                     if (!host.getHostId().contains("r3")) { //only write information related to the storage, repository will be written in section 5
                         if (!distVar.equals(""))
-                            storageVar = storageVar.concat(distVar + " will be stored in " + hostVar + storageDescription);
+                            storageVar = storageVar.concat(distVar + " " + loadResourceService.loadVariableFromResource(prop,"distributionStorage") + " " + hostVar + storageDescription);
                     }
                 }
                 else { //case for external storage, will have null host Id
                     if (!distVar.equals("")) {
-                        storageVar = storageVar.concat(distVar + " will be stored in " + hostVar + ".");
+                        storageVar = storageVar.concat(distVar + " " + loadResourceService.loadVariableFromResource(prop,"distributionStorage") + " " + hostVar + ".");
                         if (dmp.getExternalStorageInfo() != null && !dmp.getExternalStorageInfo().equals("")) {
-                            storageVar = storageVar.concat(" External storage will be used because " + dmp.getExternalStorageInfo().toLowerCase());
+                            storageVar = storageVar.concat(" " + loadResourceService.loadVariableFromResource(prop,"distributionExternal") + " " + dmp.getExternalStorageInfo().toLowerCase());
                         }
                     }
                 }
@@ -657,7 +662,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
         String sensitiveData = "";
         if (dmp.getSensitiveData() != null) {
             if (dmp.getSensitiveData()) {
-                String sensitiveDataSentence = "In this project there will be sensitive data";
+                String sensitiveDataSentence = loadResourceService.loadVariableFromResource(prop,"sensitive.avail");
                 String sensitiveDataset = "";
                 String datasetSentence = "";
                 String sensitiveDataMeasure = "";
@@ -689,27 +694,27 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                 }
 
                 if (dataSecurityList.isEmpty()) {
-                    sensitiveDataMeasure = "There are no additional security measures defined at the moment.";
+                    sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.no");
                 }
                 else {
                     //security measurement size defined is/or usage
                     if (dataSecurityList.size() == 1) {
-                        sensitiveDataMeasure = "To ensure that storage and transfer of sensitive data is safe, additional security measures such as " + multipleVariable(dataSecurityList) + " is taken.";
+                        sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.no") + " " + multipleVariable(dataSecurityList) + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.singular");
                     } else {
-                        sensitiveDataMeasure = "To ensure that storage and transfer of sensitive data is safe, additional security measures such as " + multipleVariable(dataSecurityList) + " are taken.";
+                        sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.no") + " " + multipleVariable(dataSecurityList) + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.multiple");
                     }
                 }
 
                 if (dmp.getSensitiveDataAccess() != null) {
                     if (!dmp.getSensitiveDataAccess().isEmpty()) {
-                        authorisedAccess = " Only " + dmp.getSensitiveDataAccess() + " will be authorised to access sensitive data.";
+                        authorisedAccess = " " + loadResourceService.loadVariableFromResource(prop, "sensitiveAccess") + " " + dmp.getSensitiveDataAccess() + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveAccess.avail");
                     }
                 }
 
                 sensitiveData = sensitiveDataSentence + datasetSentence + sensitiveDataset + sensitiveDataMeasure + authorisedAccess;
 
             } else {
-                sensitiveData = "At this stage, it is not foreseen to process any sensitive data in the project. If this changes, advice will be sought from the data protection specialist at TU Wien (Verena Dolovai), and the DMP will be updated.";
+                sensitiveData = loadResourceService.loadVariableFromResource(prop,"sensitive.no");
             }
         }
 
@@ -717,13 +722,13 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
     }
 
     //Section 4 variables replacement
-    private void sectionFour(Dmp dmp, Map<String, String> replacements, List<Dataset> datasets) {
+    private void sectionFour(Dmp dmp, Map<String, String> replacements, List<Dataset> datasets, Properties prop) {
         //Section 4a: personal data
         log.info("personal data part");
         String personalData = "";
         if (dmp.getPersonalData() != null) {
             if (dmp.getPersonalData()) {
-                String personalDataSentence = "In this project, we will process personal data (see section 1a). ";
+                String personalDataSentence = loadResourceService.loadVariableFromResource(prop,"personal.avail") + " ";
                 String personalDataset = "";
                 String datasetSentence = "";
                 List<String> personalDatasetList = new ArrayList<>();
@@ -737,7 +742,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
 
                 if (personalDatasetList.size()>0) {
                     personalDataset = multipleVariable(personalDatasetList);
-                    datasetSentence = " will containing personal data. ";
+                    datasetSentence = " " + loadResourceService.loadVariableFromResource(prop,"personalDataset") + " ";
                 }
 
                 List<String> dataComplianceList = new ArrayList<>();
@@ -752,14 +757,14 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                 }
 
                 if (!personalDataCompliance.equals("")) {
-                    personalData = personalDataSentence + personalDataset + datasetSentence + "To ensure compliance with data protection laws, " + personalDataCompliance + " will be used.";
+                    personalData = personalDataSentence + personalDataset + datasetSentence + loadResourceService.loadVariableFromResource(prop,"personalCompliance") + " " + personalDataCompliance + " " + loadResourceService.loadVariableFromResource(prop,"personalComplianceUsed");
                 }
                 else {
                     personalData = personalDataSentence + personalDataset + datasetSentence;
                 }
 
             } else {
-                personalData = "At this stage, it is not foreseen to process any personal data in the project. If this changes, advice will be sought from the data protection specialist at TU Wien (Verena Dolovai), and the DMP will be updated.";
+                personalData = loadResourceService.loadVariableFromResource(prop,"personal.no");
             }
         }
 
@@ -789,28 +794,28 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                 }
 
                 if (datasetList.size() > 0) {
-                    legalRestrictionDataset = ". The restrictions relate to datasets ";
+                    legalRestrictionDataset = loadResourceService.loadVariableFromResource(prop,"legalDataset") + " ";
                     legalRestrictionDataset = legalRestrictionDataset + multipleVariable(datasetList);
                 }
 
-                legalRestrictionSentence = "Legal restrictions on how data is processed and shared are specified in the data processing agreement";
+                legalRestrictionSentence = loadResourceService.loadVariableFromResource(prop,"legal.avail");
 
                 if (dmp.getLegalRestrictionsComment() == null) {
-                    legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " and are based on trade secrets.";
+                    legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " " + loadResourceService.loadVariableFromResource(prop,"legalComment");
                 } else {
                     if (dmp.getLegalRestrictionsComment().equals("")) {
-                        legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " and are based on trade secrets.";
+                        legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " " + loadResourceService.loadVariableFromResource(prop,"legalComment");
                     } else {
-                        legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " and are based on trade secrets. " + dmp.getLegalRestrictionsComment();
+                        legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " " + loadResourceService.loadVariableFromResource(prop,"legalComment");
                     }
                 }
 
                 String affiliationRights = "";
 
                 if (dmp.getContact().getAffiliation() != null) {
-                    affiliationRights = dmp.getContact().getAffiliation() + " has rights to the produced data and controls access.";
+                    affiliationRights = dmp.getContact().getAffiliation() + " " + loadResourceService.loadVariableFromResource(prop,"legalRights.contact");
                 } else { //manually assign the organization
-                    affiliationRights = "TU Wien has rights to the produced data and controls access.";
+                    affiliationRights = loadResourceService.loadVariableFromResource(prop,"legalRights.affiliation");
                 }
 
                 legalRestrictionList.add(legalRestriction);
@@ -825,7 +830,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                     legalRestrictionComplete = legalRestrictionComplete + ".";
             }
             else {
-                legalRestrictionComplete = "There are no legal restrictions on the processing and disclosure of our data.";
+                legalRestrictionComplete = loadResourceService.loadVariableFromResource(prop,"legal.no");
             }
         }
 
@@ -842,27 +847,26 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
 
         if (dmp.getHumanParticipants() != null) {
             if (dmp.getHumanParticipants()) {
-                ethicalStatement = " This project will involve human participants.";
+                ethicalStatement = " " + loadResourceService.loadVariableFromResource(prop,"ethical.avail");
             }
         }
 
         if (dmp.getEthicalIssuesExist() != null) {
             if (dmp.getEthicalIssuesExist()) {
-                otherEthicalIssues = " There are other ethical issues associated with this research.";
+                otherEthicalIssues = " " + loadResourceService.loadVariableFromResource(prop,"ethicalOther");
             }
         }
 
         if (dmp.getCommitteeReviewed() != null) {
             if (dmp.getCommitteeReviewed()) {
-                committeeReviewed = " The research plan of the project was reviewed by an ethics committee / the TU Wien Pilot Research Ethics Committee / a similar body.";
+                committeeReviewed = " " + loadResourceService.loadVariableFromResource(prop,"ethicalReviewed.avail");
             }
             else {
-                committeeReviewed = " The research has not been reviewed yet by any ethics committee.";
+                committeeReviewed = " " + loadResourceService.loadVariableFromResource(prop,"ethicalReviewed.no");
             }
         }
 
-        String ethicalSentence = "Ethical issues in the project have been identified and discussed with the Research Ethics Coordinator at TU Wien (https://www.tuwien.at/en/research/rti-support/research-ethics/). " +
-                "They are described in detail in separate documents.";
+        String ethicalSentence = loadResourceService.loadVariableFromResource(prop,"ethicalStatement");
 
         ethicalIssues = ethicalStatement + otherEthicalIssues + committeeReviewed;
 
@@ -876,14 +880,14 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
             if (ethicalIssues.charAt(ethicalIssues.length()-1) != '.')
                 ethicalIssues = ethicalIssues + ".";
         } else {
-            ethicalIssues = "No particular ethical issue is foreseen with the data to be used or produced by the project. This section will be updated if issues arise.";
+            ethicalIssues = loadResourceService.loadVariableFromResource(prop,"ethical.no");
         }
 
         addReplacement(replacements, "[ethicalissues]", ethicalIssues);
     }
 
     //Section 5 variables replacement
-    private void sectionFive(Dmp dmp, Map<String, String> replacements, List<Dataset> datasets, List<Dataset> closedDatasets) {
+    private void sectionFive(Dmp dmp, Map<String, String> replacements, List<Dataset> datasets, List<Dataset> closedDatasets, Properties prop) {
 
         String repoSentence = "";
         String repoInformation = "";
@@ -905,7 +909,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                     }
                 }
                 if (repositories.size() > 0)
-                    repoSentence = "The repository used in this project described in the following paragraph.";
+                    repoSentence = "repositories";
                     repositories.add(0,repoSentence);
                     repoInformation = String.join("; ", repositories);
             }
@@ -927,19 +931,19 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
 
         if (dmp.getTools() != null) {
             if (dmp.getTools() != "") {
-                addReplacement(replacements, "[tools]", "Specific tool or software is required to access and reuse the data: " + dmp.getTools());
+                addReplacement(replacements, "[tools]", loadResourceService.loadVariableFromResource(prop, "tools.avail") + dmp.getTools());
             }
             else {
-                addReplacement(replacements, "[tools]", "No specific tool or software is required to access and reuse the data");
+                addReplacement(replacements, "[tools]", loadResourceService.loadVariableFromResource(prop, "tools.no"));
             }
         }
         else {
-            addReplacement(replacements, "[tools]", "No specific tool or software is required to access and reuse the data");
+            addReplacement(replacements, "[tools]", loadResourceService.loadVariableFromResource(prop, "tools.no"));
         }
     }
 
     //Section 6 variables replacement
-    private void sectionSix(Dmp dmp, Map<String, String> replacements, List<Cost> costList) {
+    private void sectionSix(Dmp dmp, Map<String, String> replacements, List<Cost> costList, Properties prop) {
 
         String costs = "";
         String costTitle = "";
@@ -951,10 +955,10 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
 
         if (dmp.getCostsExist() != null) {
             if (dmp.getCostsExist()) {
-                costs = "There are costs dedicated to data management and ensuring that data will be FAIR as outlined below.";
+                costs = loadResourceService.loadVariableFromResource(prop, "costs.avail");
             }
             else {
-                costs = "There are no costs dedicated to data management and ensuring that data will be FAIR.";
+                costs = loadResourceService.loadVariableFromResource(prop, "costs.no");
                 addReplacement(replacements, "[cost1title]", costTitle);
                 addReplacement(replacements, "[cost1type]", costType);
                 addReplacement(replacements, "[cost1desc]", costDescription);
@@ -965,7 +969,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
             }
         }
         else {
-            costs = "There are no costs dedicated to data management and ensuring that data will be FAIR.";
+            costs = loadResourceService.loadVariableFromResource(prop, "costs.no");
             addReplacement(replacements, "[cost1title]", costTitle);
             addReplacement(replacements, "[cost1type]", costType);
             addReplacement(replacements, "[cost1desc]", costDescription);
