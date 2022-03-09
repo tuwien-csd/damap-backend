@@ -26,6 +26,9 @@ public class ConfigResource {
     @ConfigProperty(name = "damap.auth.user")
     String authUser;
 
+    @ConfigProperty(name = "damap.env")
+    String env;
+
     @GET
     public ConfigDO config() {
         ConfigDO configDO = new ConfigDO();
@@ -33,6 +36,7 @@ public class ConfigResource {
         configDO.setAuthClient(authClient);
         configDO.setAuthScope(authScope);
         configDO.setAuthUser(authUser);
+        configDO.setEnv(env);
         return configDO;
     }
 }
