@@ -908,10 +908,11 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                         }
                     }
                 }
-                if (repositories.size() > 0)
-                    repoSentence = "repositories";
+                if (repositories.size() > 0) {
+                    repoSentence = loadResourceService.loadVariableFromResource(prop, "repositories.avail");
                     repositories.add(0,repoSentence);
                     repoInformation = String.join("; ", repositories);
+                }
             }
         }
 
