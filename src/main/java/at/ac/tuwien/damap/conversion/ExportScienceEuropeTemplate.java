@@ -35,9 +35,12 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
 
     public XWPFDocument exportTemplate(long dmpId) throws Exception {
 
-        // TODO: replace template link with template uploaded from frontend
+        // TODO: replace template link with template uploaded from frontend, replace manual start and end character with input from user
         String template = setTemplate("template/scienceEuropeTemplate.docx");
-        XWPFDocument document = loadTemplate(template);
+        String startChar = "[";
+        String endChar = "]";
+        //templateFormatting(template);
+        XWPFDocument document = loadTemplate(template, startChar, endChar);
 
         Properties prop = loadResourceService.loadResource("template/scienceEuropeTemplate.resource");
 
