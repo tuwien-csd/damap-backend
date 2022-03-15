@@ -1323,14 +1323,15 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                                 docVar.add("");
                             }
 
-                            docVar.add("");
-
-                            if (datasets.get(i - 1).getDmp().getTargetAudience() != null) {
-                                docVar.add(datasets.get(i - 1).getDmp().getTargetAudience());
-                            }
-                            else {
+                            if (datasets.get(i - 1).getRetentionPeriod() != null)
+                                docVar.add(datasets.get(i - 1).getRetentionPeriod() + " years");
+                            else
                                 docVar.add("");
-                            }
+
+                            if (datasets.get(i - 1).getDmp().getTargetAudience() != null)
+                                docVar.add(datasets.get(i - 1).getDmp().getTargetAudience());
+                            else
+                                docVar.add("");
 
                             List<XWPFTableCell> cells = newRow.getTableCells();
 
@@ -1371,9 +1372,22 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
 
                             ArrayList<String> docVar = new ArrayList<>();
                             //TODO datasets and hosts are now connected by Distribution objects
-                            docVar.add(closedDatasets.get(i-1).getTitle());
-                            docVar.add(formatter.format(closedDatasets.get(i-1).getDateOfDeletion()));
-                            docVar.add(closedDatasets.get(i-1).getReasonForDeletion());
+                            if (closedDatasets.get(i-1).getTitle() != null)
+                                docVar.add(closedDatasets.get(i-1).getTitle());
+                            else
+                                docVar.add("");
+
+                            if (closedDatasets.get(i-1).getDateOfDeletion() != null)
+                                docVar.add(formatter.format(closedDatasets.get(i-1).getDateOfDeletion()));
+                            else
+                                docVar.add("");
+
+                            if (closedDatasets.get(i-1).getReasonForDeletion() != null)
+                                docVar.add(closedDatasets.get(i-1).getReasonForDeletion());
+                            else
+                                docVar.add("");
+
+                            //put blank on responsible person
                             docVar.add("");
 
                             List<XWPFTableCell> cells = newRow.getTableCells();
