@@ -24,9 +24,6 @@ public class Host extends PanacheEntity {
     @Setter(AccessLevel.NONE)
     private long version;
 
-    @Column(name = "host_id")
-    private String hostId;
-
 //    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @JsonbTransient
     @ManyToOne(fetch = FetchType.LAZY)

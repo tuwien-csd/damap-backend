@@ -1,18 +1,17 @@
 package at.ac.tuwien.damap.conversion;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.*;
 import java.text.SimpleDateFormat;
 
 import at.ac.tuwien.damap.repo.DmpRepo;
 import lombok.ToString;
 import lombok.extern.jbosslog.JBossLog;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.apache.poi.xwpf.usermodel.XWPFTable;
-import org.apache.poi.xwpf.usermodel.XWPFTableRow;
-import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
-import org.apache.poi.xwpf.usermodel.XWPFFooter;
+import org.apache.commons.io.FileUtils;
+import org.apache.poi.xwpf.usermodel.*;
 
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
 
@@ -35,14 +34,14 @@ public class DocumentConversionService {
     }
 
     //Method to load the export template
-    public XWPFDocument loadTemplate (String template) throws Exception{
+    public XWPFDocument loadTemplate (String template, String startChar, String endChar) throws Exception{
         //Loading a template file in resources folder
         ClassLoader classLoader = getClass().getClassLoader();
 
         //Extract document using Apache POI https://poi.apache.org/
         XWPFDocument document = new XWPFDocument(classLoader.getResourceAsStream(template));
 
-        return document;
+        return templateFormatting(document, startChar, endChar);
     }
 
     //Method to replace variable in the document's paragraphs
@@ -145,4 +144,83 @@ public class DocumentConversionService {
                 return String.join(", ", variableList);
         }
     }
+
+    //Method to format the template. Parsing all text inside the document and preprocessing the variables (currently, text started with "[" and end with "]") that are seperated to multiple runs.
+    public XWPFDocument templateFormatting(XWPFDocument document, String startChar, String endChar) throws Exception {
+
+        log.info("Formatting template document");
+        //handling all paragraphs in the document except those inside the tables
+        formattingParagraph(document.getParagraphs(), startChar, endChar);
+
+        //tables need to handled in independent loop since the paragraph list not return the paragraph inside the tables
+        if (document.getTables() != null) {
+            for (XWPFTable xwpfTable : document.getTables()) {
+                for (XWPFTableRow row : xwpfTable.getRows()) {
+                    for (XWPFTableCell cell : row.getTableCells()) {
+                        formattingParagraph(cell.getParagraphs(), startChar, endChar);
+                    }
+                }
+            }
+        }
+
+        //footer need to handled in independent loop since the paragraph list not return the paragraph inside the footer
+        if (document.getFooterList() != null) {
+            for (XWPFFooter footer : document.getFooterList()) {
+                formattingParagraph(footer.getParagraphs(), startChar, endChar);
+            }
+        }
+
+        return document;
+    }
+
+    //Method to preprocessing format of the paragraph list
+    public void formattingParagraph(List<XWPFParagraph> xwpfParagraphs, String startChar, String endChar) {
+        StringBuilder sb = new StringBuilder("");
+        boolean mergeRun = false;
+        List<Integer> removeRunIndex = new ArrayList<>();
+
+        for (XWPFParagraph xwpfParagraph : xwpfParagraphs) {
+
+            List<XWPFRun> xwpfRuns = xwpfParagraph.getRuns();
+
+            for (XWPFRun xwpfRun : xwpfRuns) {
+                String xwpfRunText = xwpfRun.getText(xwpfRun.getTextPosition());
+
+                if (xwpfRunText != null) {
+                    if (xwpfRunText.contains(startChar)) {
+                        if (!xwpfRunText.contains(endChar)) {
+                            removeRunIndex.add(xwpfRuns.indexOf(xwpfRun));
+                            mergeRun = true;
+                            if (sb.length()>0) {
+                                sb.delete(0, sb.length());
+                            }
+                            sb.append(xwpfRunText);
+                        }
+                    }
+                    else {
+                        if (mergeRun) {
+                            sb.append(xwpfRunText);
+                            if (xwpfRunText.contains(endChar)) {
+                                mergeRun = false;
+                                xwpfRun.setText(sb.toString(),0);
+                            }
+                            else {
+                                removeRunIndex.add(xwpfRuns.indexOf(xwpfRun));
+                            }
+                        }
+                    }
+                }
+            }
+            if (!removeRunIndex.isEmpty()) {
+                Collections.sort(removeRunIndex, Collections.reverseOrder()); //reverse sort index to avoid missing index while deleting the run
+                for (Integer runIndex : removeRunIndex) {
+                    xwpfParagraphs.get(xwpfParagraphs.indexOf(xwpfParagraph)).removeRun(runIndex);
+                }
+                removeRunIndex.clear();
+            }
+        }
+    }
 }
+
+
+

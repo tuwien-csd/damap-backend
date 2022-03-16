@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StorageDO extends HostDO {
+public class RepositoryDO extends HostDO{
 
-    private Long internalStorageId;
+    private String repositoryId;
 }
