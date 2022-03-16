@@ -156,14 +156,6 @@ public class Dmp extends PanacheEntity {
     @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<Host> hostList = new ArrayList<>();
 
-//    @LazyCollection(LazyCollectionOption.FALSE)
-//    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)
-//    private List<Storage> storage;
-//
-//    @LazyCollection(LazyCollectionOption.FALSE)
-//    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)
-//    private List<Storage> externalStorage;
-
     @Column(name = "external_storage_info")
     private String externalStorageInfo;
 

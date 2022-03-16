@@ -5,7 +5,10 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StorageDO extends HostDO {
+public class ExternalStorageDO extends HostDO {
 
-    private Long internalStorageId;
+    private String url;
+    private String backupFrequency;
+    private String storageLocation;
+    private String backupLocation;
 }
