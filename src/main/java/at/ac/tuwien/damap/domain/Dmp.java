@@ -1,9 +1,6 @@
 package at.ac.tuwien.damap.domain;
 
-import at.ac.tuwien.damap.enums.EAgreement;
-import at.ac.tuwien.damap.enums.EComplianceType;
-import at.ac.tuwien.damap.enums.EDataKind;
-import at.ac.tuwien.damap.enums.ESecurityMeasure;
+import at.ac.tuwien.damap.enums.*;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -57,6 +54,15 @@ public class Dmp extends PanacheEntity {
     private String dataGeneration;
 
     private String structure;
+
+    @ElementCollection(targetClass = EDataQualityType.class, fetch = FetchType.LAZY)
+    @CollectionTable(name = "data_quality")
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private List<EDataQualityType> dataQuality;
+
+    @Column(name = "other_data_quality")
+    private String otherDataQuality;
 
     @Column(name = "target_audience")
     private String targetAudience;
@@ -149,14 +155,6 @@ public class Dmp extends PanacheEntity {
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<Host> hostList = new ArrayList<>();
-
-//    @LazyCollection(LazyCollectionOption.FALSE)
-//    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)
-//    private List<Storage> storage;
-//
-//    @LazyCollection(LazyCollectionOption.FALSE)
-//    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)
-//    private List<Storage> externalStorage;
 
     @Column(name = "external_storage_info")
     private String externalStorageInfo;

@@ -1,6 +1,7 @@
 # custom config settings
 # replace these in the config of your custom project or by overriding these variables
 damap:
+  env: DEV # override in your custom project with PROD for production deployment
   origins: https://your.frontend.com,https://*.yourdomain.com
   auth:
     url: https://your.authentication.server

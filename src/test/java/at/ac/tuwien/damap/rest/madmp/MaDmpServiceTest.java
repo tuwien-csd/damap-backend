@@ -1,6 +1,6 @@
 package at.ac.tuwien.damap.rest.madmp;
 
-import at.ac.tuwien.damap.r3data.RepositoriesService;
+import at.ac.tuwien.damap.rest.dmp.mapper.MapperService;
 import at.ac.tuwien.damap.rest.madmp.dto.Dmp;
 import at.ac.tuwien.damap.rest.madmp.mapper.MaDmpMapper;
 import at.ac.tuwien.damap.util.TestDOFactory;
@@ -19,19 +19,19 @@ public class MaDmpServiceTest {
     TestDOFactory testDOFactory;
 
     @Inject
-    RepositoriesService repositoriesService;
+    MapperService mapperService;
 
     @Test
     @TestSecurity(authorizationEnabled = false)
     void getByIdTest() {
-        Dmp dmp = MaDmpMapper.mapToMaDmp(testDOFactory.getOrCreateTestDmpDO(), new Dmp(), repositoriesService);
+        Dmp dmp = MaDmpMapper.mapToMaDmp(testDOFactory.getOrCreateTestDmpDO(), new Dmp(), mapperService);
         Assertions.assertNotNull(dmp);
     }
 
     @Test
     @TestSecurity(authorizationEnabled = false)
     void getByIdEmptyTest() {
-        Dmp dmp = MaDmpMapper.mapToMaDmp(testDOFactory.getOrCreateTestDmpDOEmpty(), new Dmp(), repositoriesService);
+        Dmp dmp = MaDmpMapper.mapToMaDmp(testDOFactory.getOrCreateTestDmpDOEmpty(), new Dmp(), mapperService);
         Assertions.assertNotNull(dmp);
     }
 }
