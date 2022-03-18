@@ -119,4 +119,16 @@ public class DataManagementPlanResource {
         }
         return securityService.getUserId();
     }
+
+    @GET
+    @Path("/{id}/{revision}")
+    public DmpDO getDmpByIdAndRevision(@PathParam String id, @PathParam long revision) {
+        log.info("Return dmp with id: " + id + " and revision number: " + revision);
+        String personId = this.getPersonId();
+        long dmpId = Long.parseLong(id);
+        if(!accessValidator.canViewDmp(dmpId, personId)){
+            throw new ForbiddenException("Not authorized to access dmp with id " + dmpId);
+        }
+        return dmpService.getDmpByIdAndRevision(dmpId, revision);
+    }
 }
