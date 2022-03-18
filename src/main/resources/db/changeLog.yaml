@@ -3066,3 +3066,32 @@ databaseChangeLog:
                   value: 'Git ist eine Software zur verteilten Versionsverwaltung von Dateien (im Speziellen von Source-Code). Mit TUgitLab stellt TU.it eine Anwendung für die Verwaltung von Repositories auf Basis von Git zur Verfügung. TU-Angehörige mit einem aktiven TUaccount können dieses Service im Rahmen der Mitarbeit an GitLab-Projekten nützen. In TUgitLab können im Online Account Management freigeschaltete Institutsadministrator_innen GitLab-Gruppen verwalten, Projekt-Berechtigungen vergeben und externe Projektpartner_innen als zusätzliche GitLab-Benutzer_innen eintragen.'
             tableName: inter_storage_translation
 
+
+  - changeSet:
+      id: 12
+      author: Zeno Casellato
+      changes:
+        - createTable:
+            tableName: dmp_version
+            columns:
+            - column:
+                name: id
+                type: NUMBER(20,0)
+                constraints:
+                  primaryKey: true
+                  nullable: false
+            - column:
+                name: dmp_id
+                type:  NUMBER(20,0)
+                constraints:
+                  foreignKeyName:  fk_dmp_version_id
+                  references:  dmp(id)
+            - column:
+                name: revision_number
+                type: NUMBER(20,0)
+            - column:
+                name: version_date
+                type: TIMESTAMP
+            - column:
+                name: version_name
+                type: VARCHAR(255)
