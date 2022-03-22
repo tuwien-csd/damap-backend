@@ -42,6 +42,15 @@ public class VersionTest {
     DmpService dmpService;
 
     @Test
+    void getEmptyVersionListTest(){
+        DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
+
+        List<VersionDO> versionDOList = versionService.getDmpVersions(dmpDO.getId());
+        assertNotNull(versionDOList);
+        assertTrue(versionDOList.isEmpty());
+    }
+
+    @Test
     void createVersionTest(){
         VersionDO versionDO = getOrCreateTestVersionDO();
         assertNotNull(versionDO);
