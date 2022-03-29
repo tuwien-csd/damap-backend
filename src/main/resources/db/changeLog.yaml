@@ -667,6 +667,24 @@ databaseChangeLog:
                -  column:
                     name:  language_name
                     type:  VARCHAR(255)
+        - insert:
+            columns:
+              - column:
+                  name: language_code
+                  value: 'eng'
+              - column:
+                  name: language_name
+                  value: 'English'
+            tableName: e_language
+        - insert:
+            columns:
+              -  column:
+                   name:  language_code
+                   value: 'deu'
+              -  column:
+                   name:  language_name
+                   value: 'Deutsch'
+            tableName:  e_language
 
         #        create data tables
         -  createTable:
@@ -1483,6 +1501,60 @@ databaseChangeLog:
                    type: VARCHAR(255)
 
         -  createTable:
+             tableName:  internal_storage
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey: true
+                      nullable: false
+               - column:
+                   name: version
+                   type: NUMBER(10,0)
+                   constraints:
+                     nullable: false
+               -  column:
+                    name:  url
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  storage_location
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  backup_location
+                    type:  VARCHAR(255)
+
+        -  createTable:
+             tableName:  internal_storage_aud
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+                      foreignKeyName:  fk_inter_storage_aud_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  REVTYPE
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  url
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  storage_location
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  backup_location
+                    type:  VARCHAR(255)
+
+        -  createTable:
              tableName:  storage
              columns:
                -  column:
@@ -2047,9 +2119,6 @@ databaseChangeLog:
               - column:
                   name: dmp_id
                   type: NUMBER(20,0)
-                  constraints:
-                    foreignKeyName: fk_sec_measure_dmp_aud
-                    references: dmp(id)
               - column:
                   name: security_measure
                   type: VARCHAR(255)
@@ -2088,9 +2157,6 @@ databaseChangeLog:
               - column:
                   name: dmp_id
                   type: NUMBER(20,0)
-                  constraints:
-                    foreignKeyName: fk_legal_restr_doc_dmp_aud
-                    references: dmp(id)
               - column:
                   name: agreement
                   type: VARCHAR(255)
@@ -2154,86 +2220,27 @@ databaseChangeLog:
                     foreignKeyName: fk_data_quality_aud
                     references: e_data_quality_type(type)
 
-        -  createTable:
-             tableName:  internal_storage
-             columns:
-               -  column:
-                    name:  id
-                    type:  NUMBER(20,0)
-                    constraints:
-                      primaryKey: true
-                      nullable: false
-               - column:
-                   name: version
-                   type: NUMBER(10,0)
-                   constraints:
-                     nullable: false
-               -  column:
-                    name:  url
-                    type:  VARCHAR(255)
-               -  column:
-                    name:  storage_location
-                    type:  VARCHAR(255)
-               -  column:
-                    name:  backup_location
-                    type:  VARCHAR(255)
-
-        -  createTable:
-             tableName:  internal_storage_aud
-             columns:
-               -  column:
-                    name:  id
-                    type:  NUMBER(20,0)
-                    constraints:
-                      primaryKey:  true
-                      nullable:  false
-               -  column:
-                    name:  REV
-                    type:  NUMBER(20,0)
-                    constraints:
-                      primaryKey:  true
-                      nullable:  false
-                      foreignKeyName:  fk_inter_storage_aud_revinfo
-                      references:  revinfo(id)
-               -  column:
-                    name:  REVTYPE
-                    type:  NUMBER(20,0)
-               -  column:
-                    name:  url
-                    type:  VARCHAR(255)
-               -  column:
-                    name:  storage_location
-                    type:  VARCHAR(255)
-               -  column:
-                    name:  backup_location
-                    type:  VARCHAR(255)
-
-
-  - changeSet:
-      id: 12
-      author: Zeno Casellato
-      changes:
         - createTable:
             tableName: dmp_version
             columns:
-            - column:
-                name: id
-                type: NUMBER(20,0)
-                constraints:
-                  primaryKey: true
-                  nullable: false
-            - column:
-                name: dmp_id
-                type:  NUMBER(20,0)
-                constraints:
-                  foreignKeyName:  fk_dmp_version_id
-                  references:  dmp(id)
-            - column:
-                name: revision_number
-                type: NUMBER(20,0)
-            - column:
-                name: version_date
-                type: TIMESTAMP
-            - column:
-                name: version_name
-                type: VARCHAR(255)
+              - column:
+                  name: id
+                  type: NUMBER(20,0)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: dmp_id
+                  type:  NUMBER(20,0)
+                  constraints:
+                    foreignKeyName:  fk_dmp_version_id
+                    references:  dmp(id)
+              - column:
+                  name: revision_number
+                  type: NUMBER(20,0)
+              - column:
+                  name: version_date
+                  type: TIMESTAMP
+              - column:
+                  name: version_name
+                  type: VARCHAR(255)
