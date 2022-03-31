@@ -70,6 +70,10 @@
       <artifactId>quarkus-jdbc-h2</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-hibernate-validator</artifactId>
+    </dependency>
     <!-- Rest -->
     <dependency>
       <groupId>io.quarkus</groupId>
