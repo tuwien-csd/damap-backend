@@ -12,9 +12,13 @@ import java.util.Date;
 public class ProjectDO {
 
     private Long id;
+    @Size(max = 255)
     private String acronym;
+    @Size(max = 255)
     private String universityId;
+    @Size(max = 4000)
     private String description;
+    @Size(max = 255)
     private String title;
     private FundingDO funding;
 
