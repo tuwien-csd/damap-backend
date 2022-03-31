@@ -14,15 +14,23 @@ import at.ac.tuwien.damap.rest.dmp.mapper.ProjectSupplementDOMapper;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
 import at.ac.tuwien.damap.rest.projects.ProjectSupplementDO;
 import lombok.extern.jbosslog.JBossLog;
+import org.hibernate.HibernateException;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.CrossTypeRevisionChangesReader;
+import org.hibernate.envers.exception.AuditException;
+import org.hibernate.envers.exception.NotAuditedException;
+import org.hibernate.envers.exception.RevisionDoesNotExistException;
+import org.hibernate.envers.query.AuditEntity;
+import org.hibernate.envers.query.AuditQuery;
+import org.hibernate.envers.query.AuditQueryCreator;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @ApplicationScoped
 @JBossLog
@@ -153,5 +161,11 @@ public class DmpService {
 
         return !Objects.equals(dmp.getProject().id, dmpDO.getProject().getId()) ||
                 !Objects.equals(dmp.getProject().getUniversityId(), dmpDO.getProject().getUniversityId());
+    }
+
+    public DmpDO getDmpByIdAndRevision(long dmpId, long revision) {
+        AuditReader reader = AuditReaderFactory.get(dmpRepo.getEntityManager());
+        Dmp dmpRevision = reader.find(Dmp.class, dmpId, revision);
+        return DmpDOMapper.mapEntityToDO(dmpRevision, new DmpDO());
     }
 }
