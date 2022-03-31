@@ -4,6 +4,7 @@ pipelines:
       deploy:
         enabled: false
   maven:
+    imageTag: jdk-11
     stages:
       publish:
         enabled: false
