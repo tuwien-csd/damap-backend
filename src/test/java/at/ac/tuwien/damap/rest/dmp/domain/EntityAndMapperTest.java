@@ -1,6 +1,5 @@
-package at.ac.tuwien.damap.domain;
+package at.ac.tuwien.damap.rest.dmp.domain;
 
-import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
 import at.ac.tuwien.damap.util.TestDOFactory;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;

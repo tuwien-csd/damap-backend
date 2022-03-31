@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.json.bind.annotation.JsonbDateFormat;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Data
@@ -13,16 +14,21 @@ import java.util.Date;
 public class DatasetDO {
 
     private Long id;
+    @Size(max = 255)
     private String title;
+    @Size(max = 255)
     private String type;
     private Long size;
+    @Size(max = 4000)
     private String comment;
     private Boolean personalData;
     private Boolean sensitiveData;
     private Boolean legalRestrictions;
+    @Size(max = 255)
     private String license;
     @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private Date startDate;
+    @Size(max = 255)
     private String referenceHash;
     private EDataAccessType dataAccess;
     private EAccessRight selectedProjectMembersAccess;
@@ -31,6 +37,7 @@ public class DatasetDO {
     private Boolean delete;
     @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private Date dateOfDeletion;
+    @Size(max = 4000)
     private String reasonForDeletion;
     private Integer retentionPeriod;
 }

@@ -14,21 +14,13 @@ import at.ac.tuwien.damap.rest.dmp.mapper.ProjectSupplementDOMapper;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
 import at.ac.tuwien.damap.rest.projects.ProjectSupplementDO;
 import lombok.extern.jbosslog.JBossLog;
-import org.hibernate.HibernateException;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
-import org.hibernate.envers.CrossTypeRevisionChangesReader;
-import org.hibernate.envers.exception.AuditException;
-import org.hibernate.envers.exception.NotAuditedException;
-import org.hibernate.envers.exception.RevisionDoesNotExistException;
-import org.hibernate.envers.query.AuditEntity;
-import org.hibernate.envers.query.AuditQuery;
-import org.hibernate.envers.query.AuditQueryCreator;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
+import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -74,22 +66,22 @@ public class DmpService {
     }
 
     @Transactional
-    public DmpDO create(SaveDmpWrapper dmpWrapper) {
+    public DmpDO create(@Valid DmpDO dmpDO, String editedBy) {
         log.info("Creating new DMP");
-        Dmp dmp = DmpDOMapper.mapDOtoEntity(dmpWrapper.getDmp(), new Dmp(), mapperService);
+        Dmp dmp = DmpDOMapper.mapDOtoEntity(dmpDO, new Dmp(), mapperService);
         dmp.setCreated(new Date());
         updateDmpSupplementalInfo(dmp);
         dmp.persistAndFlush();
-        createAccess(dmp, dmpWrapper.getEdited_by());
+        createAccess(dmp, editedBy);
         return getDmpById(dmp.id);
     }
 
     @Transactional
-    public DmpDO update(SaveDmpWrapper dmpWrapper) {
-        log.info("Updating DMP with id " + dmpWrapper.getDmp().getId());
-        Dmp dmp = dmpRepo.findById(dmpWrapper.getDmp().getId());
-        boolean projectSelectionChanged = projectSelectionChanged(dmp, dmpWrapper.getDmp());
-        DmpDOMapper.mapDOtoEntity(dmpWrapper.getDmp(), dmp, mapperService);
+    public DmpDO update(@Valid DmpDO dmpDO) {
+        log.info("Updating DMP with id " + dmpDO.getId());
+        Dmp dmp = dmpRepo.findById(dmpDO.getId());
+        boolean projectSelectionChanged = projectSelectionChanged(dmp, dmpDO);
+        DmpDOMapper.mapDOtoEntity(dmpDO, dmp, mapperService);
         dmp.setModified(new Date());
         if (projectSelectionChanged)
             updateDmpSupplementalInfo(dmp);
