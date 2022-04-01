@@ -106,6 +106,12 @@ databaseChangeLog:
                    name:  type
                    value: 'FUNDREF'
             tableName:  e_identifier_type
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'ROR'
+            tableName:  e_identifier_type
 
         -  createTable:
              tableName:  e_funding_status
@@ -483,6 +489,202 @@ databaseChangeLog:
                    value: 'GUEST'
             tableName:  e_function_role
 
+        - createTable:
+            tableName: e_access_right
+            columns:
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'READ'
+            tableName: e_access_right
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'WRITE'
+            tableName: e_access_right
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'NONE'
+            tableName: e_access_right
+
+        - createTable:
+            tableName: e_security_measure
+            columns:
+              - column:
+                  name: security_measure
+                  type: VARCHAR(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+        - insert:
+            columns:
+              - column:
+                  name: security_measure
+                  value: 'INDIVIDUAL_LOGIN'
+            tableName: e_security_measure
+        - insert:
+            columns:
+              - column:
+                  name: security_measure
+                  value: 'ADDITIONAL_LOGIN'
+            tableName: e_security_measure
+        - insert:
+            columns:
+              - column:
+                  name: security_measure
+                  value: 'AUTOMATIC_LOCKING_OF_CLIENTS'
+            tableName: e_security_measure
+        - insert:
+            columns:
+              - column:
+                  name: security_measure
+                  value: 'ENCRYPTION_OF_SYSTEMS'
+            tableName: e_security_measure
+        - insert:
+            columns:
+              - column:
+                  name: security_measure
+                  value: 'LOCKED_STORAGE'
+            tableName: e_security_measure
+        - insert:
+            columns:
+              - column:
+                  name: security_measure
+                  value: 'OTHER'
+            tableName: e_security_measure
+
+        - createTable:
+            tableName: e_agreement
+            columns:
+              - column:
+                  name: agreement
+                  type: VARCHAR(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+        - insert:
+            columns:
+              - column:
+                  name: agreement
+                  value: 'CONSORTIUM_AGREEMENT'
+            tableName: e_agreement
+        - insert:
+            columns:
+              - column:
+                  name: agreement
+                  value: 'DATA_PROCESSING_AGREEMENT'
+            tableName: e_agreement
+        - insert:
+            columns:
+              - column:
+                  name: agreement
+                  value: 'JOINT_CONTROL_AGREEMENT'
+            tableName: e_agreement
+        - insert:
+            columns:
+              - column:
+                  name: agreement
+                  value: 'CONFIDENTIALITY_AGREEMENT'
+            tableName: e_agreement
+        - insert:
+            columns:
+              - column:
+                  name: agreement
+                  value: 'OTHER'
+            tableName: e_agreement
+
+        - createTable:
+            tableName: e_data_quality_type
+            columns:
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'CALIBRATION'
+            tableName: e_data_quality_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'REPEATED_SAMPLES_OR_MEASUREMENTS'
+            tableName: e_data_quality_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'STANDARDISED_DATA_CAPTURE'
+            tableName: e_data_quality_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'DATA_ENTRY_VALIDATION'
+            tableName: e_data_quality_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'PEER_REVIEW_OF_DATA'
+            tableName: e_data_quality_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'REPRESENTATION_WITH_CONTROLLED_VOCABULARIES'
+            tableName: e_data_quality_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'OTHERS'
+            tableName: e_data_quality_type
+
+        -  createTable:
+             tableName:  e_language
+             columns:
+               -  column:
+                    name:  language_code
+                    type:  VARCHAR(255)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  language_name
+                    type:  VARCHAR(255)
+        - insert:
+            columns:
+              - column:
+                  name: language_code
+                  value: 'eng'
+              - column:
+                  name: language_name
+                  value: 'English'
+            tableName: e_language
+        - insert:
+            columns:
+              -  column:
+                   name:  language_code
+                   value: 'deu'
+              -  column:
+                   name:  language_name
+                   value: 'Deutsch'
+            tableName:  e_language
 
         #        create data tables
         -  createTable:
@@ -606,75 +808,6 @@ databaseChangeLog:
                     type:  NUMBER(20,0)
 
         -  createTable:
-             tableName:  person
-             columns:
-               -  column:
-                    name:  id
-                    type:  NUMBER(20,0)
-                    constraints:
-                      primaryKey:  true
-                      nullable:  false
-               -  column:
-                    name:  version
-                    type:  NUMBER(10,0)
-                    constraints:
-                      nullable:  false
-               -  column:
-                    name:  person_id
-                    type:  NUMBER(20,0)
-                    constraints:
-                      foreignKeyName:  fk_person_identifier
-                      references:  identifier(id)
-               -  column:
-                    name:  university_id
-                    type:  VARCHAR(255)
-               -  column:
-                    name:  mbox
-                    type:  VARCHAR(255)
-               -  column:
-                    name:  first_name
-                    type:  VARCHAR(255)
-               -  column:
-                    name:  last_name
-                    type:  VARCHAR(255)
-
-        -  createTable:
-             tableName:  person_aud
-             columns:
-               -  column:
-                    name:  id
-                    type:  NUMBER(20,0)
-                    constraints:
-                      primaryKey:  true
-                      nullable:  false
-               -  column:
-                    name:  REV
-                    type:  NUMBER(20,0)
-                    constraints:
-                      primaryKey:  true
-                      nullable:  false
-                      foreignKeyName:  fk_person_aud_revinfo
-                      references:  revinfo(id)
-               -  column:
-                    name:  REVTYPE
-                    type:  NUMBER(20,0)
-               -  column:
-                    name:  person_id
-                    type:  NUMBER(20,0)
-               -  column:
-                    name:  university_id
-                    type:  VARCHAR(255)
-               -  column:
-                    name:  mbox
-                    type:  VARCHAR(255)
-               -  column:
-                    name:  first_name
-                    type:  VARCHAR(255)
-               -  column:
-                    name:  last_name
-                    type:  VARCHAR(255)
-
-        -  createTable:
              tableName:  project
              columns:
                -  column:
@@ -782,12 +915,6 @@ databaseChangeLog:
                       foreignKeyName:  fk_dmp_project
                       references:  project(id)
                -  column:
-                    name:  contact_id
-                    type:  NUMBER(20,0)
-                    constraints:
-                      foreignKeyName:  fk_dmp_contact
-                      references:  person(id)
-               -  column:
                     name:  data_kind
                     type:  VARCHAR(255)
                     constraints:
@@ -818,17 +945,11 @@ databaseChangeLog:
                     name:  personal_data
                     type:  BOOLEAN
                -  column:
-                    name:  personal_data_access
-                    type:  VARCHAR(4000)
-               -  column:
                     name:  other_personal_data_compliance
                     type:  VARCHAR(4000)
                -  column:
                     name:  sensitive_data
                     type:  BOOLEAN
-               -  column:
-                    name:  sensitive_data_security
-                    type:  VARCHAR(4000)
                -  column:
                     name:  legal_restrictions
                     type:  BOOLEAN
@@ -839,14 +960,8 @@ databaseChangeLog:
                     name:  ethical_issues_exist
                     type:  BOOLEAN
                -  column:
-                    name:  committee_approved
+                    name:  committee_reviewed
                     type:  BOOLEAN
-               -  column:
-                    name:  ethics_report
-                    type:  VARCHAR(4000)
-               -  column:
-                    name:  ethical_compliance_statement
-                    type:  VARCHAR(4000)
                -  column:
                     name:  external_storage_info
                     type:  VARCHAR(4000)
@@ -858,6 +973,45 @@ databaseChangeLog:
                     type:  VARCHAR(4000)
                -  column:
                     name:  costs_exist
+                    type:  BOOLEAN
+               - column:
+                    name: other_data_sec_measures
+                    type: VARCHAR(4000)
+               - column:
+                    name: sensitive_data_access
+                    type: VARCHAR(4000)
+               - column:
+                    name: other_legal_r_documents
+                    type: VARCHAR(4000)
+               - column:
+                    name: data_rights_access_control
+                    type: VARCHAR(4000)
+               - column:
+                    name: other_data_quality
+                    type: VARCHAR(4000)
+               - column:
+                    name: human_participants
+                    type: BOOLEAN
+               - column:
+                    name:  personal_data_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  sensitive_data_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  legal_restrictions_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  human_participants_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  ethical_issues_exist_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  committee_reviewed_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  costs_exist_cris
                     type:  BOOLEAN
 
         -  createTable:
@@ -896,9 +1050,6 @@ databaseChangeLog:
                     name:  project_id
                     type:  NUMBER(20,0)
                -  column:
-                    name:  contact_id
-                    type:  NUMBER(20,0)
-               -  column:
                     name:  data_kind
                     type:  VARCHAR(255)
                     constraints:
@@ -929,17 +1080,11 @@ databaseChangeLog:
                     name:  personal_data
                     type:  BOOLEAN
                -  column:
-                    name:  personal_data_access
-                    type:  VARCHAR(4000)
-               -  column:
                     name:  other_personal_data_compliance
                     type:  VARCHAR(4000)
                -  column:
                     name:  sensitive_data
                     type:  BOOLEAN
-               -  column:
-                    name:  sensitive_data_security
-                    type:  VARCHAR(4000)
                -  column:
                     name:  legal_restrictions
                     type:  BOOLEAN
@@ -950,14 +1095,8 @@ databaseChangeLog:
                     name:  ethical_issues_exist
                     type:  BOOLEAN
                -  column:
-                    name:  committee_approved
+                    name:  committee_reviewed
                     type:  BOOLEAN
-               -  column:
-                    name:  ethics_report
-                    type:  VARCHAR(4000)
-               -  column:
-                    name:  ethical_compliance_statement
-                    type:  VARCHAR(4000)
                -  column:
                     name:  external_storage_info
                     type:  VARCHAR(4000)
@@ -969,6 +1108,45 @@ databaseChangeLog:
                     type:  VARCHAR(4000)
                -  column:
                     name:  costs_exist
+                    type:  BOOLEAN
+               - column:
+                    name: other_data_sec_measures
+                    type: VARCHAR(4000)
+               - column:
+                    name: sensitive_data_access
+                    type: VARCHAR(4000)
+               - column:
+                    name: other_legal_r_documents
+                    type: VARCHAR(4000)
+               - column:
+                    name: data_rights_access_control
+                    type: VARCHAR(4000)
+               - column:
+                    name: other_data_quality
+                    type: VARCHAR(4000)
+               - column:
+                    name: human_participants
+                    type: BOOLEAN
+               - column:
+                    name:  personal_data_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  sensitive_data_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  legal_restrictions_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  human_participants_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  ethical_issues_exist_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  committee_reviewed_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  costs_exist_cris
                     type:  BOOLEAN
 
         -  createTable:
@@ -992,17 +1170,41 @@ databaseChangeLog:
                       foreignKeyName:  fk_contributor_dmp
                       references:  dmp(id)
                -  column:
-                    name:  person_id
-                    type:  NUMBER(20,0)
-                    constraints:
-                      foreignKeyName:  fk_contributor_person
-                      references:  person(id)
-               -  column:
                     name:  contributor_role
                     type:  VARCHAR(255)
                     constraints:
                       foreignKeyName:  fk_contributor_role
                       references:  e_contributor_role(role)
+               - column:
+                   name: person_id
+                   type: NUMBER(20,0)
+                   constraints:
+                     foreignKeyName: fk_person_identifier
+                     references: identifier(id)
+               - column:
+                   name: university_id
+                   type: VARCHAR(255)
+               - column:
+                   name: mbox
+                   type: VARCHAR(255)
+               - column:
+                   name: first_name
+                   type: VARCHAR(255)
+               - column:
+                   name: last_name
+                   type: VARCHAR(255)
+               - column:
+                   name: contact
+                   type: BOOLEAN
+               - column:
+                   name: affiliation
+                   type: VARCHAR(255)
+               - column:
+                   name: affiliation_id
+                   type:  NUMBER(20,0)
+                   constraints:
+                     foreignKeyName:  fk_person_affil_identifier
+                     references:  identifier(id)
 
         -  createTable:
              tableName:  contributor_aud
@@ -1028,14 +1230,35 @@ databaseChangeLog:
                     name:  dmp_id
                     type:  NUMBER(20,0)
                -  column:
-                    name:  person_id
-                    type:  NUMBER(20,0)
-               -  column:
                     name:  contributor_role
                     type:  VARCHAR(255)
                     constraints:
                       foreignKeyName:  fk_contributor_aud_role
                       references:  e_contributor_role(role)
+               - column:
+                   name: person_id
+                   type: NUMBER(20,0)
+               - column:
+                   name: university_id
+                   type: VARCHAR(255)
+               - column:
+                   name: mbox
+                   type: VARCHAR(255)
+               - column:
+                   name: first_name
+                   type: VARCHAR(255)
+               - column:
+                   name: last_name
+                   type: VARCHAR(255)
+               - column:
+                   name: contact
+                   type: BOOLEAN
+               - column:
+                   name: affiliation
+                   type: VARCHAR(255)
+               - column:
+                   name: affiliation_id
+                   type: NUMBER(20,0)
 
         -  createTable:
              tableName:  cost
@@ -1139,9 +1362,6 @@ databaseChangeLog:
                     constraints:
                       nullable:  false
                -  column:
-                    name:  host_id
-                    type:  VARCHAR(255)
-               -  column:
                     name:  dmp_id
                     type:  NUMBER(20,0)
                     constraints:
@@ -1150,9 +1370,6 @@ databaseChangeLog:
                -  column:
                     name:  title
                     type:  VARCHAR(255)
-               -  column:
-                    name:  retrieval_date
-                    type:  TIMESTAMP
                -  column:
                     name:  discriminator
                     type:  VARCHAR(255)
@@ -1178,17 +1395,11 @@ databaseChangeLog:
                     name:  REVTYPE
                     type:  NUMBER(20,0)
                -  column:
-                    name:  host_id
-                    type:  VARCHAR(255)
-               -  column:
                     name:  dmp_id
                     type:  NUMBER(20,0)
                -  column:
                     name:  title
                     type:  VARCHAR(255)
-               -  column:
-                    name:  retrieval_date
-                    type:  TIMESTAMP
                -  column:
                     name:  discriminator
                     type:  VARCHAR(255)
@@ -1261,6 +1472,9 @@ databaseChangeLog:
                       foreignKeyName:  fk_repository_host
                       references:  host(id)
                       nullable:  false
+               - column:
+                   name: repository_id
+                   type: VARCHAR(255)
 
         -  createTable:
              tableName:  repository_aud
@@ -1282,6 +1496,63 @@ databaseChangeLog:
                -  column:
                     name:  REVTYPE
                     type:  NUMBER(20,0)
+               - column:
+                   name: repository_id
+                   type: VARCHAR(255)
+
+        -  createTable:
+             tableName:  internal_storage
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey: true
+                      nullable: false
+               - column:
+                   name: version
+                   type: NUMBER(10,0)
+                   constraints:
+                     nullable: false
+               -  column:
+                    name:  url
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  storage_location
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  backup_location
+                    type:  VARCHAR(255)
+
+        -  createTable:
+             tableName:  internal_storage_aud
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+                      foreignKeyName:  fk_inter_storage_aud_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  REVTYPE
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  url
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  storage_location
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  backup_location
+                    type:  VARCHAR(255)
 
         -  createTable:
              tableName:  storage
@@ -1295,18 +1566,11 @@ databaseChangeLog:
                       references:  host(id)
                       nullable:  false
                -  column:
-                    name:  url
-                    type:  VARCHAR(255)
-               -  column:
-                    name:  backup_frequency
-                    type:  VARCHAR(255)
-               -  column:
-                    name:  storage_location
-                    type:  VARCHAR(255)
-               -  column:
-                    name:  backup_location
-                    type:  VARCHAR(255)
-
+                    name:  internal_storage_id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      foreignKeyName:  fk_storage_internal
+                      references:  internal_storage(id)
         -  createTable:
              tableName:  storage_aud
              columns:
@@ -1328,17 +1592,83 @@ databaseChangeLog:
                     name:  REVTYPE
                     type:  NUMBER(20,0)
                -  column:
-                    name:  url
+                    name:  internal_storage_id
+                    type:  NUMBER(20,0)
+
+        -  createTable:
+             tableName:  inter_storage_translation
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey: true
+                      nullable: false
+               - column:
+                   name: version
+                   type: NUMBER(10,0)
+                   constraints:
+                     nullable: false
+               -  column:
+                    name:  internal_storage_id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      foreignKeyName:  fk_trans_inter_storage
+                      references:  internal_storage(id)
+               -  column:
+                    name:  language_code
                     type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_inter_storage_trans_lang
+                      references:  e_language(language_code)
+               -  column:
+                    name:  title
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  description
+                    type:  VARCHAR(4000)
                -  column:
                     name:  backup_frequency
                     type:  VARCHAR(255)
+
+        -  createTable:
+             tableName:  inter_storage_translation_aud
+             columns:
                -  column:
-                    name:  storage_location
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+                      foreignKeyName:  fk_int_sto_tra_aud_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  REVTYPE
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  internal_storage_id
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  language_code
+                    type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_int_storage_tran_lang_aud
+                      references:  e_language(language_code)
+               -  column:
+                    name:  title
                     type:  VARCHAR(255)
                -  column:
-                    name:  backup_location
-                    type: VARCHAR(255)
+                    name:  description
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  backup_frequency
+                    type:  VARCHAR(255)
 
         -  createTable:
              tableName:  dataset
@@ -1396,6 +1726,36 @@ databaseChangeLog:
                     constraints:
                       foreignKeyName:  fk_dataset_access_type
                       references:  e_data_access(access_type)
+               - column:
+                   name: sel_project_members_access
+                   type: VARCHAR(255)
+                   constraints:
+                     foreignKeyName:  fk_dataset_selected_ar
+                     references:  e_access_right(type)
+               - column:
+                   name: other_project_members_access
+                   type: VARCHAR(255)
+                   constraints:
+                     foreignKeyName:  fk_dataset_other_ar
+                     references:  e_access_right(type)
+               - column:
+                   name: public_access
+                   type: VARCHAR(255)
+                   constraints:
+                     foreignKeyName:  fk_dataset_public_ar
+                     references:  e_access_right(type)
+               - column:
+                   name: delete_data
+                   type: BOOLEAN
+               - column:
+                   name: date_of_deletion
+                   type: TIMESTAMP
+               - column:
+                   name: reason_for_deletion
+                   type: VARCHAR(4000)
+               - column:
+                   name: retention_period
+                   type: INTEGER
 
         -  createTable:
              tableName:  dataset_aud
@@ -1456,6 +1816,36 @@ databaseChangeLog:
                     constraints:
                       foreignKeyName:  fk_dataset_aud_access_type
                       references:  e_data_access(access_type)
+               - column:
+                   name: sel_project_members_access
+                   type: VARCHAR(255)
+                   constraints:
+                     foreignKeyName: fk_dataset_aud_selected_ar
+                     references: e_access_right(type)
+               - column:
+                   name: other_project_members_access
+                   type: VARCHAR(255)
+                   constraints:
+                     foreignKeyName: fk_dataset_aud_other_ar
+                     references: e_access_right(type)
+               - column:
+                   name: public_access
+                   type: VARCHAR(255)
+                   constraints:
+                     foreignKeyName: fk_dataset_aud_public_ar
+                     references: e_access_right(type)
+               - column:
+                   name: delete_data
+                   type: BOOLEAN
+               - column:
+                   name: date_of_deletion
+                   type: TIMESTAMP
+               - column:
+                   name: reason_for_deletion
+                   type: VARCHAR(4000)
+               - column:
+                   name: retention_period
+                   type: INTEGER
 
         -  createTable:
              tableName:  personal_data_compliance
@@ -1699,303 +2089,6 @@ databaseChangeLog:
                     name:  host_id
                     type:  NUMBER(20,0)
 
-
-  - changeSet:
-      id: 2
-      author: Zeno Casellato
-      changes:
-        - addColumn:
-            tableName: person
-            columns:
-              - column:
-                  name: affiliation
-                  type: VARCHAR(255)
-              - column:
-                  name: affiliation_id
-                  type:  NUMBER(20,0)
-                  constraints:
-                    foreignKeyName:  fk_person_affil_identifier
-                    references:  identifier(id)
-        - addColumn:
-            tableName: person_aud
-            columns:
-              - column:
-                  name: affiliation
-                  type: VARCHAR(255)
-              - column:
-                  name: affiliation_id
-                  type: NUMBER(20,0)
-        - insert:
-            columns:
-              -  column:
-                   name:  type
-                   value: 'ROR'
-            tableName:  e_identifier_type
-
-
-  - changeSet:
-      id: 3
-      author: Clara Schuster
-      changes:
-        - createTable:
-            tableName: e_access_right
-            columns:
-              - column:
-                  name: type
-                  type: VARCHAR(255)
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-        - insert:
-            columns:
-              - column:
-                  name: type
-                  value: 'READ'
-            tableName: e_access_right
-        - insert:
-            columns:
-              - column:
-                  name: type
-                  value: 'WRITE'
-            tableName: e_access_right
-        - insert:
-            columns:
-              - column:
-                  name: type
-                  value: 'NONE'
-            tableName: e_access_right
-        - addColumn:
-            tableName: dataset
-            columns:
-              - column:
-                  name: sel_project_members_access
-                  type: VARCHAR(255)
-                  constraints:
-                    foreignKeyName:  fk_dataset_selected_ar
-                    references:  e_access_right(type)
-              - column:
-                  name: other_project_members_access
-                  type: VARCHAR(255)
-                  constraints:
-                    foreignKeyName:  fk_dataset_other_ar
-                    references:  e_access_right(type)
-              - column:
-                  name: public_access
-                  type: VARCHAR(255)
-                  constraints:
-                    foreignKeyName:  fk_dataset_public_ar
-                    references:  e_access_right(type)
-        - addColumn:
-            tableName: dataset_aud
-            columns:
-              - column:
-                  name: sel_project_members_access
-                  type: VARCHAR(255)
-                  constraints:
-                    foreignKeyName: fk_dataset_aud_selected_ar
-                    references: e_access_right(type)
-              - column:
-                  name: other_project_members_access
-                  type: VARCHAR(255)
-                  constraints:
-                    foreignKeyName: fk_dataset_aud_other_ar
-                    references: e_access_right(type)
-              - column:
-                  name: public_access
-                  type: VARCHAR(255)
-                  constraints:
-                    foreignKeyName: fk_dataset_aud_public_ar
-                    references: e_access_right(type)
-
-
-  - changeSet:
-      id: 4
-      author: Clara Schuster
-      changes:
-        - addColumn:
-            tableName: dataset
-            columns:
-              - column:
-                  name: delete_data
-                  type: BOOLEAN
-              - column:
-                  name: date_of_deletion
-                  type: TIMESTAMP
-              - column:
-                  name: reason_for_deletion
-                  type: VARCHAR(4000)
-        - addColumn:
-            tableName: dataset_aud
-            columns:
-              - column:
-                  name: delete_data
-                  type: BOOLEAN
-              - column:
-                  name: date_of_deletion
-                  type: TIMESTAMP
-              - column:
-                  name: reason_for_deletion
-                  type: VARCHAR(4000)
-
-  - changeSet:
-      id: 5
-      author: Clara Schuster
-      changes:
-        - dropColumn:
-            tableName: dmp
-            columns:
-              - column:
-                  name: personal_data_access
-              - column:
-                  name: sensitive_data_security
-              - column:
-                  name: ethics_report
-              - column:
-                  name: ethical_compliance_statement
-        - dropColumn:
-            tableName: dmp_aud
-            columns:
-              - column:
-                  name: personal_data_access
-              - column:
-                  name: sensitive_data_security
-              - column:
-                  name: ethics_report
-              - column:
-                  name: ethical_compliance_statement
-
-        - renameColumn:
-            tableName: dmp
-            newColumnName: committee_reviewed
-            oldColumnName: committee_approved
-        - renameColumn:
-            tableName: dmp_aud
-            newColumnName: committee_reviewed
-            oldColumnName: committee_approved
-
-        - addColumn:
-            tableName: dmp
-            columns:
-              - column:
-                  name: other_data_sec_measures
-                  type: VARCHAR(4000)
-              - column:
-                  name: sensitive_data_access
-                  type: VARCHAR(4000)
-              - column:
-                  name: other_legal_r_documents
-                  type: VARCHAR(4000)
-              - column:
-                  name: data_rights_access_control
-                  type: VARCHAR(4000)
-              - column:
-                  name: human_participants
-                  type: BOOLEAN
-        - addColumn:
-            tableName: dmp_aud
-            columns:
-              - column:
-                  name: other_data_sec_measures
-                  type: VARCHAR(4000)
-              - column:
-                  name: sensitive_data_access
-                  type: VARCHAR(4000)
-              - column:
-                  name: other_legal_r_documents
-                  type: VARCHAR(4000)
-              - column:
-                  name: data_rights_access_control
-                  type: VARCHAR(4000)
-              - column:
-                  name: human_participants
-                  type: BOOLEAN
-
-        - createTable:
-            tableName: e_security_measure
-            columns:
-              - column:
-                  name: security_measure
-                  type: VARCHAR(255)
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-        - insert:
-            columns:
-              - column:
-                  name: security_measure
-                  value: 'INDIVIDUAL_LOGIN'
-            tableName: e_security_measure
-        - insert:
-            columns:
-              - column:
-                  name: security_measure
-                  value: 'ADDITIONAL_LOGIN'
-            tableName: e_security_measure
-        - insert:
-            columns:
-              - column:
-                  name: security_measure
-                  value: 'AUTOMATIC_LOCKING_OF_CLIENTS'
-            tableName: e_security_measure
-        - insert:
-            columns:
-              - column:
-                  name: security_measure
-                  value: 'ENCRYPTION_OF_SYSTEMS'
-            tableName: e_security_measure
-        - insert:
-            columns:
-              - column:
-                  name: security_measure
-                  value: 'LOCKED_STORAGE'
-            tableName: e_security_measure
-        - insert:
-            columns:
-              - column:
-                  name: security_measure
-                  value: 'OTHER'
-            tableName: e_security_measure
-
-        - createTable:
-            tableName: e_agreement
-            columns:
-              - column:
-                  name: agreement
-                  type: VARCHAR(255)
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-        - insert:
-            columns:
-              - column:
-                  name: agreement
-                  value: 'CONSORTIUM_AGREEMENT'
-            tableName: e_agreement
-        - insert:
-            columns:
-              - column:
-                  name: agreement
-                  value: 'DATA_PROCESSING_AGREEMENT'
-            tableName: e_agreement
-        - insert:
-            columns:
-              - column:
-                  name: agreement
-                  value: 'JOINT_CONTROL_AGREEMENT'
-            tableName: e_agreement
-        - insert:
-            columns:
-              - column:
-                  name: agreement
-                  value: 'CONFIDENTIALITY_AGREEMENT'
-            tableName: e_agreement
-        - insert:
-            columns:
-              - column:
-                  name: agreement
-                  value: 'OTHER'
-            tableName: e_agreement
-
         - createTable:
             tableName: sensitive_data_security
             columns:
@@ -2026,9 +2119,6 @@ databaseChangeLog:
               - column:
                   name: dmp_id
                   type: NUMBER(20,0)
-                  constraints:
-                    foreignKeyName: fk_sec_measure_dmp_aud
-                    references: dmp(id)
               - column:
                   name: security_measure
                   type: VARCHAR(255)
@@ -2067,9 +2157,6 @@ databaseChangeLog:
               - column:
                   name: dmp_id
                   type: NUMBER(20,0)
-                  constraints:
-                    foreignKeyName: fk_legal_restr_doc_dmp_aud
-                    references: dmp(id)
               - column:
                   name: agreement
                   type: VARCHAR(255)
@@ -2077,333 +2164,24 @@ databaseChangeLog:
                     foreignKeyName: fk_agreement_aud
                     references: e_agreement(agreement)
 
-
-  - changeSet:
-      id: 6
-      author: Clara Schuster
-      changes:
-        - addColumn:
-            tableName: dataset
-            columns:
-              - column:
-                  name: retention_period
-                  type: INTEGER
-        - addColumn:
-            tableName: dataset_aud
-            columns:
-              - column:
-                  name: retention_period
-                  type: INTEGER
-        - dropColumn:
-            tableName: host
-            columns:
-              - column:
-                  name: retrieval_date
-                  type: TIMESTAMP
-        - dropColumn:
-            tableName: host_aud
-            columns:
-              - column:
-                  name: retrieval_date
-                  type: TIMESTAMP
-
-
-
-  - changeSet:
-      id: 7
-      author: Zeno Casellato
-      changes:
-        - addColumn:
-            tableName: dmp
-            columns:
-              - column:
-                  name:  personal_data_cris
-                  type:  BOOLEAN
-        - addColumn:
-            tableName: dmp_aud
-            columns:
-              - column:
-                  name:  personal_data_cris
-                  type:  BOOLEAN
-        - addColumn:
-            tableName: dmp
-            columns:
-              - column:
-                  name:  sensitive_data_cris
-                  type:  BOOLEAN
-        - addColumn:
-            tableName: dmp_aud
-            columns:
-              - column:
-                  name:  sensitive_data_cris
-                  type:  BOOLEAN
-        - addColumn:
-            tableName: dmp
-            columns:
-              - column:
-                  name:  legal_restrictions_cris
-                  type:  BOOLEAN
-        - addColumn:
-            tableName: dmp_aud
-            columns:
-              - column:
-                  name:  legal_restrictions_cris
-                  type:  BOOLEAN
-        - addColumn:
-            tableName: dmp
-            columns:
-              - column:
-                  name:  human_participants_cris
-                  type:  BOOLEAN
-        - addColumn:
-            tableName: dmp_aud
-            columns:
-              - column:
-                  name:  human_participants_cris
-                  type:  BOOLEAN
-        - addColumn:
-            tableName: dmp
-            columns:
-              - column:
-                  name:  ethical_issues_exist_cris
-                  type:  BOOLEAN
-        - addColumn:
-            tableName: dmp_aud
-            columns:
-              - column:
-                  name:  ethical_issues_exist_cris
-                  type:  BOOLEAN
-        - addColumn:
-            tableName: dmp
-            columns:
-              - column:
-                  name:  committee_reviewed_cris
-                  type:  BOOLEAN
-        - addColumn:
-            tableName: dmp_aud
-            columns:
-              - column:
-                  name:  committee_reviewed_cris
-                  type:  BOOLEAN
-        - addColumn:
-            tableName: dmp
-            columns:
-              - column:
-                  name:  costs_exist_cris
-                  type:  BOOLEAN
-        - addColumn:
-            tableName: dmp_aud
-            columns:
-              - column:
-                  name:  costs_exist_cris
-                  type:  BOOLEAN
-
-
-  - changeSet:
-      id: 8
-      author: Zeno Casellato
-      changes:
-        - dropForeignKeyConstraint:
-            baseTableName: person
-            constraintName: fk_person_identifier
-        - dropForeignKeyConstraint:
-            baseTableName: person
-            constraintName: fk_person_affil_identifier
-
-        - addColumn:
-            tableName: contributor
-            columns:
-              - column:
-                  name: contributor_id
-                  type: NUMBER(20,0)
-                  constraints:
-                    foreignKeyName: fk_person_identifier
-                    references: identifier(id)
-              - column:
-                  name: university_id
-                  type: VARCHAR(255)
-              - column:
-                  name: mbox
-                  type: VARCHAR(255)
-              - column:
-                  name: first_name
-                  type: VARCHAR(255)
-              - column:
-                  name: last_name
-                  type: VARCHAR(255)
-              - column:
-                  name: contact
-                  type: BOOLEAN
-              - column:
-                  name: affiliation
-                  type: VARCHAR(255)
-              - column:
-                  name: affiliation_id
-                  type:  NUMBER(20,0)
-                  constraints:
-                    foreignKeyName:  fk_person_affil_identifier
-                    references:  identifier(id)
-        - addColumn:
-            tableName: contributor_aud
-            columns:
-              - column:
-                  name: contributor_id
-                  type: NUMBER(20,0)
-              - column:
-                  name: university_id
-                  type: VARCHAR(255)
-              - column:
-                  name: mbox
-                  type: VARCHAR(255)
-              - column:
-                  name: first_name
-                  type: VARCHAR(255)
-              - column:
-                  name: last_name
-                  type: VARCHAR(255)
-              - column:
-                  name: contact
-                  type: BOOLEAN
-              - column:
-                  name: affiliation
-                  type: VARCHAR(255)
-              - column:
-                  name: affiliation_id
-                  type: NUMBER(20,0)
-
-        - sql:
-            dbms: '!h2, oracle,  postgresql'
-            splitStatements: false
-            sql: UPDATE contributor con SET contributor_id = (select person_id from person pers where pers.id = con.person_id), university_id = (select university_id from person pers where pers.id = con.person_id), mbox = (select mbox from person pers where pers.id = con.person_id), first_name = (select first_name from person pers where pers.id = con.person_id), last_name = (select last_name from person pers where pers.id = con.person_id), affiliation = (select affiliation from person pers where pers.id = con.person_id), affiliation_id = (select affiliation_id from person pers where pers.id = con.person_id)
-            stripComments: true
-            comment: migrating existing contributors
-
-        - dropForeignKeyConstraint:
-            baseTableName: contributor
-            constraintName: fk_contributor_person
-        - dropColumn:
-            tableName: contributor
-            columns:
-              - column:
-                  name: person_id
-                  type: NUMBER(20,0)
-        - dropColumn:
-            tableName: contributor_aud
-            columns:
-              - column:
-                  name: person_id
-                  type: NUMBER(20,0)
-        - dropForeignKeyConstraint:
-            baseTableName: dmp
-            constraintName: fk_dmp_contact
-        - dropColumn:
-            tableName: dmp
-            columns:
-              - column:
-                  name: contact_id
-                  type: NUMBER(20,0)
-        - dropColumn:
-            tableName: dmp_aud
-            columns:
-              - column:
-                  name: contact_id
-                  type: NUMBER(20,0)
-
-        -  renameColumn:
-             columnDataType:  NUMBER(20,0)
-             newColumnName:  person_id
-             oldColumnName:  contributor_id
-             tableName:  contributor
-        -  renameColumn:
-             columnDataType: NUMBER(20,0)
-             newColumnName: person_id
-             oldColumnName: contributor_id
-             tableName: contributor_aud
-
-        -  dropTable:
-             cascadeConstraints:  true
-             tableName:  person
-        -  dropTable:
-             cascadeConstraints:  true
-             tableName:  person_aud
-
-  - changeSet:
-      id: 9
-      author: Hardani Maulana
-      createTable:
-        tableName: consent
-        columns:
-          - column:
-              name: id
-              type: NUMBER(20,0)
-              constraints:
-                primaryKey: true
-                nullable: false
-          - column:
-              name: university_id
-              type: VARCHAR(255)
-          - column:
-              name: consent_given
-              type: BOOLEAN
-          - column:
-              name: given_date
-              type: TIMESTAMP
-
-  - changeSet:
-      id: 10
-      author: Clara Schuster
-      changes:
         - createTable:
-            tableName: e_data_quality_type
+            tableName: consent
             columns:
               - column:
-                  name: type
-                  type: VARCHAR(255)
+                  name: id
+                  type: NUMBER(20,0)
                   constraints:
                     primaryKey: true
                     nullable: false
-        - insert:
-            columns:
               - column:
-                  name: type
-                  value: 'CALIBRATION'
-            tableName: e_data_quality_type
-        - insert:
-            columns:
+                  name: university_id
+                  type: VARCHAR(255)
               - column:
-                  name: type
-                  value: 'REPEATED_SAMPLES_OR_MEASUREMENTS'
-            tableName: e_data_quality_type
-        - insert:
-            columns:
+                  name: consent_given
+                  type: BOOLEAN
               - column:
-                  name: type
-                  value: 'STANDARDISED_DATA_CAPTURE'
-            tableName: e_data_quality_type
-        - insert:
-            columns:
-              - column:
-                  name: type
-                  value: 'DATA_ENTRY_VALIDATION'
-            tableName: e_data_quality_type
-        - insert:
-            columns:
-              - column:
-                  name: type
-                  value: 'PEER_REVIEW_OF_DATA'
-            tableName: e_data_quality_type
-        - insert:
-            columns:
-              - column:
-                  name: type
-                  value: 'REPRESENTATION_WITH_CONTROLLED_VOCABULARIES'
-            tableName: e_data_quality_type
-        - insert:
-            columns:
-              - column:
-                  name: type
-                  value: 'OTHERS'
-            tableName: e_data_quality_type
+                  name: given_date
+                  type: TIMESTAMP
 
         - createTable:
             tableName: data_quality
@@ -2435,9 +2213,6 @@ databaseChangeLog:
               - column:
                   name: dmp_id
                   type: NUMBER(20,0)
-                  constraints:
-                    foreignKeyName: fk_data_quality_dmp_aud
-                    references: dmp(id)
               - column:
                   name: type
                   type: VARCHAR(255)
@@ -2445,653 +2220,27 @@ databaseChangeLog:
                     foreignKeyName: fk_data_quality_aud
                     references: e_data_quality_type(type)
 
-        - addColumn:
-            tableName: dmp
-            columns:
-              - column:
-                  name: other_data_quality
-                  type: VARCHAR(4000)
-        - addColumn:
-            tableName: dmp_aud
-            columns:
-              - column:
-                  name: other_data_quality
-                  type: VARCHAR(4000)
-
-
-
-  - changeSet:
-      id: 11
-      author: Zeno Casellato
-      changes:
-        -  createTable:
-             tableName:  internal_storage
-             columns:
-               -  column:
-                    name:  id
-                    type:  NUMBER(20,0)
-                    constraints:
-                      primaryKey: true
-                      nullable: false
-               - column:
-                   name: version
-                   type: NUMBER(10,0)
-                   constraints:
-                     nullable: false
-               -  column:
-                    name:  url
-                    type:  VARCHAR(255)
-               -  column:
-                    name:  storage_location
-                    type:  VARCHAR(255)
-               -  column:
-                    name:  backup_location
-                    type:  VARCHAR(255)
-
-        -  createTable:
-             tableName:  internal_storage_aud
-             columns:
-               -  column:
-                    name:  id
-                    type:  NUMBER(20,0)
-                    constraints:
-                      primaryKey:  true
-                      nullable:  false
-               -  column:
-                    name:  REV
-                    type:  NUMBER(20,0)
-                    constraints:
-                      primaryKey:  true
-                      nullable:  false
-                      foreignKeyName:  fk_inter_storage_aud_revinfo
-                      references:  revinfo(id)
-               -  column:
-                    name:  REVTYPE
-                    type:  NUMBER(20,0)
-               -  column:
-                    name:  url
-                    type:  VARCHAR(255)
-               -  column:
-                    name:  storage_location
-                    type:  VARCHAR(255)
-               -  column:
-                    name:  backup_location
-                    type:  VARCHAR(255)
-
-        -  dropTable:
-             cascadeConstraints:  true
-             tableName:  storage
-        -  dropTable:
-             cascadeConstraints:  true
-             tableName:  storage_aud
-
-        -  createTable:
-             tableName:  storage
-             columns:
-               -  column:
-                    name:  id
-                    type:  NUMBER(20,0)
-                    constraints:
-                      primaryKey:  true
-                      foreignKeyName:  fk_storage_host
-                      references:  host(id)
-                      nullable:  false
-               -  column:
-                    name:  internal_storage_id
-                    type:  NUMBER(20,0)
-                    constraints:
-                      foreignKeyName:  fk_storage_internal
-                      references:  internal_storage(id)
-        -  createTable:
-             tableName:  storage_aud
-             columns:
-               -  column:
-                    name:  id
-                    type:  NUMBER(20,0)
-                    constraints:
-                      primaryKey:  true
-                      nullable:  false
-               -  column:
-                    name:  REV
-                    type:  NUMBER(20,0)
-                    constraints:
-                      primaryKey:  true
-                      nullable:  false
-                      foreignKeyName:  fk_storage_aud_revinfo
-                      references:  revinfo(id)
-               -  column:
-                    name:  REVTYPE
-                    type:  NUMBER(20,0)
-               -  column:
-                    name:  internal_storage_id
-                    type:  NUMBER(20,0)
-
-        -  createTable:
-             tableName:  e_language
-             columns:
-               -  column:
-                    name:  language_code
-                    type:  VARCHAR(255)
-                    constraints:
-                      primaryKey:  true
-                      nullable:  false
-               -  column:
-                    name:  language_name
-                    type:  VARCHAR(255)
-
-        -  createTable:
-             tableName:  inter_storage_translation
-             columns:
-               -  column:
-                    name:  id
-                    type:  NUMBER(20,0)
-                    constraints:
-                      primaryKey: true
-                      nullable: false
-               - column:
-                   name: version
-                   type: NUMBER(10,0)
-                   constraints:
-                     nullable: false
-               -  column:
-                    name:  internal_storage_id
-                    type:  NUMBER(20,0)
-                    constraints:
-                      foreignKeyName:  fk_trans_inter_storage
-                      references:  internal_storage(id)
-               -  column:
-                    name:  language_code
-                    type:  VARCHAR(255)
-                    constraints:
-                      foreignKeyName:  fk_inter_storage_trans_lang
-                      references:  e_language(language_code)
-               -  column:
-                    name:  title
-                    type:  VARCHAR(255)
-               -  column:
-                    name:  description
-                    type:  VARCHAR(4000)
-               -  column:
-                    name:  backup_frequency
-                    type:  VARCHAR(255)
-
-        -  createTable:
-             tableName:  inter_storage_translation_aud
-             columns:
-               -  column:
-                    name:  id
-                    type:  NUMBER(20,0)
-                    constraints:
-                      primaryKey:  true
-                      nullable:  false
-               -  column:
-                    name:  REV
-                    type:  NUMBER(20,0)
-                    constraints:
-                      primaryKey:  true
-                      nullable:  false
-                      foreignKeyName:  fk_int_sto_tra_aud_revinfo
-                      references:  revinfo(id)
-               -  column:
-                    name:  REVTYPE
-                    type:  NUMBER(20,0)
-               -  column:
-                    name:  internal_storage_id
-                    type:  NUMBER(20,0)
-               -  column:
-                    name:  language_code
-                    type:  VARCHAR(255)
-                    constraints:
-                      foreignKeyName:  fk_int_storage_tran_lang_aud
-                      references:  e_language(language_code)
-               -  column:
-                    name:  title
-                    type:  VARCHAR(255)
-               -  column:
-                    name:  description
-                    type:  VARCHAR(4000)
-               -  column:
-                    name:  backup_frequency
-                    type:  VARCHAR(255)
-        - dropColumn:
-            tableName: host
-            column:
-                name: host_id
-                type: NUMBER(20,0)
-        - dropColumn:
-            tableName: host_aud
-            column:
-                name: host_id
-                type: NUMBER(20,0)
-        - addColumn:
-            tableName: repository
-            columns:
-              - column:
-                  name: repository_id
-                  type: VARCHAR(255)
-        - addColumn:
-            tableName: repository_aud
-            columns:
-              - column:
-                  name: repository_id
-                  type: VARCHAR(255)
-
-  - changeSet:
-      id: 11_optional_languages
-      author: Zeno Casellato
-      changes:
-        - insert:
-            columns:
-              - column:
-                  name: language_code
-                  value: 'eng'
-              - column:
-                  name: language_name
-                  value: 'English'
-            tableName: e_language
-        - insert:
-            columns:
-              -  column:
-                   name:  language_code
-                   value: 'deu'
-              -  column:
-                   name:  language_name
-                   value: 'Deutsch'
-            tableName:  e_language
-
-        - insert:
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: version
-                  value: '0'
-              - column:
-                  name: url
-                  value: 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/data-storage/tufiles-file-service-for-employees'
-              - column:
-                  name: storage_location
-                  value: 'AUT'
-              - column:
-                  name: backup_location
-                  value: 'AUT'
-            tableName: internal_storage
-        - insert:
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: version
-                  value: '0'
-              - column:
-                  name: url
-                  value: 'https://www.it.tuwien.ac.at/en/services/network-infrastructure-and-server-services/server-services/server-housing'
-              - column:
-                  name: storage_location
-                  value: 'AUT'
-              - column:
-                  name: backup_location
-                  value: 'AUT'
-            tableName: internal_storage
-        - insert:
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: version
-                  value: '0'
-              - column:
-                  name: url
-                  value: 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/data-storage/tuowncloud-sync-and-share'
-              - column:
-                  name: storage_location
-                  value: 'AUT'
-              - column:
-                  name: backup_location
-                  value: 'AUT'
-            tableName: internal_storage
-        - insert:
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: version
-                  value: '0'
-              - column:
-                  name: url
-                  value: 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/collaboration/tuprocloud-sync-and-share-for-projects'
-              - column:
-                  name: storage_location
-                  value: 'AUT'
-              - column:
-                  name: backup_location
-                  value: 'AUT'
-            tableName: internal_storage
-        - insert:
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: version
-                  value: '0'
-              - column:
-                  name: url
-                  value: 'https://www.it.tuwien.ac.at/en/services/network-infrastructure-and-server-services/server-services/tuhost-virtual-server-hosting'
-              - column:
-                  name: storage_location
-                  value: 'AUT'
-              - column:
-                  name: backup_location
-                  value: 'AUT'
-            tableName: internal_storage
-        - insert:
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: version
-                  value: '0'
-              - column:
-                  name: url
-                  value: 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/data-storage/tugitlab'
-              - column:
-                  name: storage_location
-                  value: 'AUT'
-              - column:
-                  name: backup_location
-                  value: 'AUT'
-            tableName: internal_storage
-
-        - insert:
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: version
-                  value: '0'
-              - column:
-                  name: internal_storage_id
-                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/data-storage/tufiles-file-service-for-employees')"
-              - column:
-                  name: language_code
-                  value: 'eng'
-              - column:
-                  name: title
-                  value: 'TUfiles'
-              - column:
-                  name: description
-                  value: 'With TUfiles, we give you the opportunity to store data on a central and readily available network drive with backup (hosted on Windows servers). TUfiles is suitable for storing data with moderate access requirements, but high availability demands. TUfiles is not suitable for applications demanding high storage performance for a long period of time, such as high-performance databases, computer applications with high data access requirements and for storing local Microsoft Outlook PST files and backups.'
-            tableName: inter_storage_translation
-        - insert:
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: version
-                  value: '0'
-              - column:
-                  name: internal_storage_id
-                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/data-storage/tufiles-file-service-for-employees')"
-              - column:
-                  name: language_code
-                  value: 'deu'
-              - column:
-                  name: title
-                  value: 'TUfiles'
-              - column:
-                  name: description
-                  value: 'Mit TUfiles stellen wir Ihnen die Möglichkeit bereit, auf einem zentralen hochverfügbaren gebackupten Netzlaufwerk (gehostet auf Windows Servern) Daten abzulegen. TUfiles ist geeignet für die Speicherung von Daten mit mäßigen Zugriffsanforderungen, aber hohen Verfügbarkeitsanforderungen. Nicht geeignet ist TUfiles für Anwendungen, die längere Zeit eine hohe Storageperformance erfordern, wie z.B. hochperformante Datenbanken, Rechenanwendungen mit hohen Anforderungen an den Datenzugriff, sowie für das Ablegen von lokalen Microsoft Outlook PST-Files und Backups.'
-            tableName: inter_storage_translation
-
-        - insert:
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: version
-                  value: '0'
-              - column:
-                  name: internal_storage_id
-                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/network-infrastructure-and-server-services/server-services/server-housing')"
-              - column:
-                  name: language_code
-                  value: 'eng'
-              - column:
-                  name: title
-                  value: 'Server Housing'
-              - column:
-                  name: description
-                  value: 'TU.it provides the service recipients - institutes and organizational units - at four locations (Arsenal, Freihaus, Getreidemarkt and Gußhausstraße) with the accommodation of IT equipment in an access-protected, UPS-supplied and air-conditioned environment. This service is exclusively available for organizational units of the TU Vienna. The service is not designed for high availability. The operation and hardware and software maintenance of the installed components is the responsibility of the service recipient.'
-            tableName: inter_storage_translation
-        - insert:
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: version
-                  value: '0'
-              - column:
-                  name: internal_storage_id
-                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/network-infrastructure-and-server-services/server-services/server-housing')"
-              - column:
-                  name: language_code
-                  value: 'deu'
-              - column:
-                  name: title
-                  value: 'Server Housing'
-              - column:
-                  name: description
-                  value: 'TU.it stellt den Servicenehmern - Instituten und Organisationseinheiten - an vier Standorten (Arsenal. Freihaus. Getreidemarkt und Gußhausstraße) die Unterbringung von IT Equipment in einer zutrittsgeschützten, USV versorgten und klimatisierten Umgebung zur Verfügung. Dieses Service steht ausschließlich für Organisationseinheiten der TU-Wien zur Verfügung. Der Dienst ist nicht auf Hochverfügbarkeit ausgelegt.   Der Betrieb und die Hard- und Software-Wartung der eingebauten Komponenten liegt in der Verant­wortung des Servicenehmers.'
-            tableName: inter_storage_translation
-
-        - insert:
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: version
-                  value: '0'
-              - column:
-                  name: internal_storage_id
-                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/data-storage/tuowncloud-sync-and-share')"
-              - column:
-                  name: language_code
-                  value: 'eng'
-              - column:
-                  name: title
-                  value: 'TUownCloud'
-              - column:
-                  name: description
-                  value: 'With our File Sync and Share service, you can save your data to a "virtual memory stick". The open source software ownCloud runs on TU.it servers and basically offers the familiar features also provided by public cloud systems such as Dropbox.'
-            tableName: inter_storage_translation
-        - insert:
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: version
-                  value: '0'
-              - column:
-                  name: internal_storage_id
-                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/data-storage/tuowncloud-sync-and-share')"
-              - column:
-                  name: language_code
-                  value: 'deu'
-              - column:
-                  name: title
-                  value: 'TUownCloud'
-              - column:
-                  name: description
-                  value: 'Mit unserem File-Sync- und Share-Dienst können Sie ihre Daten auf einem "virtuellen Memory-Stick" speichern. Die Open Source Software ownCloud läuft auf Servern der TU.it und bietet Ihnen im Wesentlichen die auch von öffentlichen Cloudsystemen wie Dropbox bekannten Features.'
-            tableName: inter_storage_translation
-
-        - insert:
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: version
-                  value: '0'
-              - column:
-                  name: internal_storage_id
-                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/collaboration/tuprocloud-sync-and-share-for-projects')"
-              - column:
-                  name: language_code
-                  value: 'eng'
-              - column:
-                  name: title
-                  value: 'TUproCloud'
-              - column:
-                  name: description
-                  value: 'With our File Sync and Share service, your data can be stored in a "virtual TUproCloud" taking data security into account. The more extensive storage space that TUproCloud makes available to you for your projects is separate from and independent of your personal TUownCloud storage. In contrast to TUownCloud, people outside TU can also be authorised to read and write TUproCloud folders. Because data is stored on the servers of TU Wien, TUproCloud also supports the secure exchange of data with external project partners.'
-            tableName: inter_storage_translation
-        - insert:
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: version
-                  value: '0'
-              - column:
-                  name: internal_storage_id
-                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/collaboration/tuprocloud-sync-and-share-for-projects')"
-              - column:
-                  name: language_code
-                  value: 'deu'
-              - column:
-                  name: title
-                  value: 'TUproCloud'
-              - column:
-                  name: description
-                  value: 'Mit unserem File-Sync- und Share-Dienst können Ihre Daten in einer "virtuellen TUproCloud" unter Berücksichtigung der Datensicherheit gespeichert werden. TUproCloud stellt Ihnen für Projekte die Nutzung eines umfangreicheren, vom persönlichen TUownCloud-Speicher getrennten, und unabhängigen Speicherplatzes zur Verfügung. Es können - anders als bei TUownCloud - Ordner auch für TU-externe Personen zum Lesen und Schreiben freigegeben werden. Somit unterstützt TUproCloud auch mit externen Projektpartner_innen einen sicheren Datenaustausch durch Speicherung der Daten auf Servern der TU Wien.'
-            tableName: inter_storage_translation
-
-        - insert:
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: version
-                  value: '0'
-              - column:
-                  name: internal_storage_id
-                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/network-infrastructure-and-server-services/server-services/tuhost-virtual-server-hosting')"
-              - column:
-                  name: language_code
-                  value: 'eng'
-              - column:
-                  name: title
-                  value: 'TUhost'
-              - column:
-                  name: description
-                  value: 'You have the opportunity to operate virtual machines on the central and highly available TU.it virtualisation platform, hosted on VMware ESXi. TUhost is suitable for operating servers with moderate resource requirements, but high availability demands. The virtualisation platform is not suitable for operating servers that are to support applications demanding a particularly high computing capacity and/or storage performance, such as simulation calculations, high-performance databases or storage for vast quantities of data.'
-            tableName: inter_storage_translation
-        - insert:
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: version
-                  value: '0'
-              - column:
-                  name: internal_storage_id
-                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/network-infrastructure-and-server-services/server-services/tuhost-virtual-server-hosting')"
-              - column:
-                  name: language_code
-                  value: 'deu'
-              - column:
-                  name: title
-                  value: 'TUhost'
-              - column:
-                  name: description
-                  value: 'Sie haben die Möglichkeit, auf der zentralen hochverfügbaren Virtualisierungsplattform der TU.it, gehostet auf VM-Ware ESXi, virtuelle Maschinen zu betreiben. TUhost ist geeignet für den Betrieb von Servern mit mäßigen Ressourcenanforderungen, aber hohen Verfügbarkeitsanforderungen. Nicht geeignet ist die Virtualisierungsplattform für den Betrieb von Servern, die Anwendungen mit sehr hohen Anforderungen an Rechenleistung und/oder Storage-Performance unterstützen sollen, wie Simulationsrechnungen, hochperformante Datenbanken oder Speicher für sehr große Datenmengen.'
-            tableName: inter_storage_translation
-
-        - insert:
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: version
-                  value: '0'
-              - column:
-                  name: internal_storage_id
-                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/data-storage/tugitlab')"
-              - column:
-                  name: language_code
-                  value: 'eng'
-              - column:
-                  name: title
-                  value: 'TUgitLab'
-              - column:
-                  name: description
-                  value: 'Git is a software for distributed Version management of files (especially of source code). With TUgitLab, TU.it provides an application for managing repositories based on Git. TU members with an active TUaccount can use this service when working on GitLab projects. In TUgitLab, institute administrators activated in the Online Account Management can manage GitLab groups, assign project permissions, and assign external project partners as additional GitLab users.'
-            tableName: inter_storage_translation
-        - insert:
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: version
-                  value: '0'
-              - column:
-                  name: internal_storage_id
-                  valueComputed: "(select id from internal_storage insto where insto.url = 'https://www.it.tuwien.ac.at/en/services/cooperation-and-communication/data-storage/tugitlab')"
-              - column:
-                  name: language_code
-                  value: 'deu'
-              - column:
-                  name: title
-                  value: 'TUgitLab'
-              - column:
-                  name: description
-                  value: 'Git ist eine Software zur verteilten Versionsverwaltung von Dateien (im Speziellen von Source-Code). Mit TUgitLab stellt TU.it eine Anwendung für die Verwaltung von Repositories auf Basis von Git zur Verfügung. TU-Angehörige mit einem aktiven TUaccount können dieses Service im Rahmen der Mitarbeit an GitLab-Projekten nützen. In TUgitLab können im Online Account Management freigeschaltete Institutsadministrator_innen GitLab-Gruppen verwalten, Projekt-Berechtigungen vergeben und externe Projektpartner_innen als zusätzliche GitLab-Benutzer_innen eintragen.'
-            tableName: inter_storage_translation
-
-
-  - changeSet:
-      id: 12
-      author: Zeno Casellato
-      changes:
         - createTable:
             tableName: dmp_version
             columns:
-            - column:
-                name: id
-                type: NUMBER(20,0)
-                constraints:
-                  primaryKey: true
-                  nullable: false
-            - column:
-                name: dmp_id
-                type:  NUMBER(20,0)
-                constraints:
-                  foreignKeyName:  fk_dmp_version_id
-                  references:  dmp(id)
-            - column:
-                name: revision_number
-                type: NUMBER(20,0)
-            - column:
-                name: version_date
-                type: TIMESTAMP
-            - column:
-                name: version_name
-                type: VARCHAR(255)
+              - column:
+                  name: id
+                  type: NUMBER(20,0)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: dmp_id
+                  type:  NUMBER(20,0)
+                  constraints:
+                    foreignKeyName:  fk_dmp_version_id
+                    references:  dmp(id)
+              - column:
+                  name: revision_number
+                  type: NUMBER(20,0)
+              - column:
+                  name: version_date
+                  type: TIMESTAMP
+              - column:
+                  name: version_name
+                  type: VARCHAR(255)
