@@ -1,6 +1,15 @@
 pipelines:
   openshift:
     stages:
+      build:
+        variants:
+          - name: oracle
+            latest: true
+            args:
+              BUILD_PROFILE: oracle
+          - name: postgres
+            args:
+              BUILD_PROFILE: postgres
       deploy:
         enabled: false
   maven:
