@@ -1,5 +1,7 @@
 FROM adoptopenjdk/maven-openjdk11 as builder
 ARG BUILD_HOME=/home/app
+ARG BUILD_PROFILE=oracle
+
 RUN mkdir $BUILD_HOME && mkdir -p $BUILD_HOME/.m2/repository && chown -R 1000:0 $BUILD_HOME
 USER 1000
 WORKDIR $BUILD_HOME
@@ -7,7 +9,7 @@ COPY src ./src
 COPY ./pom.xml .
 
 VOLUME ["/home/app/.m2/repository"]
-RUN mvn -Duser.home=$BUILD_HOME -B package -DskipTests -Dquarkus.profile=oracle
+RUN mvn -Duser.home=$BUILD_HOME -B package -DskipTests -Dquarkus.profile=${BUILD_PROFILE}
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3 as runner
 ARG JAVA_PACKAGE=java-11-openjdk-headless
