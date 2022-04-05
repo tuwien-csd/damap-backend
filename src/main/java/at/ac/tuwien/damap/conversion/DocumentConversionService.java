@@ -5,6 +5,7 @@ import java.util.*;
 import java.text.SimpleDateFormat;
 
 import at.ac.tuwien.damap.repo.DmpRepo;
+import at.ac.tuwien.damap.repo.InternalStorageTranslationRepo;
 import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.*;
 
@@ -19,6 +20,9 @@ public class DocumentConversionService {
 
     @Inject
     DmpRepo dmpRepo;
+
+    @Inject
+    InternalStorageTranslationRepo internalStorageTranslationRepo;
 
     //Convert the date for readable format for the document
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
