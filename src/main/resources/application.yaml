@@ -79,11 +79,16 @@ rest:
 "%oracle":
   quarkus:
     datasource:
-      jdbc:
-        driver: oracle.jdbc.driver.OracleDriver
       db-kind: oracle
     hibernate-orm:
       dialect: org.hibernate.dialect.Oracle12cDialect
+
+"%postgres":
+  quarkus:
+    datasource:
+      db-kind: postgresql
+    hibernate-orm:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
 
 "%test":
   quarkus:
