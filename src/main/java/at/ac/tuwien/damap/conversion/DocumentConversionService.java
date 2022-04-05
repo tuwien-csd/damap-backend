@@ -1,16 +1,11 @@
 package at.ac.tuwien.damap.conversion;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.net.URL;
+import java.io.InputStream;
 import java.util.*;
 import java.text.SimpleDateFormat;
 
 import at.ac.tuwien.damap.repo.DmpRepo;
-import lombok.ToString;
 import lombok.extern.jbosslog.JBossLog;
-import org.apache.commons.io.FileUtils;
 import org.apache.poi.xwpf.usermodel.*;
 
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
@@ -28,18 +23,10 @@ public class DocumentConversionService {
     //Convert the date for readable format for the document
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
-    //Method to set the export template
-    public String setTemplate (String template) {
-        return template;
-    }
-
     //Method to load the export template
-    public XWPFDocument loadTemplate (String template, String startChar, String endChar) throws Exception{
-        //Loading a template file in resources folder
-        ClassLoader classLoader = getClass().getClassLoader();
-
+    public XWPFDocument loadTemplate (InputStream template, String startChar, String endChar) throws Exception{
         //Extract document using Apache POI https://poi.apache.org/
-        XWPFDocument document = new XWPFDocument(classLoader.getResourceAsStream(template));
+        XWPFDocument document = new XWPFDocument(template);
 
         return templateFormatting(document, startChar, endChar);
     }

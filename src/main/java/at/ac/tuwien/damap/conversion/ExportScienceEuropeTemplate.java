@@ -2,7 +2,6 @@ package at.ac.tuwien.damap.conversion;
 
 import at.ac.tuwien.damap.domain.*;
 import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
-import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import at.ac.tuwien.damap.enums.EComplianceType;
 import at.ac.tuwien.damap.enums.ESecurityMeasure;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
@@ -25,24 +24,21 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
     ProjectService projectService;
 
     @Inject
-    DmpService dmpService;
-
-    @Inject
     RepositoriesService repositoriesService;
 
     @Inject
     LoadResourceService loadResourceService;
 
+    @Inject
+    TemplateFileBrokerService templateFileBrokerService;
+
     public XWPFDocument exportTemplate(long dmpId) throws Exception {
 
-        // TODO: replace template link with template uploaded from frontend, replace manual start and end character with input from user
-        String template = setTemplate("template/scienceEuropeTemplate.docx");
         String startChar = "[";
         String endChar = "]";
-        //templateFormatting(template);
-        XWPFDocument document = loadTemplate(template, startChar, endChar);
+        XWPFDocument document = loadTemplate(templateFileBrokerService.loadScienceEuropeTemplate(), startChar, endChar);
 
-        Properties prop = loadResourceService.loadResource("template/scienceEuropeTemplate.resource");
+        Properties prop = templateFileBrokerService.getScienceEuropeTemplateResource();
 
         Map<String, String> map = new HashMap<>();
         Map<String, String> footerMap = new HashMap<>();
