@@ -2,8 +2,8 @@
 
 There are 2 damap projects that are needed in order to set up the system for your institution:
 
-1. **[dmap-backend]():** maDMPs backend project
-2. **[dmap-frontend]():** maDMPs frontend project
+1. **[damap-backend](https://github.com/tuwien-csd/damap-backend):** maDMPs backend project
+2. **[damap-frontend](https://github.com/tuwien-csd/damap-frontend):** maDMPs frontend project
 
 Also there are some components that you should already have at your institution that you can integrate with damap, 
 in order to make this tool your own:
