@@ -1,6 +1,6 @@
 # DAMAP
 
-##Introduction
+## Introduction
 
 DAMAP is a tool that is currently being developed by TU Wien and TU Graz as part of the 
 [FAIR Data Austria](https://forschungsdaten.at/fda/) project. 
@@ -71,4 +71,4 @@ docker-compose exec damap-db psql -U damap damap
 ## Custom Deployment
 
 In order to adapt the project and deploy it in your own institutional environment 
-follow the [deployment instructions](DEPLOYMENT.md).
+follow the [deployment instructions](INSTALLATION.md).
