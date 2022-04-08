@@ -14,6 +14,7 @@ import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -88,29 +89,23 @@ public class DataManagementPlanResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public DmpDO saveDmp(DmpDO dmpDO) {
+    public DmpDO saveDmp(@Valid DmpDO dmpDO) {
         log.info("Save dmp");
         String personId = this.getPersonId();
-        SaveDmpWrapper dmpWrapper = new SaveDmpWrapper();
-        dmpWrapper.setDmp(dmpDO);
-        dmpWrapper.setEdited_by(personId);
-        return dmpService.create(dmpWrapper);
+        return dmpService.create(dmpDO, personId);
     }
 
     @PUT
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public DmpDO updateDmp(@PathParam String id, DmpDO dmpDO) {
+    public DmpDO updateDmp(@PathParam String id, @Valid DmpDO dmpDO) {
         log.info("Update dmp with id: " + id);
         String personId = this.getPersonId();
         long dmpId = Long.parseLong(id);
         if(!accessValidator.canEditDmp(dmpId, personId)){
             throw new ForbiddenException("Not authorized to access dmp with id " + dmpId);
         }
-        SaveDmpWrapper dmpWrapper = new SaveDmpWrapper();
-        dmpWrapper.setDmp(dmpDO);
-        dmpWrapper.setEdited_by(personId);
-        return dmpService.update(dmpWrapper);
+        return dmpService.update(dmpDO);
     }
 
     private String getPersonId() {
@@ -118,5 +113,17 @@ public class DataManagementPlanResource {
             throw new AuthenticationFailedException("User ID is missing.");
         }
         return securityService.getUserId();
+    }
+
+    @GET
+    @Path("/{id}/{revision}")
+    public DmpDO getDmpByIdAndRevision(@PathParam String id, @PathParam long revision) {
+        log.info("Return dmp with id: " + id + " and revision number: " + revision);
+        String personId = this.getPersonId();
+        long dmpId = Long.parseLong(id);
+        if(!accessValidator.canViewDmp(dmpId, personId)){
+            throw new ForbiddenException("Not authorized to access dmp with id " + dmpId);
+        }
+        return dmpService.getDmpByIdAndRevision(dmpId, revision);
     }
 }

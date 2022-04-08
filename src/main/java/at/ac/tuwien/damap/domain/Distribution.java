@@ -8,7 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = {"dataset"})
 @ToString(exclude = "dataset")
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)

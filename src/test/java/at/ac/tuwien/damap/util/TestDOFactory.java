@@ -8,7 +8,7 @@ import at.ac.tuwien.damap.repo.DmpRepo;
 import at.ac.tuwien.damap.repo.InternalStorageTranslationRepo;
 import at.ac.tuwien.damap.rest.dmp.domain.*;
 import at.ac.tuwien.damap.rest.dmp.mapper.DmpDOMapper;
-import at.ac.tuwien.damap.rest.dmp.mapper.MapperService;
+import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import lombok.extern.jbosslog.JBossLog;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -30,7 +30,9 @@ public class TestDOFactory {
     InternalStorageTranslationRepo internalStorageTranslationRepo;
 
     @Inject
-    MapperService mapperService;
+    DmpService dmpService;
+
+    private final String editorId = "012345";
 
     @Transactional
     public DmpDO getOrCreateTestDmpDO() {
@@ -85,10 +87,7 @@ public class TestDOFactory {
         newTestDmpDO.setCostsExist(true);
         newTestDmpDO.setCosts(getTestCostList());
 
-        Dmp dmp = DmpDOMapper.mapDOtoEntity(newTestDmpDO, new Dmp(), mapperService);
-        dmp.setCreated(new Date());
-        dmp.setModified(new Date());
-        dmp.persistAndFlush();
+        dmpService.create(newTestDmpDO, editorId);
         return getOrCreateTestDmpDO();
     }
 
@@ -229,7 +228,6 @@ public class TestDOFactory {
     }
 
 
-    @Transactional
     public DmpDO getOrCreateTestDmpDOEmpty() {
         final Optional<Dmp> testDmp = dmpRepo.getAll().stream()
                 .filter(a -> a.getTitle().equals("EmptyTestDmp"))
@@ -240,7 +238,7 @@ public class TestDOFactory {
         DmpDO newTestDmpDO = new DmpDO();
         newTestDmpDO.setTitle("EmptyTestDmp");
 
-        dmpRepo.persistAndFlush(DmpDOMapper.mapDOtoEntity(newTestDmpDO, new Dmp(), mapperService));
+        dmpService.create(newTestDmpDO, editorId);
         return getOrCreateTestDmpDOEmpty();
     }
 

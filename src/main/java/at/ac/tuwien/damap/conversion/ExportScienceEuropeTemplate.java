@@ -2,7 +2,6 @@ package at.ac.tuwien.damap.conversion;
 
 import at.ac.tuwien.damap.domain.*;
 import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
-import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import at.ac.tuwien.damap.enums.EComplianceType;
 import at.ac.tuwien.damap.enums.ESecurityMeasure;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
@@ -25,24 +24,21 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
     ProjectService projectService;
 
     @Inject
-    DmpService dmpService;
-
-    @Inject
     RepositoriesService repositoriesService;
 
     @Inject
     LoadResourceService loadResourceService;
 
+    @Inject
+    TemplateFileBrokerService templateFileBrokerService;
+
     public XWPFDocument exportTemplate(long dmpId) throws Exception {
 
-        // TODO: replace template link with template uploaded from frontend, replace manual start and end character with input from user
-        String template = setTemplate("template/scienceEuropeTemplate.docx");
         String startChar = "[";
         String endChar = "]";
-        //templateFormatting(template);
-        XWPFDocument document = loadTemplate(template, startChar, endChar);
+        XWPFDocument document = loadTemplate(templateFileBrokerService.loadScienceEuropeTemplate(), startChar, endChar);
 
-        Properties prop = loadResourceService.loadResource("template/scienceEuropeTemplate.resource");
+        Properties prop = templateFileBrokerService.getScienceEuropeTemplateResource();
 
         Map<String, String> map = new HashMap<>();
         Map<String, String> footerMap = new HashMap<>();
@@ -582,7 +578,6 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
 
         List<Host> hostList = dmp.getHostList();
         String storageVar = "";
-        String storageDescription = "";
 
         if (!hostList.isEmpty()) {
             for (Host host: hostList) {
@@ -590,32 +585,8 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                 String hostVar = "";
                 String distVar = "";
 
-                //TODO: automatic description for all storages
-
                 if (host.getTitle() != null) {
                     hostVar = host.getTitle();
-                    if (host.getTitle().equals("TUfiles")) {
-                        storageDescription = ", a central and readily available network drive with daily backups and regular snapshots provided by TU.it. " +
-                                "TUfiles is suitable for storing data with moderate access requirements, but high availability demands that allows full control of allocating authorisations. " +
-                                "Only authorized staff members will have access.";
-                    }
-                    if (host.getTitle().equals("Server Housing")) {
-                        storageDescription = ". The server is housed in a dedicated TU.it server room with limited access and operated by our institute.";
-                    }
-                    if (host.getTitle().equals("TUproCloud")) {
-                        storageDescription = ", a sync&share service for projects provided by TU.it. " +
-                                "Only authorized staff members and project partners will have access to the TUproCloud folders. " +
-                                "Deleted files can be recovered within 180 days by using the bin function.";
-                    }
-                    if (host.getTitle().equals("TUhost")) {
-                        storageDescription = ", the central and highly available TU.it virtualisation platform, hosted on VMware ESXi. Hardware. " +
-                                "Storage and backup will be provided by TU.it and our institute will be responsible for the server operation.";
-                    }
-                    if (host.getTitle().equals("TUgitLab")) {
-                        storageDescription = ", an application for managing repositories based on Git provided and managed by TU.it. " +
-                                "Our institute’s administrators will manage GitLab groups, assign project permissions, and assign external project partners as additional GitLab users. " +
-                                "This service is highly available and scalable on the Kubernetes platform.";
-                    }
                 }
 
                 for (Distribution dist: distributions) {
@@ -626,8 +597,11 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                 }
 
                 if (Storage.class.isAssignableFrom(host.getClass())) { //only write information related to the storage, repository will be written in section 5
-                    if (!distVar.equals(""))
-                        storageVar = storageVar.concat(distVar + " " + loadResourceService.loadVariableFromResource(prop,"distributionStorage") + " " + hostVar + storageDescription);
+                    if (!distVar.equals("")) {
+                        String storageDescription = "";
+                        storageDescription = internalStorageTranslationRepo.getInternalStorageById(((Storage) host).getInternalStorageId().id, "eng").getDescription();
+                        storageVar = storageVar.concat(distVar + " " + loadResourceService.loadVariableFromResource(prop, "distributionStorage") + " " + hostVar + ": " + storageDescription);
+                    }
                 }
                 else if (ExternalStorage.class.isAssignableFrom(host.getClass())) { //case for external storage, will have null host Id
                     if (!distVar.equals("")) {
