@@ -59,8 +59,11 @@ file.
 
 ## Authors
 
-* [ZenoLC](https://github.com/ZenoLC)
-* [C]()
+* [Zeno Casellato](https://github.com/ZenoLC)
+* [Clara Schuster](https://github.com/clarascu)
+* [Hardani Maulana](https://github.com/hardanimaulana)
+* [Florin Hillebrand](https://github.com/flozzone)
+* [Luca Maestri](https://github.com/casualtimer)
 
 ## License
 
