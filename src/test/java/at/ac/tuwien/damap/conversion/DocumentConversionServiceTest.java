@@ -16,13 +16,17 @@ public class DocumentConversionServiceTest {
     @Inject
     Instance<DocumentConversionService> documentConversionServices;
 
+    @Inject
+    Instance<TemplateFileBrokerService> templateFileBrokerServices;
+
     @Test
     public void testLoadTemplate() throws Exception {
         for (DocumentConversionService documentConversionService : documentConversionServices) {
             //testing load template
             //TODO: generate blank document as a test
             //TODO: notify when there is no template file available
-            XWPFDocument document = documentConversionService.loadTemplate("template/scienceEuropeTemplate.docx", "[", "]");
+
+            XWPFDocument document = documentConversionService.loadTemplate(templateFileBrokerServices.get().loadScienceEuropeTemplate(), "[", "]");
             Assertions.assertNotNull(document);
 
             //testing multiple variable handling

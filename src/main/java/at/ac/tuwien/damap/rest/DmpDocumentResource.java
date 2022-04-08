@@ -1,14 +1,14 @@
 package at.ac.tuwien.damap.rest;
 
-import at.ac.tuwien.damap.conversion.DocumentConversionService;
 import at.ac.tuwien.damap.conversion.ExportScienceEuropeTemplate;
 import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import at.ac.tuwien.damap.security.SecurityService;
+import at.ac.tuwien.damap.validation.AccessValidator;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.AuthenticationFailedException;
+import io.quarkus.security.ForbiddenException;
 import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -16,8 +16,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.*;
-import java.util.Date;
-import java.text.SimpleDateFormat;
 
 @Path("/api/document")
 @Authenticated
@@ -28,8 +26,8 @@ public class DmpDocumentResource {
     @Inject
     SecurityService securityService;
 
-    //@Inject
-    //DocumentConversionService documentConversionService;
+    @Inject
+    AccessValidator accessValidator;
 
     @Inject
     ExportScienceEuropeTemplate exportScienceEuropeTemplate;
@@ -37,20 +35,15 @@ public class DmpDocumentResource {
     @Inject
     DmpService dmpService;
 
-    @ConfigProperty(name = "damap.auth.user")
-    String authUser;
-
     @GET
     @Path("/{dmpId}")
-
     public Response exportTemplate(@PathParam("dmpId") long dmpId) throws Exception {
         log.info("Return DMP document file for DMP with id=" + dmpId);
 
-        Date date = new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-
-        // TODO: check permission
         String personId = this.getPersonId();
+        if(!accessValidator.canViewDmp(dmpId, personId)){
+            throw new ForbiddenException("Not authorized to access dmp with id " + dmpId);
+        }
 
         String filename = dmpService.getDefaultFileName(dmpId);
 

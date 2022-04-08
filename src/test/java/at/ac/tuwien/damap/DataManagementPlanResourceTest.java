@@ -4,7 +4,6 @@ import at.ac.tuwien.damap.rest.DataManagementPlanResource;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpListItemDO;
 import at.ac.tuwien.damap.rest.dmp.service.DmpService;
-import at.ac.tuwien.damap.rest.dmp.service.SaveDmpWrapper;
 import at.ac.tuwien.damap.validation.AccessValidator;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -37,8 +36,8 @@ public class DataManagementPlanResourceTest {
     public void setup() {
         Mockito.when(accessValidator.canViewDmp(anyLong(), anyString())).thenReturn(true);
         Mockito.when(accessValidator.canEditDmp(anyLong(), anyString())).thenReturn(true);
-        Mockito.when(dmpService.create(any(SaveDmpWrapper.class))).thenReturn(this.createDmpDO());
-        Mockito.when(dmpService.update(any(SaveDmpWrapper.class))).thenReturn(this.createDmpDO());
+        Mockito.when(dmpService.create(any(DmpDO.class), any(String.class))).thenReturn(this.createDmpDO());
+        Mockito.when(dmpService.update(any(DmpDO.class))).thenReturn(this.createDmpDO());
         Mockito.when(dmpService.getAll()).thenReturn(this.createDmpListItemDOList());
         Mockito.when(dmpService.getDmpById(anyLong())).thenReturn(this.createDmpDO());
         Mockito.when(dmpService.getDmpListByPersonId(anyString())).thenReturn(this.createDmpListItemDOList());
