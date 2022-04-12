@@ -1,0 +1,2246 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Zeno Casellato
+      changes:
+        #        setup for hibernate
+        - createSequence:
+            sequenceName: hibernate_sequence
+            incrementBy: 1
+            startValue: 1
+            minValue: 1
+
+        -  createTable:
+             tableName:  revinfo
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  timestamp
+                    type:  TIMESTAMP
+               -  column:
+                    name:  changed_by
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  changed_by_id
+                    type:  VARCHAR(255)
+
+        -  createTable:
+             tableName:  revchanges
+             columns:
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      foreignKeyName:  fk_revchanges_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  entityname
+                    type:  VARCHAR(255)
+
+        #        create enum tables
+        -  createTable:
+             tableName:  e_identifier_type
+             columns:
+               -  column:
+                    name:  type
+                    type:  VARCHAR(255)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'ORCID'
+            tableName:  e_identifier_type
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'ISNI'
+            tableName:  e_identifier_type
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'OPENID'
+            tableName:  e_identifier_type
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'OTHER'
+            tableName:  e_identifier_type
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'HANDLE'
+            tableName:  e_identifier_type
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'DOI'
+            tableName:  e_identifier_type
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'ARK'
+            tableName:  e_identifier_type
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'URL'
+            tableName:  e_identifier_type
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'FUNDREF'
+            tableName:  e_identifier_type
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'ROR'
+            tableName:  e_identifier_type
+
+        -  createTable:
+             tableName:  e_funding_status
+             columns:
+               -  column:
+                    name:  status
+                    type:  VARCHAR(255)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+        - insert:
+            columns:
+              -  column:
+                   name:  status
+                   value: 'PLANNED'
+            tableName:  e_funding_status
+        - insert:
+            columns:
+              -  column:
+                   name:  status
+                   value: 'APPLIED'
+            tableName:  e_funding_status
+        - insert:
+            columns:
+              -  column:
+                   name:  status
+                   value: 'GRANTED'
+            tableName:  e_funding_status
+        - insert:
+            columns:
+              -  column:
+                   name:  status
+                   value: 'REJECTED'
+            tableName:  e_funding_status
+        - insert:
+            columns:
+              -  column:
+                   name:  status
+                   value: 'UNSPECIFIED'
+            tableName:  e_funding_status
+
+        -  createTable:
+             tableName:  e_data_kind
+             columns:
+               -  column:
+                    name:  data_kind
+                    type:  VARCHAR(255)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+        - insert:
+            columns:
+              -  column:
+                   name:  data_kind
+                   value: 'UNKNOWN'
+            tableName:  e_data_kind
+        - insert:
+            columns:
+              -  column:
+                   name:  data_kind
+                   value: 'NONE'
+            tableName:  e_data_kind
+        - insert:
+            columns:
+              -  column:
+                   name:  data_kind
+                   value: 'SPECIFY'
+            tableName:  e_data_kind
+
+        -  createTable:
+             tableName:  e_contributor_role
+             columns:
+               -  column:
+                    name:  role
+                    type:  VARCHAR(255)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'DATA_COLLECTOR'
+            tableName:  e_contributor_role
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'DATA_CURATOR'
+            tableName:  e_contributor_role
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'DATA_MANAGER'
+            tableName:  e_contributor_role
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'DISTRIBUTOR'
+            tableName:  e_contributor_role
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'EDITOR'
+            tableName:  e_contributor_role
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'HOSTING_INSTITUTION'
+            tableName:  e_contributor_role
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'PRODUCER'
+            tableName:  e_contributor_role
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'PROJECT_LEADER'
+            tableName:  e_contributor_role
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'PROJECT_MANAGER'
+            tableName:  e_contributor_role
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'PROJECT_MEMBER'
+            tableName:  e_contributor_role
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'REGISTRATION_AGENCY'
+            tableName:  e_contributor_role
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'REGISTRATION_AUTHORITY'
+            tableName:  e_contributor_role
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'RELATED_PERSON'
+            tableName:  e_contributor_role
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'RESEARCHER'
+            tableName:  e_contributor_role
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'RESEARCH_GROUP'
+            tableName:  e_contributor_role
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'RIGHTS_HOLDER'
+            tableName:  e_contributor_role
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'SPONSOR'
+            tableName:  e_contributor_role
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'SUPERVISOR'
+            tableName:  e_contributor_role
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'WORK_PACKAGE_LEADER'
+            tableName:  e_contributor_role
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'OTHER'
+            tableName:  e_contributor_role
+
+        -  createTable:
+             tableName:  e_cost_type
+             columns:
+               -  column:
+                    name:  type
+                    type:  VARCHAR(255)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'DATA_ACQUISITION'
+            tableName:  e_cost_type
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'DATABASE'
+            tableName:  e_cost_type
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'FILE_BASED_STORAGE'
+            tableName:  e_cost_type
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'HARDWARE_AND_INFRASTRUCTURE'
+            tableName:  e_cost_type
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'LEGAL_ADVICE'
+            tableName:  e_cost_type
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'PERSONNEL'
+            tableName:  e_cost_type
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'REPOSITORY'
+            tableName:  e_cost_type
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'SOFTWARE_LICENSE'
+            tableName:  e_cost_type
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'TRAINING'
+            tableName:  e_cost_type
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'OTHER'
+            tableName:  e_cost_type
+
+        -  createTable:
+             tableName:  e_data_access
+             columns:
+               -  column:
+                    name:  access_type
+                    type:  VARCHAR(255)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+        - insert:
+            columns:
+              -  column:
+                   name:  access_type
+                   value: 'OPEN'
+            tableName:  e_data_access
+        - insert:
+            columns:
+              -  column:
+                   name:  access_type
+                   value: 'RESTRICTED'
+            tableName:  e_data_access
+        - insert:
+            columns:
+              -  column:
+                   name:  access_type
+                   value: 'CLOSED'
+            tableName:  e_data_access
+
+        -  createTable:
+             tableName:  e_compliance_type
+             columns:
+               -  column:
+                    name:  type
+                    type:  VARCHAR(255)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'INFORMED_CONSENT'
+            tableName:  e_compliance_type
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'ENCRYPTION'
+            tableName:  e_compliance_type
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'ANONYMISATION'
+            tableName:  e_compliance_type
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'PSEUDONYMISATION'
+            tableName:  e_compliance_type
+        - insert:
+            columns:
+              -  column:
+                   name:  type
+                   value: 'OTHER'
+            tableName:  e_compliance_type
+
+        -  createTable:
+             tableName:  e_function_role
+             columns:
+               -  column:
+                    name:  role
+                    type:  VARCHAR(255)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'ADMIN'
+            tableName:  e_function_role
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'SUPPORT'
+            tableName:  e_function_role
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'OWNER'
+            tableName:  e_function_role
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'EDITOR'
+            tableName:  e_function_role
+        - insert:
+            columns:
+              -  column:
+                   name:  role
+                   value: 'GUEST'
+            tableName:  e_function_role
+
+        - createTable:
+            tableName: e_access_right
+            columns:
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'READ'
+            tableName: e_access_right
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'WRITE'
+            tableName: e_access_right
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'NONE'
+            tableName: e_access_right
+
+        - createTable:
+            tableName: e_security_measure
+            columns:
+              - column:
+                  name: security_measure
+                  type: VARCHAR(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+        - insert:
+            columns:
+              - column:
+                  name: security_measure
+                  value: 'INDIVIDUAL_LOGIN'
+            tableName: e_security_measure
+        - insert:
+            columns:
+              - column:
+                  name: security_measure
+                  value: 'ADDITIONAL_LOGIN'
+            tableName: e_security_measure
+        - insert:
+            columns:
+              - column:
+                  name: security_measure
+                  value: 'AUTOMATIC_LOCKING_OF_CLIENTS'
+            tableName: e_security_measure
+        - insert:
+            columns:
+              - column:
+                  name: security_measure
+                  value: 'ENCRYPTION_OF_SYSTEMS'
+            tableName: e_security_measure
+        - insert:
+            columns:
+              - column:
+                  name: security_measure
+                  value: 'LOCKED_STORAGE'
+            tableName: e_security_measure
+        - insert:
+            columns:
+              - column:
+                  name: security_measure
+                  value: 'OTHER'
+            tableName: e_security_measure
+
+        - createTable:
+            tableName: e_agreement
+            columns:
+              - column:
+                  name: agreement
+                  type: VARCHAR(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+        - insert:
+            columns:
+              - column:
+                  name: agreement
+                  value: 'CONSORTIUM_AGREEMENT'
+            tableName: e_agreement
+        - insert:
+            columns:
+              - column:
+                  name: agreement
+                  value: 'DATA_PROCESSING_AGREEMENT'
+            tableName: e_agreement
+        - insert:
+            columns:
+              - column:
+                  name: agreement
+                  value: 'JOINT_CONTROL_AGREEMENT'
+            tableName: e_agreement
+        - insert:
+            columns:
+              - column:
+                  name: agreement
+                  value: 'CONFIDENTIALITY_AGREEMENT'
+            tableName: e_agreement
+        - insert:
+            columns:
+              - column:
+                  name: agreement
+                  value: 'OTHER'
+            tableName: e_agreement
+
+        - createTable:
+            tableName: e_data_quality_type
+            columns:
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'CALIBRATION'
+            tableName: e_data_quality_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'REPEATED_SAMPLES_OR_MEASUREMENTS'
+            tableName: e_data_quality_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'STANDARDISED_DATA_CAPTURE'
+            tableName: e_data_quality_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'DATA_ENTRY_VALIDATION'
+            tableName: e_data_quality_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'PEER_REVIEW_OF_DATA'
+            tableName: e_data_quality_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'REPRESENTATION_WITH_CONTROLLED_VOCABULARIES'
+            tableName: e_data_quality_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'OTHERS'
+            tableName: e_data_quality_type
+
+        -  createTable:
+             tableName:  e_language
+             columns:
+               -  column:
+                    name:  language_code
+                    type:  VARCHAR(255)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  language_name
+                    type:  VARCHAR(255)
+        - insert:
+            columns:
+              - column:
+                  name: language_code
+                  value: 'eng'
+              - column:
+                  name: language_name
+                  value: 'English'
+            tableName: e_language
+        - insert:
+            columns:
+              -  column:
+                   name:  language_code
+                   value: 'deu'
+              -  column:
+                   name:  language_name
+                   value: 'Deutsch'
+            tableName:  e_language
+
+        #        create data tables
+        -  createTable:
+             tableName:  identifier
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  version
+                    type:  NUMBER(10,0)
+                    constraints:
+                      nullable:  false
+               -  column:
+                    name:  identifier
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  type
+                    type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_identifier_type
+                      references:  e_identifier_type(type)
+
+        -  createTable:
+             tableName:  identifier_aud
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+                      foreignKeyName:  fk_identifier_aud_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  REVTYPE
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  identifier
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  type
+                    type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_identifier_aud_type
+                      references:  e_identifier_type(type)
+
+        -  createTable:
+             tableName:  funding
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  version
+                    type:  NUMBER(10,0)
+                    constraints:
+                      nullable:  false
+               -  column:
+                    name:  funder_id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      foreignKeyName:  fk_funding_funder
+                      references:  identifier(id)
+               -  column:
+                    name:  funding_status
+                    type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_funding_status
+                      references:  e_funding_status(status)
+               -  column:
+                    name:  grant_id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      foreignKeyName:  fk_funding_grant
+                      references:  identifier(id)
+
+        -  createTable:
+             tableName:  funding_aud
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+                      foreignKeyName:  fk_funding_aud_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  REVTYPE
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  funder_id
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  funding_status
+                    type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_funding_aud_status
+                      references:  e_funding_status(status)
+               -  column:
+                    name:  grant_id
+                    type:  NUMBER(20,0)
+
+        -  createTable:
+             tableName:  project
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  version
+                    type:  NUMBER(10,0)
+                    constraints:
+                      nullable:  false
+               -  column:
+                    name:  university_id
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  title
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  description
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  funding_id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      foreignKeyName:  fk_project_funding
+                      references:  funding(id)
+               -  column:
+                    name:  project_start
+                    type:  TIMESTAMP
+               -  column:
+                    name:  project_end
+                    type:  TIMESTAMP
+
+        -  createTable:
+             tableName:  project_aud
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+                      foreignKeyName:  fk_project_aud_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  REVTYPE
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  university_id
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  title
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  description
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  funding_id
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  project_start
+                    type:  TIMESTAMP
+               -  column:
+                    name:  project_end
+                    type:  TIMESTAMP
+
+        -  createTable:
+             tableName:  dmp
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  version
+                    type:  NUMBER(10,0)
+                    constraints:
+                      nullable:  false
+               -  column:
+                    name:  created
+                    type:  TIMESTAMP
+               -  column:
+                    name:  modified
+                    type:  TIMESTAMP
+               -  column:
+                    name:  title
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  description
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  project_id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      foreignKeyName:  fk_dmp_project
+                      references:  project(id)
+               -  column:
+                    name:  data_kind
+                    type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_dmp_data_kind
+                      references:  e_data_kind(data_kind)
+               -  column:
+                    name:  no_data_explanation
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  metadata
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  data_generation
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  structure
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  target_audience
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  tools
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  restricted_data_access
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  personal_data
+                    type:  BOOLEAN
+               -  column:
+                    name:  other_personal_data_compliance
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  sensitive_data
+                    type:  BOOLEAN
+               -  column:
+                    name:  legal_restrictions
+                    type:  BOOLEAN
+               -  column:
+                    name:  legal_restrictions_comment
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  ethical_issues_exist
+                    type:  BOOLEAN
+               -  column:
+                    name:  committee_reviewed
+                    type:  BOOLEAN
+               -  column:
+                    name:  external_storage_info
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  restricted_access_info
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  closed_access_info
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  costs_exist
+                    type:  BOOLEAN
+               - column:
+                    name: other_data_sec_measures
+                    type: VARCHAR(4000)
+               - column:
+                    name: sensitive_data_access
+                    type: VARCHAR(4000)
+               - column:
+                    name: other_legal_r_documents
+                    type: VARCHAR(4000)
+               - column:
+                    name: data_rights_access_control
+                    type: VARCHAR(4000)
+               - column:
+                    name: other_data_quality
+                    type: VARCHAR(4000)
+               - column:
+                    name: human_participants
+                    type: BOOLEAN
+               - column:
+                    name:  personal_data_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  sensitive_data_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  legal_restrictions_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  human_participants_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  ethical_issues_exist_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  committee_reviewed_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  costs_exist_cris
+                    type:  BOOLEAN
+
+        -  createTable:
+             tableName:  dmp_aud
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey: true
+                      nullable:  false
+                      foreignKeyName:  fk_dmp_aud_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  REVTYPE
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  created
+                    type:  TIMESTAMP
+               -  column:
+                    name:  modified
+                    type:  TIMESTAMP
+               -  column:
+                    name:  title
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  description
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  project_id
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  data_kind
+                    type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_dmp_aud_data_kind
+                      references:  e_data_kind(data_kind)
+               -  column:
+                    name:  no_data_explanation
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  metadata
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  data_generation
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  structure
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  target_audience
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  tools
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  restricted_data_access
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  personal_data
+                    type:  BOOLEAN
+               -  column:
+                    name:  other_personal_data_compliance
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  sensitive_data
+                    type:  BOOLEAN
+               -  column:
+                    name:  legal_restrictions
+                    type:  BOOLEAN
+               -  column:
+                    name:  legal_restrictions_comment
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  ethical_issues_exist
+                    type:  BOOLEAN
+               -  column:
+                    name:  committee_reviewed
+                    type:  BOOLEAN
+               -  column:
+                    name:  external_storage_info
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  restricted_access_info
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  closed_access_info
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  costs_exist
+                    type:  BOOLEAN
+               - column:
+                    name: other_data_sec_measures
+                    type: VARCHAR(4000)
+               - column:
+                    name: sensitive_data_access
+                    type: VARCHAR(4000)
+               - column:
+                    name: other_legal_r_documents
+                    type: VARCHAR(4000)
+               - column:
+                    name: data_rights_access_control
+                    type: VARCHAR(4000)
+               - column:
+                    name: other_data_quality
+                    type: VARCHAR(4000)
+               - column:
+                    name: human_participants
+                    type: BOOLEAN
+               - column:
+                    name:  personal_data_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  sensitive_data_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  legal_restrictions_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  human_participants_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  ethical_issues_exist_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  committee_reviewed_cris
+                    type:  BOOLEAN
+               - column:
+                    name:  costs_exist_cris
+                    type:  BOOLEAN
+
+        -  createTable:
+             tableName:  contributor
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  version
+                    type:  NUMBER(10,0)
+                    constraints:
+                      nullable:  false
+               -  column:
+                    name:  dmp_id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      foreignKeyName:  fk_contributor_dmp
+                      references:  dmp(id)
+               -  column:
+                    name:  contributor_role
+                    type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_contributor_role
+                      references:  e_contributor_role(role)
+               - column:
+                   name: person_id
+                   type: NUMBER(20,0)
+                   constraints:
+                     foreignKeyName: fk_person_identifier
+                     references: identifier(id)
+               - column:
+                   name: university_id
+                   type: VARCHAR(255)
+               - column:
+                   name: mbox
+                   type: VARCHAR(255)
+               - column:
+                   name: first_name
+                   type: VARCHAR(255)
+               - column:
+                   name: last_name
+                   type: VARCHAR(255)
+               - column:
+                   name: contact
+                   type: BOOLEAN
+               - column:
+                   name: affiliation
+                   type: VARCHAR(255)
+               - column:
+                   name: affiliation_id
+                   type:  NUMBER(20,0)
+                   constraints:
+                     foreignKeyName:  fk_person_affil_identifier
+                     references:  identifier(id)
+
+        -  createTable:
+             tableName:  contributor_aud
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+                      foreignKeyName:  fk_contributor_aud_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  REVTYPE
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  dmp_id
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  contributor_role
+                    type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_contributor_aud_role
+                      references:  e_contributor_role(role)
+               - column:
+                   name: person_id
+                   type: NUMBER(20,0)
+               - column:
+                   name: university_id
+                   type: VARCHAR(255)
+               - column:
+                   name: mbox
+                   type: VARCHAR(255)
+               - column:
+                   name: first_name
+                   type: VARCHAR(255)
+               - column:
+                   name: last_name
+                   type: VARCHAR(255)
+               - column:
+                   name: contact
+                   type: BOOLEAN
+               - column:
+                   name: affiliation
+                   type: VARCHAR(255)
+               - column:
+                   name: affiliation_id
+                   type: NUMBER(20,0)
+
+        -  createTable:
+             tableName:  cost
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  version
+                    type:  NUMBER(10,0)
+                    constraints:
+                      nullable:  false
+               -  column:
+                    name:  dmp_id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      foreignKeyName:  fk_cost_dmp
+                      references:  dmp(id)
+               -  column:
+                    name:  title
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  value
+                    type:  NUMBER(20,2)
+               -  column:
+                    name:  currency_code
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  description
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  cost_type
+                    type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_cost_type
+                      references:  e_cost_type(type)
+               -  column:
+                    name:  custom_type
+                    type:  VARCHAR(255)
+
+        -  createTable:
+             tableName:  cost_aud
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+                      foreignKeyName:  fk_cost_aud_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  REVTYPE
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  dmp_id
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  title
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  value
+                    type:  NUMBER(20,2)
+               -  column:
+                    name:  currency_code
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  description
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  cost_type
+                    type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_cost_aud_type
+                      references:  e_cost_type(type)
+               -  column:
+                    name:  custom_type
+                    type:  VARCHAR(255)
+
+        -  createTable:
+             tableName:  host
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  version
+                    type:  NUMBER(10,0)
+                    constraints:
+                      nullable:  false
+               -  column:
+                    name:  dmp_id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      foreignKeyName:  fk_host_dmp
+                      references:  dmp(id)
+               -  column:
+                    name:  title
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  discriminator
+                    type:  VARCHAR(255)
+
+        -  createTable:
+             tableName:  host_aud
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+                      foreignKeyName:  fk_host_aud_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  REVTYPE
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  dmp_id
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  title
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  discriminator
+                    type:  VARCHAR(255)
+
+        -  createTable:
+             tableName:  external_storage
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      foreignKeyName:  fk_external_storage_host
+                      references:  host(id)
+                      nullable:  false
+               -  column:
+                    name:  url
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  backup_frequency
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  storage_location
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  backup_location
+                    type:  VARCHAR(255)
+
+        -  createTable:
+             tableName:  external_storage_aud
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+                      foreignKeyName:  fk_ext_storage_aud_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  REVTYPE
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  url
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  backup_frequency
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  storage_location
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  backup_location
+                    type:  VARCHAR(255)
+
+        -  createTable:
+             tableName:  repository
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      foreignKeyName:  fk_repository_host
+                      references:  host(id)
+                      nullable:  false
+               - column:
+                   name: repository_id
+                   type: VARCHAR(255)
+
+        -  createTable:
+             tableName:  repository_aud
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+                      foreignKeyName:  fk_repository_aud_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  REVTYPE
+                    type:  NUMBER(20,0)
+               - column:
+                   name: repository_id
+                   type: VARCHAR(255)
+
+        -  createTable:
+             tableName:  internal_storage
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey: true
+                      nullable: false
+               - column:
+                   name: version
+                   type: NUMBER(10,0)
+                   constraints:
+                     nullable: false
+               -  column:
+                    name:  url
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  storage_location
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  backup_location
+                    type:  VARCHAR(255)
+
+        -  createTable:
+             tableName:  internal_storage_aud
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+                      foreignKeyName:  fk_inter_storage_aud_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  REVTYPE
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  url
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  storage_location
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  backup_location
+                    type:  VARCHAR(255)
+
+        -  createTable:
+             tableName:  storage
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      foreignKeyName:  fk_storage_host
+                      references:  host(id)
+                      nullable:  false
+               -  column:
+                    name:  internal_storage_id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      foreignKeyName:  fk_storage_internal
+                      references:  internal_storage(id)
+        -  createTable:
+             tableName:  storage_aud
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+                      foreignKeyName:  fk_storage_aud_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  REVTYPE
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  internal_storage_id
+                    type:  NUMBER(20,0)
+
+        -  createTable:
+             tableName:  inter_storage_translation
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey: true
+                      nullable: false
+               - column:
+                   name: version
+                   type: NUMBER(10,0)
+                   constraints:
+                     nullable: false
+               -  column:
+                    name:  internal_storage_id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      foreignKeyName:  fk_trans_inter_storage
+                      references:  internal_storage(id)
+               -  column:
+                    name:  language_code
+                    type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_inter_storage_trans_lang
+                      references:  e_language(language_code)
+               -  column:
+                    name:  title
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  description
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  backup_frequency
+                    type:  VARCHAR(255)
+
+        -  createTable:
+             tableName:  inter_storage_translation_aud
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+                      foreignKeyName:  fk_int_sto_tra_aud_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  REVTYPE
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  internal_storage_id
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  language_code
+                    type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_int_storage_tran_lang_aud
+                      references:  e_language(language_code)
+               -  column:
+                    name:  title
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  description
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  backup_frequency
+                    type:  VARCHAR(255)
+
+        -  createTable:
+             tableName:  dataset
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  version
+                    type:  NUMBER(10,0)
+                    constraints:
+                      nullable:  false
+               -  column:
+                    name:  dmp_id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      foreignKeyName:  fk_dataset_dmp
+                      references:  dmp(id)
+               -  column:
+                    name:  title
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  type
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  data_size
+                    type:  NUMBER(24,0)
+               -  column:
+                    name:  dataset_comment
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  personal_data
+                    type:  BOOLEAN
+               -  column:
+                    name:  sensitive_data
+                    type:  BOOLEAN
+               -  column:
+                    name:  legal_restrictions
+                    type:  BOOLEAN
+               -  column:
+                    name:  license
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  start_date
+                    type:  TIMESTAMP
+               -  column:
+                    name:  reference_hash
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  data_access
+                    type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_dataset_access_type
+                      references:  e_data_access(access_type)
+               - column:
+                   name: sel_project_members_access
+                   type: VARCHAR(255)
+                   constraints:
+                     foreignKeyName:  fk_dataset_selected_ar
+                     references:  e_access_right(type)
+               - column:
+                   name: other_project_members_access
+                   type: VARCHAR(255)
+                   constraints:
+                     foreignKeyName:  fk_dataset_other_ar
+                     references:  e_access_right(type)
+               - column:
+                   name: public_access
+                   type: VARCHAR(255)
+                   constraints:
+                     foreignKeyName:  fk_dataset_public_ar
+                     references:  e_access_right(type)
+               - column:
+                   name: delete_data
+                   type: BOOLEAN
+               - column:
+                   name: date_of_deletion
+                   type: TIMESTAMP
+               - column:
+                   name: reason_for_deletion
+                   type: VARCHAR(4000)
+               - column:
+                   name: retention_period
+                   type: INTEGER
+
+        -  createTable:
+             tableName:  dataset_aud
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+                      foreignKeyName:  fk_dataset_aud_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  REVTYPE
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  dmp_id
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  title
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  type
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  data_size
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  dataset_comment
+                    type:  VARCHAR(4000)
+               -  column:
+                    name:  personal_data
+                    type:  BOOLEAN
+               -  column:
+                    name:  sensitive_data
+                    type:  BOOLEAN
+               -  column:
+                    name:  legal_restrictions
+                    type:  BOOLEAN
+               -  column:
+                    name:  license
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  start_date
+                    type:  TIMESTAMP
+               -  column:
+                    name:  reference_hash
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  data_access
+                    type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_dataset_aud_access_type
+                      references:  e_data_access(access_type)
+               - column:
+                   name: sel_project_members_access
+                   type: VARCHAR(255)
+                   constraints:
+                     foreignKeyName: fk_dataset_aud_selected_ar
+                     references: e_access_right(type)
+               - column:
+                   name: other_project_members_access
+                   type: VARCHAR(255)
+                   constraints:
+                     foreignKeyName: fk_dataset_aud_other_ar
+                     references: e_access_right(type)
+               - column:
+                   name: public_access
+                   type: VARCHAR(255)
+                   constraints:
+                     foreignKeyName: fk_dataset_aud_public_ar
+                     references: e_access_right(type)
+               - column:
+                   name: delete_data
+                   type: BOOLEAN
+               - column:
+                   name: date_of_deletion
+                   type: TIMESTAMP
+               - column:
+                   name: reason_for_deletion
+                   type: VARCHAR(4000)
+               - column:
+                   name: retention_period
+                   type: INTEGER
+
+        -  createTable:
+             tableName:  personal_data_compliance
+             columns:
+               -  column:
+                    name:  dmp_id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      foreignKeyName:  fk_persdata_compliance_dmp
+                      references:  dmp(id)
+               -  column:
+                    name:  compliance_type
+                    type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_persdata_compliance_type
+                      references:  e_compliance_type(type)
+
+        -  createTable:
+             tableName:  personal_data_compliance_aud
+             columns:
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      foreignKeyName:  fk_persdata_compl_aud_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  REVTYPE
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  dmp_id
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  compliance_type
+                    type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_persdata_compl_aud_type
+                      references:  e_compliance_type(type)
+
+        -  createTable:
+             tableName:  administration
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  version
+                    type:  NUMBER(10,0)
+                    constraints:
+                      nullable:  false
+               -  column:
+                    name:  university_id
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  role
+                    type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_administration_role
+                      references:  e_function_role(role)
+               -  column:
+                    name:  start_date
+                    type:  TIMESTAMP
+               -  column:
+                    name:  until_date
+                    type:  TIMESTAMP
+
+        -  createTable:
+             tableName:  administration_aud
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+                      foreignKeyName:  fk_administration_aud_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  REVTYPE
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  university_id
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  role
+                    type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_administration_aud_role
+                      references:  e_function_role(role)
+               -  column:
+                    name:  start_date
+                    type:  TIMESTAMP
+               -  column:
+                    name:  until_date
+                    type:  TIMESTAMP
+
+        -  createTable:
+             tableName:  access_management
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  version
+                    type:  NUMBER(10,0)
+                    constraints:
+                      nullable:  false
+               -  column:
+                    name:  dmp_id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      foreignKeyName:  fk_access_management_dmp
+                      references:  dmp(id)
+               -  column:
+                    name:  university_id
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  identifier_id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      foreignKeyName:  fk_access_manage_identifier
+                      references:  identifier(id)
+               -  column:
+                    name:  role
+                    type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_access_management_role
+                      references:  e_function_role(role)
+               -  column:
+                    name:  start_date
+                    type:  TIMESTAMP
+               -  column:
+                    name:  until_date
+                    type:  TIMESTAMP
+
+        -  createTable:
+             tableName:  access_management_aud
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+                      foreignKeyName:  fk_access_manage_aud_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  REVTYPE
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  dmp_id
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  university_id
+                    type:  VARCHAR(255)
+               -  column:
+                    name:  identifier_id
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  role
+                    type:  VARCHAR(255)
+                    constraints:
+                      foreignKeyName:  fk_access_management_aud_role
+                      references:  e_function_role(role)
+               -  column:
+                    name:  start_date
+                    type:  TIMESTAMP
+               -  column:
+                    name:  until_date
+                    type:  TIMESTAMP
+
+        -  createTable:
+             tableName:  distribution
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  version
+                    type:  NUMBER(10,0)
+                    constraints:
+                      nullable:  false
+               -  column:
+                    name:  dataset_id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      foreignKeyName:  fk_distribution_dataset
+                      references:  dataset(id)
+               -  column:
+                    name:  host_id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      foreignKeyName:  fk_distribution_host
+                      references:  host(id)
+
+        -  createTable:
+             tableName:  distribution_aud
+             columns:
+               -  column:
+                    name:  id
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+               -  column:
+                    name:  REV
+                    type:  NUMBER(20,0)
+                    constraints:
+                      primaryKey:  true
+                      nullable:  false
+                      foreignKeyName:  fk_access_distr_aud_revinfo
+                      references:  revinfo(id)
+               -  column:
+                    name:  REVTYPE
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  dataset_id
+                    type:  NUMBER(20,0)
+               -  column:
+                    name:  host_id
+                    type:  NUMBER(20,0)
+
+        - createTable:
+            tableName: sensitive_data_security
+            columns:
+              - column:
+                  name: dmp_id
+                  type: NUMBER(20,0)
+                  constraints:
+                    foreignKeyName: fk_sec_measure_dmp
+                    references: dmp(id)
+              - column:
+                  name: security_measure
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName: fk_security_measure
+                    references: e_security_measure(security_measure)
+        - createTable:
+            tableName: sensitive_data_security_aud
+            columns:
+              -  column:
+                   name:  REV
+                   type:  NUMBER(20,0)
+                   constraints:
+                     foreignKeyName:  fk_sensitive_data_sec_revinfo
+                     references:  revinfo(id)
+              -  column:
+                   name:  REVTYPE
+                   type:  NUMBER(20,0)
+              - column:
+                  name: dmp_id
+                  type: NUMBER(20,0)
+              - column:
+                  name: security_measure
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName: fk_security_measure_aud
+                    references: e_security_measure(security_measure)
+
+
+        - createTable:
+            tableName: legal_restr_documents
+            columns:
+              - column:
+                  name: dmp_id
+                  type: NUMBER(20,0)
+                  constraints:
+                    foreignKeyName: fk_legal_restr_doc_dmp
+                    references: dmp(id)
+              - column:
+                  name: agreement
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName: fk_agreement
+                    references: e_agreement(agreement)
+        - createTable:
+            tableName: legal_restr_documents_aud
+            columns:
+              -  column:
+                   name:  REV
+                   type:  NUMBER(20,0)
+                   constraints:
+                     foreignKeyName:  fk_legal_r_doc_aud_revinfo
+                     references:  revinfo(id)
+              -  column:
+                   name:  REVTYPE
+                   type:  NUMBER(20,0)
+              - column:
+                  name: dmp_id
+                  type: NUMBER(20,0)
+              - column:
+                  name: agreement
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName: fk_agreement_aud
+                    references: e_agreement(agreement)
+
+        - createTable:
+            tableName: consent
+            columns:
+              - column:
+                  name: id
+                  type: NUMBER(20,0)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: university_id
+                  type: VARCHAR(255)
+              - column:
+                  name: consent_given
+                  type: BOOLEAN
+              - column:
+                  name: given_date
+                  type: TIMESTAMP
+
+        - createTable:
+            tableName: data_quality
+            columns:
+              - column:
+                  name: dmp_id
+                  type: NUMBER(20,0)
+                  constraints:
+                    foreignKeyName: fk_data_quality_dmp
+                    references: dmp(id)
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName: fk_data_quality
+                    references: e_data_quality_type(type)
+        - createTable:
+            tableName: data_quality_aud
+            columns:
+              - column:
+                  name: REV
+                  type: NUMBER(20,0)
+                  constraints:
+                    foreignKeyName: fk_data_quality_revinfo
+                    references: revinfo(id)
+              - column:
+                  name: REVTYPE
+                  type: NUMBER(20,0)
+              - column:
+                  name: dmp_id
+                  type: NUMBER(20,0)
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName: fk_data_quality_aud
+                    references: e_data_quality_type(type)
+
+        - createTable:
+            tableName: dmp_version
+            columns:
+              - column:
+                  name: id
+                  type: NUMBER(20,0)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: dmp_id
+                  type:  NUMBER(20,0)
+                  constraints:
+                    foreignKeyName:  fk_dmp_version_id
+                    references:  dmp(id)
+              - column:
+                  name: revision_number
+                  type: NUMBER(20,0)
+              - column:
+                  name: version_date
+                  type: TIMESTAMP
+              - column:
+                  name: version_name
+                  type: VARCHAR(255)
