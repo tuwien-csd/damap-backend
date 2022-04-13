@@ -1,0 +1,31 @@
+name: pull-request
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  maven-build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.2.1
+        with:
+          java-version: '11'
+          maven-version: '3.8.2'
+
+      - name: Build with Maven
+        run: mvn -B install
+
+  container-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build container
+        run: docker build .
