@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
@@ -6,6 +6,9 @@
   <groupId>at.ac.tuwien</groupId>
   <artifactId>damap-backend</artifactId>
   <version>1.3.0-SNAPSHOT</version>
+  <scm>
+    <url>git@github.com:tuwien-csd/damap-backend.git</url>
+  </scm>
 
   <properties>
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
@@ -20,6 +23,19 @@
     <quarkus.platform.version>2.4.1.Final</quarkus.platform.version>
     <sonar.version>3.9.0.2155</sonar.version>
   </properties>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>github</id>
+      <name>tuwien-csd</name>
+      <url>https://maven.pkg.github.com/tuwien-csd/maven-repository</url>
+    </snapshotRepository>
+    <repository>
+      <id>github</id>
+      <name>tuwien-csd</name>
+      <url>https://maven.pkg.github.com/tuwien-csd/maven-repository</url>
+    </repository>
+  </distributionManagement>
 
   <dependencyManagement>
     <dependencies>
