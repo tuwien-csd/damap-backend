@@ -1,4 +1,4 @@
-name: Maven CI
+name: Maven pipeline
 
 on: [push]
 #on:
@@ -6,7 +6,7 @@ on: [push]
 #    branches: [ next, master ]
 
 jobs:
-  build:
+  test-build-publish:
     runs-on: ubuntu-latest
 
     strategy:
@@ -32,15 +32,3 @@ jobs:
 
       - name: Publish to GitHub packages
         run: mvn -B -Pgithub -DskipTests deploy
-
-  build-publish-container:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: Publish to Registry
-        uses: minddocdev/docker-publish-action@master
-        with:
-          name: tuwien-csd/damap-backend/damap-backend
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          registry: ghcr.io

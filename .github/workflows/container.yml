@@ -1,0 +1,17 @@
+name: Container pipeline
+
+on: [push]
+
+jobs:
+  build-publish-container:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@master
+      - name: Publish to Registry
+        uses: minddocdev/docker-publish-action@master
+        with:
+          name: tuwien-csd/damap-backend/damap-backend
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
