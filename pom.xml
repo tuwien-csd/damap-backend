@@ -305,15 +305,13 @@
     </profile>
     <profile>
       <id>github</id>
-      <repositories>
+      <distributionManagement>
         <repository>
           <id>github</id>
+          <name>GitHub TUWien CSD Packages</name>
           <url>https://maven.pkg.github.com/tuwien-csd/damap-backend</url>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
         </repository>
-      </repositories>
+      </distributionManagement>
     </profile>
   </profiles>
 
