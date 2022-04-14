@@ -1,6 +1,6 @@
 name: Maven pipeline
 
-on: [push]
+on: [push, workflow_dispatch]
 #on:
 #  push:
 #    branches: [ next, master ]

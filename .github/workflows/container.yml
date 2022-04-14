@@ -1,6 +1,6 @@
 name: Container pipeline
 
-on: [push]
+on: [push, workflow_dispatch]
 
 jobs:
   build-publish-container:
