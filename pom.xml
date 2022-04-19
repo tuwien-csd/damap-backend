@@ -306,11 +306,11 @@
     <profile>
       <id>github</id>
       <distributionManagement>
-        <!--<snapshotRepository>
-          <id>github-snapshot</id>
+        <snapshotRepository>
+          <id>github</id>
           <name>GitHub TUWien CSD Snapshot Packages</name>
           <url>https://maven.pkg.github.com/tuwien-csd/damap-backend</url>
-        </snapshotRepository>-->
+        </snapshotRepository>
         <repository>
           <id>github</id>
           <name>GitHub TUWien CSD Packages</name>
