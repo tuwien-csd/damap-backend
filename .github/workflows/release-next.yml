@@ -25,9 +25,9 @@ jobs:
         id: get_latest_snapshot_version
         with:
           query: |
-            query SnapshotVersion($owner:String!,$repo:String!,$pkgs:[String!]!) {
+            query SnapshotVersion($owner:String!,$repo:String!,$pkgs:String!) {
               repository(owner:$owner,name:$repo) {
-                packages(names:$pkgs,first: 1) {
+                packages(names:[$pkgs],first: 1) {
                   nodes {
                     versions(first:1) {
                       nodes {
