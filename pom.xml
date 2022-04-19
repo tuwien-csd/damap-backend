@@ -310,6 +310,7 @@
           <id>github</id>
           <name>GitHub TUWien CSD Snapshot Packages</name>
           <url>https://maven.pkg.github.com/tuwien-csd/damap-backend</url>
+          <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
         <repository>
           <id>github</id>
@@ -317,6 +318,27 @@
           <url>https://maven.pkg.github.com/tuwien-csd/damap-backend</url>
         </repository>
       </distributionManagement>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>net.nicoulaj.maven.plugins</groupId>
+            <artifactId>checksum-maven-plugin</artifactId>
+            <version>1.9</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>artifacts</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <algorithms>
+                <algorithm>SHA-256</algorithm>
+              </algorithms>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 
