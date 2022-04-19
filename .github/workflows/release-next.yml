@@ -48,9 +48,12 @@ jobs:
       - run: "echo 'latest release: ${{ steps.get_latest_snapshot_version.outputs.data }}'"
 
       - uses: actions/delete-package-versions@v3
+        id: delete_current_snapshot_version
         with:
           package-name: 'at.ac.tuwien.damap-backend'
           package-version-ids: '${{ fromJSON(steps.get_latest_snapshot_version.outputs.data).repository.packages.nodes[0].versions.nodes[0].id }}'
+
+      - run: "echo 'deleted version: ${{ steps.delete_current_snapshot_version.outputs }}'"
 
       - name: Publish to GitHub packages
         run: mvn -e -B -Pgithub clean deploy
