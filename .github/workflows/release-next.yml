@@ -1,9 +1,9 @@
-name: Release pipeline
+name: Release Next pipeline
 
 on:
   push:
     branches:
-      - master
+      - next
   workflow_dispatch:
 
 jobs:
