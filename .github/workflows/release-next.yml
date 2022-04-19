@@ -20,6 +20,10 @@ jobs:
           java-version: 11.0
           server-id: github
 
+      - uses: actions/delete-package-versions@v3
+        with:
+          package-version-ids: '1.3.0-SNAPSHOT'
+
       - name: Publish to GitHub packages
         run: mvn -e -B -Pgithub clean deploy
         env:
