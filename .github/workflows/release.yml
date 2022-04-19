@@ -22,7 +22,7 @@ jobs:
           server-id: github
 
       - name: Publish to GitHub packages
-        run: mvn -e -B -Dmaven.wagon.http.pool=false -Pgithub clean deploy
+        run: mvn -e -B -Dmaven.wagon.http.pool=false -Daether.checksums.algorithms="SHA256,SHA512" -Pgithub clean deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
