@@ -308,13 +308,13 @@
       <distributionManagement>
         <snapshotRepository>
           <id>github</id>
-          <name>GitHub TUWien CSD Snapshot Packages</name>
+          <name>tuwien-csd</name>
           <url>https://maven.pkg.github.com/tuwien-csd/damap-backend</url>
           <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
         <repository>
           <id>github</id>
-          <name>GitHub TUWien CSD Packages</name>
+          <name>tuwien-csd</name>
           <url>https://maven.pkg.github.com/tuwien-csd/damap-backend</url>
         </repository>
       </distributionManagement>
