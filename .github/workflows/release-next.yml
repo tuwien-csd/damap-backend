@@ -25,9 +25,9 @@ jobs:
         id: get_latest_snapshot_version
         with:
           query: |
-            query SnapshotVersion($owner:String!,$repo:String!) {
+            query SnapshotVersion($owner:String!,$repo:String!,$pkg:String!) {
               repository(owner:$owner,name:$repo) {
-                packages(names:\"at.ac.tuwien.damap-backend\",first: 1) {
+                packages(names:$pkg,first: 1) {
                   nodes {
                     versions(first:1) {
                       nodes {
@@ -41,6 +41,7 @@ jobs:
             }
           owner: ${{ github.event.repository.owner.name }}
           repo: ${{ github.event.repository.name }}
+          pkg: 'at.ac.tuwien.damap-backend'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
