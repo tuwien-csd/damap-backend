@@ -25,13 +25,15 @@ jobs:
         id: get_latest_snapshot_version
         with:
           query: |
-            query repository(owner:$owner,name:$repo) {
-              packages(names:\"at.ac.tuwien.damap-backend\",first: 1) {
-                nodes {
-                  versions(first:1) {
-                    nodes {
-                      id,
-                      version
+            query SnapshotVersion($owner:String!,$repo:String!) {
+              repository(owner:$owner,name:$repo) {
+                packages(names:\"at.ac.tuwien.damap-backend\",first: 1) {
+                  nodes {
+                    versions(first:1) {
+                      nodes {
+                        id,
+                        version
+                      }
                     }
                   }
                 }
@@ -47,7 +49,7 @@ jobs:
       - uses: actions/delete-package-versions@v3
         with:
           package-name: 'at.ac.tuwien.damap-backend'
-          package-version-ids: '${{ steps.get_latest_snapshot_version.outputs.data.repository.packages.nodes[0].versions.nodes[0].id }}'
+          package-version-ids: '${{ fromJSON(steps.get_latest_snapshot_version.outputs.data).repository.packages.nodes[0].versions.nodes[0].id }}'
 
       - name: Publish to GitHub packages
         run: mvn -e -B -Pgithub clean deploy
