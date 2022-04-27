@@ -2,10 +2,10 @@ package at.ac.tuwien.damap.domain;
 
 import at.ac.tuwien.damap.enums.EAccessRight;
 import at.ac.tuwien.damap.enums.EDataAccessType;
+import at.ac.tuwien.damap.enums.EDataType;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import lombok.*;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
@@ -25,7 +25,7 @@ public class Dataset extends PanacheEntity {
     @Setter(AccessLevel.NONE)
     private long version;
 
-//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    //    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @JsonbTransient
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dmp_id")
@@ -34,7 +34,11 @@ public class Dataset extends PanacheEntity {
 
     private String title;
 
-    private String type;
+    @ElementCollection(targetClass = EDataType.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "data_type")
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private List<EDataType> type;
 
     @Column(name = "data_size")
     private Long size;

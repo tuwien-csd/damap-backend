@@ -1,19 +1,23 @@
 package at.ac.tuwien.damap.rest.madmp.mapper;
 
-import at.ac.tuwien.damap.enums.EAgreement;
-import at.ac.tuwien.damap.enums.EComplianceType;
-import at.ac.tuwien.damap.enums.EDataAccessType;
-import at.ac.tuwien.damap.enums.ESecurityMeasure;
+import at.ac.tuwien.damap.enums.*;
 import at.ac.tuwien.damap.rest.dmp.domain.*;
 import at.ac.tuwien.damap.rest.dmp.mapper.MapperService;
 import at.ac.tuwien.damap.rest.madmp.dto.*;
 import at.ac.tuwien.damap.rest.storage.InternalStorageDO;
 import lombok.experimental.UtilityClass;
 import lombok.extern.jbosslog.JBossLog;
-import org.re3data.schema._2_2.*;
+import org.re3data.schema._2_2.Certificates;
+import org.re3data.schema._2_2.PidSystems;
+import org.re3data.schema._2_2.Re3Data;
+import org.re3data.schema._2_2.Yesno;
 
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @JBossLog
 @UtilityClass
@@ -95,7 +99,7 @@ public class MaDmpMapper {
         contributor.setMbox(contributorDO.getMbox());
         contributor.setName(contributorDO.getFirstName() + " " + contributorDO.getLastName());
 
-        Set<String> role = new LinkedHashSet<String>();
+        Set<String> role = new LinkedHashSet<>();
         if (contributorDO.getRole() != null)
             role.add(contributorDO.getRole().getRole());
         contributor.setRole(role);
@@ -163,9 +167,16 @@ public class MaDmpMapper {
         dataset.setSensitiveData(getSensitiveData(datasetDO));
         dataset.setTechnicalResource(null);
         dataset.setTitle(datasetDO.getTitle());
-        dataset.setType(datasetDO.getType());
+        dataset.setType(mapToMaDmpDatasetType(datasetDO.getType()));
 
         return dataset;
+    }
+
+    public String mapToMaDmpDatasetType(List<EDataType> types) {
+        if (types == null || types.isEmpty()) {
+            return "";
+        }
+        return types.stream().map(EDataType::getValue).collect(Collectors.joining(", "));
     }
 
     public Distribution mapToMaDmp(DatasetDO datasetDO, Distribution distribution) {
@@ -179,11 +190,18 @@ public class MaDmpMapper {
         distribution.setDescription(datasetDO.getComment());
         distribution.setDownloadUrl(null);
         if (datasetDO.getType() != null)
-            distribution.setFormat(List.of(datasetDO.getType()));
+            distribution.setFormat(mapToMaDmpDatasetFormat(datasetDO.getType()));
         if (datasetDO.getLicense() != null)
             distribution.setLicense(List.of(mapToMaDmp(datasetDO, new License())));
         distribution.setTitle(datasetDO.getTitle());
         return distribution;
+    }
+
+    public List<String> mapToMaDmpDatasetFormat(List<EDataType> types) {
+        if (types == null || types.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return types.stream().map(EDataType::getValue).collect(Collectors.toList());
     }
 
     public Distribution mapToMaDmpFromRepository(RepositoryDO repositoryDO, Distribution distribution, MapperService mapperService) {

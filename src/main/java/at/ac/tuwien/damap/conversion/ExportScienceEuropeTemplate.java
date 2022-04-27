@@ -1,21 +1,21 @@
 package at.ac.tuwien.damap.conversion;
 
 import at.ac.tuwien.damap.domain.*;
-import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.enums.EComplianceType;
+import at.ac.tuwien.damap.enums.EDataType;
 import at.ac.tuwien.damap.enums.ESecurityMeasure;
-import at.ac.tuwien.damap.rest.projects.ProjectService;
 import at.ac.tuwien.damap.r3data.RepositoriesService;
-
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.text.NumberFormat;
-
-import org.apache.poi.xwpf.usermodel.*;
+import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
+import at.ac.tuwien.damap.rest.projects.ProjectService;
 import lombok.extern.jbosslog.JBossLog;
+import org.apache.poi.xwpf.usermodel.*;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 @JBossLog
@@ -409,7 +409,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
 
             //TODO: Move formatting (format, lowercase) to varargs for more efficiency and flexibility
             if (dataset.getType() != null)
-                datasetType = String.format(dataset.getType()).toLowerCase().replace('_',' ');
+                datasetType = dataset.getType().stream().map(EDataType::getValue).collect(Collectors.joining(", "));
 
             addReplacement(replacements, docVar2, datasetType);
 
@@ -417,7 +417,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
             addReplacement(replacements, docVar3, datasetFormat);
 
             if (dataset.getSize() != null)
-                datasetVol = format(dataset.getSize())+"B";
+                datasetVol = format(dataset.getSize()) + "B";
 
             addReplacement(replacements, docVar4, datasetVol);
 
@@ -1009,7 +1009,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                             }
 
                             if (datasets.get(i-1).getType() != null) {
-                                docVar.add(String.format(datasets.get(i - 1).getType()).toLowerCase().replace('_', ' '));
+                                docVar.add(datasets.get(i - 1).getType().stream().map(EDataType::getValue).collect(Collectors.joining(", ")));
                             }
                             else {
                                 docVar.add("");

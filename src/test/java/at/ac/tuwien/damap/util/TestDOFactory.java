@@ -165,7 +165,7 @@ public class TestDOFactory {
     private List<DatasetDO> getTestDatasetList(){
         DatasetDO dataset = new DatasetDO();
         dataset.setTitle("Dataset Title");
-        dataset.setType("Dataset Type");
+        dataset.setType(List.of(EDataType.CONFIGURATION_DATA));
         dataset.setSize(50000L);
         dataset.setComment("Comments related to the dataset.");
         dataset.setRetentionPeriod(10);

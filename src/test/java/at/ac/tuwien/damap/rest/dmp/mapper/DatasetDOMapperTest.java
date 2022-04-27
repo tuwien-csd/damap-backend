@@ -3,12 +3,14 @@ package at.ac.tuwien.damap.rest.dmp.mapper;
 import at.ac.tuwien.damap.domain.Dataset;
 import at.ac.tuwien.damap.enums.EAccessRight;
 import at.ac.tuwien.damap.enums.EDataAccessType;
+import at.ac.tuwien.damap.enums.EDataType;
 import at.ac.tuwien.damap.rest.dmp.domain.DatasetDO;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
+import java.util.List;
 
 @QuarkusTest
 class DatasetDOMapperTest {
@@ -29,7 +31,7 @@ class DatasetDOMapperTest {
         Dataset dataset = new Dataset();
         dataset.id = -1L;
         dataset.setTitle("Mock Dataset");
-        dataset.setType("IMAGES");
+        dataset.setType(List.of(EDataType.IMAGES));
         dataset.setSize(3L);
         dataset.setComment("Mock Comment");
         dataset.setPersonalData(false);
@@ -52,7 +54,7 @@ class DatasetDOMapperTest {
         DatasetDO datasetDO = new DatasetDO();
         datasetDO.setId(-1L);
         datasetDO.setTitle("Mock Dataset");
-        datasetDO.setType("IMAGES");
+        datasetDO.setType(List.of(EDataType.IMAGES));
         datasetDO.setSize(3L);
         datasetDO.setComment("Mock Comment");
         datasetDO.setPersonalData(false);
