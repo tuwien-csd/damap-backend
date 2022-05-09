@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
@@ -20,6 +20,20 @@
     <quarkus.platform.version>2.4.1.Final</quarkus.platform.version>
     <sonar.version>3.9.0.2155</sonar.version>
   </properties>
+
+  <scm>
+    <url>https://github.com/tuwien-csd/damap-backend</url>
+    <connection>scm:git:https://github.com/tuwien-csd/damap-backend.git</connection>
+    <developerConnection>scm:git:https://github.com/tuwien-csd/damap-backend.git</developerConnection>
+  </scm>
+
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>CSD Github</name>
+      <url>https://maven.pkg.github.com/tuwien-csd/damap-backend</url>
+    </repository>
+  </distributionManagement>
 
   <dependencyManagement>
     <dependencies>

@@ -1,14 +1,22 @@
 name: release
 
+env:
+  REGISTRY: ghcr.io
+
 on:
   push:
     branches:
       - master
+      - next
   workflow_dispatch:
 
 jobs:
   maven-deploy:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - uses: actions/checkout@v3
@@ -18,10 +26,9 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: 11.0
-          server-id: github
 
       - name: Publish to GitHub packages
-        run: mvn -B clean deploy
+        run: mvn -B deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -31,10 +38,23 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Publish to Registry
-        uses: minddocdev/docker-publish-action@master
+      - name: Log in to the Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
-          name: tuwien-csd/damap-backend/damap-backend
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          registry: ghcr.io
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
