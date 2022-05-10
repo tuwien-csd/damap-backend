@@ -265,15 +265,23 @@ public class DmpDOMapper {
                     datasetDO.getId() != null && datasetDO.getId().equals(dataset.id)).findFirst();
             if (datasetOptional.isPresent()) {
                 Dataset dataset = datasetOptional.get();
-                DatasetDOMapper.mapDOtoEntity(datasetDO, dataset);
+                DatasetDOMapper.mapDOtoEntity(datasetDO, dataset, mapperService);
             } else {
                 Dataset dataset = new Dataset();
-                DatasetDOMapper.mapDOtoEntity(datasetDO, dataset);
+                DatasetDOMapper.mapDOtoEntity(datasetDO, dataset, mapperService);
                 dataset.setDmp(dmp);
                 datasetList.add(dataset);
             }
         });
 
+        //set Deletion Person to null if Contributor was removed
+        for (Contributor con : contributorListToRemove) {
+            datasetList.forEach(dataset -> {
+                if (dataset.getDeletionPerson() != null && dataset.getDeletionPerson().id.equals(con.id)) {
+                    dataset.setDeletionPerson(null);
+                }
+            });
+        }
 
         //remove all existing Host objects, that are not included in the DO anymore
         List<Host> hostList = dmp.getHostList();

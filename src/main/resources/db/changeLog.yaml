@@ -2412,3 +2412,29 @@ databaseChangeLog:
                   name: type
                   type: VARCHAR(255)
 
+  - changeSet:
+      id: 3
+      author: Clara Schuster
+      changes:
+        - addColumn:
+            tableName: dataset
+            columns:
+              - column:
+                  name: deletion_person_id
+                  type: NUMBER(20,0)
+
+        - addForeignKeyConstraint:
+            baseColumnNames: deletion_person_id
+            baseTableName: dataset
+            constraintName: fk_dataset_contributor
+            onDelete: SET NULL
+            referencedColumnNames: id
+            referencedTableName: contributor
+            validate: true
+
+        - addColumn:
+            tableName: dataset_aud
+            columns:
+              - column:
+                  name: deletion_person_id
+                  type: NUMBER(20,0)

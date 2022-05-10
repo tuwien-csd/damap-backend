@@ -1,8 +1,10 @@
 package at.ac.tuwien.damap.rest.dmp.mapper;
 
+import at.ac.tuwien.damap.domain.Contributor;
 import at.ac.tuwien.damap.domain.InternalStorage;
 import at.ac.tuwien.damap.domain.InternalStorageTranslation;
 import at.ac.tuwien.damap.r3data.RepositoriesService;
+import at.ac.tuwien.damap.repo.ContributorRepo;
 import at.ac.tuwien.damap.repo.InternalStorageRepo;
 import at.ac.tuwien.damap.repo.InternalStorageTranslationRepo;
 import at.ac.tuwien.damap.rest.storage.InternalStorageDO;
@@ -30,19 +32,26 @@ public class MapperService {
     @Inject
     RepositoriesService repositoriesService;
 
+    @Inject
+    ContributorRepo contributorRepo;
 
-    public Re3Data.Repository getRe3DataRepository(String id){
+
+    public Re3Data.Repository getRe3DataRepository(String id) {
         return repositoriesService.getById(id).getRepository().get(0);
     }
 
-    public InternalStorage getInternalStorageById(Long id){
+    public InternalStorage getInternalStorageById(Long id) {
         return internalStorageRepo.findById(id);
     }
 
-    public InternalStorageDO getInternalStorageDOById(Long id, String languageCode){
+    public InternalStorageDO getInternalStorageDOById(Long id, String languageCode) {
         InternalStorageTranslation internalStorageTranslation = internalStorageTranslationRepo.getInternalStorageById(id, languageCode);
         if (internalStorageTranslation != null)
             return InternalStorageDOMapper.mapEntityToDO(internalStorageTranslation, new InternalStorageDO());
         return null;
+    }
+
+    public Contributor getDeletionPerson(Long id) {
+        return contributorRepo.findById(id);
     }
 }

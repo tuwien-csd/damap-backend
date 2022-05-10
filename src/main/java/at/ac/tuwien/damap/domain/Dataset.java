@@ -91,6 +91,10 @@ public class Dataset extends PanacheEntity {
     @Column(name = "reason_for_deletion")
     private String reasonForDeletion;
 
+    @ManyToOne()
+    @JoinColumn(name = "deletion_person_id")
+    private Contributor deletionPerson;
+
     @Column(name = "retention_period")
     private Integer retentionPeriod;
 

@@ -182,6 +182,9 @@ public class TestDOFactory {
         dataset.setDelete(true);
         dataset.setDateOfDeletion(new Date());
         dataset.setReasonForDeletion("Explanation on why data is being deleted.");
+        List<ContributorDO> contributors = getTestContributorList();
+        if (!contributors.isEmpty())
+            dataset.setDeletionPerson(contributors.get(0));
         return List.of(dataset);
     }
 
