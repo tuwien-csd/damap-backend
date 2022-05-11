@@ -4,6 +4,7 @@ import at.ac.tuwien.damap.rest.config.domain.ConfigDO;
 import lombok.extern.jbosslog.JBossLog;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -11,13 +12,14 @@ import javax.ws.rs.core.MediaType;
 
 @Path("/api/config")
 @Produces(MediaType.APPLICATION_JSON)
+@PermitAll
 @JBossLog
 public class ConfigResource {
 
-    @ConfigProperty(name = "damap.auth.url")
+    @ConfigProperty(name = "damap.auth.frontend.url")
     String authUrl;
 
-    @ConfigProperty(name = "damap.auth.client.frontend")
+    @ConfigProperty(name = "damap.auth.frontend.client")
     String authClient;
 
     @ConfigProperty(name = "damap.auth.scope")
