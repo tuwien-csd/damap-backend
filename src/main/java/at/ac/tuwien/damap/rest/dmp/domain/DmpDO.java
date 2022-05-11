@@ -47,19 +47,19 @@ public class DmpDO {
     @Size(max = 4000)
     private String restrictedDataAccess;
     private Boolean personalData;
-    private Boolean personalDataCris = false;
+    private Boolean personalDataCris;
     private List<EComplianceType> personalDataCompliance = new ArrayList<EComplianceType>();
     @Size(max = 4000)
     private String otherPersonalDataCompliance;
     private Boolean sensitiveData;
-    private Boolean sensitiveDataCris = false;
+    private Boolean sensitiveDataCris;
     private List<ESecurityMeasure> sensitiveDataSecurity = new ArrayList<ESecurityMeasure>();
     @Size(max = 4000)
     private String otherDataSecurityMeasures;
     @Size(max = 4000)
     private String sensitiveDataAccess;
     private Boolean legalRestrictions;
-    private Boolean legalRestrictionsCris = false;
+    private Boolean legalRestrictionsCris;
     private List<EAgreement> legalRestrictionsDocuments = new ArrayList<EAgreement>();
     @Size(max = 4000)
     private String otherLegalRestrictionsDocument;
@@ -68,11 +68,11 @@ public class DmpDO {
     @Size(max = 4000)
     private String dataRightsAndAccessControl;
     private Boolean humanParticipants;
-    private Boolean humanParticipantsCris = false;
+    private Boolean humanParticipantsCris;
     private Boolean ethicalIssuesExist;
-    private Boolean ethicalIssuesExistCris = false;
+    private Boolean ethicalIssuesExistCris;
     private Boolean committeeReviewed;
-    private Boolean committeeReviewedCris = false;
+    private Boolean committeeReviewedCris;
     private List<DatasetDO> datasets = new ArrayList<DatasetDO>();
     private List<RepositoryDO> repositories = new ArrayList<RepositoryDO>();
     private List<StorageDO> storage = new ArrayList<StorageDO>();
@@ -84,7 +84,7 @@ public class DmpDO {
     @Size(max = 4000)
     private String closedAccessInfo;
     private Boolean costsExist;
-    private Boolean costsExistCris = false;
+    private Boolean costsExistCris;
     private List<CostDO> costs = new ArrayList<CostDO>();
 
     public ContributorDO getContact(){
