@@ -534,7 +534,7 @@
         "roles",
         "profile",
         "email",
-        "tissID"
+        "personID"
       ],
       "optionalClientScopes": [
         "address",
@@ -701,8 +701,12 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "redirectUris": [],
-      "webOrigins": [],
+      "redirectUris": [
+        "http://localhost:8085/*"
+      ],
+      "webOrigins": [
+        "*"
+      ],
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,
@@ -714,8 +718,28 @@
       "frontchannelLogout": false,
       "protocol": "openid-connect",
       "attributes": {
+        "id.token.as.detached.signature": "false",
+        "saml.assertion.signature": "false",
+        "saml.force.post.binding": "false",
+        "saml.multivalued.roles": "false",
+        "saml.encrypt": "false",
+        "oauth2.device.authorization.grant.enabled": "false",
+        "backchannel.logout.revoke.offline.tokens": "false",
+        "saml.server.signature": "false",
+        "saml.server.signature.keyinfo.ext": "false",
+        "use.refresh.tokens": "true",
+        "exclude.session.state.from.auth.response": "false",
+        "oidc.ciba.grant.enabled": "false",
+        "saml.artifact.binding": "false",
         "backchannel.logout.session.required": "true",
-        "backchannel.logout.revoke.offline.tokens": "false"
+        "client_credentials.use_refresh_token": "false",
+        "saml_force_name_id_format": "false",
+        "require.pushed.authorization.requests": "false",
+        "saml.client.signature": "false",
+        "tls.client.certificate.bound.access.tokens": "false",
+        "saml.authnstatement": "false",
+        "display.on.consent.screen": "false",
+        "saml.onetimeuse.condition": "false"
       },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": true,
@@ -724,7 +748,8 @@
         "web-origins",
         "roles",
         "profile",
-        "email"
+        "email",
+        "personID"
       ],
       "optionalClientScopes": [
         "address",
@@ -891,8 +916,8 @@
     },
     {
       "id": "e0106df8-c029-4949-869d-d43566945e6f",
-      "name": "tissID",
-      "description": "tissID",
+      "name": "personID",
+      "description": "personID",
       "protocol": "openid-connect",
       "attributes": {
         "include.in.token.scope": "true",
@@ -901,13 +926,17 @@
       "protocolMappers": [
         {
           "id": "4d653d56-a4fb-4160-aeea-3b0247bef88b",
-          "name": "tissID",
+          "name": "personID",
           "protocol": "openid-connect",
-          "protocolMapper": "oidc-claims-param-token-mapper",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
           "consentRequired": false,
           "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "personID",
             "id.token.claim": "true",
-            "userinfo.token.claim": "true"
+            "access.token.claim": "true",
+            "claim.name": "personID",
+            "jsonType.label": "String"
           }
         }
       ]
@@ -2255,5 +2284,23 @@
   },
   "clientPolicies": {
     "policies": []
-  }
+  },
+  "users": [
+    {
+      "username": "user",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user"
+        }
+      ],
+      "attributes": {
+        "personID": "123456"
+      },
+      "realmRoles": [
+        "default-roles-damap"
+      ]
+    }
+  ]
 }

@@ -11,16 +11,6 @@ services:
     # build:
     #  context: ../
 
-    environment:
-      DAMAP_ORIGINS: http://localhost:8086
-      DAMAP_AUTH_URL: http://localhost:8087
-      DAMAP_CLIENT_ID: dmap
-      DAMAP_DB_URL: jdbc:postgresql://damap-db:5432/damap
-      DAMAP_DB_USERNAME: damap
-      DAMAP_DB_PASSWORD: pw4damap
-    ports:
-      - "8086:8080"
-
   damap-db:
     image: postgres:12
     environment:
@@ -73,6 +63,13 @@ services:
     # assumed to be checked-out beside the 'damap-backend' repository.
     # build:
       # context: ../../damap-frontend
+
+  proxy:
+    image: registry.hub.docker.com/library/nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8085:80"
 
 # Uncomment the following block to persist postgres data.
 #    volumes:
