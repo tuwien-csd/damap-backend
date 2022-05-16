@@ -26,7 +26,6 @@ jobs:
           -Dsonar.host.url=https://sonarcloud.io
           -Dsonar.organization=tuwien-csd
           -Dsonar.projectKey=tuwien-csd_damap-backend
-          -Dsonar.sources=.
           -Dsonar.sourceEncoding=UTF-8
           -Dsonar.coverage.exclusions=docker/**/*,
           sonar:sonar
