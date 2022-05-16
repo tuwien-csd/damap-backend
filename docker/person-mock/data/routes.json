@@ -1,0 +1,4 @@
+{
+  "/api/persons/search\\?q=:query": "/persons?q=:query",
+  "/api/persons/*": "/persons/$1"
+}
