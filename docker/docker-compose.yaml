@@ -2,14 +2,15 @@ version: '3.3'
 
 services:
   damap-be:
-    # When damap is publicly available on docker hub one can
+    # Since DAMAP containers are publicly available on Github packages one can
     # just pull the latest container image.
-    # image: damap-repository/damap-backend:latest
+    image: ghcr.io/tuwien-csd/damap-backend:next
 
-    # comment the following two lines and uncomment the previous
-    # 'image' to directly pull the image from a repository.
-    build:
-      context: ../
+    # uncomment the following two lines and comment the previous
+    # 'image' to directly build the backend container from this repository.
+    # build:
+    #  context: ../
+
     environment:
       DAMAP_ORIGINS: http://localhost:8086
       DAMAP_AUTH_URL: http://localhost:8087
@@ -63,10 +64,15 @@ services:
   #    DB_VENDOR: postgres
 
   damap-fe:
-    build:
-      # This assumes that 'damap-frontend' repository is checked out
-      # beside 'damap-backend'.
-      context: ../../damap-frontend
+    # Since DAMAP containers are publicly available on Github packages one can
+    # just pull the latest container image.
+    image: ghcr.io/tuwien-csd/damap-frontend:next
+
+    # uncomment the following two lines and comment the previous
+    # 'image' to directly build the frontend container from the repository
+    # assumed to be checked-out beside the 'damap-backend' repository.
+    # build:
+      # context: ../../damap-frontend
 
 # Uncomment the following block to persist postgres data.
 #    volumes:
