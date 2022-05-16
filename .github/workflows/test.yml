@@ -1,4 +1,4 @@
-name: pull-request
+name: test
 
 on:
   push:
@@ -24,6 +24,8 @@ jobs:
         run: mvn -B install
 
       - name: Run Sonar analysis
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >
           mvn -Psonar
           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
