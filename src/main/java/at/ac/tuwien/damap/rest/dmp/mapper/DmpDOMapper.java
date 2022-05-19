@@ -8,8 +8,10 @@ import at.ac.tuwien.damap.enums.ESecurityMeasure;
 import at.ac.tuwien.damap.rest.dmp.domain.*;
 import lombok.experimental.UtilityClass;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @UtilityClass
@@ -411,27 +413,31 @@ public class DmpDOMapper {
 
     private void determineDistributions(Dmp dmp, HostDO hostDO, Host host) {
         //convert datasetHash to id references from dataset to hosts
-        if (hostDO.getDatasets() != null) {
-            List<Distribution> distributionList = host.getDistributionList();
-            List<Distribution> distributionUpdatedList = new ArrayList<>();
+        List<Distribution> distributionList = host.getDistributionList();
+        List<Distribution> distributionUpdatedList = new ArrayList<>();
 
-            dmp.getDatasetList().forEach(dataset -> {
-                if (hostDO.getDatasets().contains(dataset.getReferenceHash())) {
-                    Distribution distribution = new Distribution();
-                    distribution.setHost(host);
-                    distribution.setDataset(dataset);
+        dmp.getDatasetList().forEach(dataset -> {
+            if (hostDO.getDatasets().contains(dataset.getReferenceHash())) {
 
-                    if (!distributionList.contains(distribution))
-                        distributionList.add(distribution);
-                    distributionUpdatedList.add(distribution);
-                }
-            });
-            List<Distribution> distributionRemoveList = new ArrayList<>();
-            distributionList.forEach(distribution -> {
-                if (!distributionUpdatedList.contains(distribution))
-                    distributionRemoveList.add(distribution);
-            });
-            distributionList.removeAll(distributionRemoveList);
-        }
+                Distribution distribution = new Distribution();
+                distribution.setHost(host);
+                distribution.setDataset(dataset);
+
+                Optional<Distribution> distributionOptional = distributionList.stream().filter(distribution1 ->
+                        Objects.equals(distribution1.getDataset().getId(), dataset.getId())).findFirst();
+
+                if (distributionOptional.isEmpty())
+                    distributionList.add(distribution);
+                else
+                    distribution = distributionOptional.get();
+                distributionUpdatedList.add(distribution);
+            }
+        });
+        List<Distribution> distributionRemoveList = new ArrayList<>();
+        distributionList.forEach(distribution -> {
+            if (!distributionUpdatedList.contains(distribution))
+                distributionRemoveList.add(distribution);
+        });
+        distributionList.removeAll(distributionRemoveList);
     }
 }
