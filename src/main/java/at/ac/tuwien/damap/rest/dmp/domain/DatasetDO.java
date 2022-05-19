@@ -41,5 +41,6 @@ public class DatasetDO {
     private Date dateOfDeletion;
     @Size(max = 4000)
     private String reasonForDeletion;
+    private ContributorDO deletionPerson;
     private Integer retentionPeriod;
 }
