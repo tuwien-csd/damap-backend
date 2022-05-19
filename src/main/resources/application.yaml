@@ -2,7 +2,7 @@
 # replace these in the config of your custom project or by overriding these variables
 damap:
   env: DEV # override in your custom project with PROD for production deployment
-  origins: http://localhost:8085,https://*.apps.dev.csd.tuwien.ac.at # https://your.frontend.com,https://*.yourdomain.com
+  origins: http://localhost:8085 # https://your.frontend.com,https://*.yourdomain.com
   auth:
     backend:
       url: http://keycloak:8080/auth/realms/damap # https://your.authentication.server

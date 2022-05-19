@@ -65,6 +65,9 @@ services:
       # context: ../../damap-frontend
 
   proxy:
+    # Since several components share the same ports and address, this docker
+    # configuration needs a proxy to manage the connections between them,
+    # as well as access from the outside.
     image: registry.hub.docker.com/library/nginx
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf

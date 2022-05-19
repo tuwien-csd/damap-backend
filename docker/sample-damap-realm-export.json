@@ -705,7 +705,7 @@
         "http://localhost:8085/*"
       ],
       "webOrigins": [
-        "*"
+        "+"
       ],
       "notBefore": 0,
       "bearerOnly": false,
