@@ -136,11 +136,17 @@ public class DmpService {
         return projectDOList;
     }
 
+    // This method will retrieve the Project Supplement values from the connected CRIS System
+    // and it will reset them to null in case the project is not from a connected system.
     private void updateDmpSupplementalInfo(Dmp dmp) {
         if (dmp.getProject() != null) {
-            ProjectSupplementDO projectSupplementDO = projectService.getProjectSupplement(dmp.getProject().getUniversityId());
-            if (projectSupplementDO != null)
-                ProjectSupplementDOMapper.mapDOtoEntity(projectSupplementDO, dmp);
+            ProjectSupplementDO projectSupplementDO = null;
+            if (dmp.getProject().getUniversityId() != null) {
+                projectSupplementDO = projectService.getProjectSupplement(dmp.getProject().getUniversityId());
+            }
+            if (projectSupplementDO == null)
+                projectSupplementDO = new ProjectSupplementDO();
+            ProjectSupplementDOMapper.mapDOtoEntity(projectSupplementDO, dmp);
         }
     }
 
