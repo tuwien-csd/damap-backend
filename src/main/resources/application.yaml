@@ -67,6 +67,7 @@ rest:
   r3data:
     repositories/mp-rest/url: https://www.re3data.org/api
     repositories/mp-rest/scope: javax.inject.Singleton
+  openaire/mp-rest/url: http://api.openaire.eu/search/
 
 "%dev":
   damap:
