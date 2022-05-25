@@ -8,6 +8,7 @@ import lombok.extern.jbosslog.JBossLog;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 
 /* Resource currently unused, but will be required for person search at a later stage */
@@ -27,5 +28,12 @@ public class PersonResource {
     public ContributorDO getPersonById(@PathParam("id") String id) {
         log.info("Return person details for id=" + id);
         return personService.getPersonById(id);
+    }
+
+    @GET
+    @Path("/search")
+    public List<ContributorDO> getPersonSearchResult(@QueryParam("q") String searchTerm) {
+        log.info("Return person list for query=" + searchTerm);
+        return personService.getPersonSearchResult(searchTerm);
     }
 }

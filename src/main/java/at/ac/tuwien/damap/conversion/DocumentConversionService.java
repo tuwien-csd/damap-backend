@@ -82,7 +82,7 @@ public class DocumentConversionService {
     public void addReplacement(Map<String, String> replacements, String var, Object dmpContent) {
         //null case handling
         String content = (dmpContent == null) ? "" : String.valueOf(dmpContent);
-        if (content != "") {
+        if (!Objects.equals(content, "")) {
             if (dmpContent.getClass() == java.sql.Timestamp.class || dmpContent.getClass() == Date.class) {
                 content = formatter.format(dmpContent);
             }

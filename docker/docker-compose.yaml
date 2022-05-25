@@ -2,23 +2,14 @@ version: '3.3'
 
 services:
   damap-be:
-    # When damap is publicly available on docker hub one can
+    # Since DAMAP containers are publicly available on Github packages one can
     # just pull the latest container image.
-    # image: damap-repository/damap-backend:latest
+    image: ghcr.io/tuwien-csd/damap-backend:next
 
-    # comment the following two lines and uncomment the previous
-    # 'image' to directly pull the image from a repository.
-    build:
-      context: ../
-    environment:
-      DAMAP_ORIGINS: http://localhost:8086
-      DAMAP_AUTH_URL: http://localhost:8087
-      DAMAP_CLIENT_ID: dmap
-      DAMAP_DB_URL: jdbc:postgresql://damap-db:5432/damap
-      DAMAP_DB_USERNAME: damap
-      DAMAP_DB_PASSWORD: pw4damap
-    ports:
-      - "8086:8080"
+    # uncomment the following two lines and comment the previous
+    # 'image' to directly build the backend container from this repository.
+    # build:
+    #  context: ../
 
   damap-db:
     image: postgres:12
@@ -63,10 +54,25 @@ services:
   #    DB_VENDOR: postgres
 
   damap-fe:
-    build:
-      # This assumes that 'damap-frontend' repository is checked out
-      # beside 'damap-backend'.
-      context: ../../damap-frontend
+    # Since DAMAP containers are publicly available on Github packages one can
+    # just pull the latest container image.
+    image: ghcr.io/tuwien-csd/damap-frontend:next
+
+    # uncomment the following two lines and comment the previous
+    # 'image' to directly build the frontend container from the repository
+    # assumed to be checked-out beside the 'damap-backend' repository.
+    # build:
+      # context: ../../damap-frontend
+
+  proxy:
+    # Since several components share the same ports and address, this docker
+    # configuration needs a proxy to manage the connections between them,
+    # as well as access from the outside.
+    image: registry.hub.docker.com/library/nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8085:80"
 
 # Uncomment the following block to persist postgres data.
 #    volumes:

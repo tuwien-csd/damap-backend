@@ -2244,3 +2244,197 @@ databaseChangeLog:
               - column:
                   name: version_name
                   type: VARCHAR(255)
+
+  - changeSet:
+      id: 2
+      author: Clara Schuster
+      changes:
+        # create datatype enum table
+        - createTable:
+            tableName: e_data_type
+            columns:
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'STANDARD_OFFICE_DOCUMENTS'
+            tableName: e_data_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'NETWORKBASED_DATA'
+            tableName: e_data_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'DATABASES'
+            tableName: e_data_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'IMAGES'
+            tableName: e_data_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'STRUCTURED_GRAPHICS'
+            tableName: e_data_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'AUDIOVISUAL_DATA'
+            tableName: e_data_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'SCIENTIFIC_STATISTICAL_DATA'
+            tableName: e_data_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'RAW_DATA'
+            tableName: e_data_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'PLAIN_TEXT'
+            tableName: e_data_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'STRUCTURED_TEXT'
+            tableName: e_data_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'ARCHIVED_DATA'
+            tableName: e_data_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'SOFTWARE_APPLICATIONS'
+            tableName: e_data_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'SOURCE_CODE'
+            tableName: e_data_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'CONFIGURATION_DATA'
+            tableName: e_data_type
+        - insert:
+            columns:
+              - column:
+                  name: type
+                  value: 'OTHER'
+            tableName: e_data_type
+
+        # create dataset datatype relation table
+        - createTable:
+            tableName: data_type
+            columns:
+              - column:
+                  name: dataset_id
+                  type: NUMBER(20,0)
+                  constraints:
+                    foreignKeyName: fk_data_type_dataset
+                    references: dataset(id)
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName: fk_data_type
+                    references: e_data_type(type)
+        - createTable:
+            tableName: data_type_aud
+            columns:
+              - column:
+                  name: REV
+                  type: NUMBER(20,0)
+                  constraints:
+                    foreignKeyName: fk_data_type_revinfo
+                    references: revinfo(id)
+              - column:
+                  name: REVTYPE
+                  type: NUMBER(20,0)
+              - column:
+                  name: dataset_id
+                  type: NUMBER(20,0)
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName: fk_data_type_aud
+                    references: e_data_type(type)
+
+        # move dataset type to relation table
+        - sql:
+            dbms: '!h2, oracle, postgresql'
+            splitStatements: true
+            sql: >
+              INSERT INTO data_type SELECT id, type FROM dataset WHERE type IS NOT NULL;
+              INSERT INTO data_type_aud (SELECT MAX(r.rev), 0, d.id, d.type FROM dataset d JOIN dataset_aud r ON d.id = r.id WHERE d.type IS NOT NULL GROUP BY d.id, d.type);
+            stripComments: true
+            comment: migrating existing dataset types
+
+        # drop dataset type column
+        - dropColumn:
+            tableName: dataset
+            columns:
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+        - dropColumn:
+            tableName: dataset_aud
+            columns:
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+
+  - changeSet:
+      id: 3
+      author: Clara Schuster
+      changes:
+        - addColumn:
+            tableName: dataset
+            columns:
+              - column:
+                  name: deletion_person_id
+                  type: NUMBER(20,0)
+
+        - addForeignKeyConstraint:
+            baseColumnNames: deletion_person_id
+            baseTableName: dataset
+            constraintName: fk_dataset_contributor
+            onDelete: SET NULL
+            referencedColumnNames: id
+            referencedTableName: contributor
+            validate: true
+
+        - addColumn:
+            tableName: dataset_aud
+            columns:
+              - column:
+                  name: deletion_person_id
+                  type: NUMBER(20,0)

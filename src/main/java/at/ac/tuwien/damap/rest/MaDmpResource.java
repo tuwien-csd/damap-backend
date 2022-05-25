@@ -67,7 +67,7 @@ public class MaDmpResource {
         try {
             prettyMaDMP = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(maDMP);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            log.error("could not process maDMP with id: " + id + " into String");
         }
         Response.ResponseBuilder response = Response.ok((Object) prettyMaDMP);
         response.header("Content-Disposition", "attachment; filename=" + filename + ".json")

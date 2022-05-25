@@ -1,35 +1,19 @@
 package at.ac.tuwien.damap.rest.fits.mapper;
 
 import at.ac.tuwien.damap.domain.Dataset;
+import at.ac.tuwien.damap.enums.EDataType;
 import edu.harvard.fits.Fits;
 import edu.harvard.fits.FitsMetadataType;
 import edu.harvard.fits.IdentificationType;
 import lombok.experimental.UtilityClass;
 
 import javax.xml.bind.JAXBElement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @UtilityClass
 public class FitsMapper {
-
-    // TODO: Replace with enum?
-    static final String[] FILE_TYPES = new String[]{
-            "STANDARD_OFFICE_DOCUMENTS",
-            "NETWORKBASED_DATA",
-            "DATABASES",
-            "IMAGES",
-            "STRUCTURED_GRAPHICS",
-            "AUDIOVISUAL_DATA",
-            "SCIENTIFIC_STATISTICAL_DATA",
-            "RAW_DATA",
-            "PLAIN_TEXT",
-            "STRUCTURED_TEXT",
-            "ARCHIVED_DATA",
-            "SOFTWARE_APPLICATIONS",
-            "SOURCE_CODE",
-            "CONFIGURATION_DATA",
-            "OTHER"
-    };
 
     public Dataset mapAtoB(Fits fits, Dataset dataset) {
         dataset.setSize(getSize(fits));
@@ -79,17 +63,19 @@ public class FitsMapper {
     }
 
     // TODO: Add more file format mappings
-    private String mapFileFormat(IdentificationType.Identity identity) {
+    private List<EDataType> mapFileFormat(IdentificationType.Identity identity) {
+        List<EDataType> type = new ArrayList<>();
 
         if (identity == null) {
-            return null;
+            return type;
         }
 
         String format = identity.getFormat();
         String mimetype = identity.getMimetype();
 
-        if(format == null) {
-            return FILE_TYPES[14];
+        if (format == null) {
+            type.add(EDataType.OTHER);
+            return type;
         }
 
         switch (format) {
@@ -97,7 +83,8 @@ public class FitsMapper {
             case "JPEG File Interchange Format":
             case "Portable Network Graphics":
             case "JPEG EXIF":
-                return FILE_TYPES[3];
+                type.add(EDataType.IMAGES);
+                return type;
         }
 
         switch (mimetype) {
@@ -105,15 +92,18 @@ public class FitsMapper {
             case "image/png":
             case "image/tiff":
             case "image/gif":
-                return FILE_TYPES[3];
+                type.add(EDataType.IMAGES);
+                return type;
             case "application/msword":
             case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
             case "application/vnd.ms-excel":
             case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
             case "application/pdf":
-                return FILE_TYPES[0];
+                type.add(EDataType.STANDARD_OFFICE_DOCUMENTS);
+                return type;
             case "text/plain":
-                return FILE_TYPES[8];
+                type.add(EDataType.PLAIN_TEXT);
+                return type;
             case "application/gzip":
             case "application/java-archive":
             case "application/x-7z-compressed":
@@ -122,12 +112,13 @@ public class FitsMapper {
             case "application/vnd.rar":
             case "application/x-bzip":
             case "application/x-bzip2":
-                return FILE_TYPES[10];
+                type.add(EDataType.ARCHIVED_DATA);
+                return type;
             case "text/javascript":
-                return FILE_TYPES[11];
+                type.add(EDataType.SOURCE_CODE);
+                return type;
             default:
-                // TODO: Return null instead of 'OTHER'?
-                return FILE_TYPES[14];
+                return type;
         }
     }
 

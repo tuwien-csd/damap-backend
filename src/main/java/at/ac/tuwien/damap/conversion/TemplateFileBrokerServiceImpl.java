@@ -5,6 +5,7 @@ package at.ac.tuwien.damap.conversion;
  */
 
 import io.quarkus.arc.DefaultBean;
+import lombok.extern.jbosslog.JBossLog;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.util.Properties;
 
 @ApplicationScoped
 @DefaultBean
+@JBossLog
 public class TemplateFileBrokerServiceImpl implements TemplateFileBrokerService {
 
     @Override
@@ -32,7 +34,7 @@ public class TemplateFileBrokerServiceImpl implements TemplateFileBrokerService 
             // load a properties file
             prop.load(input);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            log.error("could not load resource file: " + resource);
         }
         return prop;
     }

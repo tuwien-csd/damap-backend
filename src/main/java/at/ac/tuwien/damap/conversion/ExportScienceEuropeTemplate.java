@@ -1,21 +1,21 @@
 package at.ac.tuwien.damap.conversion;
 
 import at.ac.tuwien.damap.domain.*;
-import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.enums.EComplianceType;
+import at.ac.tuwien.damap.enums.EDataType;
 import at.ac.tuwien.damap.enums.ESecurityMeasure;
-import at.ac.tuwien.damap.rest.projects.ProjectService;
 import at.ac.tuwien.damap.r3data.RepositoriesService;
-
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.text.NumberFormat;
-
-import org.apache.poi.xwpf.usermodel.*;
+import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
+import at.ac.tuwien.damap.rest.projects.ProjectService;
 import lombok.extern.jbosslog.JBossLog;
+import org.apache.poi.xwpf.usermodel.*;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 @JBossLog
@@ -94,7 +94,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
         //Third step of the export: dynamic table in all sections will be added from row number two until the end of data list.
         //TO DO: combine the function with the first row generation to avoid double code of similar modification.
         log.info("Export steps: Replace in table");
-        tableContent(dmp, xwpfParagraphs, map, tables, datasets, closedDatasets, costList, formatter);
+        tableContent(dmp, map, tables, datasets, closedDatasets, costList, formatter);
 
         //Fourth step of the export: modify the content of the document's footer
         log.info("Export steps: Replace in footer");
@@ -409,7 +409,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
 
             //TODO: Move formatting (format, lowercase) to varargs for more efficiency and flexibility
             if (dataset.getType() != null)
-                datasetType = String.format(dataset.getType()).toLowerCase().replace('_',' ');
+                datasetType = dataset.getType().stream().map(EDataType::getValue).collect(Collectors.joining(", "));
 
             addReplacement(replacements, docVar2, datasetType);
 
@@ -417,7 +417,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
             addReplacement(replacements, docVar3, datasetFormat);
 
             if (dataset.getSize() != null)
-                datasetVol = format(dataset.getSize())+"B";
+                datasetVol = format(dataset.getSize()) + "B";
 
             addReplacement(replacements, docVar4, datasetVol);
 
@@ -769,15 +769,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
 
                 legalRestrictionSentence = loadResourceService.loadVariableFromResource(prop,"legal.avail");
 
-                if (dmp.getLegalRestrictionsComment() == null) {
-                    legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " " + loadResourceService.loadVariableFromResource(prop,"legalComment");
-                } else {
-                    if (dmp.getLegalRestrictionsComment().equals("")) {
-                        legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " " + loadResourceService.loadVariableFromResource(prop,"legalComment");
-                    } else {
-                        legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " " + loadResourceService.loadVariableFromResource(prop,"legalComment");
-                    }
-                }
+                legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " " + loadResourceService.loadVariableFromResource(prop,"legalComment");
 
                 String affiliationRights = "";
 
@@ -839,7 +831,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
 
         ethicalIssues = ethicalStatement + otherEthicalIssues + committeeReviewed;
 
-        if (ethicalIssues != "") {
+        if (!ethicalIssues.equals("")) {
 
             ethicalIssues = ethicalSentence + ethicalIssues;
 
@@ -897,7 +889,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
         addReplacement(replacements, "[delete1reason]", deleteDatasetReason);
 
         if (dmp.getTools() != null) {
-            if (dmp.getTools() != "") {
+            if (!Objects.equals(dmp.getTools(), "")) {
                 addReplacement(replacements, "[tools]", loadResourceService.loadVariableFromResource(prop, "tools.avail") + dmp.getTools());
             }
             else {
@@ -983,7 +975,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
     }
 
     //All tables variables replacement
-    private void tableContent(Dmp dmp, List<XWPFParagraph> xwpfParagraphs, Map<String, String> replacements, List<XWPFTable> tables, List<Dataset> datasets, List<Dataset> closedDatasets, List<Cost> costList, SimpleDateFormat formatter) {
+    private void tableContent(Dmp dmp, Map<String, String> replacements, List<XWPFTable> tables, List<Dataset> datasets, List<Dataset> closedDatasets, List<Cost> costList, SimpleDateFormat formatter) {
 
         for (XWPFTable xwpfTable : tables) {
             if (xwpfTable.getRow(1) != null) {
@@ -1017,7 +1009,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                             }
 
                             if (datasets.get(i-1).getType() != null) {
-                                docVar.add(String.format(datasets.get(i - 1).getType()).toLowerCase().replace('_', ' '));
+                                docVar.add(datasets.get(i - 1).getType().stream().map(EDataType::getValue).collect(Collectors.joining(", ")));
                             }
                             else {
                                 docVar.add("");
@@ -1431,7 +1423,7 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
                 List<XWPFTableCell> tableCells = xwpfTableRow
                         .getTableCells();
                 for (XWPFTableCell xwpfTableCell : tableCells) {
-                    xwpfParagraphs = xwpfTableCell.getParagraphs();
+                    List<XWPFParagraph> xwpfParagraphs = xwpfTableCell.getParagraphs();
                     replaceInParagraphs(xwpfParagraphs, replacements);
                 }
             }

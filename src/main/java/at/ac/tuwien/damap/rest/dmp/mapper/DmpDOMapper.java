@@ -8,8 +8,10 @@ import at.ac.tuwien.damap.enums.ESecurityMeasure;
 import at.ac.tuwien.damap.rest.dmp.domain.*;
 import lombok.experimental.UtilityClass;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @UtilityClass
@@ -265,15 +267,23 @@ public class DmpDOMapper {
                     datasetDO.getId() != null && datasetDO.getId().equals(dataset.id)).findFirst();
             if (datasetOptional.isPresent()) {
                 Dataset dataset = datasetOptional.get();
-                DatasetDOMapper.mapDOtoEntity(datasetDO, dataset);
+                DatasetDOMapper.mapDOtoEntity(datasetDO, dataset, mapperService);
             } else {
                 Dataset dataset = new Dataset();
-                DatasetDOMapper.mapDOtoEntity(datasetDO, dataset);
+                DatasetDOMapper.mapDOtoEntity(datasetDO, dataset, mapperService);
                 dataset.setDmp(dmp);
                 datasetList.add(dataset);
             }
         });
 
+        //set Deletion Person to null if Contributor was removed
+        for (Contributor con : contributorListToRemove) {
+            datasetList.forEach(dataset -> {
+                if (dataset.getDeletionPerson() != null && dataset.getDeletionPerson().id.equals(con.id)) {
+                    dataset.setDeletionPerson(null);
+                }
+            });
+        }
 
         //remove all existing Host objects, that are not included in the DO anymore
         List<Host> hostList = dmp.getHostList();
@@ -403,27 +413,31 @@ public class DmpDOMapper {
 
     private void determineDistributions(Dmp dmp, HostDO hostDO, Host host) {
         //convert datasetHash to id references from dataset to hosts
-        if (hostDO.getDatasets() != null) {
-            List<Distribution> distributionList = host.getDistributionList();
-            List<Distribution> distributionUpdatedList = new ArrayList<>();
+        List<Distribution> distributionList = host.getDistributionList();
+        List<Distribution> distributionUpdatedList = new ArrayList<>();
 
-            dmp.getDatasetList().forEach(dataset -> {
-                if (hostDO.getDatasets().contains(dataset.getReferenceHash())) {
-                    Distribution distribution = new Distribution();
-                    distribution.setHost(host);
-                    distribution.setDataset(dataset);
+        dmp.getDatasetList().forEach(dataset -> {
+            if (hostDO.getDatasets().contains(dataset.getReferenceHash())) {
 
-                    if (!distributionList.contains(distribution))
-                        distributionList.add(distribution);
-                    distributionUpdatedList.add(distribution);
-                }
-            });
-            List<Distribution> distributionRemoveList = new ArrayList<>();
-            distributionList.forEach(distribution -> {
-                if (!distributionUpdatedList.contains(distribution))
-                    distributionRemoveList.add(distribution);
-            });
-            distributionList.removeAll(distributionRemoveList);
-        }
+                Distribution distribution = new Distribution();
+                distribution.setHost(host);
+                distribution.setDataset(dataset);
+
+                Optional<Distribution> distributionOptional = distributionList.stream().filter(distribution1 ->
+                        Objects.equals(distribution1.getDataset().getId(), dataset.getId())).findFirst();
+
+                if (distributionOptional.isEmpty())
+                    distributionList.add(distribution);
+                else
+                    distribution = distributionOptional.get();
+                distributionUpdatedList.add(distribution);
+            }
+        });
+        List<Distribution> distributionRemoveList = new ArrayList<>();
+        distributionList.forEach(distribution -> {
+            if (!distributionUpdatedList.contains(distribution))
+                distributionRemoveList.add(distribution);
+        });
+        distributionList.removeAll(distributionRemoveList);
     }
 }

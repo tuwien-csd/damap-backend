@@ -2,22 +2,20 @@
 # replace these in the config of your custom project or by overriding these variables
 damap:
   env: DEV # override in your custom project with PROD for production deployment
-  origins: https://your.frontend.com,https://*.yourdomain.com
+  origins: http://localhost:8085 # https://your.frontend.com,https://*.yourdomain.com
   auth:
-    url: https://your.authentication.server
-    client:
-      backend: your-backend-authentication-client-id
-      frontend: your-frontend-authentication-client-id
-    scope: your-authentication-scope
-    user: your-authentication-claim-holding-the-user-id
-    permission:
-      ConfigAllowed:
-        paths: /api/config
-        policy: permit
+    backend:
+      url: http://keycloak:8080/auth/realms/damap # https://your.authentication.server
+      client: 'damap-be' # your-backend-authentication-client-id
+    frontend:
+      url: http://localhost:8087/auth/realms/damap # usually the same as the backend url
+      client: 'damap' # your-frontend-authentication-client-id
+    scope: 'openid profile email offline_access microprofile-jwt roles personID' # your-backend-authentication-scope, including your variable for your user IDs
+    user: 'personID' # the variable name for your user IDs
   datasource:
-    url: jdbc:your-datasource-language:your-datasource.address
-    username: your-datasource-username
-    password: your-datasource-password
+    url: jdbc:postgresql://damap-db:5432/damap # jdbc:your-datasource-language:your-datasource.address
+    username: damap # your-datasource-username
+    password: pw4damap # your-datasource-password
   repositories:
     recommendation: [ your-recommened-repositories ]
   projects-url: http://your.project.management.system.com
@@ -33,9 +31,11 @@ quarkus:
       headers: origin,content-type,accept,authorization
       access-control-max-age: 1
 
-  oidc: 
-    auth-server-url: ${damap.auth.url}
-    client-id: ${damap.auth.client.backend}
+  oidc:
+    auth-server-url: ${damap.auth.backend.url}
+    client-id: ${damap.auth.backend.client}
+    token:
+      issuer: ${damap.auth.frontend.url}
 
   datasource:
     jdbc:
