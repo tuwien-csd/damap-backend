@@ -64,14 +64,14 @@ services:
     # build:
       # context: ../../damap-frontend
 
-  person-mock:
+  api-mock:
     image: clue/json-server
     command: db.json --routes routes.json
     volumes:
-      - ./person-mock/data/db.json:/data/db.json
-      - ./person-mock/data/routes.json:/data/routes.json
+      - ./api-mock/data/db.json:/data/db.json
+      - ./api-mock/data/routes.json:/data/routes.json
     ports:
-      - 8091:80
+      - "8091:80"
 
   proxy:
     # Since several components share the same ports and address, this docker
