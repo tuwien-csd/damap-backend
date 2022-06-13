@@ -6,6 +6,7 @@ import at.ac.tuwien.damap.enums.EDataType;
 import at.ac.tuwien.damap.enums.ESecurityMeasure;
 import at.ac.tuwien.damap.r3data.RepositoriesService;
 import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
+import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
 import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.*;
@@ -145,9 +146,14 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
 
             addReplacement(replacements, "[coverspace]", coverSpaceVar);
 
+            ProjectDO projectCRIS = null;
+            if (dmp.getProject().getUniversityId() != null)
+                projectCRIS = projectService.getProjectDetails(dmp.getProject().getUniversityId());
             //variable project acronym from API
-            addReplacement(replacements, "[acronym]", projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym());
-            addReplacement(footerMap, "[acronym]", projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym());
+            if (projectCRIS != null) {
+                addReplacement(replacements, "[acronym]", projectCRIS.getAcronym());
+                addReplacement(footerMap, "[acronym]", projectCRIS.getAcronym());
+            }
 
             //variable project start date and end date
             addReplacement(replacements, "[startdate]", formatter.format(dmp.getProject().getStart()));
@@ -156,11 +162,15 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
             List<String> fundingItems = new ArrayList<>();
 
             //add funding program to funding item variables
-            if (projectService.getProjectDetails(dmp.getProject().getUniversityId()).getFunding().getFundingProgram() != null)
-                fundingItems.add(projectService.getProjectDetails(dmp.getProject().getUniversityId()).getFunding().getFundingProgram());
+            if (projectCRIS != null) {
+                if (projectCRIS.getFunding().getFundingProgram() != null)
+                    fundingItems.add(projectCRIS.getFunding().getFundingProgram());
+            }
             //add grant number to funding item variables
-            if (dmp.getProject().getFunding().getGrantIdentifier().getIdentifier() != null)
-                fundingItems.add(dmp.getProject().getFunding().getGrantIdentifier().getIdentifier());
+            if (dmp.getProject().getFunding() != null) {
+                if (dmp.getProject().getFunding().getGrantIdentifier().getIdentifier() != null)
+                    fundingItems.add(dmp.getProject().getFunding().getGrantIdentifier().getIdentifier());
+            }
             //variable project funding, combination from funding item variables
             if (!fundingItems.isEmpty()) {
                 addReplacement(replacements, "[grantid]", String.join(", ", fundingItems));
