@@ -10,7 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @RegisterRestClient(configKey = "rest.openaire")
-@Produces(MediaType.TEXT_XML)
+@Produces(MediaType.APPLICATION_XML)
 public interface OpenAireRemoteResource {
 
     @GET

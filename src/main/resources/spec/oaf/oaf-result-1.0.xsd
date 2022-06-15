@@ -1,8 +1,9 @@
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           xmlns="http://namespace.openaire.eu/oaf" targetNamespace="http://namespace.openaire.eu/oaf">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
     <xs:annotation>
-        <xs:documentation>This schema describes elements and properties of the OpenAIRE Result entity. For an overview of the model, please check the OpenAIRE Research Graph Data Model at https://doi.org/10.5281/zenodo.2643199</xs:documentation>
+        <xs:documentation>This schema describes elements and properties of the OpenAIRE Result entity. For an overview
+            of the model, please check the OpenAIRE Research Graph Data Model at https://doi.org/10.5281/zenodo.2643199
+        </xs:documentation>
     </xs:annotation>
 
     <xs:include schemaLocation="oaf-common-1.0.xsd"/>

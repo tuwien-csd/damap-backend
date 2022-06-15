@@ -1,7 +1,8 @@
 package at.ac.tuwien.damap.rest;
 
+import at.ac.tuwien.damap.rest.dmp.domain.DatasetDO;
+import at.ac.tuwien.damap.rest.openaire.mapper.OpenAireMapper;
 import at.ac.tuwien.damap.rest.openaire.service.OpenAireService;
-import generated.Response;
 import io.quarkus.security.Authenticated;
 import lombok.extern.jbosslog.JBossLog;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
@@ -22,8 +23,8 @@ public class OpenAireResource {
     OpenAireService openAireService;
 
     @GET
-    public Response search(@QueryParam String doi) {
+    public DatasetDO search(@QueryParam String doi) {
         log.info("Search for dataset with DOI: " + doi);
-        return openAireService.search(doi);
+        return OpenAireMapper.mapAtoB(doi, openAireService.search(doi), new DatasetDO());
     }
 }

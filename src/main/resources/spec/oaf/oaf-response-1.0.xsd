@@ -10,9 +10,9 @@
                         <xs:sequence>
                             <xs:element name="query" type="xs:string"/>
                             <xs:element name="locale" type="xs:string"/>
-                            <xs:element name="size" type="xs:unsignedByte"/>
-                            <xs:element name="page" type="xs:unsignedByte"/>
-                            <xs:element name="total" type="xs:unsignedByte"/>
+                            <xs:element name="size" type="xs:int"/>
+                            <xs:element name="page" type="xs:int"/>
+                            <xs:element name="total" type="xs:int"/>
                             <xs:element name="fields"/>
                         </xs:sequence>
                     </xs:complexType>
