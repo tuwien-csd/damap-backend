@@ -2,6 +2,7 @@ package at.ac.tuwien.damap.domain;
 
 import at.ac.tuwien.damap.enums.EAccessRight;
 import at.ac.tuwien.damap.enums.EDataAccessType;
+import at.ac.tuwien.damap.enums.EDataSource;
 import at.ac.tuwien.damap.enums.EDataType;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import lombok.*;
@@ -43,8 +44,8 @@ public class Dataset extends PanacheEntity {
     @Column(name = "data_size")
     private Long size;
 
-    @Column(name = "dataset_comment")
-    private String comment;
+    @Column(name = "description")
+    private String description;
 
     @Column(name = "personal_data")
     private Boolean personalData;
@@ -97,6 +98,14 @@ public class Dataset extends PanacheEntity {
 
     @Column(name = "retention_period")
     private Integer retentionPeriod;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "dataset_pid")
+    private Identifier datasetIdentifier;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "dataset_source")
+    private EDataSource source;
 
     @EqualsAndHashCode.Include
     public Long getId() {
