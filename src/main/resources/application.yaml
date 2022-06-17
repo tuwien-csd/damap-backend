@@ -18,8 +18,8 @@ damap:
     password: pw4damap # your-datasource-password
   repositories:
     recommendation: [ your-recommened-repositories ]
-  projects-url: http://your.project.management.system.com
-  persons-url: http://your.personnel.management.system.com
+  projects-url: http://api-mock:80
+  persons-url: http://api-mock:80
   fits-url: http://your.fits.service:1234
 
 # general config settings

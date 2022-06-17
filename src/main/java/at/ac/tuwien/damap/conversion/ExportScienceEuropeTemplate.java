@@ -163,8 +163,10 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
 
             //add funding program to funding item variables
             if (projectCRIS != null) {
-                if (projectCRIS.getFunding().getFundingProgram() != null)
-                    fundingItems.add(projectCRIS.getFunding().getFundingProgram());
+                if (projectCRIS.getFunding() != null) {
+                    if (projectCRIS.getFunding().getFundingProgram() != null)
+                        fundingItems.add(projectCRIS.getFunding().getFundingProgram());
+                }
             }
             //add grant number to funding item variables
             if (dmp.getProject().getFunding() != null) {
@@ -783,8 +785,8 @@ public class ExportScienceEuropeTemplate extends DocumentConversionService{
 
                 String affiliationRights = "";
 
-                if (dmp.getContact().getAffiliation() != null) {
-                    affiliationRights = dmp.getContact().getAffiliation() + " " + loadResourceService.loadVariableFromResource(prop,"legalRights.contact");
+                if (dmp.getContact() != null && dmp.getContact().getAffiliation() != null) {
+                    affiliationRights = dmp.getContact().getAffiliation() + " " + loadResourceService.loadVariableFromResource(prop, "legalRights.contact");
                 } else { //manually assign the organization
                     affiliationRights = loadResourceService.loadVariableFromResource(prop,"legalRights.affiliation");
                 }
