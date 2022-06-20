@@ -13,6 +13,7 @@
   ],
   "persons": [
     {
+      "universityId": "personId0",
       "personId": {
         "identifier":  "some_orcid_id0",
         "type": "ORCID"
@@ -28,5 +29,14 @@
       "contact": false,
       "roleInProject": "Role In Project"
     }
-  ]
+  ],
+  "project-supplement": {
+    "personalData": true,
+    "sensitiveData": true,
+    "legalRestrictions": false,
+    "humanParticipants": true,
+    "ethicalIssuesExist": true,
+    "committeeReviewed": false,
+    "costsExist": false
+  }
 }
