@@ -45,6 +45,10 @@ public class Dmp extends PanacheEntity {
     @Column(name = "data_kind")
     private EDataKind dataKind;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "reused_data_kind")
+    private EDataKind reusedDataKind;
+
     @Column(name = "no_data_explanation")
     private String noDataExplanation;
 

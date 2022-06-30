@@ -28,6 +28,7 @@ public class DmpDO {
     private String description;
     private ProjectDO project;
     private EDataKind dataKind;
+    private EDataKind reusedDataKind;
     private List<ContributorDO> contributors = new ArrayList<ContributorDO>();
     @Size(max = 4000)
     private String noDataExplanation;

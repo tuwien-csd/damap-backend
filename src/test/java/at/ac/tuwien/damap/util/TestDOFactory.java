@@ -52,6 +52,7 @@ public class TestDOFactory {
         newTestDmpDO.setDescription("This DMP is created for an automated test.");
         newTestDmpDO.setProject(getTestProjectDO());
         newTestDmpDO.setDataKind(EDataKind.NONE);
+        newTestDmpDO.setReusedDataKind(EDataKind.UNKNOWN);
         newTestDmpDO.setContributors(getTestContributorList());
         newTestDmpDO.setNoDataExplanation("This is why there are no datasets.");
         newTestDmpDO.setMetadata("String for metadata.");
@@ -168,7 +169,7 @@ public class TestDOFactory {
         dataset.setSource(EDataSource.NEW);
         dataset.setType(List.of(EDataType.CONFIGURATION_DATA));
         dataset.setSize(50000L);
-        dataset.setDescription("Comments related to the dataset.");
+        dataset.setDescription("Dataset description.");
         dataset.setRetentionPeriod(10);
         dataset.setPersonalData(true);
         dataset.setSensitiveData(true);

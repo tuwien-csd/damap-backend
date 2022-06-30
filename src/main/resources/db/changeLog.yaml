@@ -2535,3 +2535,27 @@ databaseChangeLog:
                   name: dataset_source
                   value: 'NEW'
 
+  - changeSet:
+      id: 7
+      author: Clara Schuster
+      changes:
+        - addColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name: reused_data_kind
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName: fk_dmp_rdk
+                    references: e_data_kind(data_kind)
+
+        - addColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name: reused_data_kind
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName: fk_dmp_aud_rdk
+                    references: e_data_kind(data_kind)
+
