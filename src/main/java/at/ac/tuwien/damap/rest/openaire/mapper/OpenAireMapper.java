@@ -49,36 +49,36 @@ public class OpenAireMapper {
         if ("title".equals(propertyName)) {
             if (datasetDO.getTitle() == null)
                 datasetDO.setTitle(elementType.getValue());
+            else
+                datasetDO.setTitle(datasetDO.getTitle() + ' ' + elementType.getValue());
         }
         return datasetDO;
     }
 
     public DatasetDO mapAtoB(String propertyName, QualifierType qualifierType, DatasetDO datasetDO) {
-        switch (propertyName) {
-            case "bestaccessright":
-                datasetDO.setDataAccess(getDataAccessType(qualifierType.getClassid().toLowerCase()));
-                break;
-            case "resourcetype":
-                List<EDataType> types = datasetDO.getType();
-                String type = qualifierType.getClassname().toLowerCase();
-                switch (type) {
-                    case "image":
-                        types.add(EDataType.IMAGES);
-                        break;
-                    case "film":
-                    case "sound":
-                        types.add(EDataType.AUDIOVISUAL_DATA);
-                        break;
-                    case "software":
-                        types.add(EDataType.SOFTWARE_APPLICATIONS);
-                        break;
-                    case "text":
-                        types.add(EDataType.PLAIN_TEXT);
-                        break;
-                    default:
-                        types.add(EDataType.OTHER);
-                        break;
-                }
+        if ("bestaccessright".equals(propertyName)) {
+            datasetDO.setDataAccess(getDataAccessType(qualifierType.getClassid().toLowerCase()));
+        } else if ("resourcetype".equals(propertyName)) {
+            List<EDataType> types = datasetDO.getType();
+            String type = qualifierType.getClassname().toLowerCase();
+            switch (type) {
+                case "image":
+                    types.add(EDataType.IMAGES);
+                    break;
+                case "film":
+                case "sound":
+                    types.add(EDataType.AUDIOVISUAL_DATA);
+                    break;
+                case "software":
+                    types.add(EDataType.SOFTWARE_APPLICATIONS);
+                    break;
+                case "text":
+                    types.add(EDataType.PLAIN_TEXT);
+                    break;
+                default:
+                    types.add(EDataType.OTHER);
+                    break;
+            }
         }
         return datasetDO;
     }
@@ -100,6 +100,7 @@ public class OpenAireMapper {
                 try {
                     datasetDO.setStartDate(formatter.parse(string));
                 } catch (ParseException ignored) {
+                    // Ignore
                 }
                 break;
             default:

@@ -184,6 +184,11 @@ public class TestDOFactory {
         dataset.setDelete(true);
         dataset.setDateOfDeletion(new Date());
         dataset.setReasonForDeletion("Explanation on why data is being deleted.");
+        dataset.setSource(EDataSource.REUSED);
+        IdentifierDO identifierDO = new IdentifierDO();
+        identifierDO.setIdentifier("Unique Identifier 123456");
+        identifierDO.setType(EIdentifierType.DOI);
+        dataset.setDatasetId(identifierDO);
         List<ContributorDO> contributors = getTestContributorList();
         if (!contributors.isEmpty())
             dataset.setDeletionPerson(contributors.get(0));

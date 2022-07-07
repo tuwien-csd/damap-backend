@@ -24,10 +24,10 @@ import java.util.List;
 
 @QuarkusTest
 @JBossLog
-public class OpenAireTest {
+class OpenAireTest {
 
     @Test
-    public void test() {
+    void test() {
         DatasetDO datasetDO = new DatasetDO();
         try {
             URL url = Resources.getResource("xml/response.xml");
