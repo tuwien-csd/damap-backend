@@ -63,25 +63,20 @@ public class OpenAireMapper {
             String type = qualifierType.getClassname().toLowerCase();
             switch (type) {
                 case "image":
-                    if (!types.contains(EDataType.IMAGES))
-                        types.add(EDataType.IMAGES);
+                    addType(EDataType.IMAGES, types);
                     break;
                 case "film":
                 case "sound":
-                    if (!types.contains(EDataType.AUDIOVISUAL_DATA))
-                        types.add(EDataType.AUDIOVISUAL_DATA);
+                    addType(EDataType.AUDIOVISUAL_DATA, types);
                     break;
                 case "software":
-                    if (!types.contains(EDataType.SOFTWARE_APPLICATIONS))
-                        types.add(EDataType.SOFTWARE_APPLICATIONS);
+                    addType(EDataType.SOFTWARE_APPLICATIONS, types);
                     break;
                 case "text":
-                    if (!types.contains(EDataType.PLAIN_TEXT))
-                        types.add(EDataType.PLAIN_TEXT);
+                    addType(EDataType.PLAIN_TEXT, types);
                     break;
                 default:
-                    if (!types.contains(EDataType.OTHER))
-                        types.add(EDataType.OTHER);
+                    addType(EDataType.OTHER, types);
                     break;
             }
         }
@@ -125,5 +120,10 @@ public class OpenAireMapper {
             default:
                 return null;
         }
+    }
+
+    private void addType(EDataType type, List<EDataType> types) {
+        if (!types.contains(type))
+            types.add(type);
     }
 }
