@@ -33,7 +33,9 @@
                         <measure id="popularity_alt" key="score" value="0.0"/>
                         <measure id="popularity" key="score" value="3.53012887452e-10"/>
                         <title classid="main title" classname="main title" schemeid="dnet:dataCite_title"
-                               schemename="dnet:dataCite_title">Dataset title</title>
+                               schemename="dnet:dataCite_title">Dataset title 1</title>
+                        <title classid="main title" classname="main title" schemeid="dnet:dataCite_title"
+                               schemename="dnet:dataCite_title">Dataset title 2</title>
                         <bestaccessright classid="OPEN" classname="Open Access" schemeid="dnet:access_modes"
                                          schemename="dnet:access_modes"/>
                         <creator rank="1" name="Creator" surname="One">One, Creator</creator>
@@ -57,8 +59,19 @@
                         <publisher>Zenodo</publisher>
                         <resulttype classid="dataset" classname="dataset" schemeid="dnet:result_typologies"
                                     schemename="dnet:result_typologies"/>
-                        <resourcetype classid="Figure" classname="Figure" schemeid="dnet:dataCite_resource"
+                        <resourcetype classid="image" classname="image" schemeid="dnet:dataCite_resource"
                                       schemename="dnet:dataCite_resource"/>
+                        <resourcetype classid="film" classname="film" schemeid="dnet:dataCite_resource"
+                                      schemename="dnet:dataCite_resource"/>
+                        <resourcetype classid="sound" classname="sound" schemeid="dnet:dataCite_resource"
+                                      schemename="dnet:dataCite_resource"/>
+                        <resourcetype classid="software" classname="software" schemeid="dnet:dataCite_resource"
+                                      schemename="dnet:dataCite_resource"/>
+                        <resourcetype classid="text" classname="text" schemeid="dnet:dataCite_resource"
+                                      schemename="dnet:dataCite_resource"/>
+                        <resourcetype classid="UNKNOWN" classname="UNKNOWN" schemeid="dnet:dataCite_resource"
+                                      schemename="dnet:dataCite_resource"/>
+                        <size>100</size>
                         <datainfo>
                             <inferred>true</inferred>
                             <deletedbyinference>false</deletedbyinference>
