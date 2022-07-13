@@ -134,7 +134,7 @@ public class MaDmpMapper {
 
         dataset.setDataQualityAssurance(null);
         dataset.setDatasetId(null);
-        dataset.setDescription(datasetDO.getComment());
+        dataset.setDescription(datasetDO.getDescription());
 
         List<Distribution> distributionList = new ArrayList<>();
         dmpDO.getRepositories().stream().filter(hostDO ->
@@ -187,7 +187,7 @@ public class MaDmpMapper {
             distribution.setByteSize(datasetDO.getSize().intValue());
         if (datasetDO.getDataAccess() != null)
             distribution.setDataAccess(getDataAccess(datasetDO.getDataAccess()));
-        distribution.setDescription(datasetDO.getComment());
+        distribution.setDescription(datasetDO.getDescription());
         distribution.setDownloadUrl(null);
         if (datasetDO.getType() != null)
             distribution.setFormat(mapToMaDmpDatasetFormat(datasetDO.getType()));

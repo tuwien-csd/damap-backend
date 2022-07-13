@@ -2,6 +2,7 @@ package at.ac.tuwien.damap.rest.dmp.domain;
 
 import at.ac.tuwien.damap.enums.EAccessRight;
 import at.ac.tuwien.damap.enums.EDataAccessType;
+import at.ac.tuwien.damap.enums.EDataSource;
 import at.ac.tuwien.damap.enums.EDataType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
@@ -22,7 +23,7 @@ public class DatasetDO {
     private List<EDataType> type = new ArrayList<>();
     private Long size;
     @Size(max = 4000)
-    private String comment;
+    private String description;
     private Boolean personalData;
     private Boolean sensitiveData;
     private Boolean legalRestrictions;
@@ -43,4 +44,6 @@ public class DatasetDO {
     private String reasonForDeletion;
     private ContributorDO deletionPerson;
     private Integer retentionPeriod;
+    private IdentifierDO datasetId;
+    private EDataSource source;
 }

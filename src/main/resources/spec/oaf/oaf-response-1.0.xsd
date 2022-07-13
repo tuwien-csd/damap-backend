@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:oaf="http://namespace.openaire.eu/oaf" elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:import schemaLocation="oaf-1.0.xsd" namespace="http://namespace.openaire.eu/oaf"/>
+    <xs:element name="response">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="header">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="query" type="xs:string"/>
+                            <xs:element name="locale" type="xs:string"/>
+                            <xs:element name="size" type="xs:int"/>
+                            <xs:element name="page" type="xs:int"/>
+                            <xs:element name="total" type="xs:int"/>
+                            <xs:element name="fields"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="results">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="result">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="header">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:any maxOccurs="unbounded" processContents="lax"/>
+                                                    <!--<xs:element ref="dri:objIdentifier"/>
+                                                    <xs:element ref="dri:dateOfCollection"/>
+                                                    <xs:element ref="dri:dateOfTransformation"/>-->
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="metadata">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element ref="oaf:entity"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="browseResults"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

@@ -2438,3 +2438,113 @@ databaseChangeLog:
               - column:
                   name: deletion_person_id
                   type: NUMBER(20,0)
+
+  - changeSet:
+      id: 4
+      author: Clara Schuster
+      changes:
+        - renameColumn:
+            tableName: dataset
+            newColumnName: description
+            oldColumnName: dataset_comment
+
+        - renameColumn:
+            tableName: dataset_aud
+            newColumnName: description
+            oldColumnName: dataset_comment
+
+        # add pid to dataset
+        - addColumn:
+            tableName: dataset
+            columns:
+              - column:
+                  name: dataset_pid
+                  type: NUMBER(20,0)
+                  constraints:
+                    foreignKeyName: fk_dataset_pid
+                    references: identifier(id)
+
+        - addColumn:
+            tableName: dataset_aud
+            columns:
+              - column:
+                  name: dataset_pid
+                  type: NUMBER(20,0)
+
+        # new/reused datasets
+        - createTable:
+            tableName: e_data_source
+            columns:
+              - column:
+                  name: source
+                  type: VARCHAR(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+        - insert:
+            columns:
+              - column:
+                  name: source
+                  value: 'NEW'
+            tableName: e_data_source
+        - insert:
+            columns:
+              - column:
+                  name: source
+                  value: 'REUSED'
+            tableName: e_data_source
+
+        - addColumn:
+            tableName: dataset
+            columns:
+              - column:
+                  name: dataset_source
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName: fk_data_source
+                    references: e_data_source(source)
+
+        - addColumn:
+            tableName: dataset_aud
+            columns:
+              - column:
+                  name: dataset_source
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName: fk_data_source_aud
+                    references: e_data_source(source)
+
+        - update:
+            tableName: dataset
+            columns:
+              - column:
+                  name: dataset_source
+                  value: 'NEW'
+
+        - update:
+            tableName: dataset_aud
+            columns:
+              - column:
+                  name: dataset_source
+                  value: 'NEW'
+
+        - addColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name: reused_data_kind
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName: fk_dmp_rdk
+                    references: e_data_kind(data_kind)
+
+        - addColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name: reused_data_kind
+                  type: VARCHAR(255)
+                  constraints:
+                    foreignKeyName: fk_dmp_aud_rdk
+                    references: e_data_kind(data_kind)
+

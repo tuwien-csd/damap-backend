@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+           xmlns="http://namespace.openaire.eu/oaf"
+           targetNamespace="http://namespace.openaire.eu/oaf">
+
+    <xs:annotation>
+        <xs:documentation>This schema describes the XML serialization of the OpenAIRE Research Graph.
+            For an overview of the model, please check the OpenAIRE Research Graph Data Model at https://doi.org/10.5281/zenodo.2643199
+        </xs:documentation>
+    </xs:annotation>
+
+    <xs:include schemaLocation="oaf-result-1.0.xsd"/>
+    <xs:include schemaLocation="oaf-org-1.0.xsd"/>
+    <xs:include schemaLocation="oaf-datasource-1.0.xsd"/>
+    <xs:include schemaLocation="oaf-project-1.0.xsd"/>
+
+    <xs:element name="entity">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:choice>
+                    <xs:element ref="result"/>
+                    <xs:element ref="organization"/>
+                    <xs:element ref="datasource"/>
+                    <xs:element ref="project"/>
+                </xs:choice>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

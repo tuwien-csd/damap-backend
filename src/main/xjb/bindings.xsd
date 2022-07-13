@@ -2,10 +2,14 @@
   <jxb:bindings >
     <jxb:globalBindings typesafeEnumMaxMembers="2000"/>
   </jxb:bindings>
-  <jxb:bindings schemaLocation="../resources/spec/fits_output.xsd">
+  <jxb:bindings schemaLocation="../resources/spec/fits/fits_output.xsd">
     <jxb:schemaBindings>
       <jxb:package name="edu.harvard.fits"/>
     </jxb:schemaBindings>
   </jxb:bindings>
+  <jxb:bindings schemaLocation="../resources/spec/oaf/oaf-1.0.xsd">
+    <jxb:schemaBindings>
+      <jxb:package name="eu.openaire.oaf"/>
+    </jxb:schemaBindings>
+  </jxb:bindings>
 </jxb:bindings>
-

@@ -52,6 +52,7 @@ public class TestDOFactory {
         newTestDmpDO.setDescription("This DMP is created for an automated test.");
         newTestDmpDO.setProject(getTestProjectDO());
         newTestDmpDO.setDataKind(EDataKind.NONE);
+        newTestDmpDO.setReusedDataKind(EDataKind.UNKNOWN);
         newTestDmpDO.setContributors(getTestContributorList());
         newTestDmpDO.setNoDataExplanation("This is why there are no datasets.");
         newTestDmpDO.setMetadata("String for metadata.");
@@ -165,9 +166,10 @@ public class TestDOFactory {
     private List<DatasetDO> getTestDatasetList(){
         DatasetDO dataset = new DatasetDO();
         dataset.setTitle("Dataset Title");
+        dataset.setSource(EDataSource.NEW);
         dataset.setType(List.of(EDataType.CONFIGURATION_DATA));
         dataset.setSize(50000L);
-        dataset.setComment("Comments related to the dataset.");
+        dataset.setDescription("Dataset description.");
         dataset.setRetentionPeriod(10);
         dataset.setPersonalData(true);
         dataset.setSensitiveData(true);
@@ -182,6 +184,11 @@ public class TestDOFactory {
         dataset.setDelete(true);
         dataset.setDateOfDeletion(new Date());
         dataset.setReasonForDeletion("Explanation on why data is being deleted.");
+        dataset.setSource(EDataSource.REUSED);
+        IdentifierDO identifierDO = new IdentifierDO();
+        identifierDO.setIdentifier("Unique Identifier 123456");
+        identifierDO.setType(EIdentifierType.DOI);
+        dataset.setDatasetId(identifierDO);
         List<ContributorDO> contributors = getTestContributorList();
         if (!contributors.isEmpty())
             dataset.setDeletionPerson(contributors.get(0));

@@ -1,9 +1,11 @@
 package at.ac.tuwien.damap.rest.dmp.mapper;
 
 import at.ac.tuwien.damap.domain.Dataset;
+import at.ac.tuwien.damap.domain.Identifier;
 import at.ac.tuwien.damap.enums.EDataType;
 import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.dmp.domain.DatasetDO;
+import at.ac.tuwien.damap.rest.dmp.domain.IdentifierDO;
 import lombok.experimental.UtilityClass;
 
 import java.util.ArrayList;
@@ -16,7 +18,7 @@ public class DatasetDOMapper {
         datasetDO.setId(dataset.id);
         datasetDO.setTitle(dataset.getTitle());
         datasetDO.setSize(dataset.getSize());
-        datasetDO.setComment(dataset.getComment());
+        datasetDO.setDescription(dataset.getDescription());
         datasetDO.setPersonalData(dataset.getPersonalData());
         datasetDO.setSensitiveData(dataset.getSensitiveData());
         datasetDO.setLegalRestrictions(dataset.getLegalRestrictions());
@@ -27,6 +29,7 @@ public class DatasetDOMapper {
         datasetDO.setDateOfDeletion(dataset.getDateOfDeletion());
         datasetDO.setReasonForDeletion(dataset.getReasonForDeletion());
         datasetDO.setRetentionPeriod(dataset.getRetentionPeriod());
+        datasetDO.setSource(dataset.getSource());
         if (dataset.getDataAccess() != null)
             datasetDO.setDataAccess(dataset.getDataAccess());
         if (dataset.getSelectedProjectMembersAccess() != null)
@@ -37,6 +40,8 @@ public class DatasetDOMapper {
             datasetDO.setPublicAccess(dataset.getPublicAccess());
         if (dataset.getDeletionPerson() != null)
             datasetDO.setDeletionPerson(ContributorDOMapper.mapEntityToDO(dataset.getDeletionPerson(), new ContributorDO()));
+        if (dataset.getDatasetIdentifier() != null)
+            datasetDO.setDatasetId(IdentifierDOMapper.mapEntityToDO(dataset.getDatasetIdentifier(), new IdentifierDO()));
 
         List<EDataType> typeList = new ArrayList<>();
         dataset.getType().forEach(option -> {
@@ -54,7 +59,7 @@ public class DatasetDOMapper {
             dataset.id = datasetDO.getId();
         dataset.setTitle(datasetDO.getTitle());
         dataset.setSize(datasetDO.getSize());
-        dataset.setComment(datasetDO.getComment());
+        dataset.setDescription(datasetDO.getDescription());
         dataset.setPersonalData(datasetDO.getPersonalData());
         dataset.setSensitiveData(datasetDO.getSensitiveData());
         dataset.setLegalRestrictions(datasetDO.getLegalRestrictions());
@@ -69,10 +74,14 @@ public class DatasetDOMapper {
         dataset.setDateOfDeletion(datasetDO.getDateOfDeletion());
         dataset.setReasonForDeletion(datasetDO.getReasonForDeletion());
         dataset.setRetentionPeriod(datasetDO.getRetentionPeriod());
+        dataset.setSource(datasetDO.getSource());
         if (datasetDO.getDeletionPerson() != null && datasetDO.getDeletionPerson().getId() != null)
             dataset.setDeletionPerson(mapperService.getDeletionPerson(datasetDO.getDeletionPerson().getId()));
         else
             dataset.setDeletionPerson(null);
+
+        if (datasetDO.getDatasetId() != null)
+            dataset.setDatasetIdentifier(IdentifierDOMapper.mapDOtoEntity(datasetDO.getDatasetId(), new Identifier()));
 
         List<EDataType> typeList = new ArrayList<>();
         datasetDO.getType().forEach(option -> {
