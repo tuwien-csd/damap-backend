@@ -2453,6 +2453,7 @@ databaseChangeLog:
             newColumnName: description
             oldColumnName: dataset_comment
 
+        # add pid to dataset
         - addColumn:
             tableName: dataset
             columns:
@@ -2470,10 +2471,6 @@ databaseChangeLog:
                   name: dataset_pid
                   type: NUMBER(20,0)
 
-  - changeSet:
-      id: 5
-      author: Clara Schuster
-      changes:
         # new/reused datasets
         - createTable:
             tableName: e_data_source
@@ -2517,10 +2514,6 @@ databaseChangeLog:
                     foreignKeyName: fk_data_source_aud
                     references: e_data_source(source)
 
-  - changeSet:
-      id: 6
-      author: Clara Schuster
-      changes:
         - update:
             tableName: dataset
             columns:
@@ -2535,10 +2528,6 @@ databaseChangeLog:
                   name: dataset_source
                   value: 'NEW'
 
-  - changeSet:
-      id: 7
-      author: Clara Schuster
-      changes:
         - addColumn:
             tableName: dmp
             columns:
