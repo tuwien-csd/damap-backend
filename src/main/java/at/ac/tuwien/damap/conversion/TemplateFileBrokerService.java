@@ -8,4 +8,8 @@ public interface TemplateFileBrokerService {
     Properties getScienceEuropeTemplateResource();
 
     InputStream loadScienceEuropeTemplate();
+
+    Properties getFWFTemplateResource();
+
+    InputStream loadFWFTemplate();
 }

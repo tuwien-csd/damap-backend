@@ -1,5 +1,6 @@
 package at.ac.tuwien.damap.rest;
 
+import at.ac.tuwien.damap.conversion.ExportFWFTemplate;
 import at.ac.tuwien.damap.conversion.ExportScienceEuropeTemplate;
 import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import at.ac.tuwien.damap.security.SecurityService;
@@ -33,11 +34,14 @@ public class DmpDocumentResource {
     ExportScienceEuropeTemplate exportScienceEuropeTemplate;
 
     @Inject
+    ExportFWFTemplate exportFWFTemplate;
+
+    @Inject
     DmpService dmpService;
 
     @GET
     @Path("/{dmpId}")
-    public Response exportTemplate(@PathParam("dmpId") long dmpId) throws Exception {
+    public Response exportTemplate(@PathParam("dmpId") long dmpId) {
         log.info("Return DMP document file for DMP with id=" + dmpId);
 
         String personId = this.getPersonId();
@@ -47,7 +51,9 @@ public class DmpDocumentResource {
 
         String filename = dmpService.getDefaultFileName(dmpId);
 
-        XWPFDocument document = exportScienceEuropeTemplate.exportTemplate(dmpId);
+        // TODO dynamically adapt exported template based on funder ID
+//        XWPFDocument document = exportScienceEuropeTemplate.exportTemplate(dmpId);
+        XWPFDocument document = exportFWFTemplate.exportTemplate(dmpId);
 
         StreamingOutput streamingOutput = new StreamingOutput() {
             @Override

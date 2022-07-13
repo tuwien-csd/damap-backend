@@ -6,19 +6,36 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 
 @QuarkusTest
-
-public class ExportScienceEuropeTemplateTest {
+public class ExportFWFTemplateTest {
 
     @Inject
-    ExportScienceEuropeTemplate exportScienceEuropeTemplate;
+    ExportFWFTemplate exportFWFTemplate;
 
     @Inject
     TestDOFactory testDOFactory;
+
+    //TODO test currently disabled, as it calls the project API without one running in local deployment
+    @Disabled
+    @Test
+    @TestSecurity(authorizationEnabled = false)
+    void testFWFTemplateDmp() {
+        final DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
+
+        //testing the export document return not a null document
+        XWPFDocument document = null;
+        try {
+            document = exportFWFTemplate.exportTemplate(dmpDO.getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Assertions.assertNotNull(document);
+    }
 
     @Test
     @TestSecurity(authorizationEnabled = false)
@@ -28,7 +45,7 @@ public class ExportScienceEuropeTemplateTest {
         //testing the export document return not a null document
         XWPFDocument document = null;
         try {
-            document = exportScienceEuropeTemplate.exportTemplate(emptyDmpDO.getId());
+            document = exportFWFTemplate.exportTemplate(emptyDmpDO.getId());
         } catch (Exception e) {
             e.printStackTrace();
         }
