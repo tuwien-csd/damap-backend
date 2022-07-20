@@ -92,8 +92,12 @@ public class OpenAireMapper {
                     datasetDO.setDescription(datasetDO.getDescription() + ' ' + string);
                 break;
             case "size":
-                Long size = Long.valueOf(string);
-                datasetDO.setSize(size);
+                try{
+                    Long size = Long.valueOf(string);
+                    datasetDO.setSize(size);
+                } catch (NumberFormatException ignored) {
+                    // Ignore
+                }
                 break;
             case "dateofacceptance":
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
