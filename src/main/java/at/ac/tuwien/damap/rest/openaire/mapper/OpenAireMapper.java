@@ -51,6 +51,8 @@ public class OpenAireMapper {
                 datasetDO.setTitle(elementType.getValue());
             else
                 datasetDO.setTitle(datasetDO.getTitle() + ' ' + elementType.getValue());
+            if (datasetDO.getTitle().length() > 255)
+                datasetDO.setTitle(datasetDO.getTitle().substring(0, 255));
         }
         return datasetDO;
     }
@@ -90,9 +92,11 @@ public class OpenAireMapper {
                     datasetDO.setDescription(string);
                 else
                     datasetDO.setDescription(datasetDO.getDescription() + ' ' + string);
+                if (datasetDO.getDescription().length() > 4000)
+                    datasetDO.setDescription(datasetDO.getDescription().substring(0, 4000));
                 break;
             case "size":
-                try{
+                try {
                     Long size = Long.valueOf(string);
                     datasetDO.setSize(size);
                 } catch (NumberFormatException ignored) {
