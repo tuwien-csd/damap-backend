@@ -31,7 +31,6 @@ public class DmpConsistencyUtility {
         // Reset form if no datasets are specified
         if (dmpDO.getDataKind() != EDataKind.SPECIFY && dmpDO.getReusedDataKind() != EDataKind.SPECIFY) {
             // Remove all dataset related info from dmp
-            dmpDO.setDataGeneration(null);
             removeDatasetRelatedInfo(dmpDO);
         }
         if (!(dmpDO.getDataKind() == EDataKind.NONE && dmpDO.getReusedDataKind() == EDataKind.NONE)) {
@@ -69,6 +68,8 @@ public class DmpConsistencyUtility {
      */
     private void removeDatasetRelatedInfo(DmpDO dmpDO) {
         dmpDO.setDatasets(new ArrayList<>());
+        dmpDO.setDataGeneration(null);
+
         resetDocumentation(dmpDO);
         resetLegalAndEthicalInformation(dmpDO);
         resetReuse(dmpDO);
@@ -135,11 +136,11 @@ public class DmpConsistencyUtility {
             dmpDO.setClosedAccessInfo(null);
         }
         // For personal data etc. set dataset property
-        if (!dmpDO.getSensitiveData())
+        if (!Boolean.TRUE.equals(dmpDO.getSensitiveData()))
             dmpDO.getDatasets().forEach(dataset -> dataset.setSensitiveData(false));
-        if (!dmpDO.getPersonalData())
+        if (!Boolean.TRUE.equals(dmpDO.getPersonalData()))
             dmpDO.getDatasets().forEach(dataset -> dataset.setPersonalData(false));
-        if (!dmpDO.getLegalRestrictions())
+        if (!Boolean.TRUE.equals(dmpDO.getLegalRestrictions()))
             dmpDO.getDatasets().forEach(dataset -> dataset.setLegalRestrictions(false));
 
 
@@ -148,7 +149,7 @@ public class DmpConsistencyUtility {
             if (datasetDO.getDataAccess() != EDataAccessType.CLOSED) {
                 datasetDO.setDelete(false);
             }
-            if (!datasetDO.getDelete()) {
+            if (!Boolean.TRUE.equals(datasetDO.getDelete())) {
                 datasetDO.setDeletionPerson(null);
                 datasetDO.setReasonForDeletion(null);
                 datasetDO.setDateOfDeletion(null);
@@ -168,7 +169,7 @@ public class DmpConsistencyUtility {
         // Sensitive Data
         unsetListIfFalseOrNull(dmpDO.getSensitiveData(), dmpDO.getSensitiveDataSecurity());
         unsetOtherIfNotSpecified(dmpDO.getSensitiveDataSecurity(), ESecurityMeasure.OTHER, dmpDO::setOtherDataSecurityMeasures);
-        if (!dmpDO.getSensitiveData()) {
+        if (!Boolean.TRUE.equals(dmpDO.getSensitiveData())) {
             dmpDO.setSensitiveDataAccess(null);
         }
 
@@ -179,7 +180,7 @@ public class DmpConsistencyUtility {
         // Legal Restrictions
         unsetListIfFalseOrNull(dmpDO.getLegalRestrictions(), dmpDO.getLegalRestrictionsDocuments());
         unsetOtherIfNotSpecified(dmpDO.getLegalRestrictionsDocuments(), EAgreement.OTHER, dmpDO::setOtherLegalRestrictionsDocument);
-        if (!dmpDO.getLegalRestrictions()) {
+        if (!Boolean.TRUE.equals(dmpDO.getLegalRestrictions())) {
             dmpDO.setLegalRestrictionsComment(null);
             dmpDO.setDataRightsAndAccessControl(null);
         }
@@ -207,10 +208,10 @@ public class DmpConsistencyUtility {
      * <p>
      * Used to conditionally set {@code otherSensitiveDataSecurityMeasures}, {@code otherPersonalDataCompliance} and {@code otherLegalRestrictionsDocument}.
      *
-     * @param enumList the enum list to be checked for {@code other} option
-     * @param other    the enum value to check the list for
-     * @param consumer the property to be set to null if {@code other} is not specified
-     * @param <R>      the enum type
+     * @param enumList the enum list to be checked for {@code other} option.
+     * @param other    the enum value to check the list for.
+     * @param consumer the property to be set to null if {@code other} is not specified.
+     * @param <R>      the enum type.
      */
     private <R extends Enum<R>> void unsetOtherIfNotSpecified(List<R> enumList, R other, Consumer<String> consumer) {
         if (enumList == null || !enumList.contains(other)) {

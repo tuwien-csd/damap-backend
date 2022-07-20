@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 @JBossLog
-public class DmpConsistencyUtilityTest {
+class DmpConsistencyUtilityTest {
 
     @Test
     void testSpecifiedDataConsistency() {
@@ -35,6 +35,25 @@ public class DmpConsistencyUtilityTest {
         assertNotNull(dmpDO.getTargetAudience());
         assertNotNull(dmpDO.getTools());
         assertNotNull(dmpDO.getRestrictedDataAccess());
+
+        assertFalse(dmpDO.getDatasets().isEmpty());
+        assertFalse(dmpDO.getRepositories().isEmpty());
+        assertFalse(dmpDO.getStorage().isEmpty());
+        assertFalse(dmpDO.getExternalStorage().isEmpty());
+
+        assertNotNull(dmpDO.getExternalStorageInfo());
+        assertNotNull(dmpDO.getRestrictedAccessInfo());
+        assertNotNull(dmpDO.getClosedAccessInfo());
+
+        assertTrue(dmpDO.getCostsExist());
+        assertTrue(dmpDO.getCostsExistCris());
+        assertFalse(dmpDO.getCosts().isEmpty());
+    }
+
+    @Test
+    void testSpecifiedConditionalDataConsistency(){
+        DmpDO dmpDO = getDmp(EDataKind.SPECIFY);
+        DmpConsistencyUtility.enforceDmpConsistency(dmpDO);
 
         assertTrue(dmpDO.getPersonalData());
         assertFalse(dmpDO.getPersonalDataCris());
@@ -62,19 +81,6 @@ public class DmpConsistencyUtilityTest {
 
         assertTrue(dmpDO.getCommitteeReviewed());
         assertTrue(dmpDO.getCommitteeReviewedCris());
-
-        assertFalse(dmpDO.getDatasets().isEmpty());
-        assertFalse(dmpDO.getRepositories().isEmpty());
-        assertFalse(dmpDO.getStorage().isEmpty());
-        assertFalse(dmpDO.getExternalStorage().isEmpty());
-
-        assertNotNull(dmpDO.getExternalStorageInfo());
-        assertNotNull(dmpDO.getRestrictedAccessInfo());
-        assertNotNull(dmpDO.getClosedAccessInfo());
-
-        assertTrue(dmpDO.getCostsExist());
-        assertTrue(dmpDO.getCostsExistCris());
-        assertFalse(dmpDO.getCosts().isEmpty());
     }
 
     @Test
@@ -87,23 +93,23 @@ public class DmpConsistencyUtilityTest {
         DmpConsistencyUtility.enforceDmpConsistency(dmpDO);
 
         DatasetDO newDatasetDO = dmpDO.getDatasets().get(0);
-        assertEquals(newDatasetDO.getSource(), EDataSource.NEW);
+        assertEquals(EDataSource.NEW, newDatasetDO.getSource());
         assertFalse(newDatasetDO.getSensitiveData());
         assertFalse(newDatasetDO.getPersonalData());
         assertFalse(newDatasetDO.getLegalRestrictions());
-        assertEquals(newDatasetDO.getDataAccess(), EDataAccessType.CLOSED);
+        assertEquals(EDataAccessType.CLOSED, newDatasetDO.getDataAccess());
         assertTrue(newDatasetDO.getDelete());
         assertNotNull(newDatasetDO.getDeletionPerson());
         assertNotNull(newDatasetDO.getDateOfDeletion());
         assertNotNull(newDatasetDO.getReasonForDeletion());
 
         DatasetDO reusedDatasetDO = dmpDO.getDatasets().get(1);
-        assertEquals(reusedDatasetDO.getSource(), EDataSource.REUSED);
+        assertEquals(EDataSource.REUSED, reusedDatasetDO.getSource());
         assertFalse(reusedDatasetDO.getSensitiveData());
         assertFalse(reusedDatasetDO.getPersonalData());
         assertFalse(reusedDatasetDO.getLegalRestrictions());
         assertFalse(reusedDatasetDO.getDelete());
-        assertEquals(reusedDatasetDO.getDataAccess(), EDataAccessType.RESTRICTED);
+        assertEquals(EDataAccessType.RESTRICTED, reusedDatasetDO.getDataAccess());
         assertNull(reusedDatasetDO.getDeletionPerson());
         assertNull(reusedDatasetDO.getDateOfDeletion());
         assertNull(reusedDatasetDO.getReasonForDeletion());
@@ -115,8 +121,8 @@ public class DmpConsistencyUtilityTest {
         DmpDO dmpDO = getDmp(EDataKind.NONE);
         DmpConsistencyUtility.enforceDmpConsistency(dmpDO);
 
-        assertEquals(dmpDO.getDataKind(), EDataKind.NONE);
-        assertEquals(dmpDO.getReusedDataKind(), EDataKind.NONE);
+        assertEquals(EDataKind.NONE, dmpDO.getDataKind());
+        assertEquals(EDataKind.NONE, dmpDO.getReusedDataKind());
         assertNotNull(dmpDO.getNoDataExplanation());
 
         assertNull(dmpDO.getMetadata());
@@ -127,6 +133,25 @@ public class DmpConsistencyUtilityTest {
         assertNull(dmpDO.getTargetAudience());
         assertNull(dmpDO.getTools());
         assertNull(dmpDO.getRestrictedDataAccess());
+
+        assertTrue(dmpDO.getDatasets().isEmpty());
+        assertTrue(dmpDO.getRepositories().isEmpty());
+        assertTrue(dmpDO.getStorage().isEmpty());
+        assertTrue(dmpDO.getExternalStorage().isEmpty());
+
+        assertNull(dmpDO.getExternalStorageInfo());
+        assertNull(dmpDO.getRestrictedAccessInfo());
+        assertNull(dmpDO.getClosedAccessInfo());
+
+        assertFalse(dmpDO.getCostsExist());
+        assertTrue(dmpDO.getCostsExistCris());
+        assertTrue(dmpDO.getCosts().isEmpty());
+    }
+
+    @Test
+    void testNoConditionalData(){
+        DmpDO dmpDO = getDmp(EDataKind.NONE);
+        DmpConsistencyUtility.enforceDmpConsistency(dmpDO);
 
         assertFalse(dmpDO.getPersonalData());
         assertFalse(dmpDO.getPersonalDataCris());
@@ -154,19 +179,6 @@ public class DmpConsistencyUtilityTest {
 
         assertFalse(dmpDO.getCommitteeReviewed());
         assertTrue(dmpDO.getCommitteeReviewedCris());
-
-        assertTrue(dmpDO.getDatasets().isEmpty());
-        assertTrue(dmpDO.getRepositories().isEmpty());
-        assertTrue(dmpDO.getStorage().isEmpty());
-        assertTrue(dmpDO.getExternalStorage().isEmpty());
-
-        assertNull(dmpDO.getExternalStorageInfo());
-        assertNull(dmpDO.getRestrictedAccessInfo());
-        assertNull(dmpDO.getClosedAccessInfo());
-
-        assertFalse(dmpDO.getCostsExist());
-        assertTrue(dmpDO.getCostsExistCris());
-        assertTrue(dmpDO.getCosts().isEmpty());
     }
 
     @Test
@@ -174,8 +186,8 @@ public class DmpConsistencyUtilityTest {
         DmpDO dmpDO = getDmp(EDataKind.UNKNOWN);
         DmpConsistencyUtility.enforceDmpConsistency(dmpDO);
 
-        assertEquals(dmpDO.getDataKind(), EDataKind.UNKNOWN);
-        assertEquals(dmpDO.getReusedDataKind(), EDataKind.UNKNOWN);
+        assertEquals(EDataKind.UNKNOWN, dmpDO.getDataKind());
+        assertEquals(EDataKind.UNKNOWN, dmpDO.getReusedDataKind());
         assertNull(dmpDO.getNoDataExplanation());
     }
 
