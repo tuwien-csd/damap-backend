@@ -27,6 +27,16 @@ public class TemplateFileBrokerServiceImpl implements TemplateFileBrokerService 
         return loadTemplate("template/scienceEuropeTemplate.docx");
     }
 
+    @Override
+    public Properties getFWFTemplateResource() {
+        return loadResource("template/scienceEuropeTemplate.resource");
+    }
+
+    @Override
+    public InputStream loadFWFTemplate() {
+        return loadTemplate("template/FWFTemplate.docx");
+    }
+
     public Properties loadResource(String  resource) {
         Properties prop = new Properties();
         try (

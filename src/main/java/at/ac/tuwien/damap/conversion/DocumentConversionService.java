@@ -11,10 +11,8 @@ import org.apache.poi.xwpf.usermodel.*;
 
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-@ApplicationScoped
 @JBossLog
 public class DocumentConversionService {
 
@@ -36,7 +34,7 @@ public class DocumentConversionService {
     }
 
     //Method to replace variable in the document's paragraphs
-    public void replaceInParagraphs(List<XWPFParagraph> xwpfParagraphs, Map<String, String> replacements) {
+    static void replaceInParagraphs(List<XWPFParagraph> xwpfParagraphs, Map<String, String> replacements) {
 
         /*
             Each XWPFRun will contain part of a text. These are split weirdly (by Word?).
@@ -100,6 +98,32 @@ public class DocumentConversionService {
     }
 
     //Method that is required to be executed for table content modification
+    static void insertTableCells(XWPFTable table, XWPFTableRow newRow, ArrayList<String> cellContent) {
+        List<XWPFTableCell> cells = newRow.getTableCells();
+        for (XWPFTableCell cell : cells) {
+            for (XWPFParagraph paragraph : cell.getParagraphs()) {
+                for (XWPFRun run : paragraph.getRuns()) {
+                    run.setText(cellContent.get(cells.indexOf(cell)), 0);
+                }
+            }
+        }
+        commitTableRows(table);
+    }
+
+    static void replaceTableVariables(XWPFTable table, Map<String, String> replacements){
+        //this replaces variables in tables (e.g. costcurrency)
+        List<XWPFTableRow> tableRows = table.getRows();
+        for (XWPFTableRow xwpfTableRow : tableRows) {
+            List<XWPFTableCell> tableCells = xwpfTableRow
+                    .getTableCells();
+            for (XWPFTableCell xwpfTableCell : tableCells) {
+                List<XWPFParagraph> xwpfParagraphs = xwpfTableCell.getParagraphs();
+                replaceInParagraphs(xwpfParagraphs, replacements);
+            }
+        }
+    }
+
+    //Method that is required to be executed for table content modification
     static void commitTableRows(XWPFTable table) {
         int rowNr = 0;
         for (XWPFTableRow tableRow : table.getRows()) {
@@ -144,15 +168,7 @@ public class DocumentConversionService {
         formattingParagraph(document.getParagraphs(), startChar, endChar);
 
         //tables need to handled in independent loop since the paragraph list not return the paragraph inside the tables
-        if (document.getTables() != null) {
-            for (XWPFTable xwpfTable : document.getTables()) {
-                for (XWPFTableRow row : xwpfTable.getRows()) {
-                    for (XWPFTableCell cell : row.getTableCells()) {
-                        formattingParagraph(cell.getParagraphs(), startChar, endChar);
-                    }
-                }
-            }
-        }
+        formattingTable(document.getTables(), startChar, endChar);
 
         //footer need to handled in independent loop since the paragraph list not return the paragraph inside the footer
         if (document.getFooterList() != null) {
@@ -162,6 +178,19 @@ public class DocumentConversionService {
         }
 
         return document;
+    }
+
+    public void formattingTable(List<XWPFTable> xwpfTables, String startChar, String endChar){
+        if (xwpfTables != null) {
+            for (XWPFTable xwpfTable : xwpfTables) {
+                for (XWPFTableRow row : xwpfTable.getRows()) {
+                    for (XWPFTableCell cell : row.getTableCells()) {
+                        formattingParagraph(cell.getParagraphs(), startChar, endChar);
+                        formattingTable(cell.getTables(), startChar, endChar);
+                    }
+                }
+            }
+        }
     }
 
     //Method to preprocessing format of the paragraph list
