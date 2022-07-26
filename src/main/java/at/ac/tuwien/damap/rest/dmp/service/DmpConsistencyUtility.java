@@ -5,10 +5,12 @@ import at.ac.tuwien.damap.rest.dmp.domain.DatasetDO;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
 import at.ac.tuwien.damap.rest.dmp.domain.HostDO;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.collections4.ListUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class DmpConsistencyUtility {
@@ -45,7 +47,7 @@ public class DmpConsistencyUtility {
     /**
      * Removes all datasets from {@code dmpDO} that are of type {@code source}.
      *
-     * @param dmpDO the DMP to be edited.
+     * @param dmpDO  the DMP to be edited.
      * @param source the source type of the datasets to be removed.
      */
     private void removeDatasetsBySource(DmpDO dmpDO, EDataSource source) {
@@ -57,7 +59,9 @@ public class DmpConsistencyUtility {
                 removeDatasetFromHost(datasetDO, dmpDO.getRepositories());
             }
         }
-        datasets.removeIf(dataset -> dataset.getSource() == source);
+        dmpDO.setDatasets(datasets.stream()
+                .filter(dataset -> dataset.getSource() != source).collect(Collectors.toList())
+        );
     }
 
     /**
@@ -122,7 +126,9 @@ public class DmpConsistencyUtility {
     private void removeDatasetFromHost(DatasetDO datasetDO, List<? extends HostDO> hosts) {
         for (HostDO host : hosts) {
             if (host.getDatasets() != null) {
-                host.getDatasets().removeIf(hash -> hash.equals(datasetDO.getReferenceHash()));
+                host.setDatasets(host.getDatasets().stream()
+                        .filter(hash -> !hash.equals(datasetDO.getReferenceHash())).collect(Collectors.toList())
+                );
             }
         }
     }
@@ -167,18 +173,18 @@ public class DmpConsistencyUtility {
         unsetOtherIfNotSpecified(dmpDO.getDataQuality(), EDataQualityType.OTHERS, dmpDO::setOtherDataQuality);
 
         // Sensitive Data
-        unsetListIfFalseOrNull(dmpDO.getSensitiveData(), dmpDO.getSensitiveDataSecurity());
+        unsetListIfFalseOrNull(dmpDO.getSensitiveData(), dmpDO::setSensitiveDataSecurity);
         unsetOtherIfNotSpecified(dmpDO.getSensitiveDataSecurity(), ESecurityMeasure.OTHER, dmpDO::setOtherDataSecurityMeasures);
         if (!Boolean.TRUE.equals(dmpDO.getSensitiveData())) {
             dmpDO.setSensitiveDataAccess(null);
         }
 
         // Personal Data
-        unsetListIfFalseOrNull(dmpDO.getPersonalData(), dmpDO.getPersonalDataCompliance());
+        unsetListIfFalseOrNull(dmpDO.getPersonalData(), dmpDO::setPersonalDataCompliance);
         unsetOtherIfNotSpecified(dmpDO.getPersonalDataCompliance(), EComplianceType.OTHER, dmpDO::setOtherPersonalDataCompliance);
 
         // Legal Restrictions
-        unsetListIfFalseOrNull(dmpDO.getLegalRestrictions(), dmpDO.getLegalRestrictionsDocuments());
+        unsetListIfFalseOrNull(dmpDO.getLegalRestrictions(), dmpDO::setLegalRestrictionsDocuments);
         unsetOtherIfNotSpecified(dmpDO.getLegalRestrictionsDocuments(), EAgreement.OTHER, dmpDO::setOtherLegalRestrictionsDocument);
         if (!Boolean.TRUE.equals(dmpDO.getLegalRestrictions())) {
             dmpDO.setLegalRestrictionsComment(null);
@@ -190,16 +196,16 @@ public class DmpConsistencyUtility {
         }
 
         // Costs
-        unsetListIfFalseOrNull(dmpDO.getCostsExist(), dmpDO.getCosts());
+        unsetListIfFalseOrNull(dmpDO.getCostsExist(), dmpDO::setCosts);
     }
 
     private boolean hasDatasetsOfAccessType(List<DatasetDO> datasetDOList, EDataAccessType accessType) {
         return datasetDOList.stream().anyMatch(datasetDO -> datasetDO.getDataAccess() == accessType);
     }
 
-    private void unsetListIfFalseOrNull(Boolean condition, List<?> list) {
-        if (condition == null || !condition) {
-            list.clear();
+    private <R> void unsetListIfFalseOrNull(Boolean condition, Consumer<List<R>> consumer) {
+        if (!Boolean.TRUE.equals(condition)) {
+            consumer.accept(new ArrayList<>());
         }
     }
 

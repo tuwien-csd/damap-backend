@@ -7,7 +7,6 @@ import io.quarkus.test.junit.QuarkusTest;
 import lombok.extern.jbosslog.JBossLog;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,8 +22,8 @@ class DmpConsistencyUtilityTest {
         DmpDO dmpDO = getDmp(EDataKind.SPECIFY);
         DmpConsistencyUtility.enforceDmpConsistency(dmpDO);
 
-        assertEquals(dmpDO.getDataKind(), EDataKind.SPECIFY);
-        assertEquals(dmpDO.getReusedDataKind(), EDataKind.SPECIFY);
+        assertEquals(EDataKind.SPECIFY, dmpDO.getDataKind());
+        assertEquals(EDataKind.SPECIFY, dmpDO.getReusedDataKind());
         assertNull(dmpDO.getNoDataExplanation());
 
         assertNotNull(dmpDO.getMetadata());
@@ -56,31 +55,56 @@ class DmpConsistencyUtilityTest {
         DmpConsistencyUtility.enforceDmpConsistency(dmpDO);
 
         assertTrue(dmpDO.getPersonalData());
-        assertFalse(dmpDO.getPersonalDataCris());
         assertFalse(dmpDO.getPersonalDataCompliance().isEmpty());
         assertNull(dmpDO.getOtherPersonalDataCompliance());
 
         assertTrue(dmpDO.getSensitiveData());
-        assertNull(dmpDO.getSensitiveDataCris());
         assertFalse(dmpDO.getSensitiveDataSecurity().isEmpty());
         assertNotNull(dmpDO.getOtherDataSecurityMeasures());
         assertNotNull(dmpDO.getSensitiveDataAccess());
 
         assertTrue(dmpDO.getLegalRestrictions());
-        assertTrue(dmpDO.getLegalRestrictionsCris());
         assertFalse(dmpDO.getLegalRestrictionsDocuments().isEmpty());
         assertNotNull(dmpDO.getOtherLegalRestrictionsDocument());
         assertNotNull(dmpDO.getLegalRestrictionsComment());
         assertNotNull(dmpDO.getDataRightsAndAccessControl());
 
         assertTrue(dmpDO.getHumanParticipants());
-        assertNull(dmpDO.getHumanParticipantsCris());
 
         assertTrue(dmpDO.getEthicalIssuesExist());
-        assertFalse(dmpDO.getEthicalIssuesExistCris());
 
         assertTrue(dmpDO.getCommitteeReviewed());
-        assertTrue(dmpDO.getCommitteeReviewedCris());
+    }
+
+    @Test
+    void testPartialSpecifiedDataConsistency() {
+        DmpDO dmpDO = getDmp(EDataKind.SPECIFY);
+        dmpDO.setReusedDataKind(EDataKind.UNKNOWN);
+        DmpConsistencyUtility.enforceDmpConsistency(dmpDO);
+
+        assertEquals(EDataKind.SPECIFY, dmpDO.getDataKind());
+        assertEquals(EDataKind.UNKNOWN, dmpDO.getReusedDataKind());
+        assertNull(dmpDO.getNoDataExplanation());
+        assertEquals(1, dmpDO.getDatasets().size());
+        DatasetDO newDatasetDO = dmpDO.getDatasets().get(0);
+        assertEquals(EDataSource.NEW, newDatasetDO.getSource());
+
+        assertNotNull(dmpDO.getMetadata());
+        assertNotNull(dmpDO.getDataGeneration());
+        assertNotNull(dmpDO.getStructure());
+        assertFalse(dmpDO.getDataQuality().isEmpty());
+        assertNotNull(dmpDO.getOtherDataQuality());
+        assertNotNull(dmpDO.getTargetAudience());
+        assertNotNull(dmpDO.getTools());
+        assertNull(dmpDO.getRestrictedDataAccess());
+
+        assertEquals(List.of(newDatasetDO.getReferenceHash()), dmpDO.getRepositories().get(0).getDatasets());
+        assertEquals(List.of(newDatasetDO.getReferenceHash()), dmpDO.getStorage().get(0).getDatasets());
+        assertEquals(List.of(newDatasetDO.getReferenceHash()), dmpDO.getExternalStorage().get(0).getDatasets());
+
+        assertNotNull(dmpDO.getExternalStorageInfo());
+        assertNull(dmpDO.getRestrictedAccessInfo());
+        assertNotNull(dmpDO.getClosedAccessInfo());
     }
 
     @Test
@@ -202,39 +226,29 @@ class DmpConsistencyUtilityTest {
         DmpDO dmpDO = new DmpDO();
         dmpDO.setNoDataExplanation("No data");
         // Datasets
-        List<DatasetDO> datasets = new ArrayList<>();
-        datasets.add(this.getNewDataset());
-        datasets.add(this.getReusedDataset());
+        List<DatasetDO> datasets = List.of(this.getNewDataset(), this.getReusedDataset());
         dmpDO.setDatasets(datasets);
         // Documentation & Quality
         dmpDO.setMetadata("Metadata");
         dmpDO.setDataGeneration("Data generation");
         dmpDO.setStructure("Structure");
-        List<EDataQualityType> dataQuality = new ArrayList<>();
-        dataQuality.add(EDataQualityType.OTHERS);
-        dmpDO.setDataQuality(dataQuality);
+        dmpDO.setDataQuality(List.of(EDataQualityType.OTHERS));
         dmpDO.setOtherDataQuality("Other data quality");
         dmpDO.setTargetAudience("Target audience");
         dmpDO.setTools("Tools");
         // Legal issues
         dmpDO.setSensitiveData(true);
         dmpDO.setSensitiveDataCris(null);
-        List<ESecurityMeasure> securityMeasures = new ArrayList<>();
-        securityMeasures.add(ESecurityMeasure.OTHER);
-        dmpDO.setSensitiveDataSecurity(securityMeasures);
+        dmpDO.setSensitiveDataSecurity(List.of(ESecurityMeasure.OTHER));
         dmpDO.setOtherDataSecurityMeasures("Other security measures");
         dmpDO.setSensitiveDataAccess("This is how you get access");
         dmpDO.setPersonalData(true);
         dmpDO.setPersonalDataCris(false);
-        List<EComplianceType> compliance = new ArrayList<>();
-        compliance.add(EComplianceType.ANONYMISATION);
-        dmpDO.setPersonalDataCompliance(compliance);
+        dmpDO.setPersonalDataCompliance(List.of(EComplianceType.ANONYMISATION));
         dmpDO.setOtherPersonalDataCompliance("Other measures taken");
         dmpDO.setLegalRestrictions(true);
         dmpDO.setLegalRestrictionsCris(true);
-        List<EAgreement> documents = new ArrayList<>();
-        documents.add(EAgreement.OTHER);
-        dmpDO.setLegalRestrictionsDocuments(documents);
+        dmpDO.setLegalRestrictionsDocuments(List.of(EAgreement.OTHER));
         dmpDO.setOtherLegalRestrictionsDocument("Other document");
         dmpDO.setLegalRestrictionsComment("Comment");
         dmpDO.setDataRightsAndAccessControl("Researchers have rights and control access to data");
@@ -256,9 +270,7 @@ class DmpConsistencyUtilityTest {
 
         dmpDO.setCostsExist(true);
         dmpDO.setCostsExistCris(true);
-        List<CostDO> costs = new ArrayList<>();
-        costs.add(new CostDO());
-        dmpDO.setCosts(costs);
+        dmpDO.setCosts(List.of(new CostDO()));
 
         return dmpDO;
     }
@@ -295,9 +307,7 @@ class DmpConsistencyUtilityTest {
 
     private <R extends HostDO> List<R> getHostList(R host, List<DatasetDO> datasets) {
         host.setDatasets(getReferenceHashes(datasets));
-        List<R> hosts = new ArrayList<>();
-        hosts.add(host);
-        return hosts;
+        return List.of(host);
     }
 
     private List<String> getReferenceHashes(List<DatasetDO> datasets) {
