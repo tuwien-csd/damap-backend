@@ -1,7 +1,6 @@
 package at.ac.tuwien.damap.rest;
 
-import at.ac.tuwien.damap.conversion.ExportFWFTemplate;
-import at.ac.tuwien.damap.conversion.ExportScienceEuropeTemplate;
+import at.ac.tuwien.damap.conversion.ExportTemplateBroker;
 import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import at.ac.tuwien.damap.security.SecurityService;
 import at.ac.tuwien.damap.validation.AccessValidator;
@@ -31,10 +30,7 @@ public class DmpDocumentResource {
     AccessValidator accessValidator;
 
     @Inject
-    ExportScienceEuropeTemplate exportScienceEuropeTemplate;
-
-    @Inject
-    ExportFWFTemplate exportFWFTemplate;
+    ExportTemplateBroker exportTemplateBroker;
 
     @Inject
     DmpService dmpService;
@@ -51,9 +47,7 @@ public class DmpDocumentResource {
 
         String filename = dmpService.getDefaultFileName(dmpId);
 
-        // TODO dynamically adapt exported template based on funder ID
-//        XWPFDocument document = exportScienceEuropeTemplate.exportTemplate(dmpId);
-        XWPFDocument document = exportFWFTemplate.exportTemplate(dmpId);
+        XWPFDocument document = exportTemplateBroker.exportTemplate(dmpId);
 
         StreamingOutput streamingOutput = new StreamingOutput() {
             @Override
