@@ -5,7 +5,6 @@ import at.ac.tuwien.damap.rest.dmp.domain.DatasetDO;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
 import at.ac.tuwien.damap.rest.dmp.domain.HostDO;
 import lombok.experimental.UtilityClass;
-import org.apache.commons.collections4.ListUtils;
 
 import java.util.ArrayList;
 import java.util.List;
