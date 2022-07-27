@@ -74,7 +74,6 @@ public class DmpConsistencyUtility {
         dmpDO.setDataGeneration(null);
 
         resetDocumentation(dmpDO);
-        resetLegalAndEthicalInformation(dmpDO);
         resetReuse(dmpDO);
 
         dmpDO.setRepositories(new ArrayList<>());
@@ -105,21 +104,6 @@ public class DmpConsistencyUtility {
     private void resetReuse(DmpDO dmpDO) {
         dmpDO.setTargetAudience(null);
         dmpDO.setTools(null);
-    }
-
-    /**
-     * Resets the all legal and ethical information of {@code dmpDO}.
-     * Used when no data is specified.
-     *
-     * @param dmpDO the DMP to be edited.
-     */
-    private void resetLegalAndEthicalInformation(DmpDO dmpDO) {
-        dmpDO.setPersonalData(false);
-        dmpDO.setSensitiveData(false);
-        dmpDO.setLegalRestrictions(false);
-        dmpDO.setHumanParticipants(false);
-        dmpDO.setEthicalIssuesExist(false);
-        dmpDO.setCommitteeReviewed(false);
     }
 
     private void removeDatasetFromHost(DatasetDO datasetDO, List<? extends HostDO> hosts) {
@@ -171,21 +155,24 @@ public class DmpConsistencyUtility {
     private void setConditionalDmpInfo(DmpDO dmpDO) {
         unsetOtherIfNotSpecified(dmpDO.getDataQuality(), EDataQualityType.OTHERS, dmpDO::setOtherDataQuality);
 
+        // Unset legal info if no datasets exist
+        boolean hasDatasets = dmpDO.getDatasets() != null && !dmpDO.getDatasets().isEmpty();
+
         // Sensitive Data
-        unsetListIfFalseOrNull(dmpDO.getSensitiveData(), dmpDO::setSensitiveDataSecurity);
+        unsetListIfFalseOrNull(dmpDO.getSensitiveData(), hasDatasets, dmpDO::setSensitiveDataSecurity);
         unsetOtherIfNotSpecified(dmpDO.getSensitiveDataSecurity(), ESecurityMeasure.OTHER, dmpDO::setOtherDataSecurityMeasures);
-        if (!Boolean.TRUE.equals(dmpDO.getSensitiveData())) {
+        if (!Boolean.TRUE.equals(dmpDO.getSensitiveData()) || !hasDatasets) {
             dmpDO.setSensitiveDataAccess(null);
         }
 
         // Personal Data
-        unsetListIfFalseOrNull(dmpDO.getPersonalData(), dmpDO::setPersonalDataCompliance);
+        unsetListIfFalseOrNull(dmpDO.getPersonalData(), hasDatasets, dmpDO::setPersonalDataCompliance);
         unsetOtherIfNotSpecified(dmpDO.getPersonalDataCompliance(), EComplianceType.OTHER, dmpDO::setOtherPersonalDataCompliance);
 
         // Legal Restrictions
-        unsetListIfFalseOrNull(dmpDO.getLegalRestrictions(), dmpDO::setLegalRestrictionsDocuments);
+        unsetListIfFalseOrNull(dmpDO.getLegalRestrictions(), hasDatasets, dmpDO::setLegalRestrictionsDocuments);
         unsetOtherIfNotSpecified(dmpDO.getLegalRestrictionsDocuments(), EAgreement.OTHER, dmpDO::setOtherLegalRestrictionsDocument);
-        if (!Boolean.TRUE.equals(dmpDO.getLegalRestrictions())) {
+        if (!Boolean.TRUE.equals(dmpDO.getLegalRestrictions()) || !hasDatasets) {
             dmpDO.setLegalRestrictionsComment(null);
             dmpDO.setDataRightsAndAccessControl(null);
         }
@@ -195,15 +182,15 @@ public class DmpConsistencyUtility {
         }
 
         // Costs
-        unsetListIfFalseOrNull(dmpDO.getCostsExist(), dmpDO::setCosts);
+        unsetListIfFalseOrNull(dmpDO.getCostsExist(), hasDatasets, dmpDO::setCosts);
     }
 
     private boolean hasDatasetsOfAccessType(List<DatasetDO> datasetDOList, EDataAccessType accessType) {
         return datasetDOList.stream().anyMatch(datasetDO -> datasetDO.getDataAccess() == accessType);
     }
 
-    private <R> void unsetListIfFalseOrNull(Boolean condition, Consumer<List<R>> consumer) {
-        if (!Boolean.TRUE.equals(condition)) {
+    private <R> void unsetListIfFalseOrNull(Boolean condition1, Boolean condition2, Consumer<List<R>> consumer) {
+        if (!(Boolean.TRUE.equals(condition1) && Boolean.TRUE.equals(condition2))) {
             consumer.accept(new ArrayList<>());
         }
     }

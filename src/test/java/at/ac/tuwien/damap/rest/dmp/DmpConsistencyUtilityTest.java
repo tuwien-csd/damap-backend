@@ -177,31 +177,31 @@ class DmpConsistencyUtilityTest {
         DmpDO dmpDO = getDmp(EDataKind.NONE);
         DmpConsistencyUtility.enforceDmpConsistency(dmpDO);
 
-        assertFalse(dmpDO.getPersonalData());
+        assertTrue(dmpDO.getPersonalData());
         assertFalse(dmpDO.getPersonalDataCris());
         assertTrue(dmpDO.getPersonalDataCompliance().isEmpty());
         assertNull(dmpDO.getOtherPersonalDataCompliance());
 
-        assertFalse(dmpDO.getSensitiveData());
+        assertTrue(dmpDO.getSensitiveData());
         assertNull(dmpDO.getSensitiveDataCris());
         assertTrue(dmpDO.getSensitiveDataSecurity().isEmpty());
         assertNull(dmpDO.getOtherDataSecurityMeasures());
         assertNull(dmpDO.getSensitiveDataAccess());
 
-        assertFalse(dmpDO.getLegalRestrictions());
+        assertTrue(dmpDO.getLegalRestrictions());
         assertTrue(dmpDO.getLegalRestrictionsCris());
         assertTrue(dmpDO.getLegalRestrictionsDocuments().isEmpty());
         assertNull(dmpDO.getOtherLegalRestrictionsDocument());
         assertNull(dmpDO.getLegalRestrictionsComment());
         assertNull(dmpDO.getDataRightsAndAccessControl());
 
-        assertFalse(dmpDO.getHumanParticipants());
+        assertTrue(dmpDO.getHumanParticipants());
         assertNull(dmpDO.getHumanParticipantsCris());
 
-        assertFalse(dmpDO.getEthicalIssuesExist());
+        assertTrue(dmpDO.getEthicalIssuesExist());
         assertFalse(dmpDO.getEthicalIssuesExistCris());
 
-        assertFalse(dmpDO.getCommitteeReviewed());
+        assertTrue(dmpDO.getCommitteeReviewed());
         assertTrue(dmpDO.getCommitteeReviewedCris());
     }
 
