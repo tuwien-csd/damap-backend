@@ -11,17 +11,17 @@ import java.util.*;
 
 @QuarkusTest
 
-public class DocumentConversionServiceTest {
+public class AbstractTemplateExportFunctionsTest {
 
     @Inject
-    Instance<DocumentConversionService> documentConversionServices;
+    Instance<AbstractTemplateExportFunctions> documentConversionServices;
 
     @Inject
     Instance<TemplateFileBrokerService> templateFileBrokerServices;
 
     @Test
     public void testLoadTemplate() throws Exception {
-        for (DocumentConversionService documentConversionService : documentConversionServices) {
+        for (AbstractTemplateExportFunctions documentConversionService : documentConversionServices) {
             //testing load template
             //TODO: generate blank document as a test
             //TODO: notify when there is no template file available

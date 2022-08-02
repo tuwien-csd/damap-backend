@@ -14,7 +14,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
 import javax.inject.Inject;
 
 @JBossLog
-public class DocumentConversionService {
+public abstract class AbstractTemplateExportFunctions {
 
     @Inject
     DmpRepo dmpRepo;

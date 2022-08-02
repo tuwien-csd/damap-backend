@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  * This class describes the variable replacements flow for templates that keep to the science europe guidelines
  */
 @JBossLog
-public class ScienceEuropeComponents extends AbstractExportTemplate {
+public abstract class AbstractTemplateExportScienceEuropeComponents extends AbstractTemplateExportSetup {
 
     protected Map<Long, String> datasetTableIDs = new HashMap<>();
 

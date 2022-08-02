@@ -7,7 +7,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 @JBossLog
-public class ExportScienceEuropeTemplate extends ScienceEuropeComponents {
+public class ExportScienceEuropeTemplate extends AbstractTemplateExportScienceEuropeComponents {
 
     public XWPFDocument exportTemplate(long dmpId) {
         //load project

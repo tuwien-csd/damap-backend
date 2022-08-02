@@ -4,12 +4,11 @@ import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.*;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.util.*;
 
 @ApplicationScoped
 @JBossLog
-public class ExportFWFTemplate extends ScienceEuropeComponents{
+public class ExportFWFTemplate extends AbstractTemplateExportScienceEuropeComponents {
 
     public XWPFDocument exportTemplate(long dmpId) {
 

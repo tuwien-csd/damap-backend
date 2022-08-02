@@ -17,7 +17,7 @@ import java.util.*;
  * This class describes necessary setup for all template export classes.
  */
 @JBossLog
-public abstract class AbstractExportTemplate extends DocumentConversionService {
+public abstract class AbstractTemplateExportSetup extends AbstractTemplateExportFunctions {
 
     @Inject
     RepositoriesService repositoriesService;
