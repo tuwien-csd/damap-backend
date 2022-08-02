@@ -1,6 +1,7 @@
 package at.ac.tuwien.damap.rest.dmp.service;
 
-import at.ac.tuwien.damap.domain.*;
+import at.ac.tuwien.damap.domain.Access;
+import at.ac.tuwien.damap.domain.Dmp;
 import at.ac.tuwien.damap.enums.EFunctionRole;
 import at.ac.tuwien.damap.repo.AccessRepo;
 import at.ac.tuwien.damap.repo.DmpRepo;
@@ -22,7 +23,10 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 @ApplicationScoped
 @JBossLog
@@ -68,6 +72,7 @@ public class DmpService {
     @Transactional
     public DmpDO create(@Valid DmpDO dmpDO, String editedBy) {
         log.info("Creating new DMP");
+        DmpConsistencyUtility.enforceDmpConsistency(dmpDO);
         Dmp dmp = DmpDOMapper.mapDOtoEntity(dmpDO, new Dmp(), mapperService);
         dmp.setCreated(new Date());
         updateDmpSupplementalInfo(dmp);
@@ -79,6 +84,7 @@ public class DmpService {
     @Transactional
     public DmpDO update(@Valid DmpDO dmpDO) {
         log.info("Updating DMP with id " + dmpDO.getId());
+        DmpConsistencyUtility.enforceDmpConsistency(dmpDO);
         Dmp dmp = dmpRepo.findById(dmpDO.getId());
         boolean projectSelectionChanged = projectSelectionChanged(dmp, dmpDO);
         DmpDOMapper.mapDOtoEntity(dmpDO, dmp, mapperService);
