@@ -23,6 +23,13 @@ public class ExportTemplateBroker {
     @Inject
     ExportFWFTemplate exportFWFTemplate;
 
+    /**
+     * Decides which export template to use.
+     * Currently only supports FWF and Science Europe templates.
+     *
+     * @param dmpId
+     * @return
+     */
     public XWPFDocument exportTemplate(long dmpId){
         DmpDO dmpDO = dmpService.getDmpById(dmpId);
         if (dmpDO.getProject() != null)

@@ -13,8 +13,10 @@ import java.text.NumberFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * This class describes the variable replacements flow for templates that keep to the science europe guidelines
+ */
 @JBossLog
-//This class describes the variable replacements flow for templates that keep to the science europe guidelines
 public class ScienceEuropeComponents extends AbstractExportTemplate {
 
     protected Map<Long, String> datasetTableIDs = new HashMap<>();

@@ -11,11 +11,12 @@ import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 
 import javax.inject.Inject;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * This class describes necessary setup for all template export classes.
+ */
 @JBossLog
-//This class describes necessary setup for all template export classes.
 public abstract class AbstractExportTemplate extends DocumentConversionService {
 
     @Inject

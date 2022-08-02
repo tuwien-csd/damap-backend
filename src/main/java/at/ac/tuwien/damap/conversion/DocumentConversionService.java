@@ -25,7 +25,15 @@ public class DocumentConversionService {
     //Convert the date for readable format for the document
     protected final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
-    //Method to load the export template
+    /**
+     * Method to load the export template
+     *
+     * @param template
+     * @param startChar
+     * @param endChar
+     * @return
+     * @throws Exception
+     */
     public XWPFDocument loadTemplate (InputStream template, String startChar, String endChar) throws Exception{
         //Extract document using Apache POI https://poi.apache.org/
         XWPFDocument document = new XWPFDocument(template);
@@ -33,15 +41,16 @@ public class DocumentConversionService {
         return templateFormatting(document, startChar, endChar);
     }
 
-    //Method to replace variable in the document's paragraphs
+    /**
+     * Method to replace variable in the document's paragraphs
+     * Each XWPFRun will contain part of a text. These are split weirdly (by Word?).
+     * Special characters will usually be separated from strings, but might be connected if several words are within that textblock.
+     * Also capitalized letters seem to behave differently and are sometimes separated from the characters following them.
+     *
+     * @param xwpfParagraphs
+     * @param replacements
+     */
     static void replaceInParagraphs(List<XWPFParagraph> xwpfParagraphs, Map<String, String> replacements) {
-
-        /*
-            Each XWPFRun will contain part of a text. These are split weirdly (by Word?).
-            Special characters will usually be separated from strings, but might be connected if several words are within that textblock.
-            Also capitalized letters seem to behave differently and are sometimes separated from the characters following them.
-         */
-
         for (XWPFParagraph xwpfParagraph : xwpfParagraphs) {
             List<XWPFRun> xwpfRuns = xwpfParagraph.getRuns();
             for (XWPFRun xwpfRun : xwpfRuns) {
@@ -76,9 +85,14 @@ public class DocumentConversionService {
         }
     }
 
-    //Method to do a replacement of variable with desired value
+    /**
+     * Method to do a replacement of variable with desired value
+     *
+     * @param replacements
+     * @param var
+     * @param dmpContent
+     */
     public void addReplacement(Map<String, String> replacements, String var, Object dmpContent) {
-        //null case handling
         String content = (dmpContent == null) ? "" : String.valueOf(dmpContent);
         if (!Objects.equals(content, "")) {
             if (dmpContent.getClass() == java.sql.Timestamp.class || dmpContent.getClass() == Date.class) {
@@ -88,7 +102,14 @@ public class DocumentConversionService {
         replacements.put(var, content);
     }
 
-    //Method to add new row in a table
+    /**
+     * Method to add new row in a table
+     *
+     * @param sourceTableRow
+     * @param pos
+     * @return
+     * @throws Exception
+     */
     public XWPFTableRow insertNewTableRow(XWPFTableRow sourceTableRow, int pos) throws Exception {
         XWPFTable table = sourceTableRow.getTable();
         CTRow newCTRrow = CTRow.Factory.parse(sourceTableRow.getCtRow().newInputStream());
@@ -97,7 +118,13 @@ public class DocumentConversionService {
         return tableRow;
     }
 
-    //Method that is required to be executed for table content modification
+    /**
+     * Method that is required to be executed to insert data into a table
+     *
+     * @param table
+     * @param newRow
+     * @param cellContent
+     */
     static void insertTableCells(XWPFTable table, XWPFTableRow newRow, ArrayList<String> cellContent) {
         List<XWPFTableCell> cells = newRow.getTableCells();
         for (XWPFTableCell cell : cells) {
@@ -110,6 +137,12 @@ public class DocumentConversionService {
         commitTableRows(table);
     }
 
+    /**
+     * Method that is required to be executed to replace variables in tables
+     *
+     * @param table
+     * @param replacements
+     */
     static void replaceTableVariables(XWPFTable table, Map<String, String> replacements){
         //this replaces variables in tables (e.g. costcurrency)
         List<XWPFTableRow> tableRows = table.getRows();
@@ -123,7 +156,11 @@ public class DocumentConversionService {
         }
     }
 
-    //Method that is required to be executed for table content modification
+    /**
+     * Method that is required to be executed for table content modification
+     *
+     * @param table
+     */
     static void commitTableRows(XWPFTable table) {
         int rowNr = 0;
         for (XWPFTableRow tableRow : table.getRows()) {
@@ -131,7 +168,12 @@ public class DocumentConversionService {
         }
     }
 
-    //Method to do a replacement specific in document's footer area
+    /**
+     * Method to do a replacement specific in document's footer area
+     *
+     * @param doc
+     * @param replacements
+     */
     public void replaceTextInFooter(XWPFDocument doc, Map<String, String> replacements) {
         for (XWPFFooter footer : doc.getFooterList()) {
             for (XWPFParagraph xwpfParagraph : footer.getParagraphs()) {
@@ -148,7 +190,12 @@ public class DocumentConversionService {
         }
     }
 
-    //Method to combine multiple values become one string. Can be used for generate values from a list of object or replace one variable with multiple values in one execution.
+    /**
+     * Method to combine multiple values become one string. Can be used for generate values from a list of object or replace one variable with multiple values in one execution.
+     *
+     * @param variableList
+     * @return
+     */
     public String multipleVariable(List<String> variableList) {
         switch (variableList.size()) {
             case 0:
@@ -160,7 +207,15 @@ public class DocumentConversionService {
         }
     }
 
-    //Method to format the template. Parsing all text inside the document and preprocessing the variables (currently, text started with "[" and end with "]") that are seperated to multiple runs.
+    /**
+     * Method to format the template. Parsing all text inside the document and preprocessing the variables (currently, text started with "[" and end with "]") that are seperated to multiple runs.
+     *
+     * @param document
+     * @param startChar
+     * @param endChar
+     * @return
+     * @throws Exception
+     */
     public XWPFDocument templateFormatting(XWPFDocument document, String startChar, String endChar) throws Exception {
 
         log.info("Formatting template document");
@@ -180,6 +235,13 @@ public class DocumentConversionService {
         return document;
     }
 
+    /**
+     * Loop to format tables within tables in the template.
+     *
+     * @param xwpfTables
+     * @param startChar
+     * @param endChar
+     */
     public void formattingTable(List<XWPFTable> xwpfTables, String startChar, String endChar){
         if (xwpfTables != null) {
             for (XWPFTable xwpfTable : xwpfTables) {
@@ -193,7 +255,13 @@ public class DocumentConversionService {
         }
     }
 
-    //Method to preprocessing format of the paragraph list
+    /**
+     * Method to preprocessing format of the paragraph list
+     *
+     * @param xwpfParagraphs
+     * @param startChar
+     * @param endChar
+     */
     public void formattingParagraph(List<XWPFParagraph> xwpfParagraphs, String startChar, String endChar) {
         StringBuilder sb = new StringBuilder("");
         boolean mergeRun = false;
