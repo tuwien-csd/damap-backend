@@ -12,7 +12,6 @@ public class ExportScienceEuropeTemplate extends AbstractTemplateExportScienceEu
     public XWPFDocument exportTemplate(long dmpId) {
         //load project
         exportSetup(dmpId);
-        determinteDatasetIDs();
         //load template and properties
         String startChar = "[";
         String endChar = "]";
@@ -28,38 +27,8 @@ public class ExportScienceEuropeTemplate extends AbstractTemplateExportScienceEu
         xwpfTables = document.getTables();
 
         //First step of the export: create a mapping of variables and its desired replacement values
-
-        //Pre Section including general information from the project,
-        // e.g. project title, coordinator, contact person, project and grant number.
-        log.debug("Export steps: Pre section");
-        titlePage();
-        contributorInformation();
-
-        //Section 1 contains the dataset information table and how data is generated or used
-        log.debug("Export steps: Section 1");
-        datasetsInformation();
-
-        //Section 2 contains about the documentation and data quality including versioning and used metadata.
-        log.debug("Export steps: Section 2");
-        sectionTwo();
-
-        //Section 3 contains storage and backup that will be used for the data in the research
-        // including the data access and sensitive aspect.
-        log.debug("Export steps: Section 3");
-        storageInformation();
-        sensitiveDataInformation();
-
-        //Section 4 contains legal and ethical requirements.
-        log.debug("Export steps: Section 4");
-        legalEthicalInformation();
-
-        //Section 5 contains information about data publication and long term preservation.
-        log.debug("Export steps: Section 5");
-        repoinfoAndToolsInformation();
-
-        //Section 6 contains resources and cost information if necessary.
-        log.debug("Export steps: Section 6");
-        costInformation();
+        //load replacements values for science europe sections
+        loadScienceEuropeContent();
 
         //Second step of the export: variables replacement with a mapping reference that has been defined
         log.debug("Export steps: Replace in paragraph");
@@ -76,6 +45,13 @@ public class ExportScienceEuropeTemplate extends AbstractTemplateExportScienceEu
 
         log.debug("Export steps: Export finished");
         return document;
+    }
+
+    @Override
+    public void loadScienceEuropeContent() {
+        super.loadScienceEuropeContent();
+        //Section 2 contains about the documentation and data quality including versioning and used metadata.
+        sectionTwo();
     }
 
     //Section 2 variables replacement

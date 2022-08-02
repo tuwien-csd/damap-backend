@@ -11,9 +11,8 @@ import java.util.*;
 public class ExportFWFTemplate extends AbstractTemplateExportScienceEuropeComponents {
 
     public XWPFDocument exportTemplate(long dmpId) {
-
+        //load project
         exportSetup(dmpId);
-        determinteDatasetIDs();
         //load template and properties
         String startChar = "[";
         String endChar = "]";
@@ -32,19 +31,8 @@ public class ExportFWFTemplate extends AbstractTemplateExportScienceEuropeCompon
         //get tables within template table
         List<XWPFTable> templateXwpfTables = parseContentTables(templateTable);
 
-        titlePage();
-        contributorInformation();
-        costInformation();
-        datasetsInformation();
-
-        //section IV
-        storageInformation();
-        sensitiveDataInformation();
-        repoinfoAndToolsInformation();
-
-        //section V
-        legalEthicalInformation();
-
+        //load replacements values for science europe sections
+        loadScienceEuropeContent();
         //in FWF template this replaces paragraphs within the template table
         replaceTableVariables(templateTable, replacements);
         //this replaces the tables with the main template table

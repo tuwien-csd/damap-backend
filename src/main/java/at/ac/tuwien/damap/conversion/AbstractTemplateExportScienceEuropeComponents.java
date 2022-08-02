@@ -21,6 +21,23 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
 
     protected Map<Long, String> datasetTableIDs = new HashMap<>();
 
+    @Override
+    protected void exportSetup(long dmpId) {
+        super.exportSetup(dmpId);
+        determinteDatasetIDs();
+    }
+
+    public void loadScienceEuropeContent(){
+        titlePage();
+        contributorInformation();
+        datasetsInformation();
+        storageInformation();
+        sensitiveDataInformation();
+        legalEthicalInformation();
+        repoinfoAndToolsInformation();
+        costInformation();
+    }
+
     public void determinteDatasetIDs(){
         int newIDprogression = 0;
         int reuseIDprogression = 0;
