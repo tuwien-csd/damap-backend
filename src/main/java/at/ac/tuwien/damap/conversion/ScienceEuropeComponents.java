@@ -999,9 +999,9 @@ public class ScienceEuropeComponents extends AbstractExportTemplate {
     public void composeTableDatasetDeletion(XWPFTable xwpfTable){
         log.debug("Export steps: Dataset Deletion Table");
 
-        if (closedDatasets.size() > 0) {
+        if (deletedDatasets.size() > 0) {
 
-            for (int i = 0; i < closedDatasets.size(); i++) {
+            for (int i = 0; i < deletedDatasets.size(); i++) {
                 XWPFTableRow sourceTableRow = xwpfTable.getRow(2);
                 XWPFTableRow newRow = new XWPFTableRow(sourceTableRow.getCtRow(), xwpfTable);
 
@@ -1013,23 +1013,23 @@ public class ScienceEuropeComponents extends AbstractExportTemplate {
 
                 ArrayList<String> docVar = new ArrayList<>();
                 //TODO datasets and hosts are now connected by Distribution objects
-                if (closedDatasets.get(i).getTitle() != null)
-                    docVar.add(closedDatasets.get(i).getTitle());
+                if (deletedDatasets.get(i).getTitle() != null)
+                    docVar.add(deletedDatasets.get(i).getTitle());
                 else
                     docVar.add("");
 
-                if (closedDatasets.get(i).getDateOfDeletion() != null)
-                    docVar.add(formatter.format(closedDatasets.get(i).getDateOfDeletion()));
+                if (deletedDatasets.get(i).getDateOfDeletion() != null)
+                    docVar.add(formatter.format(deletedDatasets.get(i).getDateOfDeletion()));
                 else
                     docVar.add("");
 
-                if (closedDatasets.get(i).getReasonForDeletion() != null)
-                    docVar.add(closedDatasets.get(i).getReasonForDeletion());
+                if (deletedDatasets.get(i).getReasonForDeletion() != null)
+                    docVar.add(deletedDatasets.get(i).getReasonForDeletion());
                 else
                     docVar.add("");
 
-                if (closedDatasets.get(i).getDeletionPerson() != null)
-                    docVar.add(closedDatasets.get(i).getDeletionPerson().getFirstName() + " " + closedDatasets.get(i).getDeletionPerson().getLastName());
+                if (deletedDatasets.get(i).getDeletionPerson() != null)
+                    docVar.add(deletedDatasets.get(i).getDeletionPerson().getFirstName() + " " + deletedDatasets.get(i).getDeletionPerson().getLastName());
                 else
                     docVar.add("");
 

@@ -11,9 +11,6 @@ import java.util.*;
 @JBossLog
 public class ExportFWFTemplate extends ScienceEuropeComponents{
 
-    @Inject
-    TemplateFileBrokerService templateFileBrokerService;
-
     public XWPFDocument exportTemplate(long dmpId) {
 
         exportSetup(dmpId);

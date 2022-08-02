@@ -23,7 +23,7 @@ public class DocumentConversionService {
     InternalStorageTranslationRepo internalStorageTranslationRepo;
 
     //Convert the date for readable format for the document
-    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    protected final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
     //Method to load the export template
     public XWPFDocument loadTemplate (InputStream template, String startChar, String endChar) throws Exception{

@@ -33,10 +33,9 @@ public abstract class AbstractExportTemplate extends DocumentConversionService {
     protected Map<String, String> replacements = new HashMap<>();
     protected Map<String, String> footerMap = new HashMap<>();
     //Convert the date for readable format for the document
-    protected final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     protected Dmp dmp = null;
     protected List<Dataset> datasets = null;
-    protected List<Dataset> closedDatasets = null;
+    protected List<Dataset> deletedDatasets = null;
     protected List<Cost> costList = null;
     //elements of the document that need to be navigated through
     protected Properties prop = null;
@@ -48,7 +47,7 @@ public abstract class AbstractExportTemplate extends DocumentConversionService {
         //Loading data related to the project from database
         dmp = dmpRepo.findById(dmpId);
         datasets = dmp.getDatasetList();
-        closedDatasets = getClosedDatasets(datasets);
+        deletedDatasets = getDeletedDatasets(datasets);
         costList = dmp.getCosts();
 
         try {
@@ -58,15 +57,15 @@ public abstract class AbstractExportTemplate extends DocumentConversionService {
         }
     }
 
-    private List<Dataset> getClosedDatasets(List<Dataset> datasets) {
-        List<Dataset> closedDatasets = new ArrayList<>();
+    private List<Dataset> getDeletedDatasets(List<Dataset> datasets) {
+        List<Dataset> deletedDatasets = new ArrayList<>();
         for (Dataset dataset : datasets) {
             if (dataset.getDelete() != null) {
                 if (dataset.getDelete()) {
-                    closedDatasets.add(dataset);
+                    deletedDatasets.add(dataset);
                 }
             }
         }
-        return closedDatasets;
+        return deletedDatasets;
     }
 }
