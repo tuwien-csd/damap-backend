@@ -395,9 +395,9 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 else {
                     //security measurement size defined is/or usage
                     if (dataSecurityList.size() == 1) {
-                        sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.no") + " " + multipleVariable(dataSecurityList) + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.singular");
+                        sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.avail") + " " + multipleVariable(dataSecurityList) + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.singular");
                     } else {
-                        sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.no") + " " + multipleVariable(dataSecurityList) + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.multiple");
+                        sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.avail") + " " + multipleVariable(dataSecurityList) + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.multiple");
                     }
                 }
 
@@ -440,11 +440,9 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
 
         addReplacement(replacements, "[repoinformation]", repoInformation);
 
-        addReplacement(replacements, "[targetaudience]", dmp.getTargetAudience());
-
         if (dmp.getTools() != null) {
             if (!Objects.equals(dmp.getTools(), "")) {
-                addReplacement(replacements, "[tools]", loadResourceService.loadVariableFromResource(prop, "tools.avail") + dmp.getTools());
+                addReplacement(replacements, "[tools]", loadResourceService.loadVariableFromResource(prop, "tools.avail") + " " + dmp.getTools());
             }
             else {
                 addReplacement(replacements, "[tools]", loadResourceService.loadVariableFromResource(prop, "tools.no"));
@@ -452,6 +450,18 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
         }
         else {
             addReplacement(replacements, "[tools]", loadResourceService.loadVariableFromResource(prop, "tools.no"));
+        }
+
+        if (dmp.getRestrictedDataAccess() != null) {
+            if (!Objects.equals(dmp.getRestrictedDataAccess(), "")) {
+                addReplacement(replacements, "[restrictedAccessInfo]", loadResourceService.loadVariableFromResource(prop, "restrictedAccess.avail") + " " + dmp.getRestrictedDataAccess());
+            }
+            else {
+                addReplacement(replacements, "[restrictedAccessInfo]", loadResourceService.loadVariableFromResource(prop, ""));
+            }
+        }
+        else {
+            addReplacement(replacements, "[restrictedAccessInfo]", loadResourceService.loadVariableFromResource(prop, ""));
         }
     }
 
@@ -762,16 +772,6 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 else {
                     docVar.add("");
                 }
-
-                if (reusedDatasets.get(i).getType() != null) {
-                    docVar.add(reusedDatasets.get(i).getType().stream().map(EDataType::getValue).collect(Collectors.joining(", ")));
-                }
-                else {
-                    docVar.add("");
-                }
-
-                //TODO: dataset format still not available
-                docVar.add("");
 
                 if (reusedDatasets.get(i).getDatasetIdentifier() != null) {
                     docVar.add(reusedDatasets.get(i).getDatasetIdentifier().getIdentifier());

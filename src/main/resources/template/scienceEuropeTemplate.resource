@@ -3,10 +3,12 @@ metadata.no=There is no specific metadata has been defined yet for this project.
 
 dataOrganisation.no=There is no specific document structure has been defined yet for this project.
 
-repositories.avail=The repository used in this project described in the following paragraph.
+repositories.avail=The repositories used in this project are described in the following paragraph:
 
-tools.avail=Specific tool or software is required to access and reuse the data: 
+tools.avail=Methods or software needed to access and use data:
 tools.no=No specific tool or software is required to access and reuse the data
+
+restrictedAccess.avail=Description of protocol to access restricted data:
 
 costs.avail=There are costs dedicated to data management and ensuring that data will be FAIR as outlined below.
 costs.no=There are no costs dedicated to data management and ensuring that data will be FAIR.
