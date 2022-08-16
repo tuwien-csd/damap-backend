@@ -72,6 +72,7 @@ public class DmpConsistencyUtility {
     private void removeDatasetRelatedInfo(DmpDO dmpDO) {
         dmpDO.setDatasets(new ArrayList<>());
         dmpDO.setDataGeneration(null);
+        dmpDO.setDataRightsAndAccessControl(null);
 
         resetDocumentation(dmpDO);
         resetReuse(dmpDO);
@@ -174,7 +175,6 @@ public class DmpConsistencyUtility {
         unsetOtherIfNotSpecified(dmpDO.getLegalRestrictionsDocuments(), EAgreement.OTHER, dmpDO::setOtherLegalRestrictionsDocument);
         if (!Boolean.TRUE.equals(dmpDO.getLegalRestrictions()) || !hasDatasets) {
             dmpDO.setLegalRestrictionsComment(null);
-            dmpDO.setDataRightsAndAccessControl(null);
         }
 
         if (dmpDO.getExternalStorage().isEmpty()) {
