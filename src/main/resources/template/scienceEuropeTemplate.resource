@@ -28,7 +28,7 @@ sensitiveAccess
 
 personal.avail=In this project, we will process personal data (see section 1a).
 personal.no=At this stage, it is not foreseen to process any personal data in the project. If this changes, advice will be sought from the data protection specialist at our institution, and the DMP will be updated.
-personalDataset=will containing personal data.
+personalDataset=will contain personal data.
 personalCompliance=To ensure compliance with data protection laws,
 personalComplianceUsed=will be used.
 

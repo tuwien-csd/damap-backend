@@ -33,6 +33,7 @@ public class ExportFWFTemplate extends AbstractTemplateExportScienceEuropeCompon
 
         //load replacements values for science europe sections
         loadScienceEuropeContent();
+        replaceInParagraphs(xwpfParagraphs, replacements);
         //in FWF template this replaces paragraphs within the template table
         replaceTableVariables(templateTable, replacements);
         //this replaces the tables with the main template table
