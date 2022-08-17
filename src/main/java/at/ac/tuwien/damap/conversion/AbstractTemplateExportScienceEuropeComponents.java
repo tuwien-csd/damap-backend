@@ -32,6 +32,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
         contributorInformation();
         datasetsInformation();
         storageInformation();
+        dataQuality();
         sensitiveDataInformation();
         legalEthicalInformation();
         repoinfoAndToolsInformation();
@@ -353,6 +354,38 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
         addReplacement(replacements,"[storage]", storageVar);
     }
 
+    public void dataQuality(){
+        String metadata = "";
+
+        if (dmp.getMetadata() == null) {
+            addReplacement(replacements, "[metadata]", loadResourceService.loadVariableFromResource(prop, "metadata.no"));
+        }
+        else {
+            if (dmp.getMetadata().equals("")) {
+                addReplacement(replacements,"[metadata]", loadResourceService.loadVariableFromResource(prop, "metadata.no"));
+            }
+            else {
+                metadata = dmp.getMetadata();
+                if (metadata.charAt(metadata.length()-1)!='.') {
+                    metadata = metadata + '.';
+                }
+                addReplacement(replacements,"[metadata]", metadata + " " + loadResourceService.loadVariableFromResource(prop, "metadata.avail"));
+            }
+        }
+
+        if (dmp.getStructure() == null) {
+            addReplacement(replacements,"[dataorganisation]", loadResourceService.loadVariableFromResource(prop, "dataOrganisation.no"));
+        }
+        else {
+            if (dmp.getStructure().equals("")) {
+                addReplacement(replacements,"[dataorganisation]", loadResourceService.loadVariableFromResource(prop, "dataOrganisation.no"));
+            }
+            else {
+                addReplacement(replacements,"[dataorganisation]", dmp.getStructure());
+            }
+        }
+    }
+
     public void sensitiveDataInformation() {
         log.debug("sensitive data part");
 
@@ -395,9 +428,9 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 else {
                     //security measurement size defined is/or usage
                     if (dataSecurityList.size() == 1) {
-                        sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.no") + " " + multipleVariable(dataSecurityList) + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.singular");
+                        sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.avail") + " " + multipleVariable(dataSecurityList) + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.singular");
                     } else {
-                        sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.no") + " " + multipleVariable(dataSecurityList) + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.multiple");
+                        sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.avail") + " " + multipleVariable(dataSecurityList) + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.multiple");
                     }
                 }
 
@@ -440,11 +473,9 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
 
         addReplacement(replacements, "[repoinformation]", repoInformation);
 
-        addReplacement(replacements, "[targetaudience]", dmp.getTargetAudience());
-
         if (dmp.getTools() != null) {
             if (!Objects.equals(dmp.getTools(), "")) {
-                addReplacement(replacements, "[tools]", loadResourceService.loadVariableFromResource(prop, "tools.avail") + dmp.getTools());
+                addReplacement(replacements, "[tools]", loadResourceService.loadVariableFromResource(prop, "tools.avail") + " " + dmp.getTools());
             }
             else {
                 addReplacement(replacements, "[tools]", loadResourceService.loadVariableFromResource(prop, "tools.no"));
@@ -452,6 +483,18 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
         }
         else {
             addReplacement(replacements, "[tools]", loadResourceService.loadVariableFromResource(prop, "tools.no"));
+        }
+
+        if (dmp.getRestrictedDataAccess() != null) {
+            if (!Objects.equals(dmp.getRestrictedDataAccess(), "")) {
+                addReplacement(replacements, "[restrictedAccessInfo]", loadResourceService.loadVariableFromResource(prop, "restrictedAccess.avail") + " " + dmp.getRestrictedDataAccess());
+            }
+            else {
+                addReplacement(replacements, "[restrictedAccessInfo]", loadResourceService.loadVariableFromResource(prop, ""));
+            }
+        }
+        else {
+            addReplacement(replacements, "[restrictedAccessInfo]", loadResourceService.loadVariableFromResource(prop, ""));
         }
     }
 
@@ -675,7 +718,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
     public void composeTableNewDatasets(XWPFTable xwpfTable){
         log.debug("Export steps: New Dataset Table");
 
-        List<Dataset> newDatasets = datasets.stream().filter(dataset -> dataset.getSource().equals(EDataSource.NEW)).collect(Collectors.toList());
+        List<Dataset> newDatasets = getNewDatasets();
         if (newDatasets.size() > 0) {
             for (int i = 0; i < newDatasets.size(); i++) {
 
@@ -737,6 +780,10 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
         xwpfTable.removeRow(1);
     }
 
+    public List<Dataset> getNewDatasets(){
+        return datasets.stream().filter(dataset -> dataset.getSource().equals(EDataSource.NEW)).collect(Collectors.toList());
+    }
+
     public void composeTableReusedDatasets(XWPFTable xwpfTable){
         log.debug("Export steps: Reused Dataset Table");
 
@@ -762,16 +809,6 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 else {
                     docVar.add("");
                 }
-
-                if (reusedDatasets.get(i).getType() != null) {
-                    docVar.add(reusedDatasets.get(i).getType().stream().map(EDataType::getValue).collect(Collectors.joining(", ")));
-                }
-                else {
-                    docVar.add("");
-                }
-
-                //TODO: dataset format still not available
-                docVar.add("");
 
                 if (reusedDatasets.get(i).getDatasetIdentifier() != null) {
                     docVar.add(reusedDatasets.get(i).getDatasetIdentifier().getIdentifier());
@@ -855,8 +892,9 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
     public void composeTableDatasetPublication(XWPFTable xwpfTable){
         log.debug("Export steps: Data Publication Table");
 
-        if (datasets.size() > 0) {
-            for (int i = 0; i < datasets.size(); i++) {
+        List<Dataset> newDatasets = getNewDatasets();
+        if (newDatasets.size() > 0) {
+            for (int i = 0; i < newDatasets.size(); i++) {
 
                 XWPFTableRow sourceTableRow = xwpfTable.getRow(2);
                 XWPFTableRow newRow = new XWPFTableRow(sourceTableRow.getCtRow(), xwpfTable);
@@ -868,17 +906,17 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 }
 
                 ArrayList<String> docVar = new ArrayList<String>();
-                docVar.add(datasetTableIDs.get(datasets.get(i).id));
+                docVar.add(datasetTableIDs.get(newDatasets.get(i).id));
 
-                if (datasets.get(i).getDataAccess() != null) {
-                    docVar.add(datasets.get(i).getDataAccess().toString());
+                if (newDatasets.get(i).getDataAccess() != null) {
+                    docVar.add(newDatasets.get(i).getDataAccess().toString());
                 }
                 else {
                     docVar.add("");
                 }
 
-                if (datasets.get(i).getLegalRestrictions() != null) {
-                    if (datasets.get(i).getLegalRestrictions()) {
+                if (newDatasets.get(i).getLegalRestrictions() != null) {
+                    if (newDatasets.get(i).getLegalRestrictions()) {
                         if (dmp.getLegalRestrictionsComment() != null)
                             docVar.add(dmp.getLegalRestrictionsComment());
                         else
@@ -891,15 +929,15 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                     docVar.add("");
                 }
 
-                if (datasets.get(i).getStart() != null) {
-                    docVar.add(formatter.format(datasets.get(i).getStart()));
+                if (newDatasets.get(i).getStart() != null) {
+                    docVar.add(formatter.format(newDatasets.get(i).getStart()));
                 }
                 else {
                     docVar.add("");
                 }
                 //TODO datasets and hosts are now connected by Distribution objects
-                if (datasets.get(i).getDistributionList() != null){
-                    List<Distribution> distributions = datasets.get(i).getDistributionList();
+                if (newDatasets.get(i).getDistributionList() != null){
+                    List<Distribution> distributions = newDatasets.get(i).getDistributionList();
                     List<String> repositories = new ArrayList<>();
                     if (distributions.size() > 0) {
                         for (Distribution distribution: distributions) {
@@ -921,8 +959,8 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 //TODO: PID not yet defined
                 docVar.add("");
 
-                if (datasets.get(i).getLicense() != null) {
-                    switch (datasets.get(i).getLicense()) {
+                if (newDatasets.get(i).getLicense() != null) {
+                    switch (newDatasets.get(i).getLicense()) {
                         case "https://creativecommons.org/licenses/by/4.0/":
                             docVar.add("CC BY 4.0");
                             break;
@@ -961,8 +999,9 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
     public void composeTableDatasetRepository(XWPFTable xwpfTable){
         log.debug("Export steps: Dataset Repository Table");
 
-        if (datasets.size() > 0) {
-            for (int i = 0; i < datasets.size(); i++) {
+        List<Dataset> newDatasets = getNewDatasets();
+        if (newDatasets.size() > 0) {
+            for (int i = 0; i < newDatasets.size(); i++) {
 
                 XWPFTableRow sourceTableRow = xwpfTable.getRow(2);
                 XWPFTableRow newRow = new XWPFTableRow(sourceTableRow.getCtRow(), xwpfTable);
@@ -974,10 +1013,10 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 }
 
                 ArrayList<String> docVar = new ArrayList<>();
-                docVar.add(datasetTableIDs.get(datasets.get(i).id));
+                docVar.add(datasetTableIDs.get(newDatasets.get(i).id));
                 //TODO datasets and hosts are now connected by Distribution objects
-                if (datasets.get(i).getDistributionList() != null){
-                    List<Distribution> distributions = datasets.get(i).getDistributionList();
+                if (newDatasets.get(i).getDistributionList() != null){
+                    List<Distribution> distributions = newDatasets.get(i).getDistributionList();
                     List<String> repositories = new ArrayList<>();
                     for (Distribution distribution: distributions) {
                         if (Repository.class.isAssignableFrom(distribution.getHost().getClass()))
@@ -994,13 +1033,13 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                     docVar.add("");
                 }
 
-                if (datasets.get(i).getRetentionPeriod() != null)
-                    docVar.add(datasets.get(i).getRetentionPeriod() + " years");
+                if (newDatasets.get(i).getRetentionPeriod() != null)
+                    docVar.add(newDatasets.get(i).getRetentionPeriod() + " years");
                 else
                     docVar.add("");
 
-                if (datasets.get(i).getDmp().getTargetAudience() != null)
-                    docVar.add(datasets.get(i).getDmp().getTargetAudience());
+                if (newDatasets.get(i).getDmp().getTargetAudience() != null)
+                    docVar.add(newDatasets.get(i).getDmp().getTargetAudience());
                 else
                     docVar.add("");
 

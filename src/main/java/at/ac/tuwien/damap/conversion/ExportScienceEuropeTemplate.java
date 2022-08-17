@@ -46,44 +46,4 @@ public class ExportScienceEuropeTemplate extends AbstractTemplateExportScienceEu
         log.debug("Export steps: Export finished");
         return document;
     }
-
-    @Override
-    public void loadScienceEuropeContent() {
-        super.loadScienceEuropeContent();
-        //Section 2 contains about the documentation and data quality including versioning and used metadata.
-        sectionTwo();
-    }
-
-    //Section 2 variables replacement
-    private void sectionTwo() {
-        String metadata = "";
-
-        if (dmp.getMetadata() == null) {
-            addReplacement(replacements, "[metadata]", loadResourceService.loadVariableFromResource(prop, "metadata.no"));
-        }
-        else {
-            if (dmp.getMetadata().equals("")) {
-                addReplacement(replacements,"[metadata]", loadResourceService.loadVariableFromResource(prop, "metadata.no"));
-            }
-            else {
-                metadata = dmp.getMetadata();
-                if (metadata.charAt(metadata.length()-1)!='.') {
-                    metadata = metadata + '.';
-                }
-                addReplacement(replacements,"[metadata]", metadata + " " + loadResourceService.loadVariableFromResource(prop, "metadata.avail"));
-            }
-        }
-
-        if (dmp.getStructure() == null) {
-            addReplacement(replacements,"[dataorganisation]", loadResourceService.loadVariableFromResource(prop, "dataOrganisation.no"));
-        }
-        else {
-            if (dmp.getStructure().equals("")) {
-                addReplacement(replacements,"[dataorganisation]", loadResourceService.loadVariableFromResource(prop, "dataOrganisation.no"));
-            }
-            else {
-                addReplacement(replacements,"[dataorganisation]", dmp.getStructure());
-            }
-        }
-    }
 }
