@@ -1,7 +1,7 @@
 metadata.avail=This will help others to identify, discover and reuse our data.
-metadata.no=There is no specific metadata has been defined yet for this project.
+metadata.no=As there are no domain specific metadata standards applicable, we will provide a README file [at file level/at dataset level/at project level] with an explanation of all values and terms used next to each file with data.
 
-dataOrganisation.no=There is no specific document structure has been defined yet for this project.
+dataOrganisation.no=No specific document structure has been defined for this project.
 
 repositories.avail=The repositories used in this project are described in the following paragraph:
 
