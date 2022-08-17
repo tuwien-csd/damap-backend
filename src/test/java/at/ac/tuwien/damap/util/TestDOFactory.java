@@ -108,7 +108,7 @@ public class TestDOFactory {
         return Arrays.asList(EAgreement.CONSORTIUM_AGREEMENT, EAgreement.CONFIDENTIALITY_AGREEMENT);
     }
 
-    private ProjectDO getTestProjectDO() {
+    public ProjectDO getTestProjectDO() {
         ProjectDO project = new ProjectDO();
         project.setAcronym("TEST");
         project.setUniversityId("123456");
