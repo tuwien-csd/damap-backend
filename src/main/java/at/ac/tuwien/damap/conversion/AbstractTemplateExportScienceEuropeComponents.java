@@ -8,6 +8,7 @@ import at.ac.tuwien.damap.enums.ESecurityMeasure;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
 import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.*;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTVMerge;
 
 import java.text.NumberFormat;
 import java.util.*;
@@ -1014,7 +1015,6 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
 
                 ArrayList<String> docVar = new ArrayList<>();
                 docVar.add(datasetTableIDs.get(newDatasets.get(i).id));
-                //TODO datasets and hosts are now connected by Distribution objects
                 if (newDatasets.get(i).getDistributionList() != null){
                     List<Distribution> distributions = newDatasets.get(i).getDistributionList();
                     List<String> repositories = new ArrayList<>();
@@ -1052,6 +1052,19 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
             insertTableCells(xwpfTable, xwpfTable.getRows().get(xwpfTable.getRows().size() - 1), emptyContent);
         }
         xwpfTable.removeRow(1);
+
+        if (dmp.getTargetAudience() != null)
+            addReplacement(replacements, "[targetaudience]", dmp.getTargetAudience());
+        else
+            addReplacement(replacements, "[targetaudience]", "");
+
+        //this snippet serves to merge the last column, which contains the [targetaudience] text valid for all rows.
+        CTVMerge vMerge = CTVMerge.Factory.newInstance();
+        List<XWPFTableRow> rowList = xwpfTable.getRows();
+        for (int i = 1; i < rowList.size(); i++) {
+            xwpfTable.getRow(i).getCell(3).getCTTc().getTcPr().setVMerge(vMerge);
+        }
+        commitTableRows(xwpfTable);
     }
 
     public void composeTableDatasetDeletion(XWPFTable xwpfTable){
