@@ -10,7 +10,6 @@ import javax.enterprise.inject.Instance;
 import java.util.*;
 
 @QuarkusTest
-
 public class AbstractTemplateExportFunctionsTest {
 
     @Inject
@@ -22,10 +21,6 @@ public class AbstractTemplateExportFunctionsTest {
     @Test
     public void testLoadTemplate() throws Exception {
         for (AbstractTemplateExportFunctions documentConversionService : documentConversionServices) {
-            //testing load template
-            //TODO: generate blank document as a test
-            //TODO: notify when there is no template file available
-
             XWPFDocument document = documentConversionService.loadTemplate(templateFileBrokerServices.get().loadScienceEuropeTemplate(), "[", "]");
             Assertions.assertNotNull(document);
 
