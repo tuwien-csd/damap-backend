@@ -1,4 +1,4 @@
-package at.ac.tuwien.damap.openaire;
+package at.ac.tuwien.damap.rest;
 
 import at.ac.tuwien.damap.enums.EDataAccessType;
 import at.ac.tuwien.damap.enums.EDataSource;
