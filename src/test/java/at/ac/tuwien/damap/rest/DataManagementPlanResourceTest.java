@@ -100,7 +100,7 @@ public class DataManagementPlanResourceTest {
 //    @Test
     @TestSecurity(user = "userJwt", roles = "user")
     @JwtSecurity(claims = {
-            @Claim(key = "tissID", value = "012345")
+            @Claim(key = "personID", value = "012345")
     })
     public void testGetPlansEndpoint_Valid() {
         given()
@@ -130,7 +130,7 @@ public class DataManagementPlanResourceTest {
 //    @Test
     @TestSecurity(user = "userJwt", roles = "user")
     @JwtSecurity(claims = {
-            @Claim(key = "tissID", value = "012345")
+            @Claim(key = "personID", value = "012345")
     })
     public void TestSavePlanEndpoint_Valid() {
         given()
@@ -154,7 +154,7 @@ public class DataManagementPlanResourceTest {
 //    @Test
     @TestSecurity(user = "userJwt", roles = "user")
     @JwtSecurity(claims = {
-            @Claim(key = "tissID", value = "012345")
+            @Claim(key = "personID", value = "012345")
     })
     public void TestUpdatePlanEndpoint_Valid() {
         given()
