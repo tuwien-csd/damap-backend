@@ -401,7 +401,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 List<String> sensitiveDatasetList = new ArrayList<>();
 
                 for (Dataset dataset: datasets) {
-                    if (dataset.getSensitiveData()) {
+                    if (dataset.getSensitiveData() != null && dataset.getSensitiveData()) {
                         sensitiveDataset = datasetTableIDs.get(dataset.getId()) + " (" + dataset.getTitle() + ")";
                         sensitiveDatasetList.add(sensitiveDataset);
                     }
@@ -510,7 +510,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 List<String> personalDatasetList = new ArrayList<>();
 
                 for (Dataset dataset: datasets) {
-                    if (dataset.getPersonalData()) {
+                    if (dataset.getPersonalData() != null && dataset.getPersonalData()) {
                         personalDatasetList.add(datasetTableIDs.get(dataset.getId()) + " (" + dataset.getTitle() + ")");
                     }
                 }
@@ -560,7 +560,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 List<String> datasetList = new ArrayList<>();
 
                 for (Dataset dataset : datasets) {
-                    if (dataset.getLegalRestrictions()) {
+                    if (dataset.getLegalRestrictions() != null && dataset.getLegalRestrictions()) {
                         legalRestrictionDataset = datasetTableIDs.get(dataset.getId()) + " (" + dataset.getTitle() + ")";
                         datasetList.add(legalRestrictionDataset);
                     }

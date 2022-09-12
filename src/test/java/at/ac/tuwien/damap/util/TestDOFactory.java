@@ -78,6 +78,8 @@ public class TestDOFactory {
         newTestDmpDO.setHumanParticipants(true);
         newTestDmpDO.setEthicalIssuesExist(true);
         newTestDmpDO.setCommitteeReviewed(true);
+        newTestDmpDO.setDataKind(EDataKind.SPECIFY);
+        newTestDmpDO.setReusedDataKind(EDataKind.SPECIFY);
         newTestDmpDO.setDatasets(getTestDatasetList());
         newTestDmpDO.setRepositories(getTestRepositoryList());
         newTestDmpDO.setStorage(getTestStorageList());
@@ -192,14 +194,20 @@ public class TestDOFactory {
         List<ContributorDO> contributors = getTestContributorList();
         if (!contributors.isEmpty())
             dataset.setDeletionPerson(contributors.get(0));
-        return List.of(dataset);
+
+        DatasetDO dataset2 = new DatasetDO();
+        dataset2.setTitle("Dataset2 Title");
+        dataset2.setSource(EDataSource.NEW);
+        dataset2.setReferenceHash("referenceHash234567");
+
+        return List.of(dataset, dataset2);
     }
 
     private List<RepositoryDO> getTestRepositoryList(){
         RepositoryDO repository = new RepositoryDO();
         repository.setRepositoryId("r3d100013557");
         repository.setTitle("TU Data");
-        repository.setDatasets(List.of("referenceHash123456"));
+        repository.setDatasets(List.of("referenceHash123456", "referenceHash234567"));
         return List.of(repository);
     }
 

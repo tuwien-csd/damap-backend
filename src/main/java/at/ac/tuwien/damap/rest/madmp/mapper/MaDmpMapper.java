@@ -361,17 +361,17 @@ public class MaDmpMapper {
 
         List<SecurityAndPrivacy> securityAndPrivacyList = new ArrayList<>();
 
-        if (datasetDO.getSensitiveData()) {
+        if (datasetDO.getSensitiveData() != null && datasetDO.getSensitiveData()) {
             dmpDO.getSensitiveDataSecurity().forEach(eSecurityMeasure -> {
                 securityAndPrivacyList.add(mapToMaDmp(eSecurityMeasure, new SecurityAndPrivacy()));
                     });
         }
-        if (datasetDO.getPersonalData()) {
+        if (datasetDO.getPersonalData() != null && datasetDO.getPersonalData()) {
             dmpDO.getPersonalDataCompliance().forEach(eComplianceType -> {
                 securityAndPrivacyList.add(mapToMaDmp(eComplianceType, new SecurityAndPrivacy()));
             });
         }
-        if (datasetDO.getLegalRestrictions()) {
+        if (datasetDO.getLegalRestrictions() != null && datasetDO.getLegalRestrictions()) {
             dmpDO.getLegalRestrictionsDocuments().forEach(eAgreement -> {
                 securityAndPrivacyList.add(mapToMaDmp(eAgreement, new SecurityAndPrivacy()));
             });
