@@ -1,4 +1,4 @@
-package at.ac.tuwien.damap.rest.dmp;
+package at.ac.tuwien.damap.rest;
 
 import at.ac.tuwien.damap.rest.VersionResource;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
