@@ -1,6 +1,5 @@
 package at.ac.tuwien.damap.rest;
 
-import at.ac.tuwien.damap.rest.DmpDocumentResource;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
 import at.ac.tuwien.damap.rest.projects.MockProjectServiceImpl;
 import at.ac.tuwien.damap.security.SecurityService;

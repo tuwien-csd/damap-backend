@@ -1,7 +1,6 @@
 package at.ac.tuwien.damap.rest;
 
 
-import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
 import at.ac.tuwien.damap.util.TestDOFactory;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
