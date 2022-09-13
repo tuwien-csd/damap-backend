@@ -2,8 +2,6 @@ package at.ac.tuwien.damap.r3data;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
-import io.quarkus.test.security.jwt.Claim;
-import io.quarkus.test.security.jwt.JwtSecurity;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
@@ -46,9 +44,6 @@ public class RepositoriesResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    @JwtSecurity(claims = {
-            @Claim(key = "personID", value = "012345")
-    })
     public void testRepositoriesEndpoint_Valid() {
         given()
                 .when().get("/api/repositories")
@@ -58,9 +53,6 @@ public class RepositoriesResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    @JwtSecurity(claims = {
-            @Claim(key = "personID", value = "012345")
-    })
     public void testRepositoriesRecommendedEndpoint_Valid() {
         given()
                 .when().get("/api/repositories/recommended")
@@ -71,9 +63,6 @@ public class RepositoriesResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    @JwtSecurity(claims = {
-            @Claim(key = "personID", value = "012345")
-    })
     public void testRepositoryByIdEndpoint_Valid() {
         given()
                 .when().get("/api/repositories/r3d100013557")
@@ -83,9 +72,6 @@ public class RepositoriesResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    @JwtSecurity(claims = {
-            @Claim(key = "personID", value = "012345")
-    })
     public void testRepositoriesSearchEndpoint_Valid() {
         given()
                 .when().get("/api/repositories/search?pidSystems=DOI")
