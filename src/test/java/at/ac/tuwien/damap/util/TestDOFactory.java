@@ -271,7 +271,8 @@ public class TestDOFactory {
         return getOrCreateTestDmpDOEmpty();
     }
 
-    private void prepareInternalStorageOption(){
+    @Transactional
+    public void prepareInternalStorageOption(){
 
         if (internalStorageTranslationRepo.listAll().size() > 0)
             return;
