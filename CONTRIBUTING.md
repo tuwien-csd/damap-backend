@@ -18,6 +18,12 @@ To request the lead developers to pull in code change proposals, fork the reposi
 to your own fork. Create a PullRequest with `tuwien-csd/damap-backend` as base and write a meaningful description
 of your changes.
 
+If you are working with the main repository, the naming convention for branches is `<contributor initials>/<short-description-separated-with-hyphens>` e.g.:
+```
+xy/file-upload
+```
+Once the PR is merged, delete the source branch.
+
 Generally PullRequest should cover only a specific topic in form of one or a few commits. The commit message should 
 follow common good practices and should be composed of a meaningful subject line with a short description of the 
 changes and an optional body to explain the changes and the reasons behind them. A blank line splits the subject line
