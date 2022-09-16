@@ -4,7 +4,7 @@ import at.ac.tuwien.damap.enums.EContributorRole;
 import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
-import at.ac.tuwien.damap.rest.dmp.service.DmpService;
+import at.ac.tuwien.damap.util.MockDmpService;
 import at.ac.tuwien.damap.util.TestDOFactory;
 import io.quarkus.test.junit.QuarkusTest;
 import java.util.Arrays;
@@ -17,11 +17,17 @@ import org.junit.jupiter.api.Test;
 public class DmpServiceTest {
     @Inject TestDOFactory testDOFactory;
 
-    @Inject DmpService dmpService;
+    @Inject
+    MockDmpService dmpService;
+
 
     @Test
     void updateProjectLeadTest() {
-        ProjectDO projectDO = new ProjectDO();
+        ProjectDO projectDO = new ProjectDO() {
+            {
+                setUniversityId("-1");
+            }
+        };
         testDOFactory.getOrCreateTestDmpDOEmpty();
         DmpDO dmpDO = new DmpDO() {
             {

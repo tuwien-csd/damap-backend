@@ -8,7 +8,6 @@ import at.ac.tuwien.damap.repo.DmpRepo;
 import at.ac.tuwien.damap.repo.InternalStorageTranslationRepo;
 import at.ac.tuwien.damap.rest.dmp.domain.*;
 import at.ac.tuwien.damap.rest.dmp.mapper.DmpDOMapper;
-import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import lombok.extern.jbosslog.JBossLog;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -30,7 +29,7 @@ public class TestDOFactory {
     InternalStorageTranslationRepo internalStorageTranslationRepo;
 
     @Inject
-    DmpService dmpService;
+    MockDmpService dmpService;
 
     private final String editorId = "012345";
 
@@ -108,7 +107,7 @@ public class TestDOFactory {
         return Arrays.asList(EAgreement.CONSORTIUM_AGREEMENT, EAgreement.CONFIDENTIALITY_AGREEMENT);
     }
 
-    private ProjectDO getTestProjectDO() {
+    public ProjectDO getTestProjectDO() {
         ProjectDO project = new ProjectDO();
         project.setAcronym("TEST");
         project.setUniversityId("123456");
@@ -137,7 +136,7 @@ public class TestDOFactory {
         return identifier;
     }
 
-    private ContributorDO getTestContributorDO(){
+    public ContributorDO getTestContributorDO(){
         ContributorDO contributor = new ContributorDO();
         contributor.setUniversityId("Internal Identifier 123456");
         contributor.setPersonId(getTestIdentifierDO(EIdentifierType.ORCID));
