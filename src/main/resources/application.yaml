@@ -92,6 +92,9 @@ rest:
       dialect: org.hibernate.dialect.PostgreSQLDialect
 
 "%test":
+  damap:
+    repositories:
+      recommendation: ['r3d100013557'] # Re3Data id(s)
   quarkus:
     datasource:
       db-kind: h2
