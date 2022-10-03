@@ -1,6 +1,9 @@
 package at.ac.tuwien.damap.rest.config.domain;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Data;
 
 @Data
@@ -12,4 +15,5 @@ public class ConfigDO {
     private String authScope;
     private String authUser;
     private String env;
+    private List<ServiceConfig> personSearchServiceConfigs;
 }

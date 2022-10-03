@@ -1,15 +1,24 @@
 package at.ac.tuwien.damap.rest;
 
+import java.util.List;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+
+import at.ac.tuwien.damap.enums.ESearchServiceType;
 import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
+import at.ac.tuwien.damap.rest.persons.MockUniversityPersonServiceImpl;
+import at.ac.tuwien.damap.rest.persons.ORCIDPersonServiceImpl;
 import at.ac.tuwien.damap.rest.persons.PersonService;
 import io.quarkus.security.Authenticated;
 import lombok.extern.jbosslog.JBossLog;
-
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.util.List;
-
 
 /* Resource currently unused, but will be required for person search at a later stage */
 // TODO: remove unused functions
@@ -21,7 +30,11 @@ import java.util.List;
 public class PersonResource {
 
     @Inject
-    PersonService personService;
+    MockUniversityPersonServiceImpl personService;
+
+    @Inject
+    @Dependent
+    ORCIDPersonServiceImpl orcidPersonService;
 
     @GET
     @Path("/{id}")
@@ -32,8 +45,24 @@ public class PersonResource {
 
     @GET
     @Path("/search")
-    public List<ContributorDO> getPersonSearchResult(@QueryParam("q") String searchTerm) {
+    public List<ContributorDO> getPersonSearchResult(@QueryParam("q") String searchTerm,
+            @QueryParam("searchService") ESearchServiceType searchServiceType) {
         log.info("Return person list for query=" + searchTerm);
-        return personService.getPersonSearchResult(searchTerm);
+
+        searchServiceType = searchServiceType == null ? ESearchServiceType.ORCID : searchServiceType;
+        PersonService searchService;
+
+        switch (searchServiceType) {
+            case ORCID:
+                searchService = orcidPersonService;
+                break;
+            case UNIVERSITY:
+            default:
+                searchService = personService;
+                break;
+        }
+
+        List<ContributorDO> persons = searchService.getPersonSearchResult(searchTerm);
+        return persons;
     }
 }
