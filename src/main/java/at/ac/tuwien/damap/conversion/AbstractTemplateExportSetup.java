@@ -1,10 +1,13 @@
 package at.ac.tuwien.damap.conversion;
 
+import at.ac.tuwien.damap.domain.Contributor;
 import at.ac.tuwien.damap.domain.Cost;
 import at.ac.tuwien.damap.domain.Dataset;
 import at.ac.tuwien.damap.domain.Dmp;
+import at.ac.tuwien.damap.enums.EContributorRole;
 import at.ac.tuwien.damap.r3data.RepositoriesService;
 import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
+import at.ac.tuwien.damap.rest.dmp.mapper.ContributorDOMapper;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
 import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
@@ -51,11 +54,16 @@ public abstract class AbstractTemplateExportSetup extends AbstractTemplateExport
         deletedDatasets = getDeletedDatasets(datasets);
         costList = dmp.getCosts();
 
-        try {
-            projectCoordinator = projectService.getProjectLeader(dmp.getProject().getUniversityId());
-        } catch (Exception e) {
-            log.error("Project API not functioning");
-        }
+        //determine project leader/coordinator/principal investigator
+        Optional<Contributor> projectLeaderOpt = dmp.getContributorList().stream().filter(contributor -> contributor.getContributorRole() == EContributorRole.PROJECT_LEADER).findFirst();
+        if (projectLeaderOpt.isPresent())
+            projectCoordinator = ContributorDOMapper.mapEntityToDO(projectLeaderOpt.get(), new ContributorDO());
+        else
+            try {
+                projectCoordinator = projectService.getProjectLeader(dmp.getProject().getUniversityId());
+            } catch (Exception e) {
+                log.error("Project API not functioning");
+            }
     }
 
     private List<Dataset> getDeletedDatasets(List<Dataset> datasets) {
