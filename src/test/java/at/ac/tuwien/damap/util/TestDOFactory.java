@@ -35,7 +35,7 @@ public class TestDOFactory {
     InternalStorageTranslationRepo internalStorageTranslationRepo;
 
     @Inject
-    DmpService dmpService;
+    MockDmpService dmpService;
 
     @Inject
     VersionService versionService;
@@ -150,7 +150,7 @@ public class TestDOFactory {
         return identifier;
     }
 
-    private ContributorDO getTestContributorDO(){
+    public ContributorDO getTestContributorDO(){
         ContributorDO contributor = new ContributorDO();
         contributor.setUniversityId("Internal Identifier 123456");
         contributor.setPersonId(getTestIdentifierDO(EIdentifierType.ORCID));
