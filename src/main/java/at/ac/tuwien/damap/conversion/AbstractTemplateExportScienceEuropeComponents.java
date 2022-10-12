@@ -304,6 +304,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
 
     public void datasetsInformation(){
         addReplacement(replacements, "[datageneration]", dmp.getDataGeneration());
+        addReplacement(replacements, "[documentation]", dmp.getDocumentation());
     }
 
     public void storageInformation(){

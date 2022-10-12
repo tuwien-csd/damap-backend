@@ -87,6 +87,7 @@ public class DmpDO {
     private Boolean costsExist;
     private Boolean costsExistCris;
     private List<CostDO> costs = new ArrayList<CostDO>();
+    private String documentation;
 
     public ContributorDO getContact(){
         Optional<ContributorDO> contact = contributors.stream().filter(ContributorDO::isContact).findFirst();

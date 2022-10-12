@@ -179,6 +179,8 @@ public class Dmp extends PanacheEntity {
     @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<Cost> costs = new ArrayList<>();
 
+    private String documentation;
+
     public Contributor getContact(){
         Optional<Contributor> contact = contributorList.stream().filter(contributor -> contributor.getContact() != null)
                 .filter(Contributor::getContact).findFirst();
