@@ -2567,3 +2567,18 @@ databaseChangeLog:
                   name: documentation
                   type: VARCHAR(4000)
 
+
+  - changeSet:
+      id: 6
+      author: Zeno Casellato
+      changes:
+        - renameColumn:
+            tableName: cost
+            newColumnName: cost_value
+            oldColumnName: value
+
+        - renameColumn:
+            tableName: cost_aud
+            newColumnName: cost_value
+            oldColumnName: value
+
