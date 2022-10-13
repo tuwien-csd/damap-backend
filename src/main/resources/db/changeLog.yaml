@@ -2548,3 +2548,22 @@ databaseChangeLog:
                     foreignKeyName: fk_dmp_aud_rdk
                     references: e_data_kind(data_kind)
 
+
+  - changeSet:
+      id: 5
+      author: Zeno Casellato
+      changes:
+        - addColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name: documentation
+                  type: VARCHAR(4000)
+
+        - addColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name: documentation
+                  type: VARCHAR(4000)
+
