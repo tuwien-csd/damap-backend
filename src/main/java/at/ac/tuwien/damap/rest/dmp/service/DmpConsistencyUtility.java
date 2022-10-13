@@ -24,7 +24,6 @@ public class DmpConsistencyUtility {
         // Remove datasets by source if not specified
         if (dmpDO.getDataKind() != EDataKind.SPECIFY) {
             removeDatasetsBySource(dmpDO, EDataSource.NEW);
-            dmpDO.setDataGeneration(null);
         }
         if (dmpDO.getReusedDataKind() != EDataKind.SPECIFY) {
             removeDatasetsBySource(dmpDO, EDataSource.REUSED);
@@ -72,6 +71,7 @@ public class DmpConsistencyUtility {
      */
     private void removeDatasetRelatedInfo(DmpDO dmpDO) {
         dmpDO.setDatasets(new ArrayList<>());
+        dmpDO.setDataGeneration(null);
         dmpDO.setDataRightsAndAccessControl(null);
 
         resetDocumentation(dmpDO);
@@ -93,6 +93,7 @@ public class DmpConsistencyUtility {
     private void resetDocumentation(DmpDO dmpDO) {
         dmpDO.setMetadata(null);
         dmpDO.setStructure(null);
+        dmpDO.setDocumentation(null);
         dmpDO.setDataQuality(new ArrayList<>());
     }
 

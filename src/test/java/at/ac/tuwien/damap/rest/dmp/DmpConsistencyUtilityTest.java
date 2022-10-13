@@ -28,6 +28,7 @@ class DmpConsistencyUtilityTest {
 
         assertNotNull(dmpDO.getMetadata());
         assertNotNull(dmpDO.getDataGeneration());
+        assertNotNull(dmpDO.getDocumentation());
         assertNotNull(dmpDO.getStructure());
         assertFalse(dmpDO.getDataQuality().isEmpty());
         assertNotNull(dmpDO.getOtherDataQuality());
@@ -91,6 +92,7 @@ class DmpConsistencyUtilityTest {
 
         assertNotNull(dmpDO.getMetadata());
         assertNotNull(dmpDO.getDataGeneration());
+        assertNotNull(dmpDO.getDocumentation());
         assertNotNull(dmpDO.getStructure());
         assertFalse(dmpDO.getDataQuality().isEmpty());
         assertNotNull(dmpDO.getOtherDataQuality());
@@ -151,6 +153,7 @@ class DmpConsistencyUtilityTest {
 
         assertNull(dmpDO.getMetadata());
         assertNull(dmpDO.getDataGeneration());
+        assertNull(dmpDO.getDocumentation());
         assertNull(dmpDO.getStructure());
         assertTrue(dmpDO.getDataQuality().isEmpty());
         assertNull(dmpDO.getOtherDataQuality());
@@ -232,6 +235,7 @@ class DmpConsistencyUtilityTest {
         dmpDO.setMetadata("Metadata");
         dmpDO.setDataGeneration("Data generation");
         dmpDO.setStructure("Structure");
+        dmpDO.setDocumentation("Documentation");
         dmpDO.setDataQuality(List.of(EDataQualityType.OTHERS));
         dmpDO.setOtherDataQuality("Other data quality");
         dmpDO.setTargetAudience("Target audience");
