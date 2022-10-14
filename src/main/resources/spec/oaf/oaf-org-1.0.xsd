@@ -1,0 +1,41 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://namespace.openaire.eu/oaf"
+           targetNamespace="http://namespace.openaire.eu/oaf" elementFormDefault="qualified">
+
+    <xs:annotation>
+        <xs:documentation>This schema describes elements and properties of OpenAIRE entities of type organization: https://issue.openaire.research-infrastructures.eu/projects/openaire2020-wiki/wiki/Core_entity_organization</xs:documentation>
+    </xs:annotation>
+
+    <xs:include schemaLocation="oaf-common-1.0.xsd"/>
+
+    <xs:element name="organization">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element name="legalname" type="xs:string"/>
+                <xs:element name="legalshortname" type="xs:string"/>
+                <xs:element name="logourl" type="xs:string"/>
+                <xs:element name="originalId" type="xs:string"/>
+                <xs:element name="websiteurl" type="xs:string"/>
+                <xs:element name="country" type="qualifierType">
+                    <xs:annotation>
+                        <xs:documentation>Countries in ISO 3166-1 alpha-2. </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+
+                <xs:element name="collectedfrom" type="namedIdElementType">
+                    <xs:annotation>
+                        <xs:documentation>Identifier and name of the datasource from which this
+                            organization has been collected from. </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="pid" type="structuredPropertyElementType"/>
+                <xs:element name="rels" type="relsType">
+                    <xs:annotation>
+                        <xs:documentation>Relationships to other entities. </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <!-- If we decide not to show deduplicated org, then we have to remove this field -->
+                <!-- <xs:element name="duplicates" type="mergedOrgs"/> -->
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

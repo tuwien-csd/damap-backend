@@ -1,12 +1,14 @@
 metadata.avail=This will help others to identify, discover and reuse our data.
-metadata.no=There is no specific metadata has been defined yet for this project.
+metadata.no=As there are no domain specific metadata standards applicable, we will provide a README file [at file level/at dataset level/at project level] with an explanation of all values and terms used next to each file with data.
 
-dataOrganisation.no=There is no specific document structure has been defined yet for this project.
+dataOrganisation.no=
 
-repositories.avail=The repository used in this project described in the following paragraph.
+repositories.avail=The repositories used in this project are described in the following paragraph:
 
-tools.avail=Specific tool or software is required to access and reuse the data: 
-tools.no=No specific tool or software is required to access and reuse the data
+tools.avail=Methods or software needed to access and use data:
+tools.no=No specific tool or software is required to access and reuse the data.
+
+restrictedAccess.avail=Description of protocol to access restricted data:
 
 costs.avail=There are costs dedicated to data management and ensuring that data will be FAIR as outlined below.
 costs.no=There are no costs dedicated to data management and ensuring that data will be FAIR.
@@ -26,7 +28,7 @@ sensitiveAccess
 
 personal.avail=In this project, we will process personal data (see section 1a).
 personal.no=At this stage, it is not foreseen to process any personal data in the project. If this changes, advice will be sought from the data protection specialist at our institution, and the DMP will be updated.
-personalDataset=will containing personal data.
+personalDataset=will contain personal data.
 personalCompliance=To ensure compliance with data protection laws,
 personalComplianceUsed=will be used.
 
@@ -41,5 +43,5 @@ ethical.avail=This project will involve human participants.
 ethical.no=No particular ethical issue is foreseen with the data to be used or produced by the project. This section will be updated if issues arise.
 ethicalOther=There are other ethical issues associated with this research.
 ethicalReviewed.avail=The research plan of the project was reviewed by an ethics committee / a similar body.
-ethicalReviewed.no=The research has not been reviewed yet by any ethics committee.
+ethicalReviewed.no=The research plan has not been reviewed yet by any ethics committee.
 ethicalStatement=Ethical issues in the project have been identified and discussed with the Ethics Coordinator. They are described in detail in separate documents.

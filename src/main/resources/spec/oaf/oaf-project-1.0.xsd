@@ -1,0 +1,111 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://namespace.openaire.eu/oaf"
+           targetNamespace="http://namespace.openaire.eu/oaf" elementFormDefault="qualified">
+
+    <xs:annotation>
+        <xs:documentation>This schema describes elements and properties of OpenAIRE project entity: https://issue.openaire.research-infrastructures.eu/projects/openaire2020-wiki/wiki/Core_entity_project</xs:documentation>
+    </xs:annotation>
+
+    <xs:include schemaLocation="oaf-common-1.0.xsd"/>
+
+    <xs:element name="project">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element name="code" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>Project code as assigned by the project's funder.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="title" type="xs:string"/>
+                <xs:element name="acronym" type="xs:string"/>
+                <xs:element name="callidentifier" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation> Identifier of the call for proposal.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="contactfullname" type="xs:string"/>
+                <xs:element name="contactfax" type="xs:string"/>
+                <xs:element name="contactphone" type="xs:string"/>
+                <xs:element name="contactemail" type="xs:string"/>
+                <xs:element name="contracttype" type="qualifierType"/>
+                <xs:element name="keywords" type="xs:string"/>
+                <xs:element name="websiteurl" type="xs:string"/>
+                <xs:element name="startdate" type="xs:string"/>
+                <xs:element name="enddate" type="xs:string"/>
+                <xs:element name="duration" type="xs:string"/>
+                <xs:element name="ecsc39" type="boolOrEmptyType">
+                    <xs:annotation>
+                        <xs:documentation>True if the project has the special clause 39. Available
+                            only for EC FP7 funded projects. </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="oamandatepublications" type="xs:boolean">
+                    <xs:annotation>
+                        <xs:documentation>True if the project's funding mandates the availability of project's publications in Open Access.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="ecarticle29_3" type="boolOrEmptyType">
+                    <xs:annotation>
+                        <xs:documentation>True if the project is under the EC Open Data Pilot. Available only for EC H2020 funded projects. </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="subjects" type="qualifierType"/>
+
+                <xs:element name="fundingtree" type="fundingTreeType"/>
+                <xs:element name="originalId" type="xs:string"/>
+                <xs:element name="collectedfrom" type="namedIdElementType">
+                    <xs:annotation>
+                        <xs:documentation>Identifier and name of the datasource from which this
+                            project has been collected from. </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="pid" type="qualifierType"/>
+                <xs:element name="rels" type="relsType">
+                    <xs:annotation>
+                        <xs:documentation>Relationships to other entities. </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- to be removed, and replaced by ContextType -->
+    <xs:complexType name="fundingTreeType">
+        <xs:sequence>
+            <xs:element name="funder" type="funderType"/>
+            <xs:choice maxOccurs="unbounded">
+                <!-- Three-tier funding hierarchies -->
+                <xs:element name="funding_level_2" type="fundingType"/>
+                <!-- Two-tier funding hierarchies -->
+                <xs:element name="funding_level_1" type="fundingType"/>
+                <!-- No funding hierarchy -->
+                <xs:element name="funding_level_0" type="fundingType"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="fundingType">
+        <xs:all>
+            <xs:element name="id" type="xs:string"/>
+            <xs:element name="description" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="class" type="xs:string"/>
+            <xs:element name="parent" type="fundingParentType"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="fundingParentType">
+        <xs:choice minOccurs="0">
+            <xs:element name="funding_level_1" type="fundingType"/>
+            <xs:element name="funding_level_0" type="fundingType"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="funderType">
+        <xs:all>
+            <xs:element name="id" type="xs:string"/>
+            <xs:element name="shortname" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="jurisdiction" type="xs:string"/>
+        </xs:all>
+    </xs:complexType>
+</xs:schema>

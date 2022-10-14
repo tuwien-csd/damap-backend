@@ -1,0 +1,42 @@
+{
+  "projects": [
+    {
+      "acronym": "PROJ.ACRONYM",
+      "universityId": "uniProjectId0",
+      "description": "Project description text.",
+      "title": "Project Title",
+      "funding": null,
+      "start": "2022-01-01T00:00:00.000Z",
+      "end": "2024-12-31T00:00:00.000Z",
+      "dmpExists": false
+    }
+  ],
+  "persons": [
+    {
+      "universityId": "personId0",
+      "personId": {
+        "identifier":  "some_orcid_id0",
+        "type": "ORCID"
+      },
+      "firstName": "Firstname",
+      "lastName": "Lastname",
+      "mbox": "mbox@address.com",
+      "affiliation": "affId0",
+      "affiliationId": {
+        "identifier":  "some_id0",
+        "type": "ROR"
+      },
+      "contact": false,
+      "roleInProject": "Role In Project"
+    }
+  ],
+  "project-supplement": {
+    "personalData": true,
+    "sensitiveData": true,
+    "legalRestrictions": false,
+    "humanParticipants": true,
+    "ethicalIssuesExist": true,
+    "committeeReviewed": false,
+    "costsExist": false
+  }
+}

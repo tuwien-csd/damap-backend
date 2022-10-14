@@ -1,15 +1,16 @@
 package at.ac.tuwien.damap.conversion;
 
-import at.ac.tuwien.damap.domain.Dmp;
-import at.ac.tuwien.damap.repo.DmpRepo;
+import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
+import at.ac.tuwien.damap.rest.projects.MockProjectServiceImpl;
+import at.ac.tuwien.damap.util.TestDOFactory;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
+import io.quarkus.test.security.TestSecurity;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import static org.mockito.ArgumentMatchers.*;
 
 import javax.inject.Inject;
 
@@ -20,28 +21,45 @@ public class ExportScienceEuropeTemplateTest {
     @Inject
     ExportScienceEuropeTemplate exportScienceEuropeTemplate;
 
+    @Inject
+    TestDOFactory testDOFactory;
+
     @InjectMock
-    DmpRepo dmpRepo;
+    MockProjectServiceImpl mockProjectRestService;
+
+    String projectId = "-1";
 
     @BeforeEach
     public void setup() {
-        Mockito.when(dmpRepo.findById(anyLong())).thenReturn(this.createDmp());
+        Mockito.when(mockProjectRestService.getProjectDetails(projectId)).thenReturn(testDOFactory.getTestProjectDO());
     }
 
-
     @Test
-    public void testEmptyDmp() throws Exception {
-        Long id = 123L;
+    @TestSecurity(authorizationEnabled = false)
+    void testFWFTemplateDmp() {
+        final DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
 
-        //testing the export document return not a null document
-        XWPFDocument document = exportScienceEuropeTemplate.exportTemplate(id);
+        XWPFDocument document = null;
+        try {
+            document = exportScienceEuropeTemplate.exportTemplate(dmpDO.getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Assertions.assertNotNull(document);
     }
 
-    private Dmp createDmp() {
-        Dmp dmp = new Dmp();
-        dmp.setTitle("Mock Dmp");
+    @Test
+    @TestSecurity(authorizationEnabled = false)
+    void testEmptyFWFTemplateDmp() {
+        final DmpDO emptyDmpDO = testDOFactory.getOrCreateTestDmpDOEmpty();
 
-        return dmp;
+        //testing the export document return not a null document
+        XWPFDocument document = null;
+        try {
+            document = exportScienceEuropeTemplate.exportTemplate(emptyDmpDO.getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Assertions.assertNotNull(document);
     }
 }

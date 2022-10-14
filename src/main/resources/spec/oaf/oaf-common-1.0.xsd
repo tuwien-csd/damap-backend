@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:annotation>
+        <xs:documentation>This schema defines common types that can be re-used.</xs:documentation>
+    </xs:annotation>
+
+    <xs:simpleType name="emptyType">
+        <xs:restriction base="xs:string">
+            <xs:length value="0"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="boolOrEmptyType">
+        <xs:union memberTypes="emptyType xs:boolean"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="stringOrEmptyType">
+        <xs:union memberTypes="emptyType xs:string"/>
+    </xs:simpleType>
+
+    <xs:attributeGroup name="qualifierAttributeGroup">
+        <xs:attribute name="classid" use="required" type="xs:string"/>
+        <xs:attribute name="classname" use="required" type="xs:string"/>
+        <xs:attribute name="schemeid" use="required" type="xs:string"/>
+        <xs:attribute name="schemename" use="required" type="xs:string"/>
+    </xs:attributeGroup>
+
+    <xs:attributeGroup name="dataInfoAttributeGroup">
+        <xs:attribute name="inferred" use="optional" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>True if this information has been inferred by the automatic
+                    inference algorithms run by OpenAIRE. </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="trust" use="optional" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>Value of trust of this information in the range [0,1]. More the
+                    value, more trustworthy is the information. </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="inferenceprovenance" use="optional" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>Which algorithm inferred the current property. </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="qualifierAttributeGroup"/>
+    </xs:attributeGroup>
+
+    <xs:complexType name="fieldType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attributeGroup ref="dataInfoAttributeGroup"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="qualifierType">
+        <xs:attributeGroup ref="qualifierAttributeGroup"/>
+    </xs:complexType>
+
+    <xs:complexType name="dataInfoType">
+        <xs:attributeGroup ref="dataInfoAttributeGroup"/>
+    </xs:complexType>
+
+    <xs:complexType name="structuredPropertyElementType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attributeGroup ref="dataInfoAttributeGroup"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="labeledIdElementType">
+        <xs:attribute name="id" use="required"/>
+        <xs:attribute name="label" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="contextType">
+        <xs:complexContent>
+            <xs:extension base="labeledIdElementType">
+                <xs:sequence maxOccurs="unbounded">
+                    <xs:element name="category" type="categoryType"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="dataInfoAttributeGroup"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="categoryType">
+        <xs:complexContent>
+            <xs:extension base="labeledIdElementType">
+                <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="concept" type="conceptType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="conceptType">
+        <xs:complexContent>
+            <xs:extension base="labeledIdElementType">
+                <xs:sequence maxOccurs="unbounded" minOccurs="0">
+                    <xs:element name="concept" type="conceptType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="namedIdElementType">
+        <xs:attribute name="id" use="required"/>
+        <xs:attribute name="name" use="required"/>
+        <xs:attributeGroup ref="dataInfoAttributeGroup"/>
+    </xs:complexType>
+
+    <xs:complexType name="relsType">
+        <xs:annotation>
+            <xs:documentation>Relationships to other entities.</xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:element name="rel" type="relType" minOccurs="0"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="relType">
+        <xs:sequence>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element name="to" type="relToType"/>
+                <xs:element name="title" type="xs:string"/>
+                <xs:element name="websiteurl"/>
+                <xs:choice>
+                    <xs:group ref="relDataSourceGroup"/>
+                    <xs:group ref="relResultGroup"/>
+                    <xs:group ref="relProjectGroup"/>
+                    <xs:group ref="relOrganizationGroup"/>
+                    <xs:group ref="fundingGroup"/>
+                </xs:choice>
+            </xs:choice>
+        </xs:sequence>
+        <xs:attributeGroup ref="dataInfoAttributeGroup"/>
+    </xs:complexType>
+
+    <xs:group name="relDataSourceGroup">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="officialname" type="xs:string"/>
+                <xs:element name="datasourcetype" type="qualifierType"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:group>
+
+    <xs:group name="relResultGroup">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="collectedfrom" type="namedIdElementType"/>
+                <xs:element name="url" type="xs:string"/>
+                <xs:element name="pid" type="structuredPropertyElementType"/>
+                <xs:element name="dateofacceptance" type="xs:string"/>
+                <xs:element name="publisher" type="xs:string"/>
+                <xs:element name="resulttype" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation> Tells if the related record is about a publication or a
+                            dataset. </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <!-- the following fields are available only for similarity relations -->
+                <xs:element name="similarity" type="xs:double">
+                    <xs:annotation>
+                        <xs:documentation>The similarity degree expressed in the range (0,1]. This
+                            field is avaiable only when the to/@class is one of
+                            {hasAmongTopNSimilarDocuments,
+                            isAmongTopNSimilarDocuments}</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="type">
+                    <xs:annotation>
+                        <xs:documentation>The similarity degree expressed in the range (0,1]. This
+                            field is avaiable only when the to/@class is one of
+                            {hasAmongTopNSimilarDocuments,
+                            isAmongTopNSimilarDocuments}</xs:documentation>
+                    </xs:annotation>
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="STANDARD"/>
+                            <xs:enumeration value="WEBUSAGE"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+            </xs:choice>
+        </xs:sequence>
+    </xs:group>
+
+    <xs:group name="relProjectGroup">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="code" type="xs:string"/>
+                <xs:element name="acronym" type="xs:string"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:group>
+
+    <xs:group name="fundingGroup">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="contracttype" type="qualifierType"/>
+                <xs:element name="funding" type="fundingFlatType"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:group>
+
+    <xs:group name="relOrganizationGroup">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="legalname" type="xs:string"/>
+                <xs:element name="legalshortname" type="xs:string"/>
+                <xs:element name="country" type="xs:string"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:group>
+
+
+    <xs:complexType name="relToType">
+        <xs:annotation>
+            <xs:documentation>Information about the related entity. <p>The semantics of the
+                relationships is expressed by the attributes class and scheme. </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="class" use="required" type="xs:string"/>
+                <xs:attribute name="type" use="required" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>The type of the related entity. <p>Allowed values are:
+                            project, organization, datasource, result, person.</p>
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="fundingFlatType">
+        <xs:sequence>
+            <xs:element name="funder" type="funderFlatType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="funding_level_0" type="namedFundingLevel" minOccurs="0"
+                        maxOccurs="unbounded"/>
+            <xs:element name="funding_level_1" type="namedFundingLevel" minOccurs="0"
+                        maxOccurs="unbounded"/>
+            <xs:element name="funding_level_2" type="namedFundingLevel" minOccurs="0"
+                        maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="funderFlatType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="id" use="required" type="xs:string"/>
+                <xs:attribute name="shortname" use="required" type="xs:string"/>
+                <xs:attribute name="name" use="required" type="xs:string"/>
+                <xs:attribute name="jurisdiction" use="optional" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="namedFundingLevel">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="name" use="required" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="externalreferenceType">
+        <xs:sequence>
+            <xs:element name="sitename" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <!--<xs:element name="label" type="xs:string" minOccurs="0" maxOccurs="1"/>-->
+            <xs:element name="url" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="qualifier" type="qualifierType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="refidentifier" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attributeGroup ref="dataInfoAttributeGroup"/>
+    </xs:complexType>
+
+
+    <!-- REMOVE FROM HERE TO THE END -->
+
+</xs:schema>

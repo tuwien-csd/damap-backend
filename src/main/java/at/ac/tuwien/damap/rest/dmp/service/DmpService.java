@@ -1,12 +1,17 @@
 package at.ac.tuwien.damap.rest.dmp.service;
 
-import at.ac.tuwien.damap.domain.*;
+import at.ac.tuwien.damap.domain.Access;
+import at.ac.tuwien.damap.domain.Contributor;
+import at.ac.tuwien.damap.domain.Dmp;
+import at.ac.tuwien.damap.enums.EContributorRole;
 import at.ac.tuwien.damap.enums.EFunctionRole;
 import at.ac.tuwien.damap.repo.AccessRepo;
 import at.ac.tuwien.damap.repo.DmpRepo;
+import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpListItemDO;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
+import at.ac.tuwien.damap.rest.dmp.mapper.ContributorDOMapper;
 import at.ac.tuwien.damap.rest.dmp.mapper.DmpDOMapper;
 import at.ac.tuwien.damap.rest.dmp.mapper.DmpListItemDOMapper;
 import at.ac.tuwien.damap.rest.dmp.mapper.MapperService;
@@ -22,7 +27,11 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @ApplicationScoped
 @JBossLog
@@ -68,9 +77,11 @@ public class DmpService {
     @Transactional
     public DmpDO create(@Valid DmpDO dmpDO, String editedBy) {
         log.info("Creating new DMP");
+        DmpConsistencyUtility.enforceDmpConsistency(dmpDO);
         Dmp dmp = DmpDOMapper.mapDOtoEntity(dmpDO, new Dmp(), mapperService);
         dmp.setCreated(new Date());
         updateDmpSupplementalInfo(dmp);
+        updateProjectLead(dmp);
         dmp.persistAndFlush();
         createAccess(dmp, editedBy);
         return getDmpById(dmp.id);
@@ -79,12 +90,16 @@ public class DmpService {
     @Transactional
     public DmpDO update(@Valid DmpDO dmpDO) {
         log.info("Updating DMP with id " + dmpDO.getId());
+        DmpConsistencyUtility.enforceDmpConsistency(dmpDO);
         Dmp dmp = dmpRepo.findById(dmpDO.getId());
         boolean projectSelectionChanged = projectSelectionChanged(dmp, dmpDO);
         DmpDOMapper.mapDOtoEntity(dmpDO, dmp, mapperService);
         dmp.setModified(new Date());
         if (projectSelectionChanged)
+        {
             updateDmpSupplementalInfo(dmp);
+            updateProjectLead(dmp);
+        }
         dmp.persistAndFlush();
         return getDmpById(dmp.id);
     }
@@ -107,7 +122,7 @@ public class DmpService {
         Dmp dmp = dmpRepo.findById(id);
         if (dmp != null){
             if (dmp.getProject() != null)
-                if (projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym() != null) {
+                if (projectService.getProjectDetails(dmp.getProject().getUniversityId()) != null) {
                     filename = "DMP_" + projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym() + "_" + formatter.format(date).toString();
                 } else if (dmp.getProject().getTitle() != null)
                     filename = "DMP_" + dmp.getProject().getTitle()  + "_" + formatter.format(date).toString();
@@ -149,6 +164,55 @@ public class DmpService {
             ProjectSupplementDOMapper.mapDOtoEntity(projectSupplementDO, dmp);
         }
     }
+
+/**
+ * Retrieve the project leader of the DMPs project.
+ * Set the project leader as contact, if there is no other contact selected.
+ * Add the project leader as a contributor, if it is not already added.
+ *
+ * @param Dmp Data mangagement plan
+ */
+private void updateProjectLead(Dmp dmp) {
+    if (dmp.getProject() == null)
+        return;
+
+    ContributorDO projectLeaderDO =
+        projectService.getProjectLeader(dmp.getProject().getUniversityId());
+    if (projectLeaderDO == null)
+        return;
+
+    List<Contributor> dmpContributors = dmp.getContributorList();
+
+    Optional<Contributor> alreadyExistingContributorLeader =
+        dmpContributors.stream()
+            .filter(c -> {
+                return c.getUniversityId().equals(
+                    projectLeaderDO.getUniversityId());
+            })
+            .findFirst();
+
+    Contributor projectLeaderContributor =
+        alreadyExistingContributorLeader.orElse(new Contributor());
+
+    // Adding project leader as contributor if it was not there yet.
+    if (alreadyExistingContributorLeader.isEmpty()) {
+        ContributorDOMapper.mapDOtoEntity(
+            projectLeaderDO, projectLeaderContributor);
+        projectLeaderContributor.setDmp(dmp);
+        dmpContributors.add(projectLeaderContributor);
+    }
+
+    // If no role was defined, set contributor role to project leader
+    if (projectLeaderContributor.getContributorRole() == null) {
+        projectLeaderContributor.setContributorRole(
+            EContributorRole.PROJECT_LEADER);
+    }
+
+    // If no other contact was defined, set project leader as contact.
+    if (dmpContributors.stream().noneMatch(c -> c.getContact())) {
+        projectLeaderContributor.setContact(true);
+    }
+}
 
     private boolean projectSelectionChanged(Dmp dmp, DmpDO dmpDO) {
 

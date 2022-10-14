@@ -45,6 +45,10 @@ public class Dmp extends PanacheEntity {
     @Column(name = "data_kind")
     private EDataKind dataKind;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "reused_data_kind")
+    private EDataKind reusedDataKind;
+
     @Column(name = "no_data_explanation")
     private String noDataExplanation;
 
@@ -174,6 +178,8 @@ public class Dmp extends PanacheEntity {
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<Cost> costs = new ArrayList<>();
+
+    private String documentation;
 
     public Contributor getContact(){
         Optional<Contributor> contact = contributorList.stream().filter(contributor -> contributor.getContact() != null)

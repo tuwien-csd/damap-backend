@@ -42,17 +42,8 @@ public class VersionTest {
     DmpService dmpService;
 
     @Test
-    void getEmptyVersionListTest(){
-        DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
-
-        List<VersionDO> versionDOList = versionService.getDmpVersions(dmpDO.getId());
-        assertNotNull(versionDOList);
-        assertTrue(versionDOList.isEmpty());
-    }
-
-    @Test
     void createVersionTest(){
-        VersionDO versionDO = getOrCreateTestVersionDO();
+        VersionDO versionDO = testDOFactory.getOrCreateTestVersionDO();
         assertNotNull(versionDO);
         assertNotNull(versionDO.getId());
         assertNotNull(versionDO.getDmpId());
@@ -63,7 +54,7 @@ public class VersionTest {
 
     @Test
     void getVersionListTest(){
-        VersionDO versionDO = getOrCreateTestVersionDO();
+        VersionDO versionDO = testDOFactory.getOrCreateTestVersionDO();
 
         List<VersionDO> versionDOList = versionService.getDmpVersions(versionDO.getDmpId());
         assertNotNull(versionDOList);
@@ -73,7 +64,7 @@ public class VersionTest {
 
     @Test
     void updateVersionTest(){
-        VersionDO versionDO = getOrCreateTestVersionDO();
+        VersionDO versionDO = testDOFactory.getOrCreateTestVersionDO();
         versionDO.setVersionName("TestVersionUpdate");
         versionService.createOrUpdate(versionDO);
 
@@ -91,32 +82,13 @@ public class VersionTest {
 
     @Test
     void updateDMPTest(){
-        VersionDO versionDO = getOrCreateTestVersionDO();
+        VersionDO versionDO = testDOFactory.getOrCreateTestVersionDO();
         updateDMP(versionDO.getDmpId());
 
         DmpDO dmpDOCurrent = dmpService.getDmpById(versionDO.getDmpId());
         DmpDO dmpDOPreviousVersion = dmpService.getDmpByIdAndRevision(versionDO.getDmpId(), versionDO.getRevisionNumber());
 
         assertNotEquals(dmpDOCurrent.getTitle(), dmpDOPreviousVersion.getTitle());
-    }
-
-    private VersionDO getOrCreateTestVersionDO(){
-        DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
-
-        final Optional<DmpVersion> testDmpVersion = dmpVersionRepo.getAll().stream()
-                .filter(a -> a.getVersionName().equals("TestVersion"))
-                .findAny();
-        if (testDmpVersion.isPresent()) {
-            return VersionDOMapper.mapEntityToDO(testDmpVersion.get(), new VersionDO());
-        }
-
-        VersionDO versionDO = new VersionDO();
-        versionDO.setVersionName("TestVersion");
-        versionDO.setDmpId(dmpDO.getId());
-
-        versionService.createOrUpdate(versionDO);
-
-        return getOrCreateTestVersionDO();
     }
 
     @Transactional

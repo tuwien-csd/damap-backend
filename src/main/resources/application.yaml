@@ -18,8 +18,8 @@ damap:
     password: pw4damap # your-datasource-password
   repositories:
     recommendation: [ your-recommened-repositories ]
-  projects-url: http://your.project.management.system.com
-  persons-url: http://your.personnel.management.system.com
+  projects-url: http://api-mock:80
+  persons-url: http://api-mock:80
   fits-url: http://your.fits.service:1234
 
 # general config settings
@@ -67,6 +67,7 @@ rest:
   r3data:
     repositories/mp-rest/url: https://www.re3data.org/api
     repositories/mp-rest/scope: javax.inject.Singleton
+  openaire/mp-rest/url: http://api.openaire.eu/search/
 
 "%dev":
   damap:
@@ -91,6 +92,9 @@ rest:
       dialect: org.hibernate.dialect.PostgreSQLDialect
 
 "%test":
+  damap:
+    repositories:
+      recommendation: ['r3d100013557'] # Re3Data id(s)
   quarkus:
     datasource:
       db-kind: h2

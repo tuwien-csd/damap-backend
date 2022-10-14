@@ -28,6 +28,7 @@ public class DmpDO {
     private String description;
     private ProjectDO project;
     private EDataKind dataKind;
+    private EDataKind reusedDataKind;
     private List<ContributorDO> contributors = new ArrayList<ContributorDO>();
     @Size(max = 4000)
     private String noDataExplanation;
@@ -86,6 +87,8 @@ public class DmpDO {
     private Boolean costsExist;
     private Boolean costsExistCris;
     private List<CostDO> costs = new ArrayList<CostDO>();
+    @Size(max = 4000)
+    private String documentation;
 
     public ContributorDO getContact(){
         Optional<ContributorDO> contact = contributors.stream().filter(ContributorDO::isContact).findFirst();

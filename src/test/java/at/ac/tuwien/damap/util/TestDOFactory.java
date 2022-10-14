@@ -1,14 +1,19 @@
 package at.ac.tuwien.damap.util;
 
 import at.ac.tuwien.damap.domain.Dmp;
+import at.ac.tuwien.damap.domain.DmpVersion;
 import at.ac.tuwien.damap.domain.InternalStorage;
 import at.ac.tuwien.damap.domain.InternalStorageTranslation;
 import at.ac.tuwien.damap.enums.*;
 import at.ac.tuwien.damap.repo.DmpRepo;
+import at.ac.tuwien.damap.repo.DmpVersionRepo;
 import at.ac.tuwien.damap.repo.InternalStorageTranslationRepo;
 import at.ac.tuwien.damap.rest.dmp.domain.*;
 import at.ac.tuwien.damap.rest.dmp.mapper.DmpDOMapper;
 import at.ac.tuwien.damap.rest.dmp.service.DmpService;
+import at.ac.tuwien.damap.rest.version.VersionDO;
+import at.ac.tuwien.damap.rest.version.VersionDOMapper;
+import at.ac.tuwien.damap.rest.version.VersionService;
 import lombok.extern.jbosslog.JBossLog;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -30,7 +35,13 @@ public class TestDOFactory {
     InternalStorageTranslationRepo internalStorageTranslationRepo;
 
     @Inject
-    DmpService dmpService;
+    MockDmpService dmpService;
+
+    @Inject
+    VersionService versionService;
+
+    @Inject
+    DmpVersionRepo dmpVersionRepo;
 
     private final String editorId = "012345";
 
@@ -52,6 +63,7 @@ public class TestDOFactory {
         newTestDmpDO.setDescription("This DMP is created for an automated test.");
         newTestDmpDO.setProject(getTestProjectDO());
         newTestDmpDO.setDataKind(EDataKind.NONE);
+        newTestDmpDO.setReusedDataKind(EDataKind.UNKNOWN);
         newTestDmpDO.setContributors(getTestContributorList());
         newTestDmpDO.setNoDataExplanation("This is why there are no datasets.");
         newTestDmpDO.setMetadata("String for metadata.");
@@ -77,6 +89,8 @@ public class TestDOFactory {
         newTestDmpDO.setHumanParticipants(true);
         newTestDmpDO.setEthicalIssuesExist(true);
         newTestDmpDO.setCommitteeReviewed(true);
+        newTestDmpDO.setDataKind(EDataKind.SPECIFY);
+        newTestDmpDO.setReusedDataKind(EDataKind.SPECIFY);
         newTestDmpDO.setDatasets(getTestDatasetList());
         newTestDmpDO.setRepositories(getTestRepositoryList());
         newTestDmpDO.setStorage(getTestStorageList());
@@ -107,7 +121,7 @@ public class TestDOFactory {
         return Arrays.asList(EAgreement.CONSORTIUM_AGREEMENT, EAgreement.CONFIDENTIALITY_AGREEMENT);
     }
 
-    private ProjectDO getTestProjectDO() {
+    public ProjectDO getTestProjectDO() {
         ProjectDO project = new ProjectDO();
         project.setAcronym("TEST");
         project.setUniversityId("123456");
@@ -136,7 +150,7 @@ public class TestDOFactory {
         return identifier;
     }
 
-    private ContributorDO getTestContributorDO(){
+    public ContributorDO getTestContributorDO(){
         ContributorDO contributor = new ContributorDO();
         contributor.setUniversityId("Internal Identifier 123456");
         contributor.setPersonId(getTestIdentifierDO(EIdentifierType.ORCID));
@@ -165,9 +179,10 @@ public class TestDOFactory {
     private List<DatasetDO> getTestDatasetList(){
         DatasetDO dataset = new DatasetDO();
         dataset.setTitle("Dataset Title");
+        dataset.setSource(EDataSource.NEW);
         dataset.setType(List.of(EDataType.CONFIGURATION_DATA));
         dataset.setSize(50000L);
-        dataset.setComment("Comments related to the dataset.");
+        dataset.setDescription("Dataset description.");
         dataset.setRetentionPeriod(10);
         dataset.setPersonalData(true);
         dataset.setSensitiveData(true);
@@ -182,17 +197,28 @@ public class TestDOFactory {
         dataset.setDelete(true);
         dataset.setDateOfDeletion(new Date());
         dataset.setReasonForDeletion("Explanation on why data is being deleted.");
+        dataset.setSource(EDataSource.REUSED);
+        IdentifierDO identifierDO = new IdentifierDO();
+        identifierDO.setIdentifier("Unique Identifier 123456");
+        identifierDO.setType(EIdentifierType.DOI);
+        dataset.setDatasetId(identifierDO);
         List<ContributorDO> contributors = getTestContributorList();
         if (!contributors.isEmpty())
             dataset.setDeletionPerson(contributors.get(0));
-        return List.of(dataset);
+
+        DatasetDO dataset2 = new DatasetDO();
+        dataset2.setTitle("Dataset2 Title");
+        dataset2.setSource(EDataSource.NEW);
+        dataset2.setReferenceHash("referenceHash234567");
+
+        return List.of(dataset, dataset2);
     }
 
     private List<RepositoryDO> getTestRepositoryList(){
         RepositoryDO repository = new RepositoryDO();
         repository.setRepositoryId("r3d100013557");
         repository.setTitle("TU Data");
-        repository.setDatasets(List.of("referenceHash123456"));
+        repository.setDatasets(List.of("referenceHash123456", "referenceHash234567"));
         return List.of(repository);
     }
 
@@ -245,7 +271,11 @@ public class TestDOFactory {
         return getOrCreateTestDmpDOEmpty();
     }
 
-    private void prepareInternalStorageOption(){
+    @Transactional
+    public void prepareInternalStorageOption(){
+
+        if (internalStorageTranslationRepo.listAll().size() > 0)
+            return;
 
         InternalStorage internalStorage = new InternalStorage();
         internalStorage.setUrl("test.url.com");
@@ -273,5 +303,24 @@ public class TestDOFactory {
         newInvalidTestDmpDO.getExternalStorage().get(0).setUrl("Link to the storage service");
 
         return newInvalidTestDmpDO;
+    }
+
+    public VersionDO getOrCreateTestVersionDO(){
+        DmpDO dmpDO = getOrCreateTestDmpDO();
+
+        final Optional<DmpVersion> testDmpVersion = dmpVersionRepo.getAll().stream()
+                .filter(a -> a.getVersionName().equals("TestVersion"))
+                .findAny();
+        if (testDmpVersion.isPresent()) {
+            return VersionDOMapper.mapEntityToDO(testDmpVersion.get(), new VersionDO());
+        }
+
+        VersionDO versionDO = new VersionDO();
+        versionDO.setVersionName("TestVersion");
+        versionDO.setDmpId(dmpDO.getId());
+
+        versionService.createOrUpdate(versionDO);
+
+        return getOrCreateTestVersionDO();
     }
 }

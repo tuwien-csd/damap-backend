@@ -8,7 +8,6 @@ import at.ac.tuwien.damap.enums.ESecurityMeasure;
 import at.ac.tuwien.damap.rest.dmp.domain.*;
 import lombok.experimental.UtilityClass;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -31,6 +30,7 @@ public class DmpDOMapper {
         }
 
         dmpDO.setDataKind(dmp.getDataKind());
+        dmpDO.setReusedDataKind(dmp.getReusedDataKind());
         dmpDO.setNoDataExplanation(dmp.getNoDataExplanation());
         dmpDO.setMetadata(dmp.getMetadata());
         dmpDO.setDataGeneration(dmp.getDataGeneration());
@@ -62,6 +62,7 @@ public class DmpDOMapper {
         dmpDO.setClosedAccessInfo(dmp.getClosedAccessInfo());
         dmpDO.setCostsExist(dmp.getCostsExist());
         dmpDO.setCostsExistCris(dmp.getCostsExistCris());
+        dmpDO.setDocumentation(dmp.getDocumentation());
 
         List<ContributorDO> contributorDOList = new ArrayList<>();
         dmp.getContributorList().forEach(contributor -> {
@@ -155,6 +156,7 @@ public class DmpDOMapper {
             dmp.setProject(null);
 
         dmp.setDataKind(dmpDO.getDataKind());
+        dmp.setReusedDataKind(dmpDO.getReusedDataKind());
         dmp.setNoDataExplanation(dmpDO.getNoDataExplanation());
         dmp.setMetadata(dmpDO.getMetadata());
         dmp.setDataGeneration(dmpDO.getDataGeneration());
@@ -186,6 +188,7 @@ public class DmpDOMapper {
         dmp.setClosedAccessInfo(dmpDO.getClosedAccessInfo());
         dmp.setCostsExist(dmpDO.getCostsExist());
         dmp.setCostsExistCris(dmpDO.getCostsExistCris());
+        dmp.setDocumentation(dmpDO.getDocumentation());
 
         //TODO also check for existing contributors based on Identifier, not just universityId
 

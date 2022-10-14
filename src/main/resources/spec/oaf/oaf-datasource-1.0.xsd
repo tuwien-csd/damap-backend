@@ -1,0 +1,76 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://namespace.openaire.eu/oaf"
+           targetNamespace="http://namespace.openaire.eu/oaf" elementFormDefault="qualified">
+
+    <xs:annotation>
+        <xs:documentation>This schema describes elements and properties of OpenAIRE datasources: https://issue.openaire.research-infrastructures.eu/projects/openaire2020-wiki/wiki/Core_entity_datasource</xs:documentation>
+    </xs:annotation>
+
+    <xs:include schemaLocation="oaf-common-1.0.xsd" />
+
+    <xs:element name="datasource">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element name="namespaceprefix" type="xs:string" />
+                <xs:element name="officialname" type="xs:string" />
+                <xs:element name="englishname" type="xs:string" />
+                <xs:element name="websiteurl" type="xs:string" />
+                <xs:element name="logourl" type="xs:string" />
+                <xs:element name="contactemail" type="xs:string" />
+                <xs:element name="datasourcetype" type="qualifierType">
+                    <xs:annotation>
+                        <xs:documentation>For allowed values check terms in:http://api.openaire.eu/vocabularies/dnet:datasource_typologies</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="openairecompatibility" type="qualifierType">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Level of compatibility of this datasource with regards to the
+                            guidelines.
+                            <p>For allowed values check:
+                                http://api.openaire.eu/vocabularies/dnet:datasourceCompatibilityLevel
+                            </p>
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="dateofvalidation" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>When this datasource has been validated by the
+                            OpenAire
+                            Validator.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="latitude" type="xs:string"  />
+                <xs:element name="longitude" type="xs:string"  />
+                <xs:element name="description" type="xs:string" />
+                <xs:element name="subjects" type="structuredPropertyElementType">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Subjects and keywords.
+                            <p>For allowed values check:
+                                http://api.openaire.eu/vocabularies/dnet:result_subjects
+                            </p>
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="originalId" type="xs:string" />
+                <xs:element name="collectedfrom" type="namedIdElementType">
+                    <xs:annotation>
+                        <xs:documentation>Identifier and name of the datasource from which
+                            this datasource has
+                            been collected from.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="pid" type="structuredPropertyElementType" />
+                <xs:element name="rels" type="relsType">
+                    <xs:annotation>
+                        <xs:documentation>Relationships to other entities.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

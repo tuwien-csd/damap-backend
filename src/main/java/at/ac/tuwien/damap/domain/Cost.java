@@ -27,6 +27,7 @@ public class Cost extends PanacheEntity {
 
     private String title;
 
+    @Column(name = "cost_value")
     private Float value;
 
     @Column(name = "currency_code")
