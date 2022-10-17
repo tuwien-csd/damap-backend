@@ -22,11 +22,6 @@ damap:
   projects-url: http://api-mock:80
   persons-url: http://api-mock:80
   fits-url: http://your.fits.service:1234
-  orcid:
-    client:
-      id: 'client-id'
-      secret: 'client-secret'
-    testmode: true
 
 # general config settings
 quarkus:

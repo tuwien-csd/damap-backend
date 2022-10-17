@@ -15,8 +15,8 @@ import javax.ws.rs.core.MediaType;
 import at.ac.tuwien.damap.enums.ESearchServiceType;
 import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.persons.MockUniversityPersonServiceImpl;
-import at.ac.tuwien.damap.rest.persons.ORCIDPersonServiceImpl;
 import at.ac.tuwien.damap.rest.persons.PersonService;
+import at.ac.tuwien.damap.rest.persons.orcid.ORCIDPersonServiceImpl;
 import io.quarkus.security.Authenticated;
 import lombok.extern.jbosslog.JBossLog;
 
