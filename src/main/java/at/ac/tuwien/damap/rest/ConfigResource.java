@@ -1,7 +1,5 @@
 package at.ac.tuwien.damap.rest;
 
-import java.util.List;
-
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -11,7 +9,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import at.ac.tuwien.damap.rest.config.domain.ConfigDO;
-import at.ac.tuwien.damap.rest.config.domain.ServiceConfig;
+import at.ac.tuwien.damap.rest.config.domain.PersonServiceConfigurations;
 import lombok.extern.jbosslog.JBossLog;
 
 @Path("/api/config")
@@ -19,7 +17,6 @@ import lombok.extern.jbosslog.JBossLog;
 @PermitAll
 @JBossLog
 public class ConfigResource {
-
     @ConfigProperty(name = "damap.auth.frontend.url")
     String authUrl;
 
@@ -35,20 +32,8 @@ public class ConfigResource {
     @ConfigProperty(name = "damap.env")
     String env;
 
-    // TODO: Read searchservices from config
-    List<ServiceConfig> personSearchServiceConfigs = List.of(
-            new ServiceConfig() {
-                {
-                    setDisplayText("University");
-                    setQueryValue("UNIVERSITY");
-                }
-            },
-            new ServiceConfig() {
-                {
-                    setDisplayText("ORCID");
-                    setQueryValue("ORCID");
-                }
-            });
+    @ConfigProperty(name = "damap.person-services")
+    PersonServiceConfigurations personServiceConfigurations;
 
     @GET
     public ConfigDO config() {
@@ -58,7 +43,7 @@ public class ConfigResource {
         configDO.setAuthScope(authScope);
         configDO.setAuthUser(authUser);
         configDO.setEnv(env);
-        configDO.setPersonSearchServiceConfigs(personSearchServiceConfigs);
+        configDO.setPersonSearchServiceConfigs(personServiceConfigurations.getConfigs());
 
         return configDO;
     }

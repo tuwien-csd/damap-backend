@@ -1,8 +1,9 @@
 package at.ac.tuwien.damap.rest;
 
+import java.lang.reflect.Constructor;
+import java.util.LinkedHashMap;
 import java.util.List;
 
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -12,11 +13,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import at.ac.tuwien.damap.enums.ESearchServiceType;
 import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.persons.MockUniversityPersonServiceImpl;
 import at.ac.tuwien.damap.rest.persons.PersonService;
-import at.ac.tuwien.damap.rest.persons.orcid.ORCIDPersonServiceImpl;
 import io.quarkus.security.Authenticated;
 import lombok.extern.jbosslog.JBossLog;
 
@@ -33,36 +32,58 @@ public class PersonResource {
     MockUniversityPersonServiceImpl personService;
 
     @Inject
-    @Dependent
-    ORCIDPersonServiceImpl orcidPersonService;
+    ConfigResource config;
+
+    LinkedHashMap<String, PersonService> personServices = new LinkedHashMap<String, PersonService>();
+
+    public PersonResource(ConfigResource config) {
+        config.personServiceConfigurations.getConfigs().forEach(serviceConfig -> {
+            try {
+                Class<?> clazz = Class.forName(serviceConfig.getClassName());
+                Constructor<?> ctor = clazz.getConstructor();
+                PersonService newService = (PersonService) ctor.newInstance();
+
+                personServices.put(serviceConfig.getQueryValue(), newService);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        });
+    }
 
     @GET
     @Path("/{id}")
-    public ContributorDO getPersonById(@PathParam("id") String id) {
+    public ContributorDO getPersonById(@PathParam("id") String id,
+            @QueryParam("searchService") String searchServiceType) {
         log.info("Return person details for id=" + id);
-        return personService.getPersonById(id);
+        PersonService searchService = getServiceForQueryParam(searchServiceType);
+
+        return searchService.getPersonById(id);
     }
 
     @GET
     @Path("/search")
     public List<ContributorDO> getPersonSearchResult(@QueryParam("q") String searchTerm,
-            @QueryParam("searchService") ESearchServiceType searchServiceType) {
+            @QueryParam("searchService") String searchServiceType) {
+
         log.info("Return person list for query=" + searchTerm);
 
-        searchServiceType = searchServiceType == null ? ESearchServiceType.ORCID : searchServiceType;
-        PersonService searchService;
+        PersonService searchService = getServiceForQueryParam(searchServiceType);
 
-        switch (searchServiceType) {
-            case ORCID:
-                searchService = orcidPersonService;
-                break;
-            case UNIVERSITY:
-            default:
-                searchService = personService;
-                break;
+        List<ContributorDO> persons = List.of();
+        if (searchService != null) {
+            persons = searchService.getPersonSearchResult(searchTerm);
         }
 
-        List<ContributorDO> persons = searchService.getPersonSearchResult(searchTerm);
         return persons;
+    }
+
+    private PersonService getServiceForQueryParam(String searchServiceType) {
+        PersonService searchService = personServices.get(searchServiceType);
+        if (searchService == null && !personServices.isEmpty()) {
+            searchService = personServices.entrySet().iterator().next().getValue();
+        }
+
+        return searchService;
     }
 }

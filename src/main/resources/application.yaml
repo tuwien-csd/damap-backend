@@ -22,6 +22,13 @@ damap:
   projects-url: http://api-mock:80
   persons-url: http://api-mock:80
   fits-url: http://your.fits.service:1234
+  person-services:
+    - display-text: 'University'
+      query-value: 'UNIVERSITY'
+      class-name: 'at.ac.tuwien.damap.rest.persons.MockUniversityPersonServiceImpl'
+    - display-text: 'ORCID'
+      query-value: 'ORCID'
+      class-name: 'at.ac.tuwien.damap.rest.persons.orcid.ORCIDPersonServiceImpl'
 
 # general config settings
 quarkus:
