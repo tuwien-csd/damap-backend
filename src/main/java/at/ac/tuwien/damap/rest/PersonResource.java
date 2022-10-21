@@ -14,7 +14,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
-import at.ac.tuwien.damap.rest.persons.MockUniversityPersonServiceImpl;
 import at.ac.tuwien.damap.rest.persons.PersonService;
 import io.quarkus.security.Authenticated;
 import lombok.extern.jbosslog.JBossLog;
@@ -29,9 +28,6 @@ import lombok.extern.jbosslog.JBossLog;
 public class PersonResource {
 
     @Inject
-    MockUniversityPersonServiceImpl personService;
-
-    @Inject
     ConfigResource config;
 
     LinkedHashMap<String, PersonService> personServices = new LinkedHashMap<String, PersonService>();
@@ -40,7 +36,7 @@ public class PersonResource {
         config.personServiceConfigurations.getConfigs().forEach(serviceConfig -> {
             try {
                 Class<?> clazz = Class.forName(serviceConfig.getClassName());
-                Constructor<?> ctor = clazz.getConstructor();
+                Constructor<?> ctor = clazz.getDeclaredConstructor();
                 PersonService newService = (PersonService) ctor.newInstance();
 
                 personServices.put(serviceConfig.getQueryValue(), newService);
@@ -66,7 +62,7 @@ public class PersonResource {
     public List<ContributorDO> getPersonSearchResult(@QueryParam("q") String searchTerm,
             @QueryParam("searchService") String searchServiceType) {
 
-        log.info("Return person list for query=" + searchTerm);
+        log.info("Return person list for query=" + searchTerm + "&searchService=" + searchServiceType);
 
         PersonService searchService = getServiceForQueryParam(searchServiceType);
 

@@ -10,8 +10,6 @@ import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -34,7 +32,6 @@ public class ORCIDPersonServiceImpl implements PersonService {
             .version(HttpClient.Version.HTTP_2)
             .build();
 
-    @Inject
     public ORCIDPersonServiceImpl() {
         baseUrl = "pub.orcid.org";
     }
