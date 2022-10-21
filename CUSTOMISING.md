@@ -85,9 +85,13 @@ damap:
 ```
 
 Note the value DAMAP_AUTH_USER, which will contain the variable name of your institutional person-ID.
+The variable name should be an additional property provided by your authentication service,
+and contains the users ID as per your project/researcher management system.
 This ID will then be used throughout the project to identify people and users within damap.
+This allows you to make people recognizeable through your various systems, without having to map or track new IDs.
 
-Any person that is authenticated through your service will be considered as a user.
+Any person that is authenticated through your service will be considered as a user, 
+as long as they have the provided person-ID attribute (renamed to your preference).
 If you wish to have users with the administrator role, you need to provide them with the role **Damap Admin**
 within your authentication service.
 
@@ -117,10 +121,10 @@ damap:
 
 In your institutional project, write custom API services for retrieving project and person information from your
 services, as well as mappers, to map their information to damaps classes.
-To this end you need to extend the dummy API services
-[ProjectServiceImpl.class](src/main/java/at/ac/tuwien/damap/rest/projects/ProjectServiceImpl.java) and
-[PersonServiceImpl.class](src/main/java/at/ac/tuwien/damap/rest/persons/PersonServiceImpl.java),
-in order to feed this information to the project.
+To this end you need to implement the API services
+[ProjectService.class](src/main/java/at/ac/tuwien/damap/rest/projects/ProjectService.java) and
+[PersonService.class](src/main/java/at/ac/tuwien/damap/rest/persons/PersonService.java),
+replacing the mock implementations, in order to feed this information to the project.
 
 
 ### Providing a FITS service
@@ -131,6 +135,16 @@ You can then provide a link to your service in the config, so that damap might m
 ```yaml
 damap:
    fits-url: http://your.fits.service:1234
+```
+
+### Defining Production vs. Development systems
+
+Change the **DEV** property to **PROD** in order to enable production environment specific behavior in the frontend,
+such as removing the test-system notification banner.
+
+```yaml
+damap:
+  env: DEV
 ```
 
 ## Deploying the damap frontend
@@ -185,6 +199,12 @@ insert into damap.inter_storage_translation (id, version, internal_storage_id, l
 [Export word template](src/main/resources/template/scienceEuropeTemplate.docx) and
 [its resource file](src/main/resources/template/scienceEuropeTemplate.resource)
 can be replaced in the institutional project
-by adding a replacement file in the resources there and then writing a class to extend
+by adding a replacement file in the resources folder of your customisation project.
+Then write a class to extend
 [TemplateFileBrokerServiceImpl](src/main/java/at/ac/tuwien/damap/conversion/TemplateFileBrokerServiceImpl.java)
 and have it override the methods which retrieve those files.
+
+The new filepath will look into the local resource folder and take the file placed there.
+This .docx file needs to contain the placeholder keywords found in the sample template provided in the generic project, 
+in order to replace the text at those specific places.
+By replacing the resource file instead, the default texts used to compose the document can be adapted.

@@ -68,6 +68,8 @@ file.
 * [Hardani Maulana](https://github.com/hardanimaulana)
 * [Florin Hillebrand](https://github.com/flozzone)
 * [Luca Maestri](https://github.com/casualtimer)
+* [David Eckhard](https://github.com/rekt-hard)
+* [Laura Thaci](https://github.com/lpandath)
 
 ## License
 

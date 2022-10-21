@@ -173,7 +173,7 @@ public class DmpService {
  * @param Dmp Data mangagement plan
  */
 private void updateProjectLead(Dmp dmp) {
-    if (dmp.getProject() == null)
+    if (dmp.getProject() == null || dmp.getProject().getUniversityId() == null)
         return;
 
     ContributorDO projectLeaderDO =
