@@ -120,13 +120,13 @@ public class DmpService {
         String filename = "My Data Management Plan";
 
         Dmp dmp = dmpRepo.findById(id);
-        if (dmp != null){
-            if (dmp.getProject() != null)
-                if (projectService.getProjectDetails(dmp.getProject().getUniversityId()) != null) {
+        if (dmp != null) {
+            if (dmp.getProject() != null) {
+                if (dmp.getProject().getUniversityId() != null && projectService.getProjectDetails(dmp.getProject().getUniversityId()) != null) {
                     filename = "DMP_" + projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym() + "_" + formatter.format(date).toString();
                 } else if (dmp.getProject().getTitle() != null)
-                    filename = "DMP_" + dmp.getProject().getTitle()  + "_" + formatter.format(date).toString();
-            else {
+                    filename = "DMP_" + dmp.getProject().getTitle() + "_" + formatter.format(date).toString();
+            } else {
                 if (dmp.getTitle() != null)
                     filename = dmp.getTitle();
             }

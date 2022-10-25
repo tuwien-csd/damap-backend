@@ -98,8 +98,10 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
             }
 
             //variable project start date and end date
-            addReplacement(replacements, "[startdate]", formatter.format(dmp.getProject().getStart()));
-            addReplacement(replacements, "[enddate]", formatter.format(dmp.getProject().getEnd()));
+            if (dmp.getProject().getStart() != null)
+                addReplacement(replacements, "[startdate]", formatter.format(dmp.getProject().getStart()));
+            if (dmp.getProject().getEnd() != null)
+                addReplacement(replacements, "[enddate]", formatter.format(dmp.getProject().getEnd()));
 
             List<String> fundingItems = new ArrayList<>();
 
