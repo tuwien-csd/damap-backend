@@ -60,7 +60,8 @@ public abstract class AbstractTemplateExportSetup extends AbstractTemplateExport
             projectCoordinator = ContributorDOMapper.mapEntityToDO(projectLeaderOpt.get(), new ContributorDO());
         else
             try {
-                projectCoordinator = projectService.getProjectLeader(dmp.getProject().getUniversityId());
+                if (dmp.getProject() != null && dmp.getProject().getUniversityId() != null)
+                    projectCoordinator = projectService.getProjectLeader(dmp.getProject().getUniversityId());
             } catch (Exception e) {
                 log.error("Project API not functioning");
             }
