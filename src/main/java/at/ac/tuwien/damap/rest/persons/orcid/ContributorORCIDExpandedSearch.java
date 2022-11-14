@@ -2,26 +2,27 @@ package at.ac.tuwien.damap.rest.persons.orcid;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
+import javax.json.bind.annotation.JsonbProperty;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-class ContributorORCIDExpandedSearch {
-    @JsonAlias({ "orcid-id" })
+public class ContributorORCIDExpandedSearch {
+    @JsonbProperty(value = "orcid-id")
     String orcidId;
 
-    @JsonAlias({ "given-names" })
+    @JsonbProperty(value = "given-names")
     String givenNames;
 
-    @JsonAlias({ "family-names" })
+    @JsonbProperty(value = "family-names")
     String familyNames;
 
-    @JsonAlias({ "email" })
+    @JsonbProperty(value = "email")
     List<String> emails;
 
-    @JsonAlias({ "institution-name" })
+    @JsonbProperty(value = "institution-name")
     List<String> affiliations;
 }

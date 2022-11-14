@@ -1,6 +1,5 @@
 package at.ac.tuwien.damap.rest;
 
-import java.lang.reflect.Constructor;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -13,13 +12,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import at.ac.tuwien.damap.rest.config.domain.ServiceConfig;
 import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.persons.PersonService;
+import io.quarkus.arc.All;
 import io.quarkus.security.Authenticated;
 import lombok.extern.jbosslog.JBossLog;
 
-/* Resource currently unused, but will be required for person search at a later stage */
-// TODO: remove unused functions
 @Path("/api/persons")
 @Authenticated
 @Produces(MediaType.APPLICATION_JSON)
@@ -32,18 +31,29 @@ public class PersonResource {
 
     LinkedHashMap<String, PersonService> personServices = new LinkedHashMap<String, PersonService>();
 
-    public PersonResource(ConfigResource config) {
-        config.personServiceConfigurations.getConfigs().forEach(serviceConfig -> {
-            try {
-                Class<?> clazz = Class.forName(serviceConfig.getClassName());
-                Constructor<?> ctor = clazz.getDeclaredConstructor();
-                PersonService newService = (PersonService) ctor.newInstance();
+    @Inject
+    public PersonResource(ConfigResource config, @All List<PersonService> availableServices) {
+        List<ServiceConfig> configuredServices = config.personServiceConfigurations.getConfigs();
 
-                personServices.put(serviceConfig.getQueryValue(), newService);
-            } catch (Exception e) {
-                e.printStackTrace();
+        configuredServices.forEach(serviceConfig -> {
+            Boolean found = false;
+            String configClassName = serviceConfig.getClassName();
+            for (var service : availableServices) {
+                try {
+                    String serviceClassName = service.getClass().getCanonicalName().split("_ClientProxy")[0];
+
+                    if (configClassName.equals(serviceClassName)) {
+                        personServices.put(serviceConfig.getQueryValue(), service);
+                        found = true;
+                        break;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-
+            if (!found) {
+                log.warn(String.format("Service '%s' configured but is not available", serviceConfig.getClassName()));
+            }
         });
     }
 
