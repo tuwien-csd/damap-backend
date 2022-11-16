@@ -56,4 +56,22 @@ public class AccessValidator {
     public boolean canExportDmp(long dmpId, String personId) {
         return this.canViewDmp(dmpId, personId);
     }
+
+    public boolean canDeleteDmp(long dmpId, String personId) {
+        if (securityService.isAdmin()) {
+            return true;
+        }
+
+        List<Access> accessList = accessRepo.getAllDmpByUniversityId(personId);
+
+        for (Access access : accessList) {
+            if (access.getDmp().id.equals(dmpId) &&
+                    access.getRole().equals(EFunctionRole.OWNER)
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

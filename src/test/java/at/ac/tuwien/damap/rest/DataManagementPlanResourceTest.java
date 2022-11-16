@@ -171,6 +171,28 @@ public class DataManagementPlanResourceTest {
     }
 
     @Test
+    @TestSecurity(user = "userJwt", roles = "user")
+    void testDeletePlanOwner_Valid() {
+        DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
+        given()
+                .when().delete("/" + dmpDO.getId())
+                .then()
+                .statusCode(204);
+    }
+
+    @Test
+    @TestSecurity(user = "userJwt", roles = "user")
+    void testDeletePlan_Invalid() {
+        // use unauthorized user id
+        Mockito.when(securityService.getUserId()).thenReturn("12345");
+        DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
+        given()
+                .when().delete("/" + dmpDO.getId())
+                .then()
+                .statusCode(403);
+    }
+
+    @Test
     public void testGetDmpByIdAndRevisionlanEndpoint_Invalid() {
         given()
                 .contentType(MediaType.APPLICATION_JSON)

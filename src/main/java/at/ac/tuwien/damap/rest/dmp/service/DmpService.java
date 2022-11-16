@@ -103,6 +103,14 @@ public class DmpService {
         return getDmpById(dmp.id);
     }
 
+    @Transactional
+    public void delete(long dmpId) {
+        log.info("Deleting DMP with id " + dmpId);
+        Dmp dmp = dmpRepo.findById(dmpId);
+        this.removeAccess(dmp);
+        dmpRepo.deleteById(dmpId);
+    }
+
     public void createAccess(Dmp dmp, String editedById) {
         Access access = new Access();
         access.setUniversityId(editedById);
@@ -110,6 +118,11 @@ public class DmpService {
         access.setDmp(dmp);
         access.setStart(new Date());
         access.persistAndFlush();
+    }
+
+    private void removeAccess(Dmp dmp) {
+        List<Access> access = accessRepo.getAccessByDmp(dmp);
+        access.forEach(Access::delete);
     }
 
     public String getDefaultFileName(long id) {
