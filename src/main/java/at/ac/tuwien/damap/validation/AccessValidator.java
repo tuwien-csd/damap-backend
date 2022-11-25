@@ -64,14 +64,10 @@ public class AccessValidator {
 
         List<Access> accessList = accessRepo.getAllDmpByUniversityId(personId);
 
-        for (Access access : accessList) {
-            if (access.getDmp().id.equals(dmpId) &&
-                    access.getRole().equals(EFunctionRole.OWNER)
-            ) {
-                return true;
-            }
-        }
-
-        return false;
+        Optional<Access> dmpAccess = accessList.stream().filter(access -> 
+                access.getDmp().id.equals(dmpId) &&
+                access.getRole().equals(EFunctionRole.OWNER)).findAny();
+        
+        return dmpAccess.isPresent();
     }
 }
