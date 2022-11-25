@@ -18,6 +18,8 @@ import at.ac.tuwien.damap.rest.dmp.mapper.MapperService;
 import at.ac.tuwien.damap.rest.dmp.mapper.ProjectSupplementDOMapper;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
 import at.ac.tuwien.damap.rest.projects.ProjectSupplementDO;
+import at.ac.tuwien.damap.rest.version.VersionDO;
+import at.ac.tuwien.damap.rest.version.VersionService;
 import lombok.extern.jbosslog.JBossLog;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
@@ -48,6 +50,9 @@ public class DmpService {
 
     @Inject
     MapperService mapperService;
+
+    @Inject
+    VersionService versionService;
 
     public List<DmpListItemDO> getAll() {
 
@@ -108,6 +113,7 @@ public class DmpService {
         log.info("Deleting DMP with id " + dmpId);
         Dmp dmp = dmpRepo.findById(dmpId);
         this.removeAccess(dmp);
+        this.removeVersions(dmp);
         dmpRepo.deleteById(dmpId);
     }
 
@@ -123,6 +129,13 @@ public class DmpService {
     private void removeAccess(Dmp dmp) {
         List<Access> access = accessRepo.getAccessByDmp(dmp);
         access.forEach(Access::delete);
+    }
+
+    private void removeVersions(Dmp dmp) {
+        List<VersionDO> versionDOs = versionService.getDmpVersions(dmp.id);
+        for(VersionDO versionDO : versionDOs) {
+            versionService.delete(versionDO.getId());
+        }
     }
 
     public String getDefaultFileName(long id) {
