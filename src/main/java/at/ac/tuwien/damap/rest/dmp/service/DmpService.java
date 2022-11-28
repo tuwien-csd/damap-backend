@@ -133,7 +133,7 @@ public class DmpService {
 
     private void removeVersions(Dmp dmp) {
         List<VersionDO> versionDOs = versionService.getDmpVersions(dmp.id);
-        for(VersionDO versionDO : versionDOs) {
+        for (VersionDO versionDO : versionDOs) {
             versionService.delete(versionDO.getId());
         }
     }

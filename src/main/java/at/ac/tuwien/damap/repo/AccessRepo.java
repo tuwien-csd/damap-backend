@@ -19,7 +19,7 @@ public class AccessRepo implements PanacheRepository<Access> {
 
     public List<Access> getAccessByDmp(Dmp dmp) {
         return list("select access from Access access" +
-                        " where access.dmp = :dmp ",
+                    " where access.dmp = :dmp ",
                 Parameters.with("dmp", dmp));
     }
 }

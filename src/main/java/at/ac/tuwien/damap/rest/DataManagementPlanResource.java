@@ -113,7 +113,7 @@ public class DataManagementPlanResource {
         log.info("Delete dmp with id: " + id);
         String personId = this.getPersonId();
         long dmpId = Long.parseLong(id);
-        if(!accessValidator.canDeleteDmp(dmpId, personId)){
+        if (!accessValidator.canDeleteDmp(dmpId, personId)) {
             throw new ForbiddenException("Not authorized to delete dmp with id " + dmpId);
         }
         dmpService.delete(dmpId);
