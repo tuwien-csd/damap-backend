@@ -107,6 +107,18 @@ public class DataManagementPlanResource {
         return dmpService.update(dmpDO);
     }
 
+    @DELETE
+    @Path("/{id}")
+    public void deleteDmp(@PathParam String id) {
+        log.info("Delete dmp with id: " + id);
+        String personId = this.getPersonId();
+        long dmpId = Long.parseLong(id);
+        if (!accessValidator.canDeleteDmp(dmpId, personId)) {
+            throw new ForbiddenException("Not authorized to delete dmp with id " + dmpId);
+        }
+        dmpService.delete(dmpId);
+    }
+
     private String getPersonId() {
         if (securityService == null) {
             throw new AuthenticationFailedException("User ID is missing.");
