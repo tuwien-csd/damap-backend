@@ -8,8 +8,8 @@ import lombok.Data;
 public class Pagination {
     int page = 1;
     int perPage = 10;
-    int numPages = 1;
-    int numItems;
+    Integer numPages;
+    Integer numItems;
     boolean hasNext;
     boolean hasPrevious;
 
@@ -39,11 +39,14 @@ public class Pagination {
 
     public void calculateFields() {
         hasPrevious = page > 1;
-        numPages = numItems / perPage;
-        if ((numItems == 0) || (numItems % perPage != 0)) {
-            numPages += 1;
+
+        if (numItems != null) {
+            numPages = numItems / perPage;
+            if ((numItems == 0) || (numItems % perPage != 0)) {
+                numPages += 1;
+            }
+            hasNext = page != numPages;
         }
-        hasNext = page != numPages;
     }
 
 }
