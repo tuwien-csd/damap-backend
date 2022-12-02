@@ -2582,3 +2582,117 @@ databaseChangeLog:
             newColumnName: cost_value
             oldColumnName: value
 
+
+  - changeSet:
+      id: 7
+      author: Zeno Casellato
+      changes:
+        - addColumn:
+            tableName: dataset
+            columns:
+              - column:
+                  name: temp_description
+                  type: CLOB
+        - addColumn:
+            tableName: dataset_aud
+            columns:
+              - column:
+                  name: temp_description
+                  type: CLOB
+        - addColumn:
+            tableName: project
+            columns:
+              - column:
+                  name: temp_description
+                  type: CLOB
+        - addColumn:
+            tableName: project_aud
+            columns:
+              - column:
+                  name: temp_description
+                  type: CLOB
+        - addColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name: temp_description
+                  type: CLOB
+        - addColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name: temp_description
+                  type: CLOB
+        - sql:
+            dbms: '!h2'
+            splitStatements: true
+            sql: >
+              UPDATE dataset SET temp_description = description;
+              UPDATE dataset_aud SET temp_description = description;
+              UPDATE project SET temp_description = description;
+              UPDATE project_aud SET temp_description = description;
+              UPDATE dmp SET temp_description = description;
+              UPDATE dmp_aud SET temp_description = description;
+            stripComments: true
+            comment: changing varchar to clob column type for longer text inputs
+        - dropColumn:
+            tableName: dataset
+            columns:
+              - column:
+                  name: description
+                  type: VARCHAR(4000)
+        - dropColumn:
+            tableName: dataset_aud
+            columns:
+              - column:
+                  name: description
+                  type: VARCHAR(4000)
+        - renameColumn:
+            tableName: dataset
+            newColumnName: description
+            oldColumnName: temp_description
+        - renameColumn:
+            tableName: dataset_aud
+            newColumnName: description
+            oldColumnName: temp_description
+        - dropColumn:
+            tableName: project
+            columns:
+              - column:
+                  name: description
+                  type: VARCHAR(4000)
+        - dropColumn:
+            tableName: project_aud
+            columns:
+              - column:
+                  name: description
+                  type: VARCHAR(4000)
+        - renameColumn:
+            tableName: project
+            newColumnName: description
+            oldColumnName: temp_description
+        - renameColumn:
+            tableName: project_aud
+            newColumnName: description
+            oldColumnName: temp_description
+        - dropColumn:
+            tableName: dmp
+            columns:
+              - column:
+                  name: description
+                  type: VARCHAR(4000)
+        - dropColumn:
+            tableName: dmp_aud
+            columns:
+              - column:
+                  name: description
+                  type: VARCHAR(4000)
+        - renameColumn:
+            tableName: dmp
+            newColumnName: description
+            oldColumnName: temp_description
+        - renameColumn:
+            tableName: dmp_aud
+            newColumnName: description
+            oldColumnName: temp_description
+

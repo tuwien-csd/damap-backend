@@ -24,7 +24,6 @@ public class DmpDO {
     private Date created;
     @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private Date modified;
-    @Size(max = 4000)
     private String description;
     private ProjectDO project;
     private EDataKind dataKind;
