@@ -22,7 +22,6 @@ public class DatasetDO {
     private String title;
     private List<EDataType> type = new ArrayList<>();
     private Long size;
-    @Size(max = 4000)
     private String description;
     private Boolean personalData;
     private Boolean sensitiveData;
