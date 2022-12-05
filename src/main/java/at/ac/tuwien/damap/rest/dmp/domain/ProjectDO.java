@@ -16,7 +16,6 @@ public class ProjectDO {
     private String acronym;
     @Size(max = 255)
     private String universityId;
-    @Size(max = 4000)
     private String description;
     @Size(max = 255)
     private String title;

@@ -92,8 +92,6 @@ public class OpenAireMapper {
                     datasetDO.setDescription(string);
                 else
                     datasetDO.setDescription(datasetDO.getDescription() + ' ' + string);
-                if (datasetDO.getDescription().length() > 4000)
-                    datasetDO.setDescription(datasetDO.getDescription().substring(0, 4000));
                 break;
             case "size":
                 try {

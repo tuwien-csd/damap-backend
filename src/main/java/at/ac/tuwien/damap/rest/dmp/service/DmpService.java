@@ -18,6 +18,8 @@ import at.ac.tuwien.damap.rest.dmp.mapper.MapperService;
 import at.ac.tuwien.damap.rest.dmp.mapper.ProjectSupplementDOMapper;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
 import at.ac.tuwien.damap.rest.projects.ProjectSupplementDO;
+import at.ac.tuwien.damap.rest.version.VersionDO;
+import at.ac.tuwien.damap.rest.version.VersionService;
 import lombok.extern.jbosslog.JBossLog;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
@@ -48,6 +50,9 @@ public class DmpService {
 
     @Inject
     MapperService mapperService;
+
+    @Inject
+    VersionService versionService;
 
     public List<DmpListItemDO> getAll() {
 
@@ -95,8 +100,7 @@ public class DmpService {
         boolean projectSelectionChanged = projectSelectionChanged(dmp, dmpDO);
         DmpDOMapper.mapDOtoEntity(dmpDO, dmp, mapperService);
         dmp.setModified(new Date());
-        if (projectSelectionChanged)
-        {
+        if (projectSelectionChanged) {
             updateDmpSupplementalInfo(dmp);
             updateProjectLead(dmp);
         }
@@ -104,7 +108,16 @@ public class DmpService {
         return getDmpById(dmp.id);
     }
 
-    public void createAccess(Dmp dmp, String editedById){
+    @Transactional
+    public void delete(long dmpId) {
+        log.info("Deleting DMP with id " + dmpId);
+        Dmp dmp = dmpRepo.findById(dmpId);
+        this.removeAccess(dmp);
+        this.removeVersions(dmp);
+        dmpRepo.deleteById(dmpId);
+    }
+
+    public void createAccess(Dmp dmp, String editedById) {
         Access access = new Access();
         access.setUniversityId(editedById);
         access.setRole(EFunctionRole.OWNER);
@@ -113,7 +126,19 @@ public class DmpService {
         access.persistAndFlush();
     }
 
-    public String getDefaultFileName(long id){
+    private void removeAccess(Dmp dmp) {
+        List<Access> access = accessRepo.getAccessByDmp(dmp);
+        access.forEach(Access::delete);
+    }
+
+    private void removeVersions(Dmp dmp) {
+        List<VersionDO> versionDOs = versionService.getDmpVersions(dmp.id);
+        for (VersionDO versionDO : versionDOs) {
+            versionService.delete(versionDO.getId());
+        }
+    }
+
+    public String getDefaultFileName(long id) {
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
 
@@ -123,9 +148,9 @@ public class DmpService {
         if (dmp != null) {
             if (dmp.getProject() != null) {
                 if (dmp.getProject().getUniversityId() != null && projectService.getProjectDetails(dmp.getProject().getUniversityId()) != null) {
-                    filename = "DMP_" + projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym() + "_" + formatter.format(date).toString();
+                    filename = "DMP_" + projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym() + "_" + formatter.format(date);
                 } else if (dmp.getProject().getTitle() != null)
-                    filename = "DMP_" + dmp.getProject().getTitle() + "_" + formatter.format(date).toString();
+                    filename = "DMP_" + dmp.getProject().getTitle() + "_" + formatter.format(date);
             } else {
                 if (dmp.getTitle() != null)
                     filename = dmp.getTitle();
@@ -137,10 +162,10 @@ public class DmpService {
         return filename;
     }
 
-    public List<ProjectDO> checkExistingDmps(List<ProjectDO> projectDOList){
+    public List<ProjectDO> checkExistingDmps(List<ProjectDO> projectDOList) {
 
         for (Dmp dmp : dmpRepo.getAll()) {
-            for (ProjectDO projectDO : projectDOList){
+            for (ProjectDO projectDO : projectDOList) {
                 if (dmp.getProject() != null &&
                         dmp.getProject().getUniversityId() != null &&
                         projectDO.getUniversityId() != null &&
@@ -165,54 +190,54 @@ public class DmpService {
         }
     }
 
-/**
- * Retrieve the project leader of the DMPs project.
- * Set the project leader as contact, if there is no other contact selected.
- * Add the project leader as a contributor, if it is not already added.
- *
- * @param Dmp Data mangagement plan
- */
-private void updateProjectLead(Dmp dmp) {
-    if (dmp.getProject() == null || dmp.getProject().getUniversityId() == null)
-        return;
+    /**
+     * Retrieve the project leader of the DMPs project.
+     * Set the project leader as contact, if there is no other contact selected.
+     * Add the project leader as a contributor, if it is not already added.
+     *
+     * @param Dmp Data management plan
+     */
+    private void updateProjectLead(Dmp dmp) {
+        if (dmp.getProject() == null || dmp.getProject().getUniversityId() == null)
+            return;
 
-    ContributorDO projectLeaderDO =
-        projectService.getProjectLeader(dmp.getProject().getUniversityId());
-    if (projectLeaderDO == null)
-        return;
+        ContributorDO projectLeaderDO =
+                projectService.getProjectLeader(dmp.getProject().getUniversityId());
+        if (projectLeaderDO == null)
+            return;
 
-    List<Contributor> dmpContributors = dmp.getContributorList();
+        List<Contributor> dmpContributors = dmp.getContributorList();
 
-    Optional<Contributor> alreadyExistingContributorLeader =
-        dmpContributors.stream()
-            .filter(c -> {
-                return c.getUniversityId().equals(
-                    projectLeaderDO.getUniversityId());
-            })
-            .findFirst();
+        Optional<Contributor> alreadyExistingContributorLeader =
+                dmpContributors.stream()
+                        .filter(c -> {
+                            return c.getUniversityId().equals(
+                                    projectLeaderDO.getUniversityId());
+                        })
+                        .findFirst();
 
-    Contributor projectLeaderContributor =
-        alreadyExistingContributorLeader.orElse(new Contributor());
+        Contributor projectLeaderContributor =
+                alreadyExistingContributorLeader.orElse(new Contributor());
 
-    // Adding project leader as contributor if it was not there yet.
-    if (alreadyExistingContributorLeader.isEmpty()) {
-        ContributorDOMapper.mapDOtoEntity(
-            projectLeaderDO, projectLeaderContributor);
-        projectLeaderContributor.setDmp(dmp);
-        dmpContributors.add(projectLeaderContributor);
+        // Adding project leader as contributor if it was not there yet.
+        if (alreadyExistingContributorLeader.isEmpty()) {
+            ContributorDOMapper.mapDOtoEntity(
+                    projectLeaderDO, projectLeaderContributor);
+            projectLeaderContributor.setDmp(dmp);
+            dmpContributors.add(projectLeaderContributor);
+        }
+
+        // If no role was defined, set contributor role to project leader
+        if (projectLeaderContributor.getContributorRole() == null) {
+            projectLeaderContributor.setContributorRole(
+                    EContributorRole.PROJECT_LEADER);
+        }
+
+        // If no other contact was defined, set project leader as contact.
+        if (dmpContributors.stream().noneMatch(c -> c.getContact())) {
+            projectLeaderContributor.setContact(true);
+        }
     }
-
-    // If no role was defined, set contributor role to project leader
-    if (projectLeaderContributor.getContributorRole() == null) {
-        projectLeaderContributor.setContributorRole(
-            EContributorRole.PROJECT_LEADER);
-    }
-
-    // If no other contact was defined, set project leader as contact.
-    if (dmpContributors.stream().noneMatch(c -> c.getContact())) {
-        projectLeaderContributor.setContact(true);
-    }
-}
 
     private boolean projectSelectionChanged(Dmp dmp, DmpDO dmpDO) {
 

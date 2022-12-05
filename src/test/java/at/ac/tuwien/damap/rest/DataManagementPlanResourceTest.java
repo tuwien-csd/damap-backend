@@ -64,34 +64,6 @@ public class DataManagementPlanResourceTest {
                 .statusCode(200);
     }
 
-/*
-    @Test
-    public void testGetPlansByPersonEndpoint_Invalid() {
-        given()
-                .when().get("/person/012345")
-                .then()
-                .statusCode(401);
-    }
-
-    @Test
-    @TestSecurity(user = "userJwt", roles = "user")
-    public void testGetPlansByPersonEndpoint_InvalidRole() {
-        given()
-                .when().get("/person/012345")
-                .then()
-                .statusCode(403);
-    }
-
-    @Test
-    @TestSecurity(user = "adminJwt", roles = "Damap Admin")
-    public void testGetPlansByPersonEndpoint_ValidRole() {
-        given()
-                .when().get("/person/012345")
-                .then()
-                .statusCode(200);
-    }
-*/
-
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
     public void testGetPlansEndpoint_Valid() {
@@ -194,6 +166,28 @@ public class DataManagementPlanResourceTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(dmpDO)
                 .when().put("/0")
+                .then()
+                .statusCode(403);
+    }
+
+    @Test
+    @TestSecurity(user = "userJwt", roles = "user")
+    void testDeletePlanOwner_Valid() {
+        DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
+        given()
+                .when().delete("/" + dmpDO.getId())
+                .then()
+                .statusCode(204);
+    }
+
+    @Test
+    @TestSecurity(user = "userJwt", roles = "user")
+    void testDeletePlan_Invalid() {
+        // use unauthorized user id
+        Mockito.when(securityService.getUserId()).thenReturn("12345");
+        DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
+        given()
+                .when().delete("/" + dmpDO.getId())
                 .then()
                 .statusCode(403);
     }

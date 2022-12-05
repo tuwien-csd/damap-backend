@@ -55,6 +55,11 @@ public class VersionService {
         return getVersionById(version.id);
     }
 
+    public void delete(long versionId) {
+        log.info("Deleting DMP Version with id " + versionId);
+        dmpVersionRepo.deleteById(versionId);
+    }
+
     private VersionDO getVersionById(long versionId) {
         return VersionDOMapper.mapEntityToDO(dmpVersionRepo.findById(versionId), new VersionDO());
     }
