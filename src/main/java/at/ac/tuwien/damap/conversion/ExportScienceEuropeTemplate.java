@@ -10,6 +10,7 @@ import javax.enterprise.context.ApplicationScoped;
 public class ExportScienceEuropeTemplate extends AbstractTemplateExportScienceEuropeComponents {
 
     public XWPFDocument exportTemplate(long dmpId) {
+        log.info("Exporting Science Europe document for DMP with ID: " + dmpId);
         //load project
         exportSetup(dmpId);
         //load template and properties
