@@ -1,12 +1,8 @@
 package at.ac.tuwien.damap.rest.dmp.mapper;
 
-import at.ac.tuwien.damap.domain.Contributor;
-import at.ac.tuwien.damap.domain.InternalStorage;
-import at.ac.tuwien.damap.domain.InternalStorageTranslation;
+import at.ac.tuwien.damap.domain.*;
 import at.ac.tuwien.damap.r3data.RepositoriesService;
-import at.ac.tuwien.damap.repo.ContributorRepo;
-import at.ac.tuwien.damap.repo.InternalStorageRepo;
-import at.ac.tuwien.damap.repo.InternalStorageTranslationRepo;
+import at.ac.tuwien.damap.repo.*;
 import at.ac.tuwien.damap.rest.storage.InternalStorageDO;
 import at.ac.tuwien.damap.rest.storage.InternalStorageDOMapper;
 import lombok.extern.jbosslog.JBossLog;
@@ -35,6 +31,12 @@ public class MapperService {
     @Inject
     ContributorRepo contributorRepo;
 
+    @Inject
+    DmpRepo dmpRepo;
+
+    public Dmp getDmpById(Long id) {
+        return dmpRepo.findById(id);
+    }
 
     public Re3Data.Repository getRe3DataRepository(String id) {
         return repositoriesService.getById(id).getRepository().get(0);
