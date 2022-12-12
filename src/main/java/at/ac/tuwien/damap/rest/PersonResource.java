@@ -26,9 +26,6 @@ import lombok.extern.jbosslog.JBossLog;
 @JBossLog
 public class PersonResource {
 
-    @Inject
-    ConfigResource config;
-
     LinkedHashMap<String, PersonService> personServices = new LinkedHashMap<String, PersonService>();
 
     @Inject
@@ -64,7 +61,12 @@ public class PersonResource {
         log.info("Return person details for id=" + id);
         PersonService searchService = getServiceForQueryParam(searchServiceType);
 
-        return searchService.getPersonById(id);
+        ContributorDO person = null;
+        if (searchService != null) {
+            person = searchService.getPersonById(id);
+        }
+
+        return person;
     }
 
     @GET

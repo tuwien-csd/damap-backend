@@ -7,9 +7,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Data;
-import lombok.extern.jbosslog.JBossLog;
 
-@JBossLog
 @Data
 public class PersonServiceConfigurations {
     List<ServiceConfig> configs;
