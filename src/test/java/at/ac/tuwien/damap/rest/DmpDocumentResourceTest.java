@@ -63,4 +63,34 @@ public class DmpDocumentResourceTest {
                 .then()
                 .statusCode(200);
     }
+
+    @Test
+    @TestSecurity(user = "userJwt", roles = "user")
+    public void testExportTemplateEndpointWithTemplateTypeFWF_Valid() {
+        DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
+        given()
+                .when().get("/" + dmpDO.getId() + "?template=FWF")
+                .then()
+                .statusCode(200);
+    }
+
+    @Test
+    @TestSecurity(user = "userJwt", roles = "user")
+    public void testExportTemplateEndpointWithTemplateTypeScienceEurope_Valid() {
+        DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
+        given()
+                .when().get("/" + dmpDO.getId() + "?template=SCIENCE_EUROPE")
+                .then()
+                .statusCode(200);
+    }
+
+    @Test
+    @TestSecurity(user = "userJwt", roles = "user")
+    public void testExportTemplateEndpointWithTemplateType_Invalid() {
+        DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
+        given()
+                .when().get("/" + dmpDO.getId() + "?template=invalid")
+                .then()
+                .statusCode(404);
+    }
 }

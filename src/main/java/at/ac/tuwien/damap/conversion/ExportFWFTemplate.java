@@ -11,6 +11,7 @@ import java.util.*;
 public class ExportFWFTemplate extends AbstractTemplateExportScienceEuropeComponents {
 
     public XWPFDocument exportTemplate(long dmpId) {
+        log.info("Exporting FWF document for DMP with ID: " + dmpId);
         //load project
         exportSetup(dmpId);
         //load template and properties

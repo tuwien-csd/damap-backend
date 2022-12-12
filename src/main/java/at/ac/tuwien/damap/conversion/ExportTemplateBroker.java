@@ -1,6 +1,7 @@
 package at.ac.tuwien.damap.conversion;
 
 import at.ac.tuwien.damap.enums.EIdentifierType;
+import at.ac.tuwien.damap.enums.ETemplateType;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
 import at.ac.tuwien.damap.rest.dmp.domain.IdentifierDO;
 import at.ac.tuwien.damap.rest.dmp.service.DmpService;
@@ -30,7 +31,7 @@ public class ExportTemplateBroker {
      * @param dmpId
      * @return
      */
-    public XWPFDocument exportTemplate(long dmpId){
+    public XWPFDocument exportTemplate(long dmpId) {
         DmpDO dmpDO = dmpService.getDmpById(dmpId);
         if (dmpDO.getProject() != null)
             if (dmpDO.getProject().getFunding() != null)
@@ -46,5 +47,15 @@ public class ExportTemplateBroker {
 
         //default export science europe template
         return exportScienceEuropeTemplate.exportTemplate(dmpId);
+    }
+
+    public XWPFDocument exportTemplateByType(long dmpId, ETemplateType type) {
+        switch (type) {
+            case FWF:
+                return exportFWFTemplate.exportTemplate(dmpId);
+            case SCIENCE_EUROPE:
+            default:
+                return exportScienceEuropeTemplate.exportTemplate(dmpId);
+        }
     }
 }
