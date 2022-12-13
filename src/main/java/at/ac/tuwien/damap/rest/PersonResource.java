@@ -32,12 +32,12 @@ public class PersonResource implements ResourceRead<ContributorDO>, ResourceSear
         log.info("Return person details for id=" + id);
         PersonService searchService = personServiceBroker.getServiceFromQueryParams(queryParams);
 
-        ContributorDO person = null;
+        ContributorDO result = null;
         if (searchService != null) {
-            person = searchService.read(id);
+            result = searchService.read(id);
         }
 
-        return person;
+        return result;
     }
 
     @Override
@@ -48,13 +48,13 @@ public class PersonResource implements ResourceRead<ContributorDO>, ResourceSear
         PersonService searchService = personServiceBroker.getServiceFromQueryParams(queryParams);
         Search search = Search.fromMap(queryParams);
 
-        ResultList<ContributorDO> persons = ResultList.fromItemsAndSearch(null, search);
+        ResultList<ContributorDO> result = ResultList.fromItemsAndSearch(null, search);
 
         if (searchService != null) {
-            persons = searchService.search(search, queryParams);
+            result = searchService.search(queryParams);
         }
 
-        return persons;
+        return result;
     }
 
 }

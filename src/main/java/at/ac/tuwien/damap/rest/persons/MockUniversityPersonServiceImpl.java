@@ -27,14 +27,11 @@ public class MockUniversityPersonServiceImpl implements PersonService {
     }
 
     @Override
-    public ResultList<ContributorDO> search(Search search, MultivaluedMap<String, String> queryParams) {
+    public ResultList<ContributorDO> search(MultivaluedMap<String, String> queryParams) {
         var items = mockPersonRestService.getContributorSearchResult();
+        var search = Search.fromMap(queryParams);
 
-        ResultList<ContributorDO> resultList = new ResultList<>();
-        resultList.setItems(items);
-        resultList.setSearch(search);
-        search.getPagination().setNumItems(items.size());
-        search.getPagination().calculateFields();
+        ResultList<ContributorDO> resultList = ResultList.fromItemsAndSearch(items, search);
 
         return resultList;
     }

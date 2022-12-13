@@ -12,7 +12,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
 import at.ac.tuwien.damap.rest.base.ResultList;
-import at.ac.tuwien.damap.rest.base.Search;
 import at.ac.tuwien.damap.rest.base.resource.ResourceSearch;
 import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
@@ -47,9 +46,7 @@ public class ProjectResource implements ResourceSearch<ProjectDO> {
         var queryParams = uriInfo.getQueryParameters();
         log.info("Return projects for query=" + queryParams.toString());
 
-        Search s = Search.fromMap(queryParams);
-        var resultList = projectService.search(s, queryParams);
-
+        var resultList = projectService.search(queryParams);
         resultList.setItems(dmpService.checkExistingDmps(resultList.getItems()));
 
         return resultList;

@@ -18,9 +18,9 @@ public class ResultList<T> {
 
         if (result.search.getPagination() == null) {
             result.search.setPagination(new Pagination());
+            search.getPagination().setNumTotalItems(items.size());
         }
 
-        search.getPagination().setNumItems(items.size());
         search.getPagination().calculateFields();
 
         return result;

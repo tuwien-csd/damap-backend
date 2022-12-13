@@ -9,7 +9,7 @@ public class Pagination {
     int page = 1;
     int perPage = 10;
     Integer numPages;
-    Integer numItems;
+    Integer numTotalItems;
     boolean hasNext;
     boolean hasPrevious;
 
@@ -40,9 +40,9 @@ public class Pagination {
     public void calculateFields() {
         hasPrevious = page > 1;
 
-        if (numItems != null) {
-            numPages = numItems / perPage;
-            if ((numItems == 0) || (numItems % perPage != 0)) {
+        if (numTotalItems != null) {
+            numPages = numTotalItems / perPage;
+            if ((numTotalItems == 0) || (numTotalItems % perPage != 0)) {
                 numPages += 1;
             }
             hasNext = page != numPages;
