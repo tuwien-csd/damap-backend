@@ -1,7 +1,5 @@
 package at.ac.tuwien.damap.rest;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
@@ -50,12 +48,8 @@ public class PersonResource implements ResourceRead<ContributorDO>, ResourceSear
         PersonService searchService = personServiceBroker.getServiceFromQueryParams(queryParams);
         Search search = Search.fromMap(queryParams);
 
-        ResultList<ContributorDO> persons = new ResultList<ContributorDO>() {
-            {
-                setSearch(search);
-                setItems(List.of());
-            }
-        };
+        ResultList<ContributorDO> persons = ResultList.fromItemsAndSearch(null, search);
+
         if (searchService != null) {
             persons = searchService.search(search, queryParams);
         }

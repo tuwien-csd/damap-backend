@@ -1,17 +1,15 @@
 package at.ac.tuwien.damap.rest.projects;
 
+import java.util.List;
+
+import at.ac.tuwien.damap.rest.base.service.ServiceRead;
+import at.ac.tuwien.damap.rest.base.service.ServiceSearch;
 import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
 
-import java.util.List;
-
-public interface ProjectService {
-
-    List<ProjectDO> getProjectList(String personId);
+public interface ProjectService extends ServiceSearch<ProjectDO>, ServiceRead<ProjectDO> {
 
     List<ContributorDO> getProjectStaff(String projectId);
-
-    ProjectDO getProjectDetails(String projectId);
 
     ProjectSupplementDO getProjectSupplement(String projectId);
 

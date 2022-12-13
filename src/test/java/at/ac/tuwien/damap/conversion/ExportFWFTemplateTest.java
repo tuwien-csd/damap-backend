@@ -24,13 +24,13 @@ public class ExportFWFTemplateTest {
     TestDOFactory testDOFactory;
 
     @InjectMock
-    MockProjectServiceImpl mockProjectRestService;
+    MockProjectServiceImpl mockProjectService;
 
     String projectId = "-1";
 
     @BeforeEach
     public void setup() {
-        Mockito.when(mockProjectRestService.getProjectDetails(projectId)).thenReturn(testDOFactory.getTestProjectDO());
+        Mockito.when(mockProjectService.read(projectId)).thenReturn(testDOFactory.getTestProjectDO());
     }
 
     @Test

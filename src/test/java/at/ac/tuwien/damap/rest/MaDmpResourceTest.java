@@ -28,13 +28,13 @@ public class MaDmpResourceTest {
     SecurityService securityService;
 
     @InjectMock
-    MockProjectServiceImpl mockProjectRestService;
+    MockProjectServiceImpl mockProjectService;
 
     @BeforeEach
     public void setup() {
         Mockito.when(securityService.getUserId()).thenReturn("012345");
         Mockito.when(securityService.getUserName()).thenReturn("testUser");
-        Mockito.when(mockProjectRestService.getProjectDetails(anyString())).thenReturn(testDOFactory.getTestProjectDO());
+        Mockito.when(mockProjectService.read(anyString())).thenReturn(testDOFactory.getTestProjectDO());
     }
 
     @Test

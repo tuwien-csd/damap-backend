@@ -90,7 +90,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
 
             ProjectDO projectCRIS = null;
             if (dmp.getProject().getUniversityId() != null)
-                projectCRIS = projectService.getProjectDetails(dmp.getProject().getUniversityId());
+                projectCRIS = projectService.read(dmp.getProject().getUniversityId());
             //variable project acronym from API
             if (projectCRIS != null) {
                 addReplacement(replacements, "[acronym]", projectCRIS.getAcronym());

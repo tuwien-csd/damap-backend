@@ -6,8 +6,8 @@ import lombok.Data;
 
 @Data
 public class Search {
-    Pagination pagination;
-    String query;
+    private Pagination pagination = new Pagination();
+    private String query;
 
     public static Search fromMap(MultivaluedMap<String, String> map) {
         Search search = new Search();
