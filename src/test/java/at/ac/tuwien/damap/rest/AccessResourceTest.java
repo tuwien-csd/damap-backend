@@ -51,7 +51,19 @@ class AccessResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    void testGetAccessList() {
+    void testGetAccessList_Valid() {
+        given()
+                .when().get("/dmps/" + dmpDO.getId())
+                .then()
+                .statusCode(200)
+                .body("size()", greaterThanOrEqualTo(1));
+    }
+
+    @Test
+    @TestSecurity(user = "adminJwt", roles = "Damap Admin")
+    void testGetAccessListAdmin_Valid() {
+        Mockito.when(securityService.isAdmin()).thenReturn(true);
+
         given()
                 .when().get("/dmps/" + dmpDO.getId())
                 .then()
@@ -61,7 +73,30 @@ class AccessResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
+    void testGetAccessListDmpIsNull_Invalid() {
+        given()
+                .when().get("/dmps/-1")
+                .then()
+                .statusCode(403);
+    }
+
+    @Test
+    @TestSecurity(user = "userJwt", roles = "user")
     void testCreateAccess_Valid() {
+        AccessDO accessDO = this.createAccessDO();
+
+        given()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(accessDO)
+                .when().post("/")
+                .then()
+                .statusCode(200);
+    }
+
+    @Test
+    @TestSecurity(user = "adminJwt", roles = "Damap Admin")
+    void testCreateAccessAdmin_Valid() {
+        Mockito.when(securityService.isAdmin()).thenReturn(true);
         AccessDO accessDO = this.createAccessDO();
 
         given()
@@ -84,7 +119,6 @@ class AccessResourceTest {
                 .when().post("/")
                 .then()
                 .statusCode(403);
-
     }
 
     @Test
@@ -112,6 +146,17 @@ class AccessResourceTest {
                 .statusCode(204);
     }
 
+    @Test
+    @TestSecurity(user = "adminJwt", roles = "Damap Admin")
+    void testDeleteAccessAdmin_Valid() {
+        Mockito.when(securityService.isAdmin()).thenReturn(true);
+        AccessDO accessDO = this.accessService.create(this.createAccessDO());
+
+        given()
+                .when().delete("/" + accessDO.getId())
+                .then()
+                .statusCode(204);
+    }
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
