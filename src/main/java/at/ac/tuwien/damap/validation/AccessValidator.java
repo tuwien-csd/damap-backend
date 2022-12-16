@@ -91,7 +91,7 @@ public class AccessValidator {
         return dmpAccess.isPresent();
     }
 
-    public boolean canCreateAccess(AccessDO accessDO) {
+    public boolean canCreateAccess(AccessDO accessDO, List<Contributor> contributors) {
         if (accessDO.getAccess().equals(EFunctionRole.OWNER)) {
             return false;
         }
@@ -102,7 +102,6 @@ public class AccessValidator {
         }
 
         // Check if new access is for a contributor
-        List<Contributor> contributors = dmp.getContributorList();
         Optional<Contributor> contributor = contributors.stream().filter(c ->
                 c.getUniversityId().equals(accessDO.getUniversityId())).findAny();
 

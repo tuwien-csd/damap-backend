@@ -44,9 +44,8 @@ public class AccessResource {
         if (accessDO.getUniversityId() == null) {
             throw new BadRequestException("University id is required");
         }
-        // TODO: get list of people wo can get access to the dmp
-        //  get list from access service and pass to validator
-        if (!this.accessValidator.canCreateAccess(accessDO)) {
+
+        if (!this.accessValidator.canCreateAccess(accessDO, accessService.canGetAccess(accessDO.getDmpId()))) {
             throw new ForbiddenException();
         }
         return accessService.create(accessDO);
