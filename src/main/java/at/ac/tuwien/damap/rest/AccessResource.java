@@ -45,7 +45,7 @@ public class AccessResource {
             throw new BadRequestException("University id is required");
         }
 
-        if (!this.accessValidator.canCreateAccess(accessDO, accessService.canGetAccess(accessDO.getDmpId()))) {
+        if (!this.accessValidator.canCreateAccess(accessDO)) {
             throw new ForbiddenException();
         }
         return accessService.create(accessDO);
