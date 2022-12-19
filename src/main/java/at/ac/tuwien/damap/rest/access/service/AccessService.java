@@ -1,7 +1,6 @@
 package at.ac.tuwien.damap.rest.access.service;
 
 import at.ac.tuwien.damap.domain.Access;
-import at.ac.tuwien.damap.domain.Contributor;
 import at.ac.tuwien.damap.domain.Dmp;
 import at.ac.tuwien.damap.repo.AccessRepo;
 import at.ac.tuwien.damap.repo.DmpRepo;
@@ -83,12 +82,6 @@ public class AccessService {
     @Transactional
     public void delete(long id) {
         accessRepo.deleteById(id);
-    }
-
-    // Can be overwritten if necessary
-    public List<Contributor> canGetAccess(long dmpId) {
-        Dmp dmp = dmpRepo.findById(dmpId);
-        return dmp == null ? new ArrayList<>() : dmp.getContributorList();
     }
 }
 

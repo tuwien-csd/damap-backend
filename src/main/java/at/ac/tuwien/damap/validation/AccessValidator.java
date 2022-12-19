@@ -11,6 +11,7 @@ import at.ac.tuwien.damap.security.SecurityService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -91,7 +92,7 @@ public class AccessValidator {
         return dmpAccess.isPresent();
     }
 
-    public boolean canCreateAccess(AccessDO accessDO, List<Contributor> contributors) {
+    public boolean canCreateAccess(AccessDO accessDO) {
         if (accessDO.getAccess().equals(EFunctionRole.OWNER)) {
             return false;
         }
@@ -100,10 +101,6 @@ public class AccessValidator {
         if (dmp == null) {
             return false;
         }
-
-        // Check if new access is for a contributor
-        Optional<Contributor> contributor = contributors.stream().filter(c ->
-                c.getUniversityId().equals(accessDO.getUniversityId())).findAny();
 
         // Check user permission to create new access
         boolean hasPermission = securityService.isAdmin();
@@ -116,7 +113,7 @@ public class AccessValidator {
             hasPermission = dmpAccess.isPresent();
         }
 
-        return contributor.isPresent() && hasPermission;
+        return canGetAccess(accessDO) && hasPermission;
     }
 
     public boolean canDeleteAccess(long id) {
@@ -143,5 +140,16 @@ public class AccessValidator {
                  a.getRole().equals(EFunctionRole.OWNER))).findAny();
 
         return dmpAccess.isPresent();
+    }
+
+    // Can the selected user be given access to this dmp
+    // Can be overwritten if necessary
+    public boolean canGetAccess(AccessDO accessDO) {
+        Dmp dmp = dmpRepo.findById(accessDO.getDmpId());
+        List<Contributor> contributors = dmp == null ? new ArrayList<>() : dmp.getContributorList();
+        // Check if new access is for a contributor
+        Optional<Contributor> contributor = contributors.stream().filter(c ->
+                c.getUniversityId().equals(accessDO.getUniversityId())).findAny();
+        return contributor.isPresent();
     }
 }
