@@ -1,12 +1,10 @@
 package at.ac.tuwien.damap.enums;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 import java.util.HashMap;
 
 public enum EDataSource {
-    NEW("new"),
-    REUSED("reused");
+    NEW("NEW"),
+    REUSED("REUSED");
 
     private final String value;
 
@@ -16,7 +14,6 @@ public enum EDataSource {
         this.value = value;
     }
 
-    @JsonValue
     @Override
     public String toString() {
         return value;

@@ -5,7 +5,8 @@ import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import lombok.*;
 import org.hibernate.envers.Audited;
 
-import javax.json.bind.annotation.JsonbTransient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Data
@@ -20,7 +21,7 @@ public class Cost extends PanacheEntity {
     @Setter(AccessLevel.NONE)
     private long version;
 
-    @JsonbTransient
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dmp_id")
     private Dmp dmp;

@@ -8,7 +8,8 @@ import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import lombok.*;
 import org.hibernate.envers.Audited;
 
-import javax.json.bind.annotation.JsonbTransient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,7 +28,7 @@ public class Dataset extends PanacheEntity {
     private long version;
 
     //    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @JsonbTransient
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dmp_id")
     @EqualsAndHashCode.Exclude

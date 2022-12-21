@@ -1,10 +1,11 @@
 package at.ac.tuwien.damap.rest.dmp.domain;
 
 import at.ac.tuwien.damap.enums.*;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
-import javax.json.bind.annotation.JsonbDateFormat;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
@@ -20,9 +21,9 @@ public class DmpDO {
     private Long id;
     @Size(max = 255)
     private String title;
-    @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private Date created;
-    @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private Date modified;
     private String description;
     private ProjectDO project;

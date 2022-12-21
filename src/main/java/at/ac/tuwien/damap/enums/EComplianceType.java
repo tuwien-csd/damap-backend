@@ -1,7 +1,5 @@
 package at.ac.tuwien.damap.enums;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 import java.util.HashMap;
 
 public enum EComplianceType {
@@ -21,7 +19,6 @@ public enum EComplianceType {
     }
 
     @Override
-    @JsonValue
     public String toString() {
         return value;
     }

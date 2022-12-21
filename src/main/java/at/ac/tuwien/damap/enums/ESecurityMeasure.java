@@ -1,7 +1,5 @@
 package at.ac.tuwien.damap.enums;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 import java.util.HashMap;
 
 public enum ESecurityMeasure {
@@ -20,7 +18,6 @@ public enum ESecurityMeasure {
         this.value = value;
     }
 
-    @JsonValue
     @Override
     public String toString() {
         return value;

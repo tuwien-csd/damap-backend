@@ -420,7 +420,7 @@ public class MaDmpMapper {
 
     public Project mapToMaDmp(ProjectDO projectDO, Project project) {
 
-        project.setDescription(project.getDescription());
+        project.setDescription(projectDO.getDescription());
         if (projectDO.getEnd() != null)
             project.setEnd(projectDO.getEnd().toString());
 
