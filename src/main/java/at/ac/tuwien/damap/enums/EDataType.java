@@ -1,8 +1,8 @@
 package at.ac.tuwien.damap.enums;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 import java.util.HashMap;
+
+import lombok.extern.jbosslog.JBossLog;
 
 public enum EDataType {
 
@@ -31,7 +31,6 @@ public enum EDataType {
     }
 
     @Override
-    @JsonValue
     public String toString() {
         return value;
     }

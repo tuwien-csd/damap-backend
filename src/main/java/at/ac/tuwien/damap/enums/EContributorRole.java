@@ -1,7 +1,5 @@
 package at.ac.tuwien.damap.enums;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 import java.util.HashMap;
 
 public enum EContributorRole {
@@ -36,7 +34,6 @@ public enum EContributorRole {
     }
 
     @Override
-    @JsonValue
     public String toString() {
         return role;
     }

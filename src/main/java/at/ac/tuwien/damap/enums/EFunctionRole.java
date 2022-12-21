@@ -1,7 +1,5 @@
 package at.ac.tuwien.damap.enums;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 public enum EFunctionRole {
 
     ADMIN("ADMIN"),
@@ -17,7 +15,6 @@ public enum EFunctionRole {
     }
 
     @Override
-    @JsonValue
     public String toString() {
         return role;
     }

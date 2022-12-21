@@ -1,7 +1,5 @@
 package at.ac.tuwien.damap.enums;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 public enum EDataKind {
 
     UNKNOWN("UNKNOWN"),
@@ -15,7 +13,6 @@ public enum EDataKind {
     }
 
     @Override
-    @JsonValue
     public String toString() {
         return kind;
     }

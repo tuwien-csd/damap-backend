@@ -1,7 +1,5 @@
 package at.ac.tuwien.damap.enums;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,28 +51,27 @@ public enum EIdentifierType {
         this.type = type;
     }
 
-    public List<EIdentifierType> getPersonIdentifierTypeList(){
+    public List<EIdentifierType> getPersonIdentifierTypeList() {
         return personIdentifierType;
     }
 
-    public List<EIdentifierType> getDatasetIdentifierTypeList(){
+    public List<EIdentifierType> getDatasetIdentifierTypeList() {
         return datasetIdentifierType;
     }
 
-    public List<EIdentifierType> getFunderIdentifierTypeList(){
+    public List<EIdentifierType> getFunderIdentifierTypeList() {
         return funderIdentifierType;
     }
 
-    public List<EIdentifierType> getGrantIdentifierTypeList(){
+    public List<EIdentifierType> getGrantIdentifierTypeList() {
         return grantIdentifierType;
     }
 
-    public List<EIdentifierType> getMetadataIdentifierTypeList(){
+    public List<EIdentifierType> getMetadataIdentifierTypeList() {
         return metadataIdentifierType;
     }
 
     @Override
-    @JsonValue
     public String toString() {
         return type;
     }

@@ -1,7 +1,5 @@
 package at.ac.tuwien.damap.enums;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 public enum EFundingState {
 
     PLANNED("planned"),
@@ -17,7 +15,6 @@ public enum EFundingState {
     private final String state;
 
     @Override
-    @JsonValue
     public String toString() {
         return state;
     }
