@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.ws.rs.core.MediaType;
 
 import static io.restassured.RestAssured.given;
@@ -36,6 +37,7 @@ class AccessResourceTest {
     SecurityService securityService;
 
     @InjectMock
+    @Named("UNIVERSITY")
     PersonService personService;
 
 

@@ -14,6 +14,7 @@ import lombok.extern.jbosslog.JBossLog;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,6 +31,7 @@ public class AccessService {
     DmpRepo dmpRepo;
 
     @Inject
+    @Named("UNIVERSITY")
     PersonService personService;
 
     @Inject
