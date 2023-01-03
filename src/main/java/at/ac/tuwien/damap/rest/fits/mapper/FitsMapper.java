@@ -1,6 +1,7 @@
 package at.ac.tuwien.damap.rest.fits.mapper;
 
 import at.ac.tuwien.damap.domain.Dataset;
+import at.ac.tuwien.damap.enums.EDataSource;
 import at.ac.tuwien.damap.enums.EDataType;
 import edu.harvard.fits.Fits;
 import edu.harvard.fits.FitsMetadataType;
@@ -19,6 +20,7 @@ public class FitsMapper {
         dataset.setSize(getSize(fits));
         IdentificationType.Identity identity = getMajorityVoteIdentity(fits);
         dataset.setType(mapFileFormat(identity));
+        dataset.setSource(EDataSource.NEW);
 
         return dataset;
     }
@@ -85,6 +87,9 @@ public class FitsMapper {
             case "JPEG EXIF":
                 type.add(EDataType.IMAGES);
                 return type;
+            default:
+                // do nothing
+                break;
         }
 
         switch (mimetype) {
