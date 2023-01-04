@@ -24,6 +24,7 @@ import java.util.List;
 @JBossLog
 public class AccessService {
 
+    //defines which personService is to be used for access management
     private final String ENABLED_PERSON_SERVICE = "UNIVERSITY";
 
     @Inject
@@ -60,7 +61,7 @@ public class AccessService {
         // Get dmp contributors (viewers)
         dmp.getContributorList().forEach(contributor -> {
             // Only university members can be editors for now
-            if (contributor.getUniversityId() != null &&
+            if (contributor.getUniversityId() != null && !contributor.getUniversityId().isEmpty() &&
                 accessDOList.stream().noneMatch(a -> a.getUniversityId().equals(contributor.getUniversityId()))) {
                 ContributorDO contributorDO = new ContributorDO();
                 ContributorDOMapper.mapEntityToDO(contributor, contributorDO);

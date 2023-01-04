@@ -21,6 +21,7 @@ public class AccessMapper {
         accessDO.setUniversityId(access.getUniversityId());
         // Get name and mail for accesses from contributor list
         Optional<Contributor> contributor = access.getDmp().getContributorList().stream().filter(c ->
+                c.getUniversityId() != null &&
                 c.getUniversityId().equals(access.getUniversityId())).findFirst();
         if (contributor.isPresent()) {
             Contributor c = contributor.get();
