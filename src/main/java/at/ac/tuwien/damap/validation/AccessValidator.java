@@ -144,11 +144,13 @@ public class AccessValidator {
 
     // Can the selected user be given access to this dmp
     // Can be overwritten if necessary
+    // current implementation allows only institutional personnel which are also contributors
     public boolean canGetAccess(AccessDO accessDO) {
         Dmp dmp = dmpRepo.findById(accessDO.getDmpId());
         List<Contributor> contributors = dmp == null ? new ArrayList<>() : dmp.getContributorList();
         // Check if new access is for a contributor
         Optional<Contributor> contributor = contributors.stream().filter(c ->
+                c.getUniversityId() != null &&
                 c.getUniversityId().equals(accessDO.getUniversityId())).findAny();
         return contributor.isPresent();
     }
