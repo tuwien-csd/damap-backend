@@ -10,6 +10,7 @@ import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.dmp.mapper.ContributorDOMapper;
 import at.ac.tuwien.damap.rest.dmp.mapper.MapperService;
 import at.ac.tuwien.damap.rest.persons.PersonService;
+import at.ac.tuwien.damap.rest.PersonServiceBroker;
 import lombok.extern.jbosslog.JBossLog;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -23,6 +24,9 @@ import java.util.List;
 @JBossLog
 public class AccessService {
 
+    //defines which personService is to be used for access management
+    private final String ENABLED_PERSON_SERVICE = "UNIVERSITY";
+
     @Inject
     AccessRepo accessRepo;
 
@@ -30,12 +34,14 @@ public class AccessService {
     DmpRepo dmpRepo;
 
     @Inject
-    PersonService personService;
-
-    @Inject
     MapperService mapperService;
 
+    @Inject
+    PersonServiceBroker personServiceBroker;
+
     public List<ContributorDO> getByDmpId(long dmpId) {
+        PersonService personService = personServiceBroker.getServiceForQueryParam(ENABLED_PERSON_SERVICE);
+
         Dmp dmp = dmpRepo.findById(dmpId);
         // Get access list (owner, editors)
         List<ContributorDO> accessDOList = new ArrayList<>();
@@ -55,7 +61,7 @@ public class AccessService {
         // Get dmp contributors (viewers)
         dmp.getContributorList().forEach(contributor -> {
             // Only university members can be editors for now
-            if (contributor.getUniversityId() != null &&
+            if (contributor.getUniversityId() != null && !contributor.getUniversityId().isEmpty() &&
                 accessDOList.stream().noneMatch(a -> a.getUniversityId().equals(contributor.getUniversityId()))) {
                 ContributorDO contributorDO = new ContributorDO();
                 ContributorDOMapper.mapEntityToDO(contributor, contributorDO);

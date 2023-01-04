@@ -17,9 +17,6 @@ public class ContributorORCIDExpandedSearchMapper {
         String firstMail = contributor.getEmails().isEmpty() ? null : contributor.getEmails().get(0);
         contributorDO.setMbox(firstMail);
 
-        // So duplicate entries in the UI are not possible
-        contributorDO.setUniversityId(contributor.orcidId);
-
         String firstAffiliation = contributor.getAffiliations().isEmpty() ? null : contributor.getAffiliations().get(0);
         contributorDO.setAffiliation(firstAffiliation);
 

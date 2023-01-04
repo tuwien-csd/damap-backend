@@ -5,6 +5,7 @@ import at.ac.tuwien.damap.rest.access.domain.AccessDO;
 import at.ac.tuwien.damap.rest.access.service.AccessService;
 import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
+import at.ac.tuwien.damap.rest.persons.MockUniversityPersonServiceImpl;
 import at.ac.tuwien.damap.rest.persons.PersonService;
 import at.ac.tuwien.damap.security.SecurityService;
 import at.ac.tuwien.damap.util.TestDOFactory;
@@ -36,7 +37,7 @@ class AccessResourceTest {
     SecurityService securityService;
 
     @InjectMock
-    PersonService personService;
+    MockUniversityPersonServiceImpl personService;
 
 
     DmpDO dmpDO;
