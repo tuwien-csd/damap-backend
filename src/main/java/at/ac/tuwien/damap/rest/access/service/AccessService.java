@@ -10,11 +10,11 @@ import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.dmp.mapper.ContributorDOMapper;
 import at.ac.tuwien.damap.rest.dmp.mapper.MapperService;
 import at.ac.tuwien.damap.rest.persons.PersonService;
+import at.ac.tuwien.damap.rest.PersonServiceBroker;
 import lombok.extern.jbosslog.JBossLog;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,6 +24,8 @@ import java.util.List;
 @JBossLog
 public class AccessService {
 
+    private final String ENABLED_PERSON_SERVICE = "UNIVERSITY";
+
     @Inject
     AccessRepo accessRepo;
 
@@ -31,13 +33,14 @@ public class AccessService {
     DmpRepo dmpRepo;
 
     @Inject
-    @Named("UNIVERSITY")
-    PersonService personService;
-
-    @Inject
     MapperService mapperService;
 
+    @Inject
+    PersonServiceBroker personServiceBroker;
+
     public List<ContributorDO> getByDmpId(long dmpId) {
+        PersonService personService = personServiceBroker.getServiceForQueryParam(ENABLED_PERSON_SERVICE);
+
         Dmp dmp = dmpRepo.findById(dmpId);
         // Get access list (owner, editors)
         List<ContributorDO> accessDOList = new ArrayList<>();

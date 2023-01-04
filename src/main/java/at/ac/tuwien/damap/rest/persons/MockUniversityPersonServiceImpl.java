@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
@@ -15,7 +14,6 @@ import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
  */
 
 @ApplicationScoped
-@Named("UNIVERSITY")
 public class MockUniversityPersonServiceImpl implements PersonService {
 
     @Inject
