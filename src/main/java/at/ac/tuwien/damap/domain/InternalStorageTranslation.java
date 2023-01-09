@@ -4,7 +4,8 @@ import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import lombok.*;
 import org.hibernate.envers.Audited;
 
-import javax.json.bind.annotation.JsonbTransient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.persistence.Access;
 
@@ -19,7 +20,7 @@ public class InternalStorageTranslation extends PanacheEntity {
     @Version
     @Setter(AccessLevel.NONE)
     private long version;
-    @JsonbTransient
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "internal_storage_id")
     private InternalStorage internalStorageId;

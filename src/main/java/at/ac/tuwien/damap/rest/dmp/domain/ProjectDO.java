@@ -1,9 +1,9 @@
 package at.ac.tuwien.damap.rest.dmp.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
-import javax.json.bind.annotation.JsonbDateFormat;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
@@ -21,10 +21,10 @@ public class ProjectDO {
     private String title;
     private FundingDO funding;
 
-    @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private Date start;
 
-    @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private Date end;
 
     //indicates if this project is already related to a dmp

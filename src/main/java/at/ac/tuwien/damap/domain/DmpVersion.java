@@ -5,8 +5,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Date;
 
 
@@ -17,7 +19,7 @@ import java.util.Date;
 @Table(name = "dmp_version")
 public class DmpVersion extends PanacheEntity {
 
-    @JsonbTransient
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dmp_id")
     @EqualsAndHashCode.Exclude

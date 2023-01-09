@@ -5,7 +5,8 @@ import lombok.*;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
-import javax.json.bind.annotation.JsonbTransient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,7 +26,7 @@ public class Host extends PanacheEntity {
     private long version;
 
 //    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @JsonbTransient
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dmp_id")
     private Dmp dmp;

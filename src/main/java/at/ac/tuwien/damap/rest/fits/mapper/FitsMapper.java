@@ -1,6 +1,9 @@
 package at.ac.tuwien.damap.rest.fits.mapper;
 
 import at.ac.tuwien.damap.domain.Dataset;
+import at.ac.tuwien.damap.enums.EAccessRight;
+import at.ac.tuwien.damap.enums.EDataAccessType;
+import at.ac.tuwien.damap.enums.EDataSource;
 import at.ac.tuwien.damap.enums.EDataType;
 import edu.harvard.fits.Fits;
 import edu.harvard.fits.FitsMetadataType;
@@ -19,6 +22,12 @@ public class FitsMapper {
         dataset.setSize(getSize(fits));
         IdentificationType.Identity identity = getMajorityVoteIdentity(fits);
         dataset.setType(mapFileFormat(identity));
+        dataset.setSource(EDataSource.NEW);
+        dataset.setDataAccess(EDataAccessType.OPEN);
+        dataset.setLicense("https://creativecommons.org/licenses/by/4.0/");
+        dataset.setSelectedProjectMembersAccess(EAccessRight.WRITE);
+        dataset.setOtherProjectMembersAccess(EAccessRight.WRITE);
+        dataset.setPublicAccess(EAccessRight.READ);
 
         return dataset;
     }
@@ -85,6 +94,9 @@ public class FitsMapper {
             case "JPEG EXIF":
                 type.add(EDataType.IMAGES);
                 return type;
+            default:
+                // do nothing
+                break;
         }
 
         switch (mimetype) {

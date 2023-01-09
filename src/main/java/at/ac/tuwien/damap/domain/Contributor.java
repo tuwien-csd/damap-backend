@@ -1,12 +1,26 @@
 package at.ac.tuwien.damap.domain;
 
-import at.ac.tuwien.damap.enums.EContributorRole;
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import lombok.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Version;
+
 import org.hibernate.envers.Audited;
 
-import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import at.ac.tuwien.damap.enums.EContributorRole;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Setter;
+import lombok.ToString;
 
 @Data
 @EqualsAndHashCode(callSuper = true, exclude = "dmp")
@@ -19,7 +33,7 @@ public class Contributor extends PanacheEntity {
     @Setter(AccessLevel.NONE)
     private long version;
 
-    @JsonbTransient
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dmp_id", nullable = false, updatable = false)
     private Dmp dmp;

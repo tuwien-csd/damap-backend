@@ -1,20 +1,20 @@
 package at.ac.tuwien.damap.rest.persons;
 
-import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
-import io.quarkus.arc.DefaultBean;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.List;
+
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+
+import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 
 /*
     extend this class in your custom project, for your implementation
  */
 
 @ApplicationScoped
-@DefaultBean
-public class MockPersonServiceImpl implements PersonService {
+public class MockUniversityPersonServiceImpl implements PersonService {
 
     @Inject
     @RestClient
