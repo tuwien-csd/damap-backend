@@ -1,5 +1,6 @@
 package at.ac.tuwien.damap.domain;
 
+import at.ac.tuwien.damap.annotations.gdpr.*;
 import at.ac.tuwien.damap.enums.EFunctionRole;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import lombok.AccessLevel;
@@ -12,6 +13,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 import javax.persistence.*;
 import java.util.Date;
 
+@Gdpr
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -28,14 +30,17 @@ public class Access extends PanacheEntity {
     @JoinColumn(name = "dmp_id", nullable = false, updatable = false)
     private Dmp dmp;
 
+    @GdprKey
     @Column(name = "university_id")
     private String universityId;
 
 //    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @GdprBase
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "identifier_id", updatable = false)
     private Identifier personIdentifier;
 
+    @GdprExtended
     @Enumerated(EnumType.STRING)
     private EFunctionRole role;
 
