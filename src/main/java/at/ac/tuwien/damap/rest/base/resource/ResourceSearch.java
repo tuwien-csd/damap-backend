@@ -10,6 +10,6 @@ import at.ac.tuwien.damap.rest.base.ResultList;
 public interface ResourceSearch<Entity> {
 
     @GET
-    @Path("/search")
+    @Path("")
     ResultList<Entity> search(@Context UriInfo uriInfo);
 }

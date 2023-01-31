@@ -22,7 +22,7 @@ public class MockUniversityPersonServiceImpl implements PersonService {
     MockPersonRestService mockPersonRestService;
 
     @Override
-    public ContributorDO read(String id) {
+    public ContributorDO read(String id, MultivaluedMap<String, String> queryParams) {
         return mockPersonRestService.getContributorDetails(id).get(0);
     }
 

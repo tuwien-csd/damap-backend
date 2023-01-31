@@ -29,12 +29,12 @@ public class PersonResource implements ResourceRead<ContributorDO>, ResourceSear
     @Override
     public ContributorDO read(String id, UriInfo uriInfo) {
         var queryParams = uriInfo.getQueryParameters();
-        log.info("Return person details for id=" + id);
+        log.info("Return person details for id=" + id + " and query=" + queryParams.toString());
         PersonService searchService = personServiceBroker.getServiceFromQueryParams(queryParams);
 
         ContributorDO result = null;
         if (searchService != null) {
-            result = searchService.read(id);
+            result = searchService.read(id, queryParams);
         }
 
         return result;

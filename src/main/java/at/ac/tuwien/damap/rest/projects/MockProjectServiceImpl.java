@@ -61,7 +61,7 @@ public class MockProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectDO read(String id) {
+    public ProjectDO read(String id, MultivaluedMap<String, String> queryParams) {
         return mockProjectRestService.getProjectDetails(id).get(0);
     }
 }

@@ -20,7 +20,7 @@ services:
 
     # Uncomment the following to directly access the database
     # at localhost:8088
-    #ports:
+    # ports:
     #  - "8088:5432"
 
   keycloak:
