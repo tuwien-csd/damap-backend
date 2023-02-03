@@ -22,6 +22,10 @@ jobs:
       - name: Build with Maven
         run: mvn -B clean install
 
+  sonar-test-coverage:
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Run Sonar analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
