@@ -33,6 +33,9 @@ jobs:
           java-version: '11'
           maven-version: '3.8.2'
 
+      - name: Build with Maven
+        run: mvn -B clean install
+
       - name: Run Sonar analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
