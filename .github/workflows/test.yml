@@ -23,6 +23,7 @@ jobs:
         run: mvn -B clean install
 
   sonar-test-coverage:
+    needs: maven-build-test
     runs-on: ubuntu-latest
 
     steps:
