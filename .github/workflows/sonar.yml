@@ -1,3 +1,5 @@
+name: Run Sonar analysis
+
 on:
   workflow_run:
     workflows: [test]
@@ -8,15 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-#      - name: Setup Maven Action
-#        uses: s4u/setup-maven-action@v1.2.1
-#        with:
-#          java-version: '11'
-#          maven-version: '3.8.2'
-#
-#      - name: Build with Maven
-#        run: mvn -B clean install
-
       - name: Run Sonar analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
