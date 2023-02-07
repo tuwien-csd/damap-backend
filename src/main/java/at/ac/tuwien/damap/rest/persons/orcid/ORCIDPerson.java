@@ -1,14 +1,14 @@
 package at.ac.tuwien.damap.rest.persons.orcid;
-
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ContributorORCIDExpandedSearch {
+public class ORCIDPerson {
 
     @JsonProperty(value = "orcid-id")
     String orcidId;

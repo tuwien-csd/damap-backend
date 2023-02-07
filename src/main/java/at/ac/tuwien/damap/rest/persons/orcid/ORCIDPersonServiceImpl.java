@@ -22,7 +22,7 @@ public class ORCIDPersonServiceImpl implements PersonService {
 
     @Override
     public ContributorDO getPersonById(String id) {
-        return null;
+        return ORCIDPersonMapper.mapEntityToDO(orcidRestClient.get(id), new ContributorDO());
     }
 
     @Override
@@ -36,7 +36,7 @@ public class ORCIDPersonServiceImpl implements PersonService {
             if (orcidSearch.getNumFound() > 0 && orcidSearch.getPersons() != null) {
                 contributors = orcidSearch.getPersons().stream().map(o -> {
                     var c = new ContributorDO();
-                    ContributorORCIDExpandedSearchMapper.mapEntityToDO(o, c);
+                    ORCIDPersonMapper.mapEntityToDO(o, c);
                     return c;
                 }).collect(Collectors.toList());
             }
