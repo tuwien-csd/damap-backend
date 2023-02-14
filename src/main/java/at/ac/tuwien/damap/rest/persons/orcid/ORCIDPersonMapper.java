@@ -28,7 +28,6 @@ public class ORCIDPersonMapper {
             }
         };
         contributorDO.setPersonId(identifierContributorDO);
-        contributorDO.setUniversityId(orcidPerson.orcidId);
 
         return contributorDO;
     }
