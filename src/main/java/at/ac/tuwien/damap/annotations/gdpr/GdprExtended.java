@@ -12,6 +12,9 @@ import java.lang.annotation.Target;
  * context and/or with additional information to identify an individual. {@code @GdprExtended} is also used
  * to add more information as to why personal data is stored.
  * <p>
+ * If the type of a field marked with {@code @GdprExtended} is not primitive (e.g. Integer, String etc.), all
+ * primitive fields of that type are considered extended information.
+ * <p>
  * For usage instructions, see {@link Gdpr}.
  */
 @Target(ElementType.FIELD)

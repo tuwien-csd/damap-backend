@@ -35,6 +35,7 @@ public class Contributor extends PanacheEntity {
     @Setter(AccessLevel.NONE)
     private long version;
 
+    @GdprContext(properties = {"id", "project.title"})
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dmp_id", nullable = false, updatable = false)

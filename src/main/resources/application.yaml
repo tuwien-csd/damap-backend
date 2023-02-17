@@ -18,7 +18,7 @@ damap:
     password: pw4damap # your-datasource-password
     db-kind: postgresql # your database
   repositories:
-    recommendation: [ your-recommened-repositories ]
+    recommendation: [ your-recommended-repositories ]
   projects-url: http://api-mock:80
   persons-url: http://api-mock:80
   fits-url: http://your.fits.service:1234

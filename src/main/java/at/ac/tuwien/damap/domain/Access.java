@@ -26,6 +26,7 @@ public class Access extends PanacheEntity {
     private long version;
 
 //    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @GdprContext(properties = {"id", "project.title"})
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dmp_id", nullable = false, updatable = false)
     private Dmp dmp;

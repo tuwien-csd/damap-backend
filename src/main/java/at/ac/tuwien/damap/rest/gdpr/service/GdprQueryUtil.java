@@ -1,73 +1,184 @@
 package at.ac.tuwien.damap.rest.gdpr.service;
 
+import at.ac.tuwien.damap.annotations.gdpr.GdprBase;
+import at.ac.tuwien.damap.annotations.gdpr.GdprContext;
+import at.ac.tuwien.damap.annotations.gdpr.GdprExtended;
+import at.ac.tuwien.damap.annotations.gdpr.GdprKey;
 import at.ac.tuwien.damap.rest.gdpr.domain.GdprQuery;
-import at.ac.tuwien.damap.rest.gdpr.domain.HqlQuery;
+import at.ac.tuwien.damap.rest.gdpr.exceptions.MissingGdprKeyException;
+import at.ac.tuwien.damap.rest.gdpr.exceptions.NoSuchContextPropertyException;
 import lombok.experimental.UtilityClass;
 import lombok.extern.jbosslog.JBossLog;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.Transient;
+import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @UtilityClass
 @JBossLog
 public class GdprQueryUtil {
 
-    public HqlQuery buildHqlQuery(GdprQuery query, boolean extended) {
+    /**
+     * Extracts all GDPR relevant information from the given class and stores them in a {@link GdprQuery} object
+     * (which will later be used to build the HQL query).
+     *
+     * @param gdprClass class to extract information from.
+     * @return {@link GdprQuery} object containing all information necessary to build HQL query.
+     * @throws MissingGdprKeyException        if the given class is missing a {@link GdprKey} annotation.
+     * @throws NoSuchContextPropertyException if a property, tried to be accessed via {@link GdprContext}, does not exist.
+     */
+    public GdprQuery buildQueryObject(Class<?> gdprClass) throws MissingGdprKeyException, NoSuchContextPropertyException {
 
-        HqlQuery hqlQuery = new HqlQuery();
-        hqlQuery.setEntity(query.getEntityName());
+        List<Field> gdprFields = getGdprFields(gdprClass.getDeclaredFields());
 
-        // Build select query
-        String entityAlias = "e1";
-        StringBuilder select = new StringBuilder();
-        select.append(entityAlias).append(".").append(query.getKey()).append(" as userId");
+        // Build query object for entity from fields
 
-        // Base GDPR data
-        appendSelect(select, query.getBase(), entityAlias);
+        GdprQuery query = new GdprQuery();
+        query.setRoot(gdprClass);
+        List<String> base = new ArrayList<>();
+        List<String> extended = new ArrayList<>();
+        List<String> context = new ArrayList<>();
+        List<GdprQuery> baseJoins = new ArrayList<>();
+        List<GdprQuery> extendedJoins = new ArrayList<>();
+        List<GdprQuery> contextJoins = new ArrayList<>();
+        gdprFields.forEach(f -> {
+            if (isPrimitiveOrEnum(f.getType())) {
+                if (f.isAnnotationPresent(GdprKey.class)) {
+                    query.setKey(getColumnName(f));
+                } else if (f.isAnnotationPresent(GdprContext.class)) {
+                    context.add(getColumnName(f));
+                } else if (f.isAnnotationPresent(GdprBase.class)) {
+                    base.add(getColumnName(f));
+                } else if (f.isAnnotationPresent(GdprExtended.class)) {
+                    extended.add(getColumnName(f));
+                }
+            } else {
+                // Build query object for joined entities
+                GdprQuery join = getJoinQuery(f);
+                if (f.isAnnotationPresent(GdprContext.class)) {
+                    String[] properties = f.getAnnotation(GdprContext.class).properties();
+                    contextJoins.add(getContextJoinQuery(f, Arrays.asList(properties)));
+                } else if (f.isAnnotationPresent(GdprBase.class)) {
+                    baseJoins.add(join);
+                } else if (f.isAnnotationPresent(GdprExtended.class)) {
+                    extendedJoins.add(join);
+                }
+            }
+        });
+        query.setContext(context);
+        query.setBase(base);
+        query.setExtended(extended);
+        query.setContextJoins(contextJoins);
+        query.setBaseJoins(baseJoins);
+        query.setExtendedJoins(extendedJoins);
 
-        StringBuilder baseJoin = new StringBuilder();
-        for (int i = 0; i < query.getBaseJoins().size(); i++) {
-            GdprQuery joinQ = query.getBaseJoins().get(i);
-            buildJoinQuery(entityAlias, select, baseJoin, joinQ, "j" + i);
+        if (query.getKey() == null) {
+            throw new MissingGdprKeyException("No @GdprKey found for entity " + query.getRoot().getSimpleName());
         }
+        return query;
+    }
 
-        // Extended GDPR data
-        StringBuilder extendedJoin = new StringBuilder();
-        if (extended && !query.getExtended().isEmpty()) {
-            appendSelect(select, query.getExtended(), entityAlias);
+    private List<Field> getGdprFields(Field[] fields) {
+        return Stream.of(fields).filter(f ->
+                f.isAnnotationPresent(GdprKey.class)
+                || f.isAnnotationPresent(GdprContext.class)
+                || f.isAnnotationPresent(GdprBase.class)
+                || f.isAnnotationPresent(GdprExtended.class)
+        ).collect(Collectors.toList());
+    }
 
-            for (int i = 0; i < query.getExtendedJoins().size(); i++) {
-                GdprQuery joinQ = query.getExtendedJoins().get(i);
-                buildJoinQuery(entityAlias, select, extendedJoin, joinQ, "ej" + i);
+    // Simple join
+    private GdprQuery getJoinQuery(Field field) {
+        GdprQuery query = new GdprQuery();
+        query.setFieldName(field.getName());
+        query.setBase(new ArrayList<>());
+
+        for (Field f : field.getType().getDeclaredFields()) {
+            // Ignore transient & version columns
+            if (!(f.isAnnotationPresent(Transient.class) || f.isAnnotationPresent(Version.class))) {
+                query.getBase().add(getColumnName(f));
+            }
+        }
+        return query;
+    }
+
+    // Recursive method used to join multiple tables (GdprContext only)
+    public GdprQuery getContextJoinQuery(Field field, List<String> properties) throws NoSuchContextPropertyException {
+
+        GdprQuery query = new GdprQuery();
+        query.setFieldName(field.getName());
+        Class<?> clazz = field.getType();
+        query.setRoot(clazz);
+        query.setBase(new ArrayList<>());
+
+        // List for simple properties
+        List<String> simpleProperties = new ArrayList<>();
+        Map<String, List<String>> nestedProperties = new HashMap<>();
+
+        for (String property : properties) {
+            String[] propertyParts = property.split("\\.", 2);
+            if (propertyParts.length > 1) {
+                if (nestedProperties.containsKey(propertyParts[0])) {
+                    nestedProperties.get(propertyParts[0]).add(propertyParts[1]);
+                } else {
+                    List<String> nestedProperty = new ArrayList<>();
+                    nestedProperty.add(propertyParts[1]);
+                    nestedProperties.put(propertyParts[0], nestedProperty);
+                }
+            } else {
+                // Add simple property
+                simpleProperties.add(property);
             }
         }
 
-        hqlQuery.setHql("SELECT new map(" + select + ")" +
-                        " from " + query.getEntityName() + " " + entityAlias + baseJoin + extendedJoin +
-                        " where " + entityAlias + ".universityId = :id");
-        log.info("HQL: " + hqlQuery.getHql());
-        return hqlQuery;
-    }
-
-    private void buildJoinQuery(String entityAlias, StringBuilder select, StringBuilder join, GdprQuery joinQ, String joinAlias) {
-        appendSelect(select, joinQ.getBase(), joinAlias, joinQ.getEntityName() + "_");
-        join.append(" LEFT JOIN ")
-                .append(entityAlias).append(".").append(joinQ.getEntityName())
-                .append(" ").append(joinAlias);
-    }
-
-    private void appendSelect(StringBuilder select, List<String> properties, String alias) {
-        appendSelect(select, properties, alias, "");
-    }
-
-    private void appendSelect(StringBuilder select, List<String> properties, String alias, String prefix) {
-        List<String> columns = new ArrayList<>();
-        for (String property : properties) {
-            columns.add(alias + "." + property + " as " + prefix + property);
+        // Add simple properties to query
+        for (String property : simpleProperties) {
+            Field f = getField(clazz, property);
+            if (isPrimitiveOrEnum(f.getType())) {
+                query.getBase().add(getColumnName(f));
+            }
         }
-        if (!columns.isEmpty()) {
-            select.append(", ").append(String.join(", ", columns));
+
+        // Add nested properties to query
+        query.setContextJoins(new ArrayList<>());
+        for (Map.Entry<String, List<String>> entry : nestedProperties.entrySet()) {
+            Field f = getField(clazz, entry.getKey());
+            query.getContextJoins().add(getContextJoinQuery(f, entry.getValue()));
         }
+
+        return query;
+    }
+
+    private Field getField(Class<?> clazz, String fieldName) throws NoSuchContextPropertyException {
+        try {
+            if (Objects.equals(fieldName, "id")) {
+                // ID is defined by superclass, getDeclaredField() doesn't work here
+                return clazz.getField(fieldName);
+            } else {
+                return clazz.getDeclaredField(fieldName);
+            }
+        } catch (NoSuchFieldException e) {
+            throw new NoSuchContextPropertyException(clazz, fieldName);
+        }
+    }
+
+    private String getColumnName(Field field) {
+        return field.getName();
+    }
+
+    private boolean isPrimitiveOrEnum(@NotNull Class<?> clazz) {
+        return String.class.isAssignableFrom(clazz)
+               || Integer.class.isAssignableFrom(clazz)
+               || Long.class.isAssignableFrom(clazz)
+               || Double.class.isAssignableFrom(clazz)
+               || Float.class.isAssignableFrom(clazz)
+               || Boolean.class.isAssignableFrom(clazz)
+               || Date.class.isAssignableFrom(clazz)
+               || clazz.isEnum();
     }
 
 }

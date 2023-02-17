@@ -26,10 +26,10 @@ public class GdprRepo {
     private GdprResult getGdprEntityDataByUniversityId(HqlQuery query, String universityId) {
 
         GdprResult gdprResult = new GdprResult();
-        gdprResult.setEntity(query.getEntity());
+        gdprResult.setEntity(query.getEntityName());
 
         @SuppressWarnings("unchecked")
-        List<Map<String, Object>> result = entityManager.createQuery(query.getHql(), (Class<Map<String, Object>>)(Class<?>) Map.class)
+        List<Map<String, Object>> result = entityManager.createQuery(query.getHql(), (Class<Map<String, Object>>) (Class<?>) Map.class)
                 .setParameter("id", universityId).getResultList();
         result.forEach(map -> map.values().removeIf(Objects::isNull));
         gdprResult.setEntries(result);

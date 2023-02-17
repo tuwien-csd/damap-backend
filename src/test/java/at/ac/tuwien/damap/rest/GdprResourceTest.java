@@ -13,6 +13,8 @@ import org.mockito.Mockito;
 import javax.inject.Inject;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
 @TestHTTPEndpoint(GdprResource.class)
@@ -38,5 +40,34 @@ class GdprResourceTest {
                 .when().get("/")
                 .then()
                 .statusCode(200);
+    }
+
+    @Test
+    @TestSecurity(user = "userJwt", roles = "user")
+    void testGetGdprExtendedData_shouldReturnData() {
+        given()
+                .when().get("/extended")
+                .then()
+                .statusCode(200);
+    }
+
+    @Test
+    @TestSecurity(user = "userJwt", roles = "user")
+    void testGetGdprData_shouldReturnEmptyData() {
+        Mockito.when(securityService.getUserId()).thenReturn("-1");
+
+        String expectedResponse = "[" +
+                                  "{\"entity\":\"Consent\",\"entries\":[]}," +
+                                  "{\"entity\":\"Access\",\"entries\":[]}," +
+                                  "{\"entity\":\"Contributor\",\"entries\":[]}" +
+                                  "]";
+
+        String reponse = given()
+                .when().get("/")
+                .then()
+                .statusCode(200)
+                .extract().body().asString();
+
+        assertEquals(expectedResponse, reponse);
     }
 }

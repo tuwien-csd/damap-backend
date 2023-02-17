@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class HqlQuery {
-
-    private String entity;
+    // Entity name is stored separately, so it can easily be mapped to GdprResult later
+    private String entityName;
     private String hql;
 }
