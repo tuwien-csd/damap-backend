@@ -31,6 +31,7 @@ public class GdprRepo {
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> result = entityManager.createQuery(query.getHql(), (Class<Map<String, Object>>) (Class<?>) Map.class)
                 .setParameter("id", universityId).getResultList();
+        // Remove empty fields from maps (e.g. if Contributor -> personId_identifier = null)
         result.forEach(map -> map.values().removeIf(Objects::isNull));
         gdprResult.setEntries(result);
 
