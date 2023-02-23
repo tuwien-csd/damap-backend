@@ -5,6 +5,7 @@ import at.ac.tuwien.damap.repo.GdprRepo;
 import at.ac.tuwien.damap.rest.gdpr.domain.GdprResult;
 import at.ac.tuwien.damap.rest.gdpr.domain.GdprQuery;
 import at.ac.tuwien.damap.rest.gdpr.domain.HqlQuery;
+import org.hibernate.proxy.HibernateProxy;
 import org.reflections.Reflections;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -37,6 +38,9 @@ public class GdprService {
         Reflections reflections = new Reflections(packageName);
 
         Set<Class<?>> gdprClasses = reflections.getTypesAnnotatedWith(Gdpr.class);
+
+        // Ignore HibernateProxy classes
+        gdprClasses.removeIf(HibernateProxy.class::isAssignableFrom);
 
         // Get fields containing GDPR data
         baseQueries = new ArrayList<>();
