@@ -7,6 +7,8 @@ import lombok.extern.jbosslog.JBossLog;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.core.MultivaluedMap;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -40,6 +42,10 @@ public class PersonServiceBroker {
                 log.warn(String.format("Service '%s' configured but is not available", serviceConfig.getClassName()));
             }
         });
+    }
+
+    public PersonService getServiceFromQueryParams(MultivaluedMap<String, String> queryParams) {
+        return this.getServiceForQueryParam(queryParams.getFirst("searchService"));
     }
 
     public PersonService getServiceForQueryParam(String searchServiceType) {

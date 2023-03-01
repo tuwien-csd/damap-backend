@@ -5,14 +5,15 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.core.MultivaluedMap;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import at.ac.tuwien.damap.rest.base.ResultList;
+import at.ac.tuwien.damap.rest.base.Search;
 import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.persons.PersonService;
-import lombok.extern.jbosslog.JBossLog;
 
-@JBossLog
 @ApplicationScoped
 public class ORCIDPersonServiceImpl implements PersonService {
 
@@ -21,17 +22,17 @@ public class ORCIDPersonServiceImpl implements PersonService {
     OrcidPersonService orcidRestClient;
 
     @Override
-    public ContributorDO getPersonById(String id) {
+    public ContributorDO read(String id, MultivaluedMap<String, String> queryParams) {
         return ORCIDPersonMapper.mapEntityToDO(orcidRestClient.get(id), new ContributorDO());
     }
 
     @Override
-    public List<ContributorDO> getPersonSearchResult(String searchTerm) {
-        List<ContributorDO> contributors = List.of();
+    public ResultList<ContributorDO> search(MultivaluedMap<String, String> queryParams) {
+        Search search = Search.fromMap(queryParams);
 
+        List<ContributorDO> contributors = null;
         try {
-
-            var orcidSearch = orcidRestClient.getAll(searchTerm, 10);
+            var orcidSearch = orcidRestClient.getAll(search.getQuery(), 10);
 
             if (orcidSearch.getNumFound() > 0 && orcidSearch.getPersons() != null) {
                 contributors = orcidSearch.getPersons().stream().map(o -> {
@@ -44,6 +45,7 @@ public class ORCIDPersonServiceImpl implements PersonService {
             e.printStackTrace();
         }
 
-        return contributors;
+        return ResultList.fromItemsAndSearch(contributors, search);
+        
     }
 }
