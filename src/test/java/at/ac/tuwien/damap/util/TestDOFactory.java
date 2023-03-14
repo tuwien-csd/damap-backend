@@ -133,6 +133,18 @@ public class TestDOFactory {
         return project;
     }
 
+    public ProjectDO getRecommendedTestProjectDO() {
+        ProjectDO project = new ProjectDO();
+        project.setAcronym("RECOMMENDED");
+        project.setUniversityId("123REC");
+        project.setDescription("Test Recommended Project description.");
+        project.setTitle("Test Recommended Project");
+        project.setFunding(getTestFundingDO());
+        project.setStart(new Date());
+        project.setEnd(new Date());
+        return project;
+    }
+
     private FundingDO getTestFundingDO() {
         FundingDO funding = new FundingDO();
         funding.setFundingName("Funder Institutiuon");

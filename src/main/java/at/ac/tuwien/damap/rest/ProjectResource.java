@@ -8,6 +8,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
@@ -47,6 +48,18 @@ public class ProjectResource implements ResourceSearch<ProjectDO> {
         log.info("Return projects for query=" + queryParams.toString());
 
         var resultList = projectService.search(queryParams);
+        resultList.setItems(dmpService.checkExistingDmps(resultList.getItems()));
+
+        return resultList;
+    }
+
+    @GET
+    @Path("/recommended")
+    public ResultList<ProjectDO> recommended(@Context UriInfo uriInfo) {
+        var queryParams = uriInfo.getQueryParameters();
+        log.info("Return recommended projects for query=" + queryParams.toString());
+
+        var resultList = projectService.getRecommended(queryParams);
         resultList.setItems(dmpService.checkExistingDmps(resultList.getItems()));
 
         return resultList;

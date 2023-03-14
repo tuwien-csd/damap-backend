@@ -53,15 +53,22 @@ public class MockProjectServiceImpl implements ProjectService {
 
     @Override
     public ResultList<ProjectDO> search(MultivaluedMap<String, String> queryParams) {
-        var items = mockProjectRestService.getProjectList();
         var search = Search.fromMap(queryParams);
+        var items = mockProjectRestService.getProjectList(search.getQuery());
 
-        ResultList<ProjectDO> result = ResultList.fromItemsAndSearch(items, search);
-        return result;
+        return ResultList.fromItemsAndSearch(items, search);
     }
 
     @Override
     public ProjectDO read(String id, MultivaluedMap<String, String> queryParams) {
         return mockProjectRestService.getProjectDetails(id).get(0);
+    }
+
+    @Override
+    public ResultList<ProjectDO> getRecommended(MultivaluedMap<String, String> queryParams) {
+        var search = Search.fromMap(queryParams);
+        var items = mockProjectRestService.getRecommended("recommend");
+
+        return ResultList.fromItemsAndSearch(items, search);
     }
 }
