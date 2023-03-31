@@ -821,6 +821,13 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                     docVar.add("");
                 }
 
+                if (reusedDatasets.get(i).getLicense() != null) {
+                    docVar.add(reusedDatasets.get(i).getLicense());
+                }
+                else {
+                    docVar.add("");
+                }
+
                 if (reusedDatasets.get(i).getSensitiveData() != null) {
                     if (reusedDatasets.get(i).getSensitiveData()) {
                         docVar.add("yes");
@@ -1086,7 +1093,8 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 }
 
                 ArrayList<String> docVar = new ArrayList<>();
-                //TODO datasets and hosts are now connected by Distribution objects
+                docVar.add(datasetTableIDs.get(deletedDatasets.get(i).id));
+
                 if (deletedDatasets.get(i).getTitle() != null)
                     docVar.add(deletedDatasets.get(i).getTitle());
                 else
@@ -1112,7 +1120,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
             xwpfTable.removeRow(xwpfTable.getRows().size() - 1);
         } else {
             //clean row
-            ArrayList<String> emptyContent = new ArrayList<String>(Arrays.asList("", "", "", ""));
+            ArrayList<String> emptyContent = new ArrayList<String>(Arrays.asList("", "", "", "", ""));
             insertTableCells(xwpfTable, xwpfTable.getRows().get(xwpfTable.getRows().size() - 1), emptyContent);
         }
         xwpfTable.removeRow(1);
