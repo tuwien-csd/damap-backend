@@ -3,6 +3,9 @@ metadata.no=As there are no domain specific metadata standards applicable, we wi
 
 dataOrganisation.no=
 
+dataQualityControl.avail=The following data quality checks will be done:
+dataQualityControl.no=No data quality checks will be done.
+
 repositories.avail=The repositories used in this project are described in the following paragraph:
 
 tools.avail=Methods or software needed to access and use data:
