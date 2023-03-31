@@ -1,10 +1,7 @@
 package at.ac.tuwien.damap.conversion;
 
 import at.ac.tuwien.damap.domain.*;
-import at.ac.tuwien.damap.enums.EComplianceType;
-import at.ac.tuwien.damap.enums.EDataSource;
-import at.ac.tuwien.damap.enums.EDataType;
-import at.ac.tuwien.damap.enums.ESecurityMeasure;
+import at.ac.tuwien.damap.enums.*;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
 import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.*;
@@ -386,6 +383,34 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
             }
             else {
                 addReplacement(replacements,"[dataorganisation]", dmp.getStructure());
+            }
+        }
+
+        if (dmp.getDataQuality() == null) {
+            addReplacement(replacements,"[dataqualitycontrol]", loadResourceService.loadVariableFromResource(prop, "dataQualityControl.no"));
+        }
+        else {
+            if (dmp.getDataQuality().isEmpty()) {
+                addReplacement(replacements,"[dataqualitycontrol]", loadResourceService.loadVariableFromResource(prop, "dataQualityControl.no"));
+            }
+            else {
+                StringBuilder dataQuality = new StringBuilder();
+                dataQuality.append(loadResourceService.loadVariableFromResource(prop, "dataQualityControl.avail"));
+                if (dmp.getDataQuality().get(0).equals(EDataQualityType.OTHERS))
+                    dataQuality.append(" ").append(dmp.getOtherDataQuality());
+                else
+                    dataQuality.append(" ").append(dmp.getDataQuality().get(0)).append(".");
+                for (int i = 1; i < dmp.getDataQuality().size(); i++){
+                    if (i == dmp.getDataQuality().size() -1)
+                        dataQuality.append(" and ");
+                    else
+                        dataQuality.append(", ");
+                    if (dmp.getDataQuality().get(i).equals(EDataQualityType.OTHERS))
+                        dataQuality.append(dmp.getOtherDataQuality());
+                    else
+                        dataQuality.append(dmp.getDataQuality().get(i)).append(".");
+                }
+                addReplacement(replacements,"[dataqualitycontrol]", dataQuality.toString());
             }
         }
     }
