@@ -813,10 +813,14 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
         return datasets.stream().filter(dataset -> dataset.getSource().equals(EDataSource.NEW)).collect(Collectors.toList());
     }
 
+    public List<Dataset> getReusedDatasets(){
+        return datasets.stream().filter(dataset -> dataset.getSource().equals(EDataSource.REUSED)).collect(Collectors.toList());
+    }
+
     public void composeTableReusedDatasets(XWPFTable xwpfTable){
         log.debug("Export steps: Reused Dataset Table");
 
-        List<Dataset> reusedDatasets = datasets.stream().filter(dataset -> dataset.getSource().equals(EDataSource.REUSED)).collect(Collectors.toList());
+        List<Dataset> reusedDatasets = getReusedDatasets();
         if (reusedDatasets.size() > 0) {
             for (int i = 0; i < reusedDatasets.size(); i++) {
 
@@ -878,44 +882,12 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
     public void composeTableDataAccess(XWPFTable xwpfTable){
         log.debug("Export steps: Data Access Table");
 
+        List<Dataset> newDatasets = getNewDatasets();
+        List<Dataset> reusedDatasets = getReusedDatasets();
         if (datasets.size() > 0) {
-            for (int i = 0; i < datasets.size(); i++) {
-
-                XWPFTableRow sourceTableRow = xwpfTable.getRow(2);
-                XWPFTableRow newRow = new XWPFTableRow(sourceTableRow.getCtRow(), xwpfTable);
-
-                try {
-                    newRow = insertNewTableRow(sourceTableRow, i + 2);
-                }
-                catch (Exception e) {
-                }
-
-                ArrayList<String> docVar = new ArrayList<String>();
-                docVar.add(datasetTableIDs.get(datasets.get(i).id));
-
-                if (datasets.get(i).getSelectedProjectMembersAccess() != null) {
-                    docVar.add(datasets.get(i).getSelectedProjectMembersAccess().toString().toLowerCase());
-                }
-                else {
-                    docVar.add("");
-                }
-
-                if (datasets.get(i).getOtherProjectMembersAccess() != null) {
-                    docVar.add(datasets.get(i).getOtherProjectMembersAccess().toString().toLowerCase());
-                }
-                else {
-                    docVar.add("");
-                }
-
-                if (datasets.get(i).getPublicAccess() != null) {
-                    docVar.add(datasets.get(i).getPublicAccess().toString().toLowerCase());
-                }
-                else {
-                    docVar.add("");
-                }
-
-                insertTableCells(xwpfTable, newRow, docVar);
-            }
+            //this split is so that produced and reused datasets are not mixed in the table, to improve readability
+            insertComposeTableDataAccess(xwpfTable, reusedDatasets);
+            insertComposeTableDataAccess(xwpfTable, newDatasets);
             xwpfTable.removeRow(xwpfTable.getRows().size() - 1);
         } else {
             //clean row
@@ -923,6 +895,46 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
             insertTableCells(xwpfTable, xwpfTable.getRows().get(xwpfTable.getRows().size() - 1), emptyContent);
         }
         xwpfTable.removeRow(1);
+    }
+
+    private void insertComposeTableDataAccess(XWPFTable xwpfTable, List<Dataset> currentDatasets){
+        for (int i = 0; i < currentDatasets.size(); i++) {
+
+            XWPFTableRow sourceTableRow = xwpfTable.getRow(2);
+            XWPFTableRow newRow = new XWPFTableRow(sourceTableRow.getCtRow(), xwpfTable);
+
+            try {
+                newRow = insertNewTableRow(sourceTableRow, i + 2);
+            }
+            catch (Exception e) {
+            }
+
+            ArrayList<String> docVar = new ArrayList<String>();
+            docVar.add(datasetTableIDs.get(currentDatasets.get(i).id));
+
+            if (currentDatasets.get(i).getSelectedProjectMembersAccess() != null) {
+                docVar.add(currentDatasets.get(i).getSelectedProjectMembersAccess().toString().toLowerCase());
+            }
+            else {
+                docVar.add("");
+            }
+
+            if (currentDatasets.get(i).getOtherProjectMembersAccess() != null) {
+                docVar.add(currentDatasets.get(i).getOtherProjectMembersAccess().toString().toLowerCase());
+            }
+            else {
+                docVar.add("");
+            }
+
+            if (currentDatasets.get(i).getPublicAccess() != null) {
+                docVar.add(currentDatasets.get(i).getPublicAccess().toString().toLowerCase());
+            }
+            else {
+                docVar.add("");
+            }
+
+            insertTableCells(xwpfTable, newRow, docVar);
+        }
     }
 
     public void composeTableDatasetPublication(XWPFTable xwpfTable){
