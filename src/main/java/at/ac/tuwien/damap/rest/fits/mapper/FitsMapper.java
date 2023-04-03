@@ -27,7 +27,7 @@ public class FitsMapper {
         dataset.setLicense("https://creativecommons.org/licenses/by/4.0/");
         dataset.setSelectedProjectMembersAccess(EAccessRight.WRITE);
         dataset.setOtherProjectMembersAccess(EAccessRight.WRITE);
-        dataset.setPublicAccess(EAccessRight.READ);
+        dataset.setPublicAccess(EAccessRight.NONE);
 
         return dataset;
     }
