@@ -1,9 +1,6 @@
 package at.ac.tuwien.damap.rest.openaire;
 
-import at.ac.tuwien.damap.enums.EDataAccessType;
-import at.ac.tuwien.damap.enums.EDataSource;
-import at.ac.tuwien.damap.enums.EDataType;
-import at.ac.tuwien.damap.enums.EIdentifierType;
+import at.ac.tuwien.damap.enums.*;
 import at.ac.tuwien.damap.rest.dmp.domain.DatasetDO;
 import at.ac.tuwien.damap.rest.dmp.domain.IdentifierDO;
 import at.ac.tuwien.damap.rest.openaire.mapper.OpenAireMapper;
@@ -55,6 +52,10 @@ class OpenAireTest {
         identifierDO.setIdentifier("01.2345/zenodo.0123456");
         datasetDO.setDatasetId(identifierDO);
         datasetDO.setSize(100L);
+        //default values for accessrights
+        datasetDO.setSelectedProjectMembersAccess(EAccessRight.READ);
+        datasetDO.setOtherProjectMembersAccess(EAccessRight.READ);
+        datasetDO.setPublicAccess(EAccessRight.READ);
 
         return datasetDO;
     }
