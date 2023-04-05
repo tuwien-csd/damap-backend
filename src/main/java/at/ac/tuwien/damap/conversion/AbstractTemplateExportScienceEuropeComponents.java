@@ -528,109 +528,105 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
     }
 
     public void legalEthicalInformation() {
+        personalDataText();
+        intellectualPropertyText();
+        ethicalIssuesText();
+    }
+    public void personalDataText() {
         log.debug("personal data part");
         String personalData = "";
-        if (dmp.getPersonalData() != null) {
-            if (dmp.getPersonalData()) {
-                String personalDataSentence = loadResourceService.loadVariableFromResource(prop,"personal.avail") + " ";
-                String personalDataset = "";
-                String datasetSentence = "";
-                List<String> personalDatasetList = new ArrayList<>();
+        if (Boolean.TRUE.equals(dmp.getPersonalData())) {
+            personalData =
+                    loadResourceService.loadVariableFromResource(prop, "personal.avail") + " ";
 
-                for (Dataset dataset: datasets) {
-                    if (dataset.getPersonalData() != null && dataset.getPersonalData()) {
-                        personalDatasetList.add(datasetTableIDs.get(dataset.getId()) + " (" + dataset.getTitle() + ")");
-                    }
+            List<String> personalDatasetList = new ArrayList<>();
+            for (Dataset dataset : datasets) {
+                if (dataset.getPersonalData() != null && dataset.getPersonalData()) {
+                    personalDatasetList.add(datasetTableIDs.get(dataset.getId()) + " (" + dataset.getTitle() + ")");
                 }
-
-                if (personalDatasetList.size()>0) {
-                    personalDataset = multipleVariable(personalDatasetList);
-                    datasetSentence = " " + loadResourceService.loadVariableFromResource(prop,"personalDataset") + " ";
-                }
-
-                List<String> dataComplianceList = new ArrayList<>();
-                String personalDataCompliance = "";
-
-                if (!dmp.getPersonalDataCompliance().isEmpty()) {
-                    for (EComplianceType personalCompliance : dmp.getPersonalDataCompliance()) {
-                        dataComplianceList.add(personalCompliance.toString().replace("by ", ""));
-                    }
-
-                    personalDataCompliance = multipleVariable(dataComplianceList);
-                }
-
-                if (!personalDataCompliance.equals("")) {
-                    personalData = personalDataSentence + personalDataset + datasetSentence + loadResourceService.loadVariableFromResource(prop,"personalCompliance") + " " + personalDataCompliance + " " + loadResourceService.loadVariableFromResource(prop,"personalComplianceUsed");
-                }
-                else {
-                    personalData = personalDataSentence + personalDataset + datasetSentence;
-                }
-
-            } else {
-                personalData = loadResourceService.loadVariableFromResource(prop,"personal.no");
             }
+            //add dataset list if available
+            if (!personalDatasetList.isEmpty()) {
+                personalData += multipleVariableAnd(personalDatasetList);
+                personalData += " " + loadResourceService.loadVariableFromResource(prop, "personalDataset") + " ";
+            }
+
+            if (!dmp.getPersonalDataCompliance().isEmpty()) {
+                List<String> dataComplianceList = new ArrayList<>();
+                for (EComplianceType personalCompliance : dmp.getPersonalDataCompliance()) {
+                    if (personalCompliance.equals(EComplianceType.OTHER) &&
+                        dmp.getOtherPersonalDataCompliance() != null &&
+                        !dmp.getOtherPersonalDataCompliance().isEmpty())
+                        dataComplianceList.add(dmp.getOtherPersonalDataCompliance());
+                    else
+                        dataComplianceList.add(personalCompliance.toString());
+                }
+                personalData += loadResourceService.loadVariableFromResource(prop, "personalCompliance") + " ";
+                personalData += multipleVariableAnd(dataComplianceList) + ".";
+            }
+        } else {
+            personalData = loadResourceService.loadVariableFromResource(prop, "personal.no");
         }
-
         addReplacement(replacements, "[personaldata]", personalData);
+    }
 
-        //Section 4b: legal restriction
-
+    //Section 4b: legal restriction
+    public void intellectualPropertyText() {
         log.debug("legal restriction part");
 
-        String legalRestrictionComplete = "";
-        String legalRestriction = "";
-        List<String> legalRestrictionList = new ArrayList<>();
+        String legalRestrictionText = "";
 
-        if (dmp.getLegalRestrictions() != null) {
-            if (dmp.getLegalRestrictions()) {
-                String legalRestrictionSentence = "";
-                String legalRestrictionDataset = "";
-                List<String> datasetList = new ArrayList<>();
+        if (Boolean.TRUE.equals(dmp.getLegalRestrictions())) {
 
-                for (Dataset dataset : datasets) {
-                    if (dataset.getLegalRestrictions() != null && dataset.getLegalRestrictions()) {
-                        legalRestrictionDataset = datasetTableIDs.get(dataset.getId()) + " (" + dataset.getTitle() + ")";
-                        datasetList.add(legalRestrictionDataset);
-                    }
+            //determine document list
+            if (!dmp.getLegalRestrictionsDocuments().isEmpty()) {
+                legalRestrictionText = loadResourceService.loadVariableFromResource(prop, "legal.avail") + " ";
+                List<String> agreementList = new ArrayList<>();
+                for (EAgreement agreement : dmp.getLegalRestrictionsDocuments()) {
+                    if (agreement.equals(EAgreement.OTHER) &&
+                        dmp.getOtherLegalRestrictionsDocument() != null &&
+                        !dmp.getOtherLegalRestrictionsDocument().isEmpty())
+                        agreementList.add(dmp.getOtherLegalRestrictionsDocument());
+                    else
+                        agreementList.add(agreement.toString());
                 }
-
-                if (datasetList.size() > 0) {
-                    legalRestrictionDataset = loadResourceService.loadVariableFromResource(prop,"legalDataset") + " ";
-                    legalRestrictionDataset = legalRestrictionDataset + multipleVariable(datasetList);
-                }
-
-                legalRestrictionSentence = loadResourceService.loadVariableFromResource(prop,"legal.avail");
-
-                legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " " + loadResourceService.loadVariableFromResource(prop,"legalComment");
-
-                String affiliationRights = "";
-
-                if (dmp.getContact() != null && dmp.getContact().getAffiliation() != null) {
-                    affiliationRights = dmp.getContact().getAffiliation() + " " + loadResourceService.loadVariableFromResource(prop, "legalRights.contact");
-                } else { //manually assign the organization
-                    affiliationRights = loadResourceService.loadVariableFromResource(prop,"legalRights.affiliation");
-                }
-
-                legalRestrictionList.add(legalRestriction);
-                legalRestrictionList.add(affiliationRights);
-
-                legalRestrictionComplete = String.join(";", legalRestrictionList);
-
-                if (legalRestrictionComplete.charAt(legalRestrictionComplete.length() - 1) != '.')
-                    legalRestrictionComplete = legalRestrictionComplete + ".";
-
-                if (legalRestrictionComplete.charAt(legalRestrictionComplete.length()-1)!='.')
-                    legalRestrictionComplete = legalRestrictionComplete + ".";
+                legalRestrictionText += multipleVariableAnd(agreementList) + ". ";
+            } else {
+                legalRestrictionText = loadResourceService.loadVariableFromResource(prop, "legal.avail.default") + " ";
             }
-            else {
-                legalRestrictionComplete = loadResourceService.loadVariableFromResource(prop,"legal.no");
+
+            //determine dataset list
+            List<String> datasetList = new ArrayList<>();
+            for (Dataset dataset : datasets) {
+                if (dataset.getLegalRestrictions() != null && dataset.getLegalRestrictions()) {
+                    datasetList.add(datasetTableIDs.get(dataset.getId()) + " (" + dataset.getTitle() + ")");
+                }
             }
+            if (!datasetList.isEmpty()) {
+                legalRestrictionText += loadResourceService.loadVariableFromResource(prop, "legalDataset") + " ";
+                legalRestrictionText += multipleVariableAnd(datasetList) +". ";
+            }
+
+            //add legal restrictions comment if available
+            if (dmp.getLegalRestrictionsComment() != null && !dmp.getLegalRestrictionsComment().isEmpty()) {
+                legalRestrictionText += loadResourceService.loadVariableFromResource(prop, "legalComment") +
+                                        " " + dmp.getLegalRestrictionsComment();
+            }
+
+            if (dmp.getDataRightsAndAccessControl() != null && !dmp.getDataRightsAndAccessControl().isEmpty()) {
+                legalRestrictionText += ";" + dmp.getDataRightsAndAccessControl() + " " +
+                                            loadResourceService.loadVariableFromResource(prop, "legalRights.contact");
+            } else {
+                legalRestrictionText += ";" + loadResourceService.loadVariableFromResource(prop, "legalRights.contact.default");
+            }
+        } else {
+            legalRestrictionText = loadResourceService.loadVariableFromResource(prop, "legal.no");
         }
+        addReplacement(replacements, "[legalrestriction]", legalRestrictionText);
+    }
 
-        addReplacement(replacements, "[legalrestriction]", legalRestrictionComplete);
-
-        //Section 4c: ethical issues
-
+    //Section 4c: ethical issues
+    public void ethicalIssuesText() {
         log.debug("ethical part");
 
         String ethicalIssues = "";
