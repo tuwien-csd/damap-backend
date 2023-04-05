@@ -972,7 +972,9 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 //TODO: PID not yet defined
                 docVar.add("");
 
-                if (newDatasets.get(i).getLicense() != null) {
+                //suppress license information for closed datasets
+                if (newDatasets.get(i).getLicense() != null
+                    && !newDatasets.get(i).getDataAccess().equals(EDataAccessType.CLOSED)) {
                     switch (newDatasets.get(i).getLicense()) {
                         case "https://creativecommons.org/licenses/by/4.0/":
                             docVar.add("CC BY 4.0");
