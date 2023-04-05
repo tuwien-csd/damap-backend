@@ -200,10 +200,19 @@ public abstract class AbstractTemplateExportFunctions {
         switch (variableList.size()) {
             case 0:
                 return "";
-            case 2:
-                return String.join(" and ", variableList);
             default:
                 return String.join(", ", variableList);
+        }
+    }
+
+    public String multipleVariableAnd(List<String> variableList) {
+        switch (variableList.size()) {
+            case 0:
+                return "";
+            case 1:
+                return variableList.get(0);
+            default:
+                return String.join(", ", variableList.subList(0, (variableList.size() - 1))) + ", and " + variableList.get(variableList.size() - 1);
         }
     }
 
