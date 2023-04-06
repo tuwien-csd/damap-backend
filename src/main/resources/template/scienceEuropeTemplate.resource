@@ -42,9 +42,6 @@ legalComment=The legal restrictions are based on the following:
 legalRights.contact=has rights to the produced data and controls access.
 legalRights.contact.default=Our institution has rights to the produced data and controls access.
 
-ethical.avail=This project will involve human participants.
 ethical.no=No particular ethical issue is foreseen with the data to be used or produced by the project. This section will be updated if issues arise.
-ethicalOther=There are other ethical issues associated with this research.
 ethicalReviewed.avail=The research plan of the project was reviewed by an ethics committee / a similar body.
-ethicalReviewed.no=The research plan has not been reviewed yet by any ethics committee.
 ethicalStatement=Ethical issues in the project have been identified and discussed with the Ethics Coordinator. They are described in detail in separate documents.

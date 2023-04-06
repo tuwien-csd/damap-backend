@@ -628,51 +628,20 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
     //Section 4c: ethical issues
     public void ethicalIssuesText() {
         log.debug("ethical part");
-
-        String ethicalIssues = "";
         String ethicalStatement = "";
-        String otherEthicalIssues = "";
-        String committeeReviewed = "";
 
-        if (dmp.getHumanParticipants() != null) {
-            if (dmp.getHumanParticipants()) {
-                ethicalStatement = " " + loadResourceService.loadVariableFromResource(prop,"ethical.avail");
-            }
-        }
-
-        if (dmp.getEthicalIssuesExist() != null) {
-            if (dmp.getEthicalIssuesExist()) {
-                otherEthicalIssues = " " + loadResourceService.loadVariableFromResource(prop,"ethicalOther");
-            }
-        }
-
-        if (dmp.getCommitteeReviewed() != null) {
-            if (dmp.getCommitteeReviewed()) {
-                committeeReviewed = " " + loadResourceService.loadVariableFromResource(prop,"ethicalReviewed.avail");
-            }
-            else {
-                committeeReviewed = " " + loadResourceService.loadVariableFromResource(prop,"ethicalReviewed.no");
-            }
-        }
-
-        String ethicalSentence = loadResourceService.loadVariableFromResource(prop,"ethicalStatement");
-
-        ethicalIssues = ethicalStatement + otherEthicalIssues + committeeReviewed;
-
-        if (!ethicalIssues.equals("")) {
-
-            ethicalIssues = ethicalSentence + ethicalIssues;
-
-            if (ethicalIssues.charAt(ethicalIssues.length()-1) == ' ')
-                ethicalIssues = ethicalIssues.substring(0,ethicalIssues.length()-1);
-
-            if (ethicalIssues.charAt(ethicalIssues.length()-1) != '.')
-                ethicalIssues = ethicalIssues + ".";
+        if (Boolean.TRUE.equals(dmp.getHumanParticipants()) ||
+            Boolean.TRUE.equals(dmp.getEthicalIssuesExist())) {
+            ethicalStatement = loadResourceService.loadVariableFromResource(prop,"ethicalStatement") + " ";
         } else {
-            ethicalIssues = loadResourceService.loadVariableFromResource(prop,"ethical.no");
+            ethicalStatement = loadResourceService.loadVariableFromResource(prop,"ethical.no") + " ";
         }
 
-        addReplacement(replacements, "[ethicalissues]", ethicalIssues);
+        if (Boolean.TRUE.equals(dmp.getCommitteeReviewed())) {
+            ethicalStatement += loadResourceService.loadVariableFromResource(prop,"ethicalReviewed.avail");
+        }
+
+        addReplacement(replacements, "[ethicalissues]", ethicalStatement);
     }
 
     //Number conversion for data size in section 1
