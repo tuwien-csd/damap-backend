@@ -419,63 +419,63 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
         log.debug("sensitive data part");
 
         String sensitiveData = "";
-        if (dmp.getSensitiveData() != null) {
-            if (dmp.getSensitiveData()) {
-                String sensitiveDataSentence = loadResourceService.loadVariableFromResource(prop,"sensitive.avail");
-                String sensitiveDataset = "";
-                String datasetSentence = "";
-                String sensitiveDataMeasure = "";
-                String authorisedAccess = "";
-                List<String> sensitiveDatasetList = new ArrayList<>();
+        if (Boolean.TRUE.equals(dmp.getSensitiveData())) {
+            String sensitiveDataSentence = loadResourceService.loadVariableFromResource(prop,"sensitive.avail");
+            String sensitiveDataset = "";
+            String datasetSentence = "";
+            String sensitiveDataMeasure = "";
+            String authorisedAccess = "";
+            List<String> sensitiveDatasetList = new ArrayList<>();
 
-                for (Dataset dataset: datasets) {
-                    if (dataset.getSensitiveData() != null && dataset.getSensitiveData()) {
-                        sensitiveDataset = datasetTableIDs.get(dataset.getId()) + " (" + dataset.getTitle() + ")";
-                        sensitiveDatasetList.add(sensitiveDataset);
-                    }
+            for (Dataset dataset: datasets) {
+                if (dataset.getSensitiveData() != null && dataset.getSensitiveData()) {
+                    sensitiveDataset = datasetTableIDs.get(dataset.getId()) + " (" + dataset.getTitle() + ")";
+                    sensitiveDatasetList.add(sensitiveDataset);
                 }
-
-                if (sensitiveDatasetList.size() > 0) {
-                    datasetSentence = " on dataset ";
-                    sensitiveDataset = multipleVariable(sensitiveDatasetList) + ". ";
-                }
-                else {
-                    datasetSentence = ". ";
-                }
-
-                List<String> dataSecurityList = new ArrayList<>();
-
-                if (dmp.getSensitiveDataSecurity() != null) {
-                    for (ESecurityMeasure securityMeasure : dmp.getSensitiveDataSecurity()) {
-                        dataSecurityList.add(securityMeasure.toString());
-                    }
-                }
-
-                if (dataSecurityList.isEmpty()) {
-                    sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.no");
-                }
-                else {
-                    //security measurement size defined is/or usage
-                    if (dataSecurityList.size() == 1) {
-                        sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.avail") + " " + multipleVariable(dataSecurityList) + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.singular");
-                    } else {
-                        sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.avail") + " " + multipleVariable(dataSecurityList) + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.multiple");
-                    }
-                }
-
-                if (dmp.getSensitiveDataAccess() != null) {
-                    if (!dmp.getSensitiveDataAccess().isEmpty()) {
-                        authorisedAccess = " " + loadResourceService.loadVariableFromResource(prop, "sensitiveAccess") + " " + dmp.getSensitiveDataAccess() + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveAccess.avail");
-                    }
-                }
-
-                sensitiveData = sensitiveDataSentence + datasetSentence + sensitiveDataset + sensitiveDataMeasure + authorisedAccess;
-
-            } else {
-                sensitiveData = loadResourceService.loadVariableFromResource(prop,"sensitive.no");
             }
-        }
 
+            if (!sensitiveDatasetList.isEmpty()) {
+                datasetSentence = " " + loadResourceService.loadVariableFromResource(prop,"sensitive.avail.data") + " ";
+                sensitiveDataset = multipleVariableAnd(sensitiveDatasetList) + ". ";
+            }
+            else {
+                datasetSentence = ". ";
+            }
+
+            List<String> dataSecurityList = new ArrayList<>();
+
+            if (dmp.getSensitiveDataSecurity() != null) {
+                for (ESecurityMeasure securityMeasure : dmp.getSensitiveDataSecurity()) {
+                    if (securityMeasure.equals(ESecurityMeasure.OTHER) &&
+                        dmp.getOtherDataSecurityMeasures() != null &&
+                        !dmp.getOtherDataSecurityMeasures().isEmpty())
+                        dataSecurityList.add(dmp.getOtherDataSecurityMeasures());
+                    else
+                        dataSecurityList.add(securityMeasure.toString());
+                }
+            }
+
+            if (dataSecurityList.isEmpty()) {
+                sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.no");
+            }
+            else {
+                //security measurement size defined is/or usage
+                if (dataSecurityList.size() == 1) {
+                    sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.avail") + " " + multipleVariableAnd(dataSecurityList) + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.singular");
+                } else {
+                    sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.avail") + " " + multipleVariableAnd(dataSecurityList) + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.multiple");
+                }
+            }
+
+            if (dmp.getSensitiveDataAccess() != null && (!dmp.getSensitiveDataAccess().isEmpty())) {
+                authorisedAccess = " " + loadResourceService.loadVariableFromResource(prop, "sensitiveAccess") + " " + dmp.getSensitiveDataAccess() + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveAccess.avail");
+            }
+
+            sensitiveData = sensitiveDataSentence + datasetSentence + sensitiveDataset + sensitiveDataMeasure + authorisedAccess;
+
+        } else {
+            sensitiveData = loadResourceService.loadVariableFromResource(prop,"sensitive.no");
+        }
         addReplacement(replacements, "[sensitivedata]", sensitiveData);
     }
 

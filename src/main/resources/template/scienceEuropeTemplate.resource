@@ -20,6 +20,7 @@ distributionStorage=will be stored in
 distributionExternal=External storage will be used because
 
 sensitive.avail=In this project there will be sensitive data
+sensitive.avail.data=in dataset
 sensitive.no=At this stage, it is not foreseen to process any sensitive data in the project. If this changes, advice will be sought from the data protection specialist at our institution, and the DMP will be updated.
 sensitiveMeasure.avail=To ensure that storage and transfer of sensitive data is safe, additional security measures such as
 sensitiveMeasure.no=There are no additional security measures defined at the moment.
@@ -27,7 +28,6 @@ sensitiveMeasure.singular=is taken.
 sensitiveMeasure.multiple=are taken.
 sensitiveAccess=Only
 sensitiveAccess.avail=will be authorised to access sensitive data.
-sensitiveAccess
 
 personal.avail=In this project, we will process personal data (see section 1a).
 personal.no=At this stage, it is not foreseen to process any personal data in the project. If this changes, advice will be sought from the data protection specialist at our institution, and the DMP will be updated.
