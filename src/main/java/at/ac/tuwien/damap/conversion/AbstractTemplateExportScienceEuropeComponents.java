@@ -8,6 +8,8 @@ import org.apache.poi.xwpf.usermodel.*;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTVMerge;
 
 import java.text.NumberFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -946,6 +948,12 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                     docVar.add(formatter.format(newDatasets.get(i).getStart()));
                 }
                 else {
+                    //if null set default value of project end date minus two months
+                    if (dmp.getProject() != null && dmp.getProject().getEnd() != null) {
+                        docVar.add(formatter.format(Date.from(ZonedDateTime.from(
+                                dmp.getProject().getEnd().toInstant().atZone(ZoneId.systemDefault()))
+                                .minusMonths(2).toInstant())));
+                    }
                     docVar.add("");
                 }
                 //TODO datasets and hosts are now connected by Distribution objects
