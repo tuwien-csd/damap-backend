@@ -1022,7 +1022,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
     public void composeTableDatasetRepository(XWPFTable xwpfTable){
         log.debug("Export steps: Dataset Repository Table");
 
-        List<Dataset> newDatasets = getNewDatasets();
+        List<Dataset> newDatasets = getNewDatasets().stream().filter(dataset -> !dataset.getDelete()).collect(Collectors.toList());
         if (newDatasets.size() > 0) {
             for (int i = 0; i < newDatasets.size(); i++) {
 
@@ -1031,27 +1031,24 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
 
                 try {
                     newRow = insertNewTableRow(sourceTableRow, i + 2);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                 }
 
                 ArrayList<String> docVar = new ArrayList<>();
                 docVar.add(datasetTableIDs.get(newDatasets.get(i).id));
-                if (newDatasets.get(i).getDistributionList() != null){
+                if (newDatasets.get(i).getDistributionList() != null) {
                     List<Distribution> distributions = newDatasets.get(i).getDistributionList();
                     List<String> repositories = new ArrayList<>();
-                    for (Distribution distribution: distributions) {
+                    for (Distribution distribution : distributions) {
                         if (Repository.class.isAssignableFrom(distribution.getHost().getClass()))
                             repositories.add(distribution.getHost().getTitle());
                     }
                     if (repositories.size() > 0) {
                         docVar.add(multipleVariable(repositories));
-                    }
-                    else {
+                    } else {
                         docVar.add("");
                     }
-                }
-                else {
+                } else {
                     docVar.add("");
                 }
 
