@@ -2696,3 +2696,71 @@ databaseChangeLog:
             newColumnName: description
             oldColumnName: temp_description
 
+
+  - changeSet:
+      id: 8
+      author: Zeno Casellato
+      changes:
+        - sql:
+            dbms: '!h2'
+            splitStatements: true
+            sql: >
+              UPDATE dataset SET license = 'ccPublicDomain' WHERE license = 'https://creativecommons.org/publicdomain/mark/1.0/';
+              UPDATE dataset_aud SET license = 'ccPublicDomain' WHERE license = 'https://creativecommons.org/publicdomain/mark/1.0/';
+              UPDATE dataset SET license = 'ccZero' WHERE license = 'https://creativecommons.org/publicdomain/zero/1.0/';
+              UPDATE dataset_aud SET license = 'ccZero' WHERE license = 'https://creativecommons.org/publicdomain/zero/1.0/';
+              UPDATE dataset SET license = 'pddl' WHERE license = 'https://opendatacommons.org/licenses/pddl/summary/';
+              UPDATE dataset_aud SET license = 'pddl' WHERE license = 'https://opendatacommons.org/licenses/pddl/summary/';
+              UPDATE dataset SET license = 'ccBy' WHERE license = 'https://creativecommons.org/licenses/by/4.0/';
+              UPDATE dataset_aud SET license = 'ccBy' WHERE license = 'https://creativecommons.org/licenses/by/4.0/';
+              UPDATE dataset SET license = 'odcBy' WHERE license = 'https://opendatacommons.org/licenses/by/summary/';
+              UPDATE dataset_aud SET license = 'odcBy' WHERE license = 'https://opendatacommons.org/licenses/by/summary/';
+              UPDATE dataset SET license = 'ccBySa' WHERE license = 'https://creativecommons.org/licenses/by-sa/4.0/';
+              UPDATE dataset_aud SET license = 'ccBySa' WHERE license = 'https://creativecommons.org/licenses/by-sa/4.0/';
+              UPDATE dataset SET license = 'odbl' WHERE license = 'https://opendatacommons.org/licenses/odbl/summary/';
+              UPDATE dataset_aud SET license = 'odbl' WHERE license = 'https://opendatacommons.org/licenses/odbl/summary/';
+              UPDATE dataset SET license = 'ccByNd' WHERE license = 'https://creativecommons.org/licenses/by-nd/4.0/';
+              UPDATE dataset_aud SET license = 'ccByNd' WHERE license = 'https://creativecommons.org/licenses/by-nd/4.0/';
+              UPDATE dataset SET license = 'ccByNc' WHERE license = 'https://creativecommons.org/licenses/by-nc/4.0/';
+              UPDATE dataset_aud SET license = 'ccByNc' WHERE license = 'https://creativecommons.org/licenses/by-nc/4.0/';
+              UPDATE dataset SET license = 'ccByNcSa' WHERE license = 'https://creativecommons.org/licenses/by-nc-sa/4.0/';
+              UPDATE dataset_aud SET license = 'ccByNcSa' WHERE license = 'https://creativecommons.org/licenses/by-nc-sa/4.0/';
+              UPDATE dataset SET license = 'ccByNcNd' WHERE license = 'https://creativecommons.org/licenses/by-nc-nd/4.0/';
+              UPDATE dataset_aud SET license = 'ccByNcNd' WHERE license = 'https://creativecommons.org/licenses/by-nc-nd/4.0/';
+              UPDATE dataset SET license = 'perlArtistic1' WHERE license = 'https://opensource.org/licenses/Artistic-Perl-1.0';
+              UPDATE dataset_aud SET license = 'perlArtistic1' WHERE license = 'https://opensource.org/licenses/Artistic-Perl-1.0';
+              UPDATE dataset SET license = 'perlArtistic2' WHERE license = 'https://opensource.org/licenses/Artistic-2.0';
+              UPDATE dataset_aud SET license = 'perlArtistic2' WHERE license = 'https://opensource.org/licenses/Artistic-2.0';
+              UPDATE dataset SET license = 'gpl2plus' WHERE license = 'https://opensource.org/licenses/GPL-2.0';
+              UPDATE dataset_aud SET license = 'gpl2plus' WHERE license = 'https://opensource.org/licenses/GPL-2.0';
+              UPDATE dataset SET license = 'gpl2' WHERE license = 'https://opensource.org/licenses/GPL-2.0';
+              UPDATE dataset_aud SET license = 'gpl2' WHERE license = 'https://opensource.org/licenses/GPL-2.0';
+              UPDATE dataset SET license = 'gpl3' WHERE license = 'https://opensource.org/licenses/GPL-3.0';
+              UPDATE dataset_aud SET license = 'gpl3' WHERE license = 'https://opensource.org/licenses/GPL-3.0';
+              UPDATE dataset SET license = 'agpl1' WHERE license = 'http://www.affero.org/oagpl.html';
+              UPDATE dataset_aud SET license = 'agpl1' WHERE license = 'http://www.affero.org/oagpl.html';
+              UPDATE dataset SET license = 'agpl3' WHERE license = 'https://opensource.org/licenses/AGPL-3.0';
+              UPDATE dataset_aud SET license = 'agpl3' WHERE license = 'https://opensource.org/licenses/AGPL-3.0';
+              UPDATE dataset SET license = 'mpl2' WHERE license = 'https://opensource.org/licenses/MPL-2.0';
+              UPDATE dataset_aud SET license = 'mpl2' WHERE license = 'https://opensource.org/licenses/MPL-2.0';
+              UPDATE dataset SET license = 'lgpl21plus' WHERE license = 'https://opensource.org/licenses/LGPL-2.1';
+              UPDATE dataset_aud SET license = 'lgpl21plus' WHERE license = 'https://opensource.org/licenses/LGPL-2.1';
+              UPDATE dataset SET license = 'lgpl21' WHERE license = 'https://opensource.org/licenses/LGPL-2.1';
+              UPDATE dataset_aud SET license = 'lgpl21' WHERE license = 'https://opensource.org/licenses/LGPL-2.1';
+              UPDATE dataset SET license = 'lgpl3' WHERE license = 'https://opensource.org/licenses/LGPL-3.0';
+              UPDATE dataset_aud SET license = 'lgpl3' WHERE license = 'https://opensource.org/licenses/LGPL-3.0';
+              UPDATE dataset SET license = 'epl1' WHERE license = 'https://opensource.org/licenses/EPL-1.0';
+              UPDATE dataset_aud SET license = 'epl1' WHERE license = 'https://opensource.org/licenses/EPL-1.0';
+              UPDATE dataset SET license = 'cddl1' WHERE license = 'https://opensource.org/licenses/CDDL-1.0';
+              UPDATE dataset_aud SET license = 'cddl1' WHERE license = 'https://opensource.org/licenses/CDDL-1.0';
+              UPDATE dataset SET license = 'mit' WHERE license = 'https://opensource.org/licenses/mit-license.php';
+              UPDATE dataset_aud SET license = 'mit' WHERE license = 'https://opensource.org/licenses/mit-license.php';
+              UPDATE dataset SET license = 'bsd3c' WHERE license = 'https://opensource.org/licenses/BSD-3-Clause';
+              UPDATE dataset_aud SET license = 'bsd3c' WHERE license = 'https://opensource.org/licenses/BSD-3-Clause';
+              UPDATE dataset SET license = 'bsd2c' WHERE license = 'https://opensource.org/licenses/BSD-2-Clause';
+              UPDATE dataset_aud SET license = 'bsd2c' WHERE license = 'https://opensource.org/licenses/BSD-2-Clause';
+              UPDATE dataset SET license = 'apache2' WHERE license = 'https://www.apache.org/licenses/LICENSE-2.0';
+              UPDATE dataset_aud SET license = 'apache2' WHERE license = 'https://www.apache.org/licenses/LICENSE-2.0';
+            stripComments: true
+            comment: change existing url strings in license information to be enums instead
+

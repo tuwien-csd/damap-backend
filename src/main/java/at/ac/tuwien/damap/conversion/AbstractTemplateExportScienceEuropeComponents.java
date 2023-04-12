@@ -808,8 +808,8 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 }
 
                 if (reusedDatasets.get(i).getLicense() != null) {
-                    docVar.add(reusedDatasets.get(i).getLicense());
-                }
+                    //TODO second String license option for reused datasets.
+                    docVar.add("");                }
                 else {
                     docVar.add("");
                 }
@@ -943,8 +943,8 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                         docVar.add(formatter.format(Date.from(ZonedDateTime.from(
                                 dmp.getProject().getEnd().toInstant().atZone(ZoneId.systemDefault()))
                                 .minusMonths(2).toInstant())));
-                    }
-                    docVar.add("");
+                    } else
+                        docVar.add("");
                 }
                 //TODO datasets and hosts are now connected by Distribution objects
                 if (newDatasets.get(i).getDistributionList() != null){
@@ -972,31 +972,10 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
 
                 //suppress license information for closed datasets
                 if (newDatasets.get(i).getLicense() != null
-                    && !newDatasets.get(i).getDataAccess().equals(EDataAccessType.CLOSED)) {
-                    switch (newDatasets.get(i).getLicense()) {
-                        case "https://creativecommons.org/licenses/by/4.0/":
-                            docVar.add("CC BY 4.0");
-                            break;
-                        case "https://creativecommons.org/publicdomain/zero/1.0/":
-                            docVar.add("CC ZERO 1.0");
-                            break;
-                        case "https://opendatacommons.org/licenses/pddl/summary/":
-                            docVar.add("PDDL");
-                            break;
-                        case "https://opendatacommons.org/licenses/by/summary/":
-                            docVar.add("ODC BY");
-                            break;
-                        case "https://creativecommons.org/publicdomain/mark/1.0/":
-                            docVar.add("PD");
-                            break;
-                        default:
-                            docVar.add("");
-                            break;
-                    }
-                }
-                else {
+                    && !newDatasets.get(i).getDataAccess().equals(EDataAccessType.CLOSED))
+                        docVar.add(newDatasets.get(i).getLicense().getAcronym());
+                else
                     docVar.add("");
-                }
 
                 insertTableCells(xwpfTable, newRow, docVar);
             }
