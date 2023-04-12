@@ -16,7 +16,7 @@ restrictedAccess.avail=Description of protocol to access restricted data:
 costs.avail=There are costs dedicated to data management and ensuring that data will be FAIR as outlined below.
 costs.no=There are no costs dedicated to data management and ensuring that data will be FAIR.
 
-distributionStorage=will be stored in
+distributionStorage=will be stored on
 distributionExternal=External storage will be used because
 
 sensitive.avail=In this project there will be sensitive data
