@@ -388,32 +388,22 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
             }
         }
 
-        if (dmp.getDataQuality() == null) {
-            addReplacement(replacements,"[dataqualitycontrol]", loadResourceService.loadVariableFromResource(prop, "dataQualityControl.no"));
-        }
-        else {
-            if (dmp.getDataQuality().isEmpty()) {
-                addReplacement(replacements,"[dataqualitycontrol]", loadResourceService.loadVariableFromResource(prop, "dataQualityControl.no"));
-            }
-            else {
-                StringBuilder dataQuality = new StringBuilder();
-                dataQuality.append(loadResourceService.loadVariableFromResource(prop, "dataQualityControl.avail"));
-                if (dmp.getDataQuality().get(0).equals(EDataQualityType.OTHERS))
-                    dataQuality.append(" ").append(dmp.getOtherDataQuality());
+        if (dmp.getDataQuality() != null && !dmp.getDataQuality().isEmpty()) {
+            StringBuilder dataQuality = new StringBuilder();
+            dataQuality.append(loadResourceService.loadVariableFromResource(prop, "dataQualityControl.avail"));
+            List<String> dataQualityList = new ArrayList<>();
+            for (int i = 0; i < dmp.getDataQuality().size(); i++){
+                if (dmp.getDataQuality().get(i).equals(EDataQualityType.OTHERS) &&
+                    dmp.getOtherDataQuality() != null &&
+                    !dmp.getOtherDataQuality().isEmpty())
+                    dataQualityList.add(dmp.getOtherDataQuality());
                 else
-                    dataQuality.append(" ").append(dmp.getDataQuality().get(0)).append(".");
-                for (int i = 1; i < dmp.getDataQuality().size(); i++){
-                    if (i == dmp.getDataQuality().size() -1)
-                        dataQuality.append(" and ");
-                    else
-                        dataQuality.append(", ");
-                    if (dmp.getDataQuality().get(i).equals(EDataQualityType.OTHERS))
-                        dataQuality.append(dmp.getOtherDataQuality());
-                    else
-                        dataQuality.append(dmp.getDataQuality().get(i)).append(".");
-                }
-                addReplacement(replacements,"[dataqualitycontrol]", dataQuality.toString());
+                    dataQualityList.add(dmp.getDataQuality().get(i).toString());
             }
+            dataQuality.append(" ").append(multipleVariableAnd(dataQualityList)).append(".");
+            addReplacement(replacements,"[dataqualitycontrol]", dataQuality.toString());
+        } else {
+            addReplacement(replacements,"[dataqualitycontrol]", loadResourceService.loadVariableFromResource(prop, "dataQualityControl.default"));
         }
     }
 
@@ -543,7 +533,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
 
             List<String> personalDatasetList = new ArrayList<>();
             for (Dataset dataset : datasets) {
-                if (dataset.getPersonalData() != null && dataset.getPersonalData()) {
+                if (Boolean.TRUE.equals(dataset.getPersonalData())) {
                     personalDatasetList.add(datasetTableIDs.get(dataset.getId()) + " (" + dataset.getTitle() + ")");
                 }
             }
@@ -600,7 +590,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
             //determine dataset list
             List<String> datasetList = new ArrayList<>();
             for (Dataset dataset : datasets) {
-                if (dataset.getLegalRestrictions() != null && dataset.getLegalRestrictions()) {
+                if (Boolean.TRUE.equals(dataset.getLegalRestrictions())) {
                     datasetList.add(datasetTableIDs.get(dataset.getId()) + " (" + dataset.getTitle() + ")");
                 }
             }

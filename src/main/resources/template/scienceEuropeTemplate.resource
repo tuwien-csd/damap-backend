@@ -4,7 +4,7 @@ metadata.no=As there are no domain specific metadata standards applicable, we wi
 dataOrganisation.no=
 
 dataQualityControl.avail=The following data quality checks will be done:
-dataQualityControl.no=Data quality checks will be done, e.g. checks of consistency of labels, logical errors in the data, data curation, and version control.
+dataQualityControl.default=Data quality checks will be done, e.g. checks of consistency of labels, logical errors in the data, data curation, and version control.
 
 repositories.avail=The repositories used in this project are described in the following paragraph:
 
