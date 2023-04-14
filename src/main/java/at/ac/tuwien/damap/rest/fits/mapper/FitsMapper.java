@@ -21,7 +21,7 @@ public class FitsMapper {
         dataset.setType(mapFileFormat(identity));
         dataset.setSource(EDataSource.NEW);
         dataset.setDataAccess(EDataAccessType.OPEN);
-        dataset.setLicense(ELicense.ccBy);
+        dataset.setLicense(ELicense.CCBY);
         dataset.setSelectedProjectMembersAccess(EAccessRight.WRITE);
         dataset.setOtherProjectMembersAccess(EAccessRight.WRITE);
         dataset.setPublicAccess(EAccessRight.NONE);
