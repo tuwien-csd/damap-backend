@@ -9,6 +9,38 @@
       "start": "2022-01-01T00:00:00.000Z",
       "end": "2024-12-31T00:00:00.000Z",
       "dmpExists": false
+    },
+    {
+      "acronym": "RP.20230313.0",
+      "universityId": "uniProjectIdRecommended0",
+      "description": "Recommended project description text.",
+      "title": "Recommended Project Numero Uno",
+      "funding": null,
+      "start": "2022-01-01T00:00:00.000Z",
+      "end": "2024-12-31T00:00:00.000Z",
+      "dmpExists": false
+    },
+    {
+      "acronym": "PROJ.FUNDER",
+      "universityId": "uniProjectIdFunderInfo",
+      "description": "Funder supported Project description text.",
+      "title": "Project Title - Funder Supported",
+      "funding": {
+        "fundingName": null,
+        "fundingProgram": null,
+        "funderId": {
+          "identifier": "501100004955",
+          "type": "FUNDREF"
+        },
+        "grantId": {
+          "identifier": null,
+          "type": null
+        },
+        "fundingStatus": "GRANTED"
+      },
+      "start": "2022-01-01T00:00:00.000Z",
+      "end": "2024-12-31T00:00:00.000Z",
+      "dmpExists": false
     }
   ],
   "persons": [

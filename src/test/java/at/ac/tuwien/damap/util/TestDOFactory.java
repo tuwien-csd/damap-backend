@@ -133,6 +133,18 @@ public class TestDOFactory {
         return project;
     }
 
+    public ProjectDO getRecommendedTestProjectDO() {
+        ProjectDO project = new ProjectDO();
+        project.setAcronym("RECOMMENDED");
+        project.setUniversityId("123REC");
+        project.setDescription("Test Recommended Project description.");
+        project.setTitle("Test Recommended Project");
+        project.setFunding(getTestFundingDO());
+        project.setStart(new Date());
+        project.setEnd(new Date());
+        return project;
+    }
+
     private FundingDO getTestFundingDO() {
         FundingDO funding = new FundingDO();
         funding.setFundingName("Funder Institutiuon");
@@ -187,7 +199,7 @@ public class TestDOFactory {
         dataset.setPersonalData(true);
         dataset.setSensitiveData(true);
         dataset.setLegalRestrictions(true);
-        dataset.setLicense("https://creativecommons.org/licenses/by/4.0/");
+        dataset.setLicense(ELicense.CCBY);
         dataset.setStartDate(new Date());
         dataset.setReferenceHash("referenceHash123456");
         dataset.setDataAccess(EDataAccessType.OPEN);
@@ -297,7 +309,7 @@ public class TestDOFactory {
         DmpDO newInvalidTestDmpDO = getOrCreateTestDmpDO();
         newInvalidTestDmpDO.setTitle("MalformedTestDmp");
 
-        newInvalidTestDmpDO.getDatasets().get(0).setLicense("License Address");
+        newInvalidTestDmpDO.getDatasets().get(0).setLicense(ELicense.CCBY);
         newInvalidTestDmpDO.getCosts().get(0).setCurrencyCode("DOUBLOONS");
         newInvalidTestDmpDO.getRepositories().get(0).setRepositoryId("Arbitrary Host ID");
         newInvalidTestDmpDO.getExternalStorage().get(0).setUrl("Link to the storage service");

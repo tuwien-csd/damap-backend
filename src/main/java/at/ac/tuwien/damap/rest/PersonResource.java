@@ -1,16 +1,16 @@
 package at.ac.tuwien.damap.rest;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriInfo;
 
+import at.ac.tuwien.damap.rest.base.ResultList;
+import at.ac.tuwien.damap.rest.base.Search;
+import at.ac.tuwien.damap.rest.base.resource.ResourceRead;
+import at.ac.tuwien.damap.rest.base.resource.ResourceSearch;
 import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.persons.PersonService;
 import io.quarkus.security.Authenticated;
@@ -21,42 +21,40 @@ import lombok.extern.jbosslog.JBossLog;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @JBossLog
-public class PersonResource {
+public class PersonResource implements ResourceRead<ContributorDO>, ResourceSearch<ContributorDO> {
 
     @Inject
     PersonServiceBroker personServiceBroker;
 
-    @GET
-    @Path("/{id}")
-    public ContributorDO getPersonById(@PathParam("id") String id,
-            @QueryParam("searchService") String searchServiceType) {
-        log.info("Return person details for id=" + id);
-        PersonService searchService = personServiceBroker.getServiceForQueryParam(searchServiceType);
+    @Override
+    public ContributorDO read(String id, UriInfo uriInfo) {
+        var queryParams = uriInfo.getQueryParameters();
+        log.info("Return person details for id=" + id + " and query=" + queryParams.toString());
+        PersonService searchService = personServiceBroker.getServiceFromQueryParams(queryParams);
 
-        ContributorDO person = null;
+        ContributorDO result = null;
         if (searchService != null) {
-            person = searchService.getPersonById(id);
+            result = searchService.read(id, queryParams);
         }
 
-        return person;
+        return result;
     }
 
-    @GET
-    @Path("/search")
-    public List<ContributorDO> getPersonSearchResult(@QueryParam("q") String searchTerm,
-            @QueryParam("searchService") String searchServiceType) {
+    @Override
+    public ResultList<ContributorDO> search(UriInfo uriInfo) {
+        var queryParams = uriInfo.getQueryParameters();
+        log.info("Return person list for query=" + queryParams.toString());
 
-        log.info("Return person list for query=" + searchTerm + "&searchService=" + searchServiceType);
+        PersonService searchService = personServiceBroker.getServiceFromQueryParams(queryParams);
+        Search search = Search.fromMap(queryParams);
 
-        PersonService searchService = personServiceBroker.getServiceForQueryParam(searchServiceType);
+        ResultList<ContributorDO> result = ResultList.fromItemsAndSearch(null, search);
 
-        List<ContributorDO> persons = List.of();
         if (searchService != null) {
-            persons = searchService.getPersonSearchResult(searchTerm);
+            result = searchService.search(queryParams);
         }
 
-        return persons;
+        return result;
     }
-
 
 }

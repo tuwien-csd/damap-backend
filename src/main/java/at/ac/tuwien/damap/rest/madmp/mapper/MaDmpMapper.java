@@ -342,7 +342,7 @@ public class MaDmpMapper {
     public License mapToMaDmp(DatasetDO datasetDO, License license) {
 
         if (datasetDO.getLicense() != null)
-            license.setLicenseRef(URI.create(datasetDO.getLicense()));
+            license.setLicenseRef(URI.create(datasetDO.getLicense().getUrl()));
         if (datasetDO.getStartDate() != null)
             license.setStartDate(datasetDO.getStartDate().toString());
         return license;

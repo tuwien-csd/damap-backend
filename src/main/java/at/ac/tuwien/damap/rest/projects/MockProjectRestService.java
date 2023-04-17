@@ -3,6 +3,7 @@ package at.ac.tuwien.damap.rest.projects;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -17,11 +18,15 @@ public interface MockProjectRestService {
 
     @GET
     @Path("/projects")
-    List<ProjectDO>  getProjectDetails(@QueryParam("universityId") String uniId);
+    List<ProjectDO> getProjectDetails(@QueryParam("universityId") String uniId);
 
     @GET
     @Path("/projects")
-    List<ProjectDO> getProjectList();
+    List<ProjectDO> getProjectList(@QueryParam("q") String query);
+
+    @GET
+    @Path("/projects")
+    List<ProjectDO> getRecommended(@QueryParam("title_like") @DefaultValue("recommend") String title);
 
     @GET
     @Path("/project-supplement")

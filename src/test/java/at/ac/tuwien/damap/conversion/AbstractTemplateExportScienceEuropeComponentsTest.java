@@ -23,11 +23,11 @@ public class AbstractTemplateExportScienceEuropeComponentsTest extends AbstractT
     TestDOFactory testDOFactory;
 
     @InjectMock
-    MockProjectServiceImpl mockProjectRestService;
+    MockProjectServiceImpl mockProjectService;
 
     @BeforeEach
     public void setup() {
-        Mockito.when(mockProjectRestService.getProjectDetails(anyString())).thenReturn(testDOFactory.getTestProjectDO());
+        Mockito.when(mockProjectService.read(anyString())).thenReturn(testDOFactory.getTestProjectDO());
     }
 
     @Test

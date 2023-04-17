@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>at.ac.tuwien</groupId>
   <artifactId>damap-backend</artifactId>
-  <version>2.3.0</version>
+  <version>2.4.0</version>
 
   <url>https://github.com/tuwien-csd/damap-backend</url>
 
@@ -19,7 +19,7 @@
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
     <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-    <quarkus.platform.version>2.13.2.Final</quarkus.platform.version>
+    <quarkus.platform.version>2.16.2.Final</quarkus.platform.version>
     <sonar.version>3.9.0.2155</sonar.version>
   </properties>
 
@@ -157,10 +157,20 @@
     </dependency>
     <!-- Utility -->
     <dependency>
+      <groupId>org.reflections</groupId>
+      <artifactId>reflections</artifactId>
+      <version>0.10.2</version>
+    </dependency>
+    <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>1.18.24</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+      <version>4.1.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.poi</groupId>
@@ -174,11 +184,6 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-cache</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <version>2.14.0-rc1</version>
     </dependency>
   </dependencies>
 

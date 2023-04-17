@@ -6,23 +6,24 @@ import at.ac.tuwien.damap.rest.dmp.domain.IdentifierDO;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class ContributorORCIDExpandedSearchMapper {
+public class ORCIDPersonMapper {
 
-    public ContributorDO mapEntityToDO(ContributorORCIDExpandedSearch contributor, ContributorDO contributorDO) {
+    public ContributorDO mapEntityToDO(ORCIDPerson orcidPerson, ContributorDO contributorDO) {
 
         contributorDO.setId(null);
-        contributorDO.setFirstName(contributor.getGivenNames());
-        contributorDO.setLastName(contributor.getFamilyNames());
+        contributorDO.setFirstName(orcidPerson.getGivenNames());
+        contributorDO.setLastName(orcidPerson.getFamilyNames());
 
-        String firstMail = contributor.getEmails().isEmpty() ? null : contributor.getEmails().get(0);
+        String firstMail = orcidPerson.getEmails().isEmpty() ? null : orcidPerson.getEmails().get(0);
         contributorDO.setMbox(firstMail);
 
-        String firstAffiliation = contributor.getAffiliations().isEmpty() ? null : contributor.getAffiliations().get(0);
+        String firstAffiliation = orcidPerson.getAffiliations().isEmpty() ? null
+                : orcidPerson.getAffiliations().get(0);
         contributorDO.setAffiliation(firstAffiliation);
 
         IdentifierDO identifierContributorDO = new IdentifierDO() {
             {
-                setIdentifier(contributor.orcidId);
+                setIdentifier(orcidPerson.orcidId);
                 setType(EIdentifierType.ORCID);
             }
         };

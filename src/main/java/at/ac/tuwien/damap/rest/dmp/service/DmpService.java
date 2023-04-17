@@ -147,8 +147,8 @@ public class DmpService {
         Dmp dmp = dmpRepo.findById(id);
         if (dmp != null) {
             if (dmp.getProject() != null) {
-                if (dmp.getProject().getUniversityId() != null && projectService.getProjectDetails(dmp.getProject().getUniversityId()) != null) {
-                    filename = "DMP_" + projectService.getProjectDetails(dmp.getProject().getUniversityId()).getAcronym() + "_" + formatter.format(date);
+                if (dmp.getProject().getUniversityId() != null && projectService.read(dmp.getProject().getUniversityId()) != null) {
+                    filename = "DMP_" + projectService.read(dmp.getProject().getUniversityId()).getAcronym() + "_" + formatter.format(date);
                 } else if (dmp.getProject().getTitle() != null)
                     filename = "DMP_" + dmp.getProject().getTitle() + "_" + formatter.format(date);
             } else {

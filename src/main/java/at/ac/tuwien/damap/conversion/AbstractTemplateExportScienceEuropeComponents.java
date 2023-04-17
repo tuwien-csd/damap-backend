@@ -1,16 +1,15 @@
 package at.ac.tuwien.damap.conversion;
 
 import at.ac.tuwien.damap.domain.*;
-import at.ac.tuwien.damap.enums.EComplianceType;
-import at.ac.tuwien.damap.enums.EDataSource;
-import at.ac.tuwien.damap.enums.EDataType;
-import at.ac.tuwien.damap.enums.ESecurityMeasure;
+import at.ac.tuwien.damap.enums.*;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
 import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.*;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTVMerge;
 
 import java.text.NumberFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -90,7 +89,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
 
             ProjectDO projectCRIS = null;
             if (dmp.getProject().getUniversityId() != null)
-                projectCRIS = projectService.getProjectDetails(dmp.getProject().getUniversityId());
+                projectCRIS = projectService.read(dmp.getProject().getUniversityId());
             //variable project acronym from API
             if (projectCRIS != null) {
                 addReplacement(replacements, "[acronym]", projectCRIS.getAcronym());
@@ -388,69 +387,87 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 addReplacement(replacements,"[dataorganisation]", dmp.getStructure());
             }
         }
+
+        if (dmp.getDataQuality() != null && !dmp.getDataQuality().isEmpty()) {
+            StringBuilder dataQuality = new StringBuilder();
+            dataQuality.append(loadResourceService.loadVariableFromResource(prop, "dataQualityControl.avail"));
+            List<String> dataQualityList = new ArrayList<>();
+            for (int i = 0; i < dmp.getDataQuality().size(); i++){
+                if (dmp.getDataQuality().get(i).equals(EDataQualityType.OTHERS) &&
+                    dmp.getOtherDataQuality() != null &&
+                    !dmp.getOtherDataQuality().isEmpty())
+                    dataQualityList.add(dmp.getOtherDataQuality());
+                else
+                    dataQualityList.add(dmp.getDataQuality().get(i).toString());
+            }
+            dataQuality.append(" ").append(multipleVariableAnd(dataQualityList)).append(".");
+            addReplacement(replacements,"[dataqualitycontrol]", dataQuality.toString());
+        } else {
+            addReplacement(replacements,"[dataqualitycontrol]", loadResourceService.loadVariableFromResource(prop, "dataQualityControl.default"));
+        }
     }
 
     public void sensitiveDataInformation() {
         log.debug("sensitive data part");
 
         String sensitiveData = "";
-        if (dmp.getSensitiveData() != null) {
-            if (dmp.getSensitiveData()) {
-                String sensitiveDataSentence = loadResourceService.loadVariableFromResource(prop,"sensitive.avail");
-                String sensitiveDataset = "";
-                String datasetSentence = "";
-                String sensitiveDataMeasure = "";
-                String authorisedAccess = "";
-                List<String> sensitiveDatasetList = new ArrayList<>();
+        if (Boolean.TRUE.equals(dmp.getSensitiveData())) {
+            String sensitiveDataSentence = loadResourceService.loadVariableFromResource(prop,"sensitive.avail");
+            String sensitiveDataset = "";
+            String datasetSentence = "";
+            String sensitiveDataMeasure = "";
+            String authorisedAccess = "";
+            List<String> sensitiveDatasetList = new ArrayList<>();
 
-                for (Dataset dataset: datasets) {
-                    if (dataset.getSensitiveData() != null && dataset.getSensitiveData()) {
-                        sensitiveDataset = datasetTableIDs.get(dataset.getId()) + " (" + dataset.getTitle() + ")";
-                        sensitiveDatasetList.add(sensitiveDataset);
-                    }
+            for (Dataset dataset: datasets) {
+                if (dataset.getSensitiveData() != null && dataset.getSensitiveData()) {
+                    sensitiveDataset = datasetTableIDs.get(dataset.getId()) + " (" + dataset.getTitle() + ")";
+                    sensitiveDatasetList.add(sensitiveDataset);
                 }
-
-                if (sensitiveDatasetList.size() > 0) {
-                    datasetSentence = " on dataset ";
-                    sensitiveDataset = multipleVariable(sensitiveDatasetList) + ". ";
-                }
-                else {
-                    datasetSentence = ". ";
-                }
-
-                List<String> dataSecurityList = new ArrayList<>();
-
-                if (dmp.getSensitiveDataSecurity() != null) {
-                    for (ESecurityMeasure securityMeasure : dmp.getSensitiveDataSecurity()) {
-                        dataSecurityList.add(securityMeasure.toString());
-                    }
-                }
-
-                if (dataSecurityList.isEmpty()) {
-                    sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.no");
-                }
-                else {
-                    //security measurement size defined is/or usage
-                    if (dataSecurityList.size() == 1) {
-                        sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.avail") + " " + multipleVariable(dataSecurityList) + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.singular");
-                    } else {
-                        sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.avail") + " " + multipleVariable(dataSecurityList) + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.multiple");
-                    }
-                }
-
-                if (dmp.getSensitiveDataAccess() != null) {
-                    if (!dmp.getSensitiveDataAccess().isEmpty()) {
-                        authorisedAccess = " " + loadResourceService.loadVariableFromResource(prop, "sensitiveAccess") + " " + dmp.getSensitiveDataAccess() + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveAccess.avail");
-                    }
-                }
-
-                sensitiveData = sensitiveDataSentence + datasetSentence + sensitiveDataset + sensitiveDataMeasure + authorisedAccess;
-
-            } else {
-                sensitiveData = loadResourceService.loadVariableFromResource(prop,"sensitive.no");
             }
-        }
 
+            if (!sensitiveDatasetList.isEmpty()) {
+                datasetSentence = " " + loadResourceService.loadVariableFromResource(prop,"sensitive.avail.data") + " ";
+                sensitiveDataset = multipleVariableAnd(sensitiveDatasetList) + ". ";
+            }
+            else {
+                datasetSentence = ". ";
+            }
+
+            List<String> dataSecurityList = new ArrayList<>();
+
+            if (dmp.getSensitiveDataSecurity() != null) {
+                for (ESecurityMeasure securityMeasure : dmp.getSensitiveDataSecurity()) {
+                    if (securityMeasure.equals(ESecurityMeasure.OTHER) &&
+                        dmp.getOtherDataSecurityMeasures() != null &&
+                        !dmp.getOtherDataSecurityMeasures().isEmpty())
+                        dataSecurityList.add(dmp.getOtherDataSecurityMeasures());
+                    else
+                        dataSecurityList.add(securityMeasure.toString());
+                }
+            }
+
+            if (dataSecurityList.isEmpty()) {
+                sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.no");
+            }
+            else {
+                //security measurement size defined is/or usage
+                if (dataSecurityList.size() == 1) {
+                    sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.avail") + " " + multipleVariableAnd(dataSecurityList) + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.singular");
+                } else {
+                    sensitiveDataMeasure = loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.avail") + " " + multipleVariableAnd(dataSecurityList) + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveMeasure.multiple");
+                }
+            }
+
+            if (dmp.getSensitiveDataAccess() != null && (!dmp.getSensitiveDataAccess().isEmpty())) {
+                authorisedAccess = " " + loadResourceService.loadVariableFromResource(prop, "sensitiveAccess") + " " + dmp.getSensitiveDataAccess() + " " + loadResourceService.loadVariableFromResource(prop,"sensitiveAccess.avail");
+            }
+
+            sensitiveData = sensitiveDataSentence + datasetSentence + sensitiveDataset + sensitiveDataMeasure + authorisedAccess;
+
+        } else {
+            sensitiveData = loadResourceService.loadVariableFromResource(prop,"sensitive.no");
+        }
         addReplacement(replacements, "[sensitivedata]", sensitiveData);
     }
 
@@ -503,155 +520,120 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
     }
 
     public void legalEthicalInformation() {
+        personalDataText();
+        intellectualPropertyText();
+        ethicalIssuesText();
+    }
+    public void personalDataText() {
         log.debug("personal data part");
         String personalData = "";
-        if (dmp.getPersonalData() != null) {
-            if (dmp.getPersonalData()) {
-                String personalDataSentence = loadResourceService.loadVariableFromResource(prop,"personal.avail") + " ";
-                String personalDataset = "";
-                String datasetSentence = "";
-                List<String> personalDatasetList = new ArrayList<>();
+        if (Boolean.TRUE.equals(dmp.getPersonalData())) {
+            personalData =
+                    loadResourceService.loadVariableFromResource(prop, "personal.avail") + " ";
 
-                for (Dataset dataset: datasets) {
-                    if (dataset.getPersonalData() != null && dataset.getPersonalData()) {
-                        personalDatasetList.add(datasetTableIDs.get(dataset.getId()) + " (" + dataset.getTitle() + ")");
-                    }
+            List<String> personalDatasetList = new ArrayList<>();
+            for (Dataset dataset : datasets) {
+                if (Boolean.TRUE.equals(dataset.getPersonalData())) {
+                    personalDatasetList.add(datasetTableIDs.get(dataset.getId()) + " (" + dataset.getTitle() + ")");
                 }
-
-                if (personalDatasetList.size()>0) {
-                    personalDataset = multipleVariable(personalDatasetList);
-                    datasetSentence = " " + loadResourceService.loadVariableFromResource(prop,"personalDataset") + " ";
-                }
-
-                List<String> dataComplianceList = new ArrayList<>();
-                String personalDataCompliance = "";
-
-                if (!dmp.getPersonalDataCompliance().isEmpty()) {
-                    for (EComplianceType personalCompliance : dmp.getPersonalDataCompliance()) {
-                        dataComplianceList.add(personalCompliance.toString().replace("by ", ""));
-                    }
-
-                    personalDataCompliance = multipleVariable(dataComplianceList);
-                }
-
-                if (!personalDataCompliance.equals("")) {
-                    personalData = personalDataSentence + personalDataset + datasetSentence + loadResourceService.loadVariableFromResource(prop,"personalCompliance") + " " + personalDataCompliance + " " + loadResourceService.loadVariableFromResource(prop,"personalComplianceUsed");
-                }
-                else {
-                    personalData = personalDataSentence + personalDataset + datasetSentence;
-                }
-
-            } else {
-                personalData = loadResourceService.loadVariableFromResource(prop,"personal.no");
             }
+            //add dataset list if available
+            if (!personalDatasetList.isEmpty()) {
+                personalData += multipleVariableAnd(personalDatasetList);
+                personalData += " " + loadResourceService.loadVariableFromResource(prop, "personalDataset") + " ";
+            }
+
+            if (!dmp.getPersonalDataCompliance().isEmpty()) {
+                List<String> dataComplianceList = new ArrayList<>();
+                for (EComplianceType personalCompliance : dmp.getPersonalDataCompliance()) {
+                    if (personalCompliance.equals(EComplianceType.OTHER) &&
+                        dmp.getOtherPersonalDataCompliance() != null &&
+                        !dmp.getOtherPersonalDataCompliance().isEmpty())
+                        dataComplianceList.add(dmp.getOtherPersonalDataCompliance());
+                    else
+                        dataComplianceList.add(personalCompliance.toString());
+                }
+                personalData += loadResourceService.loadVariableFromResource(prop, "personalCompliance") + " ";
+                personalData += multipleVariableAnd(dataComplianceList) + ".";
+            }
+        } else {
+            personalData = loadResourceService.loadVariableFromResource(prop, "personal.no");
         }
-
         addReplacement(replacements, "[personaldata]", personalData);
+    }
 
-        //Section 4b: legal restriction
-
+    //Section 4b: legal restriction
+    public void intellectualPropertyText() {
         log.debug("legal restriction part");
 
-        String legalRestrictionComplete = "";
-        String legalRestriction = "";
-        List<String> legalRestrictionList = new ArrayList<>();
+        String legalRestrictionText = "";
 
-        if (dmp.getLegalRestrictions() != null) {
-            if (dmp.getLegalRestrictions()) {
-                String legalRestrictionSentence = "";
-                String legalRestrictionDataset = "";
-                List<String> datasetList = new ArrayList<>();
+        if (Boolean.TRUE.equals(dmp.getLegalRestrictions())) {
 
-                for (Dataset dataset : datasets) {
-                    if (dataset.getLegalRestrictions() != null && dataset.getLegalRestrictions()) {
-                        legalRestrictionDataset = datasetTableIDs.get(dataset.getId()) + " (" + dataset.getTitle() + ")";
-                        datasetList.add(legalRestrictionDataset);
-                    }
+            //determine document list
+            if (!dmp.getLegalRestrictionsDocuments().isEmpty()) {
+                legalRestrictionText = loadResourceService.loadVariableFromResource(prop, "legal.avail") + " ";
+                List<String> agreementList = new ArrayList<>();
+                for (EAgreement agreement : dmp.getLegalRestrictionsDocuments()) {
+                    if (agreement.equals(EAgreement.OTHER) &&
+                        dmp.getOtherLegalRestrictionsDocument() != null &&
+                        !dmp.getOtherLegalRestrictionsDocument().isEmpty())
+                        agreementList.add(dmp.getOtherLegalRestrictionsDocument());
+                    else
+                        agreementList.add(agreement.toString());
                 }
+                legalRestrictionText += multipleVariableAnd(agreementList) + ". ";
+            } else {
+                legalRestrictionText = loadResourceService.loadVariableFromResource(prop, "legal.avail.default") + " ";
+            }
 
-                if (datasetList.size() > 0) {
-                    legalRestrictionDataset = loadResourceService.loadVariableFromResource(prop,"legalDataset") + " ";
-                    legalRestrictionDataset = legalRestrictionDataset + multipleVariable(datasetList);
+            //determine dataset list
+            List<String> datasetList = new ArrayList<>();
+            for (Dataset dataset : datasets) {
+                if (Boolean.TRUE.equals(dataset.getLegalRestrictions())) {
+                    datasetList.add(datasetTableIDs.get(dataset.getId()) + " (" + dataset.getTitle() + ")");
                 }
-
-                legalRestrictionSentence = loadResourceService.loadVariableFromResource(prop,"legal.avail");
-
-                legalRestriction = legalRestrictionSentence + legalRestrictionDataset + " " + loadResourceService.loadVariableFromResource(prop,"legalComment");
-
-                String affiliationRights = "";
-
-                if (dmp.getContact() != null && dmp.getContact().getAffiliation() != null) {
-                    affiliationRights = dmp.getContact().getAffiliation() + " " + loadResourceService.loadVariableFromResource(prop, "legalRights.contact");
-                } else { //manually assign the organization
-                    affiliationRights = loadResourceService.loadVariableFromResource(prop,"legalRights.affiliation");
-                }
-
-                legalRestrictionList.add(legalRestriction);
-                legalRestrictionList.add(affiliationRights);
-
-                legalRestrictionComplete = String.join(";", legalRestrictionList);
-
-                if (legalRestrictionComplete.charAt(legalRestrictionComplete.length() - 1) != '.')
-                    legalRestrictionComplete = legalRestrictionComplete + ".";
-
-                if (legalRestrictionComplete.charAt(legalRestrictionComplete.length()-1)!='.')
-                    legalRestrictionComplete = legalRestrictionComplete + ".";
             }
-            else {
-                legalRestrictionComplete = loadResourceService.loadVariableFromResource(prop,"legal.no");
+            if (!datasetList.isEmpty()) {
+                legalRestrictionText += loadResourceService.loadVariableFromResource(prop, "legalDataset") + " ";
+                legalRestrictionText += multipleVariableAnd(datasetList) +". ";
             }
-        }
 
-        addReplacement(replacements, "[legalrestriction]", legalRestrictionComplete);
-
-        //Section 4c: ethical issues
-
-        log.debug("ethical part");
-
-        String ethicalIssues = "";
-        String ethicalStatement = "";
-        String otherEthicalIssues = "";
-        String committeeReviewed = "";
-
-        if (dmp.getHumanParticipants() != null) {
-            if (dmp.getHumanParticipants()) {
-                ethicalStatement = " " + loadResourceService.loadVariableFromResource(prop,"ethical.avail");
+            //add legal restrictions comment if available
+            if (dmp.getLegalRestrictionsComment() != null && !dmp.getLegalRestrictionsComment().isEmpty()) {
+                legalRestrictionText += loadResourceService.loadVariableFromResource(prop, "legalComment") +
+                                        " " + dmp.getLegalRestrictionsComment();
             }
-        }
 
-        if (dmp.getEthicalIssuesExist() != null) {
-            if (dmp.getEthicalIssuesExist()) {
-                otherEthicalIssues = " " + loadResourceService.loadVariableFromResource(prop,"ethicalOther");
+            if (dmp.getDataRightsAndAccessControl() != null && !dmp.getDataRightsAndAccessControl().isEmpty()) {
+                legalRestrictionText += ";" + dmp.getDataRightsAndAccessControl() + " " +
+                                            loadResourceService.loadVariableFromResource(prop, "legalRights.contact");
+            } else {
+                legalRestrictionText += ";" + loadResourceService.loadVariableFromResource(prop, "legalRights.contact.default");
             }
-        }
-
-        if (dmp.getCommitteeReviewed() != null) {
-            if (dmp.getCommitteeReviewed()) {
-                committeeReviewed = " " + loadResourceService.loadVariableFromResource(prop,"ethicalReviewed.avail");
-            }
-            else {
-                committeeReviewed = " " + loadResourceService.loadVariableFromResource(prop,"ethicalReviewed.no");
-            }
-        }
-
-        String ethicalSentence = loadResourceService.loadVariableFromResource(prop,"ethicalStatement");
-
-        ethicalIssues = ethicalStatement + otherEthicalIssues + committeeReviewed;
-
-        if (!ethicalIssues.equals("")) {
-
-            ethicalIssues = ethicalSentence + ethicalIssues;
-
-            if (ethicalIssues.charAt(ethicalIssues.length()-1) == ' ')
-                ethicalIssues = ethicalIssues.substring(0,ethicalIssues.length()-1);
-
-            if (ethicalIssues.charAt(ethicalIssues.length()-1) != '.')
-                ethicalIssues = ethicalIssues + ".";
         } else {
-            ethicalIssues = loadResourceService.loadVariableFromResource(prop,"ethical.no");
+            legalRestrictionText = loadResourceService.loadVariableFromResource(prop, "legal.no");
+        }
+        addReplacement(replacements, "[legalrestriction]", legalRestrictionText);
+    }
+
+    //Section 4c: ethical issues
+    public void ethicalIssuesText() {
+        log.debug("ethical part");
+        String ethicalStatement = "";
+
+        if (Boolean.TRUE.equals(dmp.getHumanParticipants()) ||
+            Boolean.TRUE.equals(dmp.getEthicalIssuesExist())) {
+            ethicalStatement = loadResourceService.loadVariableFromResource(prop,"ethicalStatement") + " ";
+        } else {
+            ethicalStatement = loadResourceService.loadVariableFromResource(prop,"ethical.no") + " ";
         }
 
-        addReplacement(replacements, "[ethicalissues]", ethicalIssues);
+        if (Boolean.TRUE.equals(dmp.getCommitteeReviewed())) {
+            ethicalStatement += loadResourceService.loadVariableFromResource(prop,"ethicalReviewed.avail");
+        }
+
+        addReplacement(replacements, "[ethicalissues]", ethicalStatement);
     }
 
     //Number conversion for data size in section 1
@@ -788,10 +770,14 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
         return datasets.stream().filter(dataset -> dataset.getSource().equals(EDataSource.NEW)).collect(Collectors.toList());
     }
 
+    public List<Dataset> getReusedDatasets(){
+        return datasets.stream().filter(dataset -> dataset.getSource().equals(EDataSource.REUSED)).collect(Collectors.toList());
+    }
+
     public void composeTableReusedDatasets(XWPFTable xwpfTable){
         log.debug("Export steps: Reused Dataset Table");
 
-        List<Dataset> reusedDatasets = datasets.stream().filter(dataset -> dataset.getSource().equals(EDataSource.REUSED)).collect(Collectors.toList());
+        List<Dataset> reusedDatasets = getReusedDatasets();
         if (reusedDatasets.size() > 0) {
             for (int i = 0; i < reusedDatasets.size(); i++) {
 
@@ -821,6 +807,13 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                     docVar.add("");
                 }
 
+                if (reusedDatasets.get(i).getLicense() != null) {
+                    //TODO second String license option for reused datasets.
+                    docVar.add("");                }
+                else {
+                    docVar.add("");
+                }
+
                 if (reusedDatasets.get(i).getSensitiveData() != null) {
                     if (reusedDatasets.get(i).getSensitiveData()) {
                         docVar.add("yes");
@@ -846,44 +839,12 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
     public void composeTableDataAccess(XWPFTable xwpfTable){
         log.debug("Export steps: Data Access Table");
 
+        List<Dataset> newDatasets = getNewDatasets();
+        List<Dataset> reusedDatasets = getReusedDatasets();
         if (datasets.size() > 0) {
-            for (int i = 0; i < datasets.size(); i++) {
-
-                XWPFTableRow sourceTableRow = xwpfTable.getRow(2);
-                XWPFTableRow newRow = new XWPFTableRow(sourceTableRow.getCtRow(), xwpfTable);
-
-                try {
-                    newRow = insertNewTableRow(sourceTableRow, i + 2);
-                }
-                catch (Exception e) {
-                }
-
-                ArrayList<String> docVar = new ArrayList<String>();
-                docVar.add(datasetTableIDs.get(datasets.get(i).id));
-
-                if (datasets.get(i).getSelectedProjectMembersAccess() != null) {
-                    docVar.add(datasets.get(i).getSelectedProjectMembersAccess().toString().toLowerCase());
-                }
-                else {
-                    docVar.add("");
-                }
-
-                if (datasets.get(i).getOtherProjectMembersAccess() != null) {
-                    docVar.add(datasets.get(i).getOtherProjectMembersAccess().toString().toLowerCase());
-                }
-                else {
-                    docVar.add("");
-                }
-
-                if (datasets.get(i).getPublicAccess() != null) {
-                    docVar.add(datasets.get(i).getPublicAccess().toString().toLowerCase());
-                }
-                else {
-                    docVar.add("");
-                }
-
-                insertTableCells(xwpfTable, newRow, docVar);
-            }
+            //this split is so that produced and reused datasets are not mixed in the table, to improve readability
+            insertComposeTableDataAccess(xwpfTable, reusedDatasets);
+            insertComposeTableDataAccess(xwpfTable, newDatasets);
             xwpfTable.removeRow(xwpfTable.getRows().size() - 1);
         } else {
             //clean row
@@ -891,6 +852,46 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
             insertTableCells(xwpfTable, xwpfTable.getRows().get(xwpfTable.getRows().size() - 1), emptyContent);
         }
         xwpfTable.removeRow(1);
+    }
+
+    private void insertComposeTableDataAccess(XWPFTable xwpfTable, List<Dataset> currentDatasets){
+        for (int i = 0; i < currentDatasets.size(); i++) {
+
+            XWPFTableRow sourceTableRow = xwpfTable.getRow(2);
+            XWPFTableRow newRow = new XWPFTableRow(sourceTableRow.getCtRow(), xwpfTable);
+
+            try {
+                newRow = insertNewTableRow(sourceTableRow, i + 2);
+            }
+            catch (Exception e) {
+            }
+
+            ArrayList<String> docVar = new ArrayList<String>();
+            docVar.add(datasetTableIDs.get(currentDatasets.get(i).id));
+
+            if (currentDatasets.get(i).getSelectedProjectMembersAccess() != null) {
+                docVar.add(currentDatasets.get(i).getSelectedProjectMembersAccess().toString().toLowerCase());
+            }
+            else {
+                docVar.add("");
+            }
+
+            if (currentDatasets.get(i).getOtherProjectMembersAccess() != null) {
+                docVar.add(currentDatasets.get(i).getOtherProjectMembersAccess().toString().toLowerCase());
+            }
+            else {
+                docVar.add("");
+            }
+
+            if (currentDatasets.get(i).getPublicAccess() != null) {
+                docVar.add(currentDatasets.get(i).getPublicAccess().toString().toLowerCase());
+            }
+            else {
+                docVar.add("");
+            }
+
+            insertTableCells(xwpfTable, newRow, docVar);
+        }
     }
 
     public void composeTableDatasetPublication(XWPFTable xwpfTable){
@@ -937,7 +938,13 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                     docVar.add(formatter.format(newDatasets.get(i).getStart()));
                 }
                 else {
-                    docVar.add("");
+                    //if null set default value of project end date minus two months
+                    if (dmp.getProject() != null && dmp.getProject().getEnd() != null) {
+                        docVar.add(formatter.format(Date.from(ZonedDateTime.from(
+                                dmp.getProject().getEnd().toInstant().atZone(ZoneId.systemDefault()))
+                                .minusMonths(2).toInstant())));
+                    } else
+                        docVar.add("");
                 }
                 //TODO datasets and hosts are now connected by Distribution objects
                 if (newDatasets.get(i).getDistributionList() != null){
@@ -963,31 +970,12 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 //TODO: PID not yet defined
                 docVar.add("");
 
-                if (newDatasets.get(i).getLicense() != null) {
-                    switch (newDatasets.get(i).getLicense()) {
-                        case "https://creativecommons.org/licenses/by/4.0/":
-                            docVar.add("CC BY 4.0");
-                            break;
-                        case "https://creativecommons.org/publicdomain/zero/1.0/":
-                            docVar.add("CC ZERO 1.0");
-                            break;
-                        case "https://opendatacommons.org/licenses/pddl/summary/":
-                            docVar.add("PDDL");
-                            break;
-                        case "https://opendatacommons.org/licenses/by/summary/":
-                            docVar.add("ODC BY");
-                            break;
-                        case "https://creativecommons.org/publicdomain/mark/1.0/":
-                            docVar.add("PD");
-                            break;
-                        default:
-                            docVar.add("");
-                            break;
-                    }
-                }
-                else {
+                //suppress license information for closed datasets
+                if (newDatasets.get(i).getLicense() != null
+                    && !newDatasets.get(i).getDataAccess().equals(EDataAccessType.CLOSED))
+                        docVar.add(newDatasets.get(i).getLicense().getAcronym());
+                else
                     docVar.add("");
-                }
 
                 insertTableCells(xwpfTable, newRow, docVar);
             }
@@ -1003,7 +991,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
     public void composeTableDatasetRepository(XWPFTable xwpfTable){
         log.debug("Export steps: Dataset Repository Table");
 
-        List<Dataset> newDatasets = getNewDatasets();
+        List<Dataset> newDatasets = getNewDatasets().stream().filter(dataset -> !dataset.getDelete()).collect(Collectors.toList());
         if (newDatasets.size() > 0) {
             for (int i = 0; i < newDatasets.size(); i++) {
 
@@ -1012,27 +1000,24 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
 
                 try {
                     newRow = insertNewTableRow(sourceTableRow, i + 2);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                 }
 
                 ArrayList<String> docVar = new ArrayList<>();
                 docVar.add(datasetTableIDs.get(newDatasets.get(i).id));
-                if (newDatasets.get(i).getDistributionList() != null){
+                if (newDatasets.get(i).getDistributionList() != null) {
                     List<Distribution> distributions = newDatasets.get(i).getDistributionList();
                     List<String> repositories = new ArrayList<>();
-                    for (Distribution distribution: distributions) {
+                    for (Distribution distribution : distributions) {
                         if (Repository.class.isAssignableFrom(distribution.getHost().getClass()))
                             repositories.add(distribution.getHost().getTitle());
                     }
                     if (repositories.size() > 0) {
                         docVar.add(multipleVariable(repositories));
-                    }
-                    else {
+                    } else {
                         docVar.add("");
                     }
-                }
-                else {
+                } else {
                     docVar.add("");
                 }
 
@@ -1086,7 +1071,8 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 }
 
                 ArrayList<String> docVar = new ArrayList<>();
-                //TODO datasets and hosts are now connected by Distribution objects
+                docVar.add(datasetTableIDs.get(deletedDatasets.get(i).id));
+
                 if (deletedDatasets.get(i).getTitle() != null)
                     docVar.add(deletedDatasets.get(i).getTitle());
                 else
@@ -1112,7 +1098,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
             xwpfTable.removeRow(xwpfTable.getRows().size() - 1);
         } else {
             //clean row
-            ArrayList<String> emptyContent = new ArrayList<String>(Arrays.asList("", "", "", ""));
+            ArrayList<String> emptyContent = new ArrayList<String>(Arrays.asList("", "", "", "", ""));
             insertTableCells(xwpfTable, xwpfTable.getRows().get(xwpfTable.getRows().size() - 1), emptyContent);
         }
         xwpfTable.removeRow(1);

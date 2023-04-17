@@ -1,9 +1,6 @@
 package at.ac.tuwien.damap.domain;
 
-import at.ac.tuwien.damap.enums.EAccessRight;
-import at.ac.tuwien.damap.enums.EDataAccessType;
-import at.ac.tuwien.damap.enums.EDataSource;
-import at.ac.tuwien.damap.enums.EDataType;
+import at.ac.tuwien.damap.enums.*;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import lombok.*;
 import org.hibernate.envers.Audited;
@@ -57,7 +54,9 @@ public class Dataset extends PanacheEntity {
     @Column(name = "legal_restrictions")
     private Boolean legalRestrictions;
 
-    private String license;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "license")
+    private ELicense license;
 
     @Column(name = "start_date")
     private Date start;

@@ -46,7 +46,7 @@ class AccessResourceTest {
     public void setup() {
         Mockito.when(securityService.getUserId()).thenReturn("012345");
         Mockito.when(securityService.getUserName()).thenReturn("testUser");
-        Mockito.when(personService.getPersonById(any(String.class))).thenReturn(testDOFactory.getTestContributorDO());
+        Mockito.when(personService.read(any(String.class))).thenReturn(testDOFactory.getTestContributorDO());
         dmpDO = testDOFactory.getOrCreateTestDmpDO();
     }
 

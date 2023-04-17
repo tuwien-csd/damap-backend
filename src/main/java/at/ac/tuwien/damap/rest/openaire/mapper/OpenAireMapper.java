@@ -1,9 +1,6 @@
 package at.ac.tuwien.damap.rest.openaire.mapper;
 
-import at.ac.tuwien.damap.enums.EDataAccessType;
-import at.ac.tuwien.damap.enums.EDataSource;
-import at.ac.tuwien.damap.enums.EDataType;
-import at.ac.tuwien.damap.enums.EIdentifierType;
+import at.ac.tuwien.damap.enums.*;
 import at.ac.tuwien.damap.rest.dmp.domain.DatasetDO;
 import at.ac.tuwien.damap.rest.dmp.domain.IdentifierDO;
 import eu.openaire.oaf.QualifierType;
@@ -42,6 +39,9 @@ public class OpenAireMapper {
         identifierDO.setType(EIdentifierType.DOI);
         identifierDO.setIdentifier(doi);
         datasetDO.setDatasetId(identifierDO);
+        datasetDO.setSelectedProjectMembersAccess(EAccessRight.READ);
+        datasetDO.setOtherProjectMembersAccess(EAccessRight.READ);
+        datasetDO.setPublicAccess(EAccessRight.READ);
         return datasetDO;
     }
 

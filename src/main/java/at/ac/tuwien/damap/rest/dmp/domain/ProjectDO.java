@@ -30,4 +30,6 @@ public class ProjectDO {
     //indicates if this project is already related to a dmp
     private boolean dmpExists = false;
 
+    private boolean funderSupported = false;
+
 }
