@@ -33,7 +33,7 @@ public class ProjectDOMapper {
     public boolean checkFunderSupported(Project project){
 
         try {
-            if (project.getFunding().getFunderIdentifier().getIdentifier() != null)
+            if (project.getFunding() != null)
                 return true;
         }
         catch (NullPointerException ignored) {}
