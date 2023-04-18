@@ -25,6 +25,7 @@ public class FitsMapper {
         dataset.setSelectedProjectMembersAccess(EAccessRight.WRITE);
         dataset.setOtherProjectMembersAccess(EAccessRight.WRITE);
         dataset.setPublicAccess(EAccessRight.NONE);
+        dataset.setRetentionPeriod(10);
 
         return dataset;
     }
