@@ -108,24 +108,36 @@ damap:
       url: jdbc:your-datasource-language:your-datasource.address
       username: your-datasource-username
       password: your-datasource-password
+      db-kind: postgresql # your database type
 ```
 
 ### Configuring Project and Person API
 Provide your CRIS system and person database API addresses in the config:
 
-```yaml
-damap:
-   projects-url: http://your.project.management.system.com
-   persons-url: http://your.personnel.management.system.com
-```
-
 In your institutional project, write custom API services for retrieving project and person information from your
 services, as well as mappers, to map their information to damaps classes.
 To this end you need to implement the API services
 [ProjectService.class](src/main/java/at/ac/tuwien/damap/rest/projects/ProjectService.java) and
-[PersonService.class](src/main/java/at/ac/tuwien/damap/rest/persons/PersonService.java),
-replacing the mock implementations, in order to feed this information to the project.
+[PersonService.class](src/main/java/at/ac/tuwien/damap/rest/persons/PersonService.java).
 
+You can then integrate the project service by overriding the mock implementation 
+through the annotation @Priority(1). 
+
+For the persons data service instead, add it to the list of person services (see below) 
+and remove the mock implementation.
+This will allow you to integrate several person services in parallel. The frontend will then 
+communicate with the service the user chooses. This component will provide the list of options to the frontend, 
+so no further changes are necessary there.
+
+```yaml
+  person-services:
+    - display-text: 'University'
+      query-value: 'UNIVERSITY'
+      class-name: 'at.ac.tuwien.damap.rest.persons.MockUniversityPersonServiceImpl'
+    - display-text: 'ORCID'
+      query-value: 'ORCID'
+      class-name: 'at.ac.tuwien.damap.rest.persons.orcid.ORCIDPersonServiceImpl'
+```
 
 ### Providing a FITS service
 
