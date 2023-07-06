@@ -344,13 +344,10 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                     }
                 }
 
-                if (hostList.indexOf(host)+1 < hostList.size())
-                    if (Storage.class.isAssignableFrom(host.getClass())) { //only write information related to the storage, repository will be written in section 5)
-                        storageVar = storageVar.concat(";");
-                    }
-                    else if (ExternalStorage.class.isAssignableFrom(host.getClass())) { //case for external storage, will have null host Id
-                        storageVar = storageVar.concat(";");
-                    }
+                if (hostList.indexOf(host)+1 < hostList.size()
+                        && !distributions.isEmpty()) {
+                    storageVar = storageVar.concat(";");
+                }
             }
         }
 
@@ -492,7 +489,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
             }
         }
 
-        addReplacement(replacements, "[repoinformation]", repoInformation);
+        addReplacement(replacements, "[repoinformation]", repoInformation + (repoInformation.equals("") ? "" : ";"));
 
         if (dmp.getTools() != null) {
             if (!Objects.equals(dmp.getTools(), "")) {
@@ -508,7 +505,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
 
         if (dmp.getRestrictedDataAccess() != null) {
             if (!Objects.equals(dmp.getRestrictedDataAccess(), "")) {
-                addReplacement(replacements, "[restrictedAccessInfo]", loadResourceService.loadVariableFromResource(prop, "restrictedAccess.avail") + " " + dmp.getRestrictedDataAccess());
+                addReplacement(replacements, "[restrictedAccessInfo]", ";" + loadResourceService.loadVariableFromResource(prop, "restrictedAccess.avail") + " " + dmp.getRestrictedDataAccess());
             }
             else {
                 addReplacement(replacements, "[restrictedAccessInfo]", loadResourceService.loadVariableFromResource(prop, ""));
