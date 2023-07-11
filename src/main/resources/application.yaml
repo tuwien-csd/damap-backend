@@ -21,7 +21,7 @@ damap:
     recommendation: [ your-recommended-repositories ]
   projects-url: http://api-mock:80
   persons-url: http://api-mock:80
-  fits-url: http://your.fits.service:1234
+  fits-url: http://fits-service:8080/fits
   person-services:
     - display-text: 'University'
       query-value: 'UNIVERSITY'
@@ -38,6 +38,9 @@ quarkus:
       origins: ${damap.origins}
       headers: origin,content-type,accept,authorization
       access-control-max-age: 1
+    # needed for the fits service. Specify how large a single file for upload may be.
+    limits:
+      max-body-size: 10M
 
   oidc:
     auth-server-url: ${damap.auth.backend.url}
