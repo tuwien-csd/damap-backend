@@ -3,9 +3,9 @@ package at.ac.tuwien.damap.conversion;
 import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.*;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 
-@ApplicationScoped
+@RequestScoped
 @JBossLog
 public class ExportScienceEuropeTemplate extends AbstractTemplateExportScienceEuropeComponents {
 
