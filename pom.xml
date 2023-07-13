@@ -333,6 +333,23 @@
         </plugins>
       </build>
     </profile>
+
+    <profile>
+      <id>deploy-mvn-repository</id>
+      <activation>
+        <property>
+          <name>env.DEPLOY_PROFILE</name>
+          <value>maven</value>
+        </property>
+      </activation>
+      <distributionManagement>
+        <repository>
+          <id>ossrh</id>
+          <name>Central Repository OSSRH</name>
+          <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+      </distributionManagement>
+    </profile>
   </profiles>
 
 </project>
