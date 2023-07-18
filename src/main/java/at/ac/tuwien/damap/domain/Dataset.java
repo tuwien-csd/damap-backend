@@ -3,11 +3,15 @@ package at.ac.tuwien.damap.domain;
 import at.ac.tuwien.damap.enums.*;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import lombok.*;
+
+import org.hibernate.annotations.Type;
+import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,7 +21,7 @@ import java.util.List;
 @ToString(exclude = "dmp")
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-@Audited
+@Audited()
 public class Dataset extends PanacheEntity {
 
     @Version
@@ -42,6 +46,7 @@ public class Dataset extends PanacheEntity {
     @Column(name = "data_size")
     private Long size;
 
+    @Lob
     @Column(name = "description")
     private String description;
 

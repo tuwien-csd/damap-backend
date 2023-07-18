@@ -8,8 +8,8 @@ import at.ac.tuwien.damap.rest.storage.InternalStorageDOMapper;
 import lombok.extern.jbosslog.JBossLog;
 import org.re3data.schema._2_2.Re3Data;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 /*
     Service for injecting other services into mappers which are static

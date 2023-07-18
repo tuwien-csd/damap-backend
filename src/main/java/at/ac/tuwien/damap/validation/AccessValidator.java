@@ -9,8 +9,8 @@ import at.ac.tuwien.damap.repo.DmpRepo;
 import at.ac.tuwien.damap.rest.access.domain.AccessDO;
 import at.ac.tuwien.damap.security.SecurityService;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

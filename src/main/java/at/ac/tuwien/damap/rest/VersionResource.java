@@ -9,9 +9,9 @@ import io.quarkus.security.ForbiddenException;
 import lombok.extern.jbosslog.JBossLog;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import java.util.List;
 
 @Path("/api/versions")

@@ -14,8 +14,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import lombok.extern.jbosslog.JBossLog;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
-import javax.transaction.Transactional;
+import jakarta.inject.Inject;
 
 import java.util.List;
 import java.util.Optional;
@@ -91,7 +90,6 @@ public class VersionTest {
         assertNotEquals(dmpDOCurrent.getTitle(), dmpDOPreviousVersion.getTitle());
     }
 
-    @Transactional
     private void updateDMP(long id){
         Dmp dmp = dmpRepo.findById(id);
         dmp.setTitle("TestDmp updated for revision");

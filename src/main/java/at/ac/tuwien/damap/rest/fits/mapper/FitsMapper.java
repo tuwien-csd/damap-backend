@@ -7,7 +7,7 @@ import edu.harvard.fits.FitsMetadataType;
 import edu.harvard.fits.IdentificationType;
 import lombok.experimental.UtilityClass;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

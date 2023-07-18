@@ -13,7 +13,7 @@ import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.*;
 
 /**

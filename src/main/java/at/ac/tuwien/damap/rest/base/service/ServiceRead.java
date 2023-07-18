@@ -1,7 +1,7 @@
 package at.ac.tuwien.damap.rest.base.service;
 
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
 
 public interface ServiceRead<Entity> {
     Entity read(String id, MultivaluedMap<String, String> queryParams);

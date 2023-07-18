@@ -74,7 +74,7 @@ rest:
   fits/mp-rest/url: ${damap.fits-url}
   r3data:
     repositories/mp-rest/url: https://www.re3data.org/api
-    repositories/mp-rest/scope: javax.inject.Singleton
+    repositories/mp-rest/scope: jakarta.inject.Singleton
   openaire/mp-rest/url: http://api.openaire.eu/search/
   orcid:
     search/mp-rest/url: https://pub.orcid.org
@@ -92,7 +92,7 @@ rest:
     datasource:
       db-kind: oracle
     hibernate-orm:
-      dialect: org.hibernate.dialect.Oracle12cDialect
+      dialect: org.hibernate.dialect.OraclecDialect
 
 "%postgres":
   quarkus:

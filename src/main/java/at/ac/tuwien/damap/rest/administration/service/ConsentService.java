@@ -4,9 +4,9 @@ import at.ac.tuwien.damap.repo.ConsentRepo;
 import at.ac.tuwien.damap.rest.administration.domain.ConsentDO;
 import at.ac.tuwien.damap.rest.administration.mapper.ConsentDOMapper;
 import lombok.extern.jbosslog.JBossLog;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 @ApplicationScoped
 @JBossLog

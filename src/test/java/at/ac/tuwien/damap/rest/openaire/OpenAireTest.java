@@ -11,7 +11,7 @@ import lombok.extern.jbosslog.JBossLog;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBContext;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
