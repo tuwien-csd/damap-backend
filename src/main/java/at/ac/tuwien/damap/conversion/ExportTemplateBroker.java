@@ -1,15 +1,12 @@
 package at.ac.tuwien.damap.conversion;
 
-import at.ac.tuwien.damap.enums.EIdentifierType;
-import at.ac.tuwien.damap.enums.ETemplateType;
-import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
-import at.ac.tuwien.damap.rest.dmp.domain.IdentifierDO;
-import at.ac.tuwien.damap.rest.dmp.service.DmpService;
-import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import at.ac.tuwien.damap.enums.ETemplateType;
+import at.ac.tuwien.damap.rest.dmp.service.DmpService;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import lombok.extern.jbosslog.JBossLog;
 
 @ApplicationScoped
 @JBossLog

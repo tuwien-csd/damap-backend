@@ -1,5 +1,11 @@
 package at.ac.tuwien.damap.rest;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
 import at.ac.tuwien.damap.TestSetup;
 import at.ac.tuwien.damap.enums.EFunctionRole;
 import at.ac.tuwien.damap.rest.access.domain.AccessDO;
@@ -8,14 +14,8 @@ import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
-import javax.inject.Inject;
-import javax.ws.rs.core.MediaType;
-
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.MediaType;
 
 @QuarkusTest
 @TestHTTPEndpoint(AccessResource.class)

@@ -8,9 +8,9 @@ import io.quarkus.security.Authenticated;
 import io.quarkus.security.AuthenticationFailedException;
 import lombok.extern.jbosslog.JBossLog;
 
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import java.util.Date;
 
 @Path("/api/consent")

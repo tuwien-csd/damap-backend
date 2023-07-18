@@ -2,8 +2,6 @@ package at.ac.tuwien.damap;
 
 import static org.mockito.ArgumentMatchers.any;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 
@@ -14,7 +12,8 @@ import at.ac.tuwien.damap.rest.persons.orcid.ORCIDPersonServiceImpl;
 import at.ac.tuwien.damap.security.SecurityService;
 import at.ac.tuwien.damap.util.TestDOFactory;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
+import io.quarkus.test.InjectMock;
+import jakarta.inject.Inject;
 
 // Common config for test case setup
 @QuarkusTest

@@ -13,7 +13,7 @@ import org.apache.poi.xwpf.usermodel.*;
 import org.apache.xmlbeans.XmlException;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 @JBossLog
 public abstract class AbstractTemplateExportFunctions {

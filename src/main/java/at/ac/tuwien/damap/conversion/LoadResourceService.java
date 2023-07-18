@@ -3,7 +3,7 @@ package at.ac.tuwien.damap.conversion;
 import java.util.Properties;
 import lombok.extern.jbosslog.JBossLog;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 @JBossLog

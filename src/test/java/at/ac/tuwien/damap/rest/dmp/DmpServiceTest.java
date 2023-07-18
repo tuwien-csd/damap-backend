@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +21,8 @@ import at.ac.tuwien.damap.rest.persons.orcid.models.ORCIDRecord;
 import at.ac.tuwien.damap.util.MockDmpService;
 import at.ac.tuwien.damap.util.TestDOFactory;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
+import io.quarkus.test.InjectMock;
+import jakarta.inject.Inject;
 import lombok.extern.java.Log;
 
 @QuarkusTest

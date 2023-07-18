@@ -1,4 +1,4 @@
-<jxb:bindings xmlns:jxb="http://java.sun.com/xml/ns/jaxb" version="2.1">
+<jxb:bindings xmlns:jxb="https://jakarta.ee/xml/ns/jaxb" version="3.0">
   <jxb:bindings >
     <jxb:globalBindings typesafeEnumMaxMembers="2000"/>
   </jxb:bindings>

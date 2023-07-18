@@ -10,7 +10,7 @@ import org.hibernate.envers.RevisionEntity;
 import org.hibernate.envers.RevisionNumber;
 import org.hibernate.envers.RevisionTimestamp;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -45,4 +45,3 @@ public class DamapRevisionEntity {
     @ModifiedEntityNames
     private Set<String> modifiedEntityNames = new HashSet<>();
 }
-

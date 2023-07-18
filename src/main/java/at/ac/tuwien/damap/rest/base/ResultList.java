@@ -2,7 +2,7 @@ package at.ac.tuwien.damap.rest.base;
 
 import java.util.List;
 
-import javax.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedHashMap;
 
 import lombok.Data;
 

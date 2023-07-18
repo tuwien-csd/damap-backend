@@ -6,8 +6,8 @@ import org.hibernate.envers.Audited;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.*;
-import javax.persistence.Access;
+import jakarta.persistence.*;
+import jakarta.persistence.Access;
 
 @Data
 @Entity

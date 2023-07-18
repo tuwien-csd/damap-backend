@@ -7,13 +7,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import javax.validation.Valid;
-
-import at.ac.tuwien.damap.domain.Identifier;
-import at.ac.tuwien.damap.rest.dmp.mapper.*;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 
@@ -28,13 +21,21 @@ import at.ac.tuwien.damap.repo.DmpRepo;
 import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpListItemDO;
-import at.ac.tuwien.damap.rest.dmp.domain.IdentifierDO;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
+import at.ac.tuwien.damap.rest.dmp.mapper.ContributorDOMapper;
+import at.ac.tuwien.damap.rest.dmp.mapper.DmpDOMapper;
+import at.ac.tuwien.damap.rest.dmp.mapper.DmpListItemDOMapper;
+import at.ac.tuwien.damap.rest.dmp.mapper.MapperService;
+import at.ac.tuwien.damap.rest.dmp.mapper.ProjectSupplementDOMapper;
 import at.ac.tuwien.damap.rest.persons.orcid.ORCIDPersonServiceImpl;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
 import at.ac.tuwien.damap.rest.projects.ProjectSupplementDO;
 import at.ac.tuwien.damap.rest.version.VersionDO;
 import at.ac.tuwien.damap.rest.version.VersionService;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.extern.jbosslog.JBossLog;
 
 @ApplicationScoped
@@ -68,6 +69,7 @@ public class DmpService {
         return dmpListItemDOList;
     }
 
+    @Transactional
     public List<DmpListItemDO> getDmpListByPersonId(String personId) {
 
         List<Access> accessList = accessRepo.getAllDmpByUniversityId(personId);
@@ -78,6 +80,7 @@ public class DmpService {
         return dmpListItemDOS;
     }
 
+    @Transactional
     public DmpDO getDmpById(long dmpId) {
         return DmpDOMapper.mapEntityToDO(dmpRepo.findById(dmpId), new DmpDO());
     }
@@ -169,6 +172,7 @@ public class DmpService {
         return filename;
     }
 
+    @Transactional
     public List<ProjectDO> checkExistingDmps(List<ProjectDO> projectDOList) {
 
         for (Dmp dmp : dmpRepo.getAll()) {
@@ -286,6 +290,7 @@ public class DmpService {
                 !Objects.equals(dmp.getProject().getUniversityId(), dmpDO.getProject().getUniversityId());
     }
 
+    @Transactional
     public DmpDO getDmpByIdAndRevision(long dmpId, long revision) {
         AuditReader reader = AuditReaderFactory.get(dmpRepo.getEntityManager());
         Dmp dmpRevision = reader.find(Dmp.class, dmpId, revision);

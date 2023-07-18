@@ -3,7 +3,7 @@ package at.ac.tuwien.damap.rest.dmp.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 

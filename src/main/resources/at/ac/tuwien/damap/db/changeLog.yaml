@@ -2764,4 +2764,3 @@ databaseChangeLog:
               UPDATE dataset_aud SET license = 'APACHE2' WHERE license = 'https://www.apache.org/licenses/LICENSE-2.0';
             stripComments: true
             comment: change existing url strings in license information to be enums instead
-

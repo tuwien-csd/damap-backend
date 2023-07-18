@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Date;
 
 @Data
@@ -25,6 +25,8 @@ public class Project extends PanacheEntity {
 
     private String title;
 
+    @Lob
+    @Column(columnDefinition = "CLOB")
     private String description;
 
     @ManyToOne(cascade = CascadeType.ALL)

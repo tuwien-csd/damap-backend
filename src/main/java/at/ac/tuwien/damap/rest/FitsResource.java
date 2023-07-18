@@ -8,9 +8,9 @@ import io.quarkus.security.Authenticated;
 import lombok.extern.jbosslog.JBossLog;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 
 @Path("/api/fits")
 @Authenticated
