@@ -6,6 +6,13 @@ In order to set up the whole system consisting of multiple components a
 `docker-compose` file has been prepared. With this file it should be
 straight forward to get a sample system up and running.
 
+The full system will be comprised of 
+* damap-backend,
+* damap-frontend,
+* dummy Keycloak with login name "user" and password "user"
+* dummy postgres database
+* and dummy APIs providing person and project data
+
 To start up the cluster of components just issue the following command:
 
 ```shell
