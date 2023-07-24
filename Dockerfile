@@ -39,7 +39,7 @@ ARG BUILD_HOME=/home/app
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 
 # install java and the run-java script and set up permissions for the unprivileged 1001 container user
-RUN dnf install -y openssl curl ca-certificates ${JAVA_PACKAGE} \
+RUN dnf install -y openssl tzdata-java curl ca-certificates ${JAVA_PACKAGE} \
     && dnf clean all -y \
     && mkdir /deployments \
     && chown 1001 /deployments \
