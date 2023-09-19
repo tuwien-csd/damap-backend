@@ -3,8 +3,8 @@ package at.ac.tuwien.damap.domain;
 import lombok.*;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
-import javax.persistence.Access;
+import jakarta.persistence.*;
+import jakarta.persistence.Access;
 
 @Data
 @Entity

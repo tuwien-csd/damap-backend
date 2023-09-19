@@ -10,9 +10,9 @@ import at.ac.tuwien.damap.rest.gdpr.exceptions.NoSuchContextPropertyException;
 import lombok.experimental.UtilityClass;
 import lombok.extern.jbosslog.JBossLog;
 
-import javax.persistence.Transient;
-import javax.persistence.Version;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.Transient;
+import jakarta.persistence.Version;
+import jakarta.validation.constraints.NotNull;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;

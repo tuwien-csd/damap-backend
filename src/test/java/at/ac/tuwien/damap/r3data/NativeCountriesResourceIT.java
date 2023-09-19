@@ -1,8 +1,8 @@
 package at.ac.tuwien.damap.r3data;
 
-import io.quarkus.test.junit.NativeImageTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 
-@NativeImageTest
+@QuarkusIntegrationTest
 public class NativeCountriesResourceIT extends RepositoriesResourceTest {
 
     // Execute the same tests but in native mode.

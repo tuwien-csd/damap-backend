@@ -8,8 +8,8 @@ import at.ac.tuwien.damap.rest.gdpr.domain.HqlQuery;
 import org.hibernate.proxy.HibernateProxy;
 import org.reflections.Reflections;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.util.*;
 
 @ApplicationScoped

@@ -1,6 +1,6 @@
 package at.ac.tuwien.damap.rest.base;
 
-import javax.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.MultivaluedMap;
 
 import lombok.Data;
 

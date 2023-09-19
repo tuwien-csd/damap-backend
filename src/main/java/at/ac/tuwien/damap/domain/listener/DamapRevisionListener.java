@@ -5,7 +5,7 @@ import at.ac.tuwien.damap.security.SecurityService;
 import lombok.extern.jbosslog.JBossLog;
 import org.hibernate.envers.RevisionListener;
 
-import javax.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.CDI;
 
 @JBossLog
 public class DamapRevisionListener implements RevisionListener {

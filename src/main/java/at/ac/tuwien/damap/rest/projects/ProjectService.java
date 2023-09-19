@@ -2,7 +2,7 @@ package at.ac.tuwien.damap.rest.projects;
 
 import java.util.List;
 
-import javax.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.MultivaluedMap;
 
 import at.ac.tuwien.damap.rest.base.ResultList;
 import at.ac.tuwien.damap.rest.base.service.ServiceRead;

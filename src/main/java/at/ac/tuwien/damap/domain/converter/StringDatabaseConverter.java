@@ -1,7 +1,7 @@
 package at.ac.tuwien.damap.domain.converter;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
 @Converter(autoApply = true)
 public class StringDatabaseConverter implements AttributeConverter<String, String> {

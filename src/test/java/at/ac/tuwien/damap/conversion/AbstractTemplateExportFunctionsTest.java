@@ -5,8 +5,8 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import javax.inject.Inject;
-import javax.enterprise.inject.Instance;
+import jakarta.inject.Inject;
+import jakarta.enterprise.inject.Instance;
 import java.util.*;
 
 @QuarkusTest

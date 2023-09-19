@@ -7,7 +7,7 @@ package at.ac.tuwien.damap.conversion;
 import io.quarkus.arc.DefaultBean;
 import lombok.extern.jbosslog.JBossLog;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;

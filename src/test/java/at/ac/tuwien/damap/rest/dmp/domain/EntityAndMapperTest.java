@@ -6,7 +6,7 @@ import io.quarkus.test.security.TestSecurity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 @QuarkusTest
 class EntityAndMapperTest {

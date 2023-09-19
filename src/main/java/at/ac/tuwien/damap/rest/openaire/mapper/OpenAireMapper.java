@@ -9,7 +9,7 @@ import eu.openaire.oaf.StructuredPropertyElementType;
 import generated.Response;
 import lombok.experimental.UtilityClass;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;

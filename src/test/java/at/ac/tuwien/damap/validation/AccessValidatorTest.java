@@ -6,13 +6,13 @@ import at.ac.tuwien.damap.enums.EFunctionRole;
 import at.ac.tuwien.damap.repo.AccessRepo;
 import at.ac.tuwien.damap.security.SecurityService;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
+import io.quarkus.test.InjectMock;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 @QuarkusTest

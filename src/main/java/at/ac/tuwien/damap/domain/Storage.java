@@ -4,8 +4,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Access;
-import javax.persistence.*;
+import jakarta.persistence.Access;
+import jakarta.persistence.*;
 
 @Data
 @Entity
