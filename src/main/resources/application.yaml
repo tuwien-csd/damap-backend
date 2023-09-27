@@ -71,6 +71,9 @@ quarkus:
     migrate-at-start: true
     change-log: db/changeLog.yaml
 
+  qute:
+    suffixes: [qute.html,qute.txt,html,txt,xhtml]
+
 rest:
   projects/mp-rest/url: ${damap.projects-url}
   persons/mp-rest/url: ${damap.persons-url}

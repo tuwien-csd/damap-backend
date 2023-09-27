@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>at.ac.tuwien</groupId>
@@ -119,6 +121,10 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-jaxb</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy-qute</artifactId>
+    </dependency>
     <!-- Authentication -->
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -138,8 +144,8 @@
       <artifactId>quarkus-jdbc-postgresql</artifactId>
     </dependency>
     <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-jdbc-oracle</artifactId>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-oracle</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -152,8 +158,8 @@
     </dependency>
     <!-- Health -->
     <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-smallrye-health</artifactId>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-health</artifactId>
     </dependency>
     <!-- Utility -->
     <dependency>
@@ -178,12 +184,17 @@
       <version>4.1.2</version>
     </dependency>
     <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-config-yaml</artifactId>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-config-yaml</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-cache</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.docx4j</groupId>
+      <artifactId>docx4j-ImportXHTML</artifactId>
+      <version>8.3.8</version>
     </dependency>
   </dependencies>
 
@@ -208,7 +219,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${compiler-plugin.version}</version>
         <configuration>
-            <parameters>${maven.compiler.parameters}</parameters>
+          <parameters>${maven.compiler.parameters}</parameters>
         </configuration>
       </plugin>
       <plugin>
@@ -297,7 +308,7 @@
                 <configuration>
                   <systemPropertyVariables>
                     <native.image.path>
-                        ${project.build.directory}/${project.build.finalName}-runner
+                      ${project.build.directory}/${project.build.finalName}-runner
                     </native.image.path>
                     <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                     <maven.home>${maven.home}</maven.home>
