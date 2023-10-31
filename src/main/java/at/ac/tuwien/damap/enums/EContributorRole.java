@@ -27,7 +27,7 @@ public enum EContributorRole {
 
     private final String role;
 
-    private static final HashMap<String, EContributorRole> MAP = new HashMap<String, EContributorRole>();
+    private static final HashMap<String, EContributorRole> MAP = new HashMap<>();
 
     EContributorRole(String role) {
         this.role = role;

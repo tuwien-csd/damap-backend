@@ -15,6 +15,7 @@ import org.apache.poi.xwpf.usermodel.XWPFTable;
 
 import javax.inject.Inject;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This class describes necessary setup for all template export classes.
@@ -68,14 +69,6 @@ public abstract class AbstractTemplateExportSetup extends AbstractTemplateExport
     }
 
     private List<Dataset> getDeletedDatasets(List<Dataset> datasets) {
-        List<Dataset> deletedDatasets = new ArrayList<>();
-        for (Dataset dataset : datasets) {
-            if (dataset.getDelete() != null) {
-                if (dataset.getDelete()) {
-                    deletedDatasets.add(dataset);
-                }
-            }
-        }
-        return deletedDatasets;
+        return datasets.stream().filter(Dataset::getDelete).collect(Collectors.toList());
     }
 }

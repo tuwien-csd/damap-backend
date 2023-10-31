@@ -17,7 +17,7 @@ public enum ECostType {
 
     private final String value;
 
-    private static final HashMap<String, ECostType> MAP = new HashMap<String, ECostType>();
+    private static final HashMap<String, ECostType> MAP = new HashMap<>();
 
     ECostType(String value) {
         this.value = value;

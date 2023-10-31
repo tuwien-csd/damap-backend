@@ -17,7 +17,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 
 @QuarkusTest
 @JBossLog
-public class AbstractTemplateExportScienceEuropeComponentsTest extends AbstractTemplateExportScienceEuropeComponents {
+class AbstractTemplateExportScienceEuropeComponentsTest extends AbstractTemplateExportScienceEuropeComponents {
 
     @Inject
     TestDOFactory testDOFactory;

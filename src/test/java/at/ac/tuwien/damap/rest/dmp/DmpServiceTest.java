@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @QuarkusTest
-public class DmpServiceTest {
+class DmpServiceTest {
     @Inject TestDOFactory testDOFactory;
 
     @Inject
@@ -47,7 +47,7 @@ public class DmpServiceTest {
                 .filter(
                     c -> c.getRole().equals(EContributorRole.PROJECT_LEADER))
                 .findFirst();
-        Assertions.assertNotNull(projectLead.isPresent());
+        Assertions.assertTrue(projectLead.isPresent());
         Assertions.assertTrue(projectLead.get().isContact());
 
         long projectLeadID = projectLead.get().getId();
@@ -85,7 +85,7 @@ public class DmpServiceTest {
                                .filter(c -> !c.getId().equals(projectLeadID))
                                .findFirst()
                                .get();
-        Assertions.assertNotNull(projectLead.isPresent());
+        Assertions.assertTrue(projectLead.isPresent());
         Assertions.assertFalse(projectLead.get().isContact());
         Assertions.assertTrue(otherContributor.isContact());
         Assertions.assertEquals(

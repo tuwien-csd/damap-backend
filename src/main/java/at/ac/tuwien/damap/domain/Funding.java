@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 
@@ -21,7 +20,6 @@ public class Funding extends PanacheEntity {
     @Setter(AccessLevel.NONE)
     private long version;
 
-//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "funder_id")
     private Identifier funderIdentifier;
@@ -30,7 +28,6 @@ public class Funding extends PanacheEntity {
     @Column(name = "funding_status")
     private EFundingState fundingStatus;
 
-//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "grant_id")
     private Identifier grantIdentifier;

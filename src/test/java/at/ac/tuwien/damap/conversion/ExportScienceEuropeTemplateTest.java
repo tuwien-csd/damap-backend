@@ -15,8 +15,7 @@ import org.mockito.Mockito;
 import javax.inject.Inject;
 
 @QuarkusTest
-
-public class ExportScienceEuropeTemplateTest {
+class ExportScienceEuropeTemplateTest {
 
     @Inject
     ExportScienceEuropeTemplate exportScienceEuropeTemplate;

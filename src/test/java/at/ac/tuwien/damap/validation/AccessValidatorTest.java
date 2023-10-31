@@ -16,7 +16,7 @@ import javax.inject.Inject;
 import java.util.List;
 
 @QuarkusTest
-public class AccessValidatorTest {
+class AccessValidatorTest {
 
     @Inject
     AccessValidator accessValidator;
@@ -41,7 +41,7 @@ public class AccessValidatorTest {
     }
 
     @Test
-    public void testCanViewDmp() {
+    void testCanViewDmp() {
         Assertions.assertTrue(accessValidator.canViewDmp(-1, ownerId));
         Assertions.assertTrue(accessValidator.canViewDmp(-1, editorId));
         Assertions.assertTrue(accessValidator.canViewDmp(-1, guestId));
@@ -57,7 +57,7 @@ public class AccessValidatorTest {
     }
 
     @Test
-    public void testCanEditDmp() {
+    void testCanEditDmp() {
         Assertions.assertTrue(accessValidator.canEditDmp(-1, ownerId));
         Assertions.assertTrue(accessValidator.canEditDmp(-1, editorId));
         Assertions.assertFalse(accessValidator.canEditDmp(-1, guestId));

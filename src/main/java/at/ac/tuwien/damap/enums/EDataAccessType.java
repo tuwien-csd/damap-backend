@@ -10,7 +10,7 @@ public enum EDataAccessType {
 
     private final String value;
 
-    private static final HashMap<String, EDataAccessType> MAP = new HashMap<String, EDataAccessType>();
+    private static final HashMap<String, EDataAccessType> MAP = new HashMap<>();
 
     EDataAccessType(String value) {
         this.value = value;

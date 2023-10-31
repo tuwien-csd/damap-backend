@@ -31,13 +31,7 @@ public class ProjectDOMapper {
     }
 
     public boolean checkFunderSupported(Project project){
-
-        try {
-            if (project.getFunding() != null)
-                return true;
-        }
-        catch (NullPointerException ignored) {}
-        return false;
+        return project != null && project.getFunding() != null;
     }
 
     public FundingDO mapEntityToDO(Funding funding, FundingDO fundingDO) {

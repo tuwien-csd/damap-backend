@@ -1,6 +1,5 @@
 package at.ac.tuwien.damap.rest;
 
-import at.ac.tuwien.damap.rest.VersionResource;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
 import at.ac.tuwien.damap.rest.version.VersionDO;
 import at.ac.tuwien.damap.security.SecurityService;
@@ -21,7 +20,7 @@ import static org.hamcrest.Matchers.*;
 
 @QuarkusTest
 @TestHTTPEndpoint(VersionResource.class)
-public class VersionResourceTest {
+class VersionResourceTest {
 
     @Inject
     TestDOFactory testDOFactory;
@@ -36,7 +35,7 @@ public class VersionResourceTest {
     }
 
     @Test
-    public void testGetDmpVersionsEndpoint_Unauthorized() {
+    void testGetDmpVersionsEndpoint_Unauthorized() {
         given()
                 .when().get("/list/0")
                 .then()
@@ -45,7 +44,7 @@ public class VersionResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testGetDmpVersionsEndpoint_Valid() {
+    void testGetDmpVersionsEndpoint_Valid() {
         VersionDO versionDO = testDOFactory.getOrCreateTestVersionDO();
         given()
                 .when().get("/list/" + versionDO.getDmpId())
@@ -54,7 +53,7 @@ public class VersionResourceTest {
     }
 
     @Test
-    public void testSaveDmpVersionsEndpoint_Unauthorized() {
+    void testSaveDmpVersionsEndpoint_Unauthorized() {
         VersionDO versionDO = new VersionDO();
         versionDO.setVersionName("TestVersion");
         versionDO.setDmpId(0L);
@@ -68,7 +67,7 @@ public class VersionResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testSaveDmpVersionsEndpoint_Valid() {
+    void testSaveDmpVersionsEndpoint_Valid() {
         DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
         VersionDO versionDO = new VersionDO();
         versionDO.setVersionName("TestVersion2");

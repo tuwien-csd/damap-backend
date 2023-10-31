@@ -31,6 +31,7 @@ public class VersionService {
         return versionDOList;
     }
 
+    @Transactional
     public VersionDO createOrUpdate(VersionDO versionDO){
         if (versionDO.getId() != null)
             return update(versionDO);
@@ -44,14 +45,16 @@ public class VersionService {
         DmpVersion version = VersionDOMapper.mapDOtoEntity(versionDO, new DmpVersion(), dmpRepo);
         version.setVersionDate(new Date());
         version.setRevisionNumber(getCurrentRevisionNumber().longValue());
-        version.persistAndFlush();
+        version.persist();
         return getVersionById(version.id);
     }
 
+    @Transactional
     public VersionDO update(VersionDO versionDO) {
         log.info("Updating DMP Version with id " + versionDO.getId());
         DmpVersion version = dmpVersionRepo.findById(versionDO.getId());
         VersionDOMapper.mapDOtoEntity(versionDO, version, dmpRepo);
+        version.persist();
         return getVersionById(version.id);
     }
 

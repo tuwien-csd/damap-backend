@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -25,7 +24,6 @@ public class Access extends PanacheEntity {
     @Setter(AccessLevel.NONE)
     private long version;
 
-//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @GdprContext(properties = {"id", "project.title"})
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dmp_id", nullable = false, updatable = false)
@@ -35,7 +33,6 @@ public class Access extends PanacheEntity {
     @Column(name = "university_id")
     private String universityId;
 
-//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @GdprBase
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "identifier_id", updatable = false)

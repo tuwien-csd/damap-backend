@@ -24,7 +24,6 @@ public class Dataset extends PanacheEntity {
     @Setter(AccessLevel.NONE)
     private long version;
 
-    //    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dmp_id")

@@ -23,8 +23,9 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class MaDmpMapper {
 
-    //TODO the language code should be sourced from the template that is being exported
-    static final String defaultLanguageCode = "eng";
+    // TODO the language code should be sourced from the template that is being
+    // exported
+    static final String DEFAULT_LANGUAGE_CODE = "eng";
 
     public Dmp mapToMaDmp(DmpDO dmpDO, Dmp dmp, MapperService mapperService) {
 
@@ -32,23 +33,19 @@ public class MaDmpMapper {
             dmp.setContact(mapToMaDmp(dmpDO.getContact(), new Contact()));
 
         List<Contributor> contributorList = new ArrayList<>();
-        dmpDO.getContributors().forEach(contributorDO -> {
-            contributorList.add(mapToMaDmp(contributorDO, new Contributor()));
-        });
+        dmpDO.getContributors()
+                .forEach(contributorDO -> contributorList.add(mapToMaDmp(contributorDO, new Contributor())));
         dmp.setContributor(contributorList);
 
         List<Cost> costList = new ArrayList<>();
-        dmpDO.getCosts().forEach(costDO -> {
-            costList.add(mapToMaDmp(costDO, new Cost()));
-        });
+        dmpDO.getCosts().forEach(costDO -> costList.add(mapToMaDmp(costDO, new Cost())));
         dmp.setCost(costList);
 
         dmp.setCreated(dmpDO.getCreated());
 
         List<Dataset> datasetList = new ArrayList<>();
-        dmpDO.getDatasets().forEach(datasetDO -> {
-            datasetList.add(mapToMaDmp(dmpDO, datasetDO, new Dataset(), mapperService));
-        });
+        dmpDO.getDatasets()
+                .forEach(datasetDO -> datasetList.add(mapToMaDmp(dmpDO, datasetDO, new Dataset(), mapperService)));
         dmp.setDataset(datasetList);
 
         dmp.setDescription(dmpDO.getDescription());
@@ -214,7 +211,7 @@ public class MaDmpMapper {
 
     public Distribution mapToMaDmpFromStorage(StorageDO storageDO, Distribution distribution, MapperService mapperService) {
 
-        InternalStorageDO internalStorageDO = mapperService.getInternalStorageDOById(storageDO.getInternalStorageId(), defaultLanguageCode);
+        InternalStorageDO internalStorageDO = mapperService.getInternalStorageDOById(storageDO.getInternalStorageId(), DEFAULT_LANGUAGE_CODE);
         if (internalStorageDO != null) {
             distribution.setAccessUrl(internalStorageDO.getUrl());
             distribution.setHost(mapToMaDmpFromInternalStorage(internalStorageDO, new Host()));
@@ -249,9 +246,9 @@ public class MaDmpMapper {
         host.setGeoLocation(null);
 
         List<PidSystem> pidSystemList = new ArrayList<>();
-        repository.getPidSystem().forEach(repoPidSystems -> {
-            pidSystemList.add(getPidSystem(repoPidSystems));
-        });
+        repository.getPidSystem().forEach(repoPidSystems -> 
+            pidSystemList.add(getPidSystem(repoPidSystems))
+        );
         host.setPidSystem(pidSystemList);
         repository.getType().stream().findFirst().ifPresent(repositoryTypes -> host.setStorageType(repositoryTypes.value()));
         host.setSupportVersioning(getSupportVersioning(repository.getVersioning()));
@@ -357,24 +354,21 @@ public class MaDmpMapper {
         return Dataset.PersonalData.UNKNOWN;
     }
 
-    public List<SecurityAndPrivacy> getSecurityAndPrivacyList(DmpDO dmpDO, DatasetDO datasetDO){
+    public List<SecurityAndPrivacy> getSecurityAndPrivacyList(DmpDO dmpDO, DatasetDO datasetDO) {
 
         List<SecurityAndPrivacy> securityAndPrivacyList = new ArrayList<>();
 
         if (datasetDO.getSensitiveData() != null && datasetDO.getSensitiveData()) {
-            dmpDO.getSensitiveDataSecurity().forEach(eSecurityMeasure -> {
-                securityAndPrivacyList.add(mapToMaDmp(eSecurityMeasure, new SecurityAndPrivacy()));
-                    });
+            dmpDO.getSensitiveDataSecurity().forEach(eSecurityMeasure -> securityAndPrivacyList
+                    .add(mapToMaDmp(eSecurityMeasure, new SecurityAndPrivacy())));
         }
         if (datasetDO.getPersonalData() != null && datasetDO.getPersonalData()) {
-            dmpDO.getPersonalDataCompliance().forEach(eComplianceType -> {
-                securityAndPrivacyList.add(mapToMaDmp(eComplianceType, new SecurityAndPrivacy()));
-            });
+            dmpDO.getPersonalDataCompliance().forEach(eComplianceType -> securityAndPrivacyList
+                    .add(mapToMaDmp(eComplianceType, new SecurityAndPrivacy())));
         }
         if (datasetDO.getLegalRestrictions() != null && datasetDO.getLegalRestrictions()) {
-            dmpDO.getLegalRestrictionsDocuments().forEach(eAgreement -> {
-                securityAndPrivacyList.add(mapToMaDmp(eAgreement, new SecurityAndPrivacy()));
-            });
+            dmpDO.getLegalRestrictionsDocuments().forEach(
+                    eAgreement -> securityAndPrivacyList.add(mapToMaDmp(eAgreement, new SecurityAndPrivacy())));
         }
         return securityAndPrivacyList;
     }

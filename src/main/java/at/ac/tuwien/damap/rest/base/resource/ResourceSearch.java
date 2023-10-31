@@ -7,9 +7,9 @@ import javax.ws.rs.core.UriInfo;
 
 import at.ac.tuwien.damap.rest.base.ResultList;
 
-public interface ResourceSearch<Entity> {
+public interface ResourceSearch<E> {
 
     @GET
     @Path("")
-    ResultList<Entity> search(@Context UriInfo uriInfo);
+    ResultList<E> search(@Context UriInfo uriInfo);
 }

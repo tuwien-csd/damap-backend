@@ -6,9 +6,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
-public interface ResourceRead<Entity> {
+public interface ResourceRead<E> {
 
     @GET
     @Path("/{id}")
-    Entity read(@PathParam("id") String id, @Context UriInfo uriInfo);
+    E read(@PathParam("id") String id, @Context UriInfo uriInfo);
 }
