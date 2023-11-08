@@ -9,7 +9,7 @@ public enum ETemplateType {
 
     private final String value;
 
-    private static final HashMap<String, ETemplateType> MAP = new HashMap<String, ETemplateType>();
+    private static final HashMap<String, ETemplateType> MAP = new HashMap<>();
 
     ETemplateType(String value) {
         this.value = value;

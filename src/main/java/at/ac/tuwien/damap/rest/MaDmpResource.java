@@ -69,7 +69,7 @@ public class MaDmpResource {
         } catch (JsonProcessingException e) {
             log.error("could not process maDMP with id: " + id + " into String");
         }
-        Response.ResponseBuilder response = Response.ok((Object) prettyMaDMP);
+        Response.ResponseBuilder response = Response.ok(prettyMaDMP);
         response.header("Content-Disposition", "attachment; filename=" + filename + ".json")
                 .header("Access-Control-Expose-Headers","Content-Disposition");
         return response.build();

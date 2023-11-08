@@ -15,7 +15,7 @@ import org.mockito.Mockito;
 import javax.inject.Inject;
 
 @QuarkusTest
-public class ExportFWFTemplateTest {
+class ExportFWFTemplateTest {
 
     @Inject
     ExportFWFTemplate exportFWFTemplate;

@@ -10,7 +10,6 @@ import at.ac.tuwien.damap.repo.DmpVersionRepo;
 import at.ac.tuwien.damap.repo.InternalStorageTranslationRepo;
 import at.ac.tuwien.damap.rest.dmp.domain.*;
 import at.ac.tuwien.damap.rest.dmp.mapper.DmpDOMapper;
-import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import at.ac.tuwien.damap.rest.version.VersionDO;
 import at.ac.tuwien.damap.rest.version.VersionDOMapper;
 import at.ac.tuwien.damap.rest.version.VersionService;

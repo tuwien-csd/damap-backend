@@ -19,7 +19,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 
 @QuarkusTest
 @TestHTTPEndpoint(MaDmpResource.class)
-public class MaDmpResourceTest {
+class MaDmpResourceTest {
 
     @Inject
     TestDOFactory testDOFactory;
@@ -38,7 +38,7 @@ public class MaDmpResourceTest {
     }
 
     @Test
-    public void testGetByIdEndpoint_Invalid() {
+    void testGetByIdEndpoint_Invalid() {
         given()
                 .when().get("/0")
                 .then()
@@ -47,7 +47,7 @@ public class MaDmpResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testGetByIdEndpoint_Unauthorized() {
+    void testGetByIdEndpoint_Unauthorized() {
         given()
                 .when().get("/0")
                 .then()
@@ -56,7 +56,7 @@ public class MaDmpResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testGetByIdEndpoint_Valid() {
+    void testGetByIdEndpoint_Valid() {
         DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
         given()
                 .when().get("/" + dmpDO.getId())
@@ -65,7 +65,7 @@ public class MaDmpResourceTest {
     }
 
     @Test
-    public void testGetFileByIdEndpoint_Invalid() {
+    void testGetFileByIdEndpoint_Invalid() {
         given()
                 .when().get("/file/0")
                 .then()
@@ -74,7 +74,7 @@ public class MaDmpResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testGetFileByIdEndpoint_Unauthorized() {
+    void testGetFileByIdEndpoint_Unauthorized() {
         given()
                 .when().get("/file/0")
                 .then()
@@ -83,7 +83,7 @@ public class MaDmpResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testGetFileByIdEndpoint_Valid() {
+    void testGetFileByIdEndpoint_Valid() {
         DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
         given()
                 .when().get("/file/" + dmpDO.getId())

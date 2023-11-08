@@ -1,5 +1,6 @@
 package at.ac.tuwien.damap.conversion;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.text.SimpleDateFormat;
@@ -8,7 +9,7 @@ import at.ac.tuwien.damap.repo.DmpRepo;
 import at.ac.tuwien.damap.repo.InternalStorageTranslationRepo;
 import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.*;
-
+import org.apache.xmlbeans.XmlException;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
 
 import javax.inject.Inject;
@@ -89,17 +90,17 @@ public abstract class AbstractTemplateExportFunctions {
      * Method to do a replacement of variable with desired value
      *
      * @param replacements
-     * @param var
+     * @param variable
      * @param dmpContent
      */
-    public void addReplacement(Map<String, String> replacements, String var, Object dmpContent) {
+    public void addReplacement(Map<String, String> replacements, String variable, Object dmpContent) {
         String content = (dmpContent == null) ? "" : String.valueOf(dmpContent);
-        if (!Objects.equals(content, "")) {
-            if (dmpContent.getClass() == java.sql.Timestamp.class || dmpContent.getClass() == Date.class) {
-                content = formatter.format(dmpContent);
-            }
+        if (dmpContent != null
+                && (dmpContent.getClass() == java.sql.Timestamp.class || dmpContent.getClass() == Date.class)) {
+            content = formatter.format(dmpContent);
         }
-        replacements.put(var, content);
+        
+        replacements.put(variable, content);
     }
 
     /**
@@ -108,9 +109,11 @@ public abstract class AbstractTemplateExportFunctions {
      * @param sourceTableRow
      * @param pos
      * @return
+     * @throws IOException
+     * @throws XmlException
      * @throws Exception
      */
-    public XWPFTableRow insertNewTableRow(XWPFTableRow sourceTableRow, int pos) throws Exception {
+    public XWPFTableRow insertNewTableRow(XWPFTableRow sourceTableRow, int pos) throws XmlException, IOException  {
         XWPFTable table = sourceTableRow.getTable();
         CTRow newCTRrow = CTRow.Factory.parse(sourceTableRow.getCtRow().newInputStream());
         XWPFTableRow tableRow = new XWPFTableRow(newCTRrow, table);
@@ -318,6 +321,3 @@ public abstract class AbstractTemplateExportFunctions {
         }
     }
 }
-
-
-

@@ -16,14 +16,14 @@ import java.util.List;
 @ApplicationScoped
 public class PersonServiceBroker {
 
-    LinkedHashMap<String, PersonService> personServices = new LinkedHashMap<String, PersonService>();
+    LinkedHashMap<String, PersonService> personServices = new LinkedHashMap<>();
 
     @Inject
     public PersonServiceBroker(ConfigResource config, @All List<PersonService> availableServices) {
         List<ServiceConfig> configuredServices = config.personServiceConfigurations.getConfigs();
 
         configuredServices.forEach(serviceConfig -> {
-            Boolean found = false;
+            boolean found = false;
             String configClassName = serviceConfig.getClassName();
             for (var service : availableServices) {
                 try {
@@ -35,11 +35,11 @@ public class PersonServiceBroker {
                         break;
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error(String.format("Issue trying to initialize person service %s", configClassName), e);
                 }
             }
             if (!found) {
-                log.warn(String.format("Service '%s' configured but is not available", serviceConfig.getClassName()));
+                log.warn(String.format("Service '%s' configured but is not available", configClassName));
             }
         });
     }

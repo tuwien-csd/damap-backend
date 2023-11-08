@@ -19,7 +19,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 
 @QuarkusTest
 @TestHTTPEndpoint(DmpDocumentResource.class)
-public class DmpDocumentResourceTest {
+class DmpDocumentResourceTest {
 
     @Inject
     TestDOFactory testDOFactory;
@@ -38,7 +38,7 @@ public class DmpDocumentResourceTest {
     }
 
     @Test
-    public void testExportTemplateEndpoint_Invalid() {
+    void testExportTemplateEndpoint_Invalid() {
         given()
                 .when().get("/0")
                 .then()
@@ -47,7 +47,7 @@ public class DmpDocumentResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testExportTemplateEndpoint_Unauthorized() {
+    void testExportTemplateEndpoint_Unauthorized() {
         given()
                 .when().get("/0")
                 .then()
@@ -56,7 +56,7 @@ public class DmpDocumentResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testExportTemplateEndpoint_Valid() {
+    void testExportTemplateEndpoint_Valid() {
         DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
         given()
                 .when().get("/" + dmpDO.getId())
@@ -66,7 +66,7 @@ public class DmpDocumentResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testExportTemplateEndpointWithTemplateTypeFWF_Valid() {
+    void testExportTemplateEndpointWithTemplateTypeFWF_Valid() {
         DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
         given()
                 .when().get("/" + dmpDO.getId() + "?template=FWF")
@@ -76,7 +76,7 @@ public class DmpDocumentResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testExportTemplateEndpointWithTemplateTypeScienceEurope_Valid() {
+    void testExportTemplateEndpointWithTemplateTypeScienceEurope_Valid() {
         DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
         given()
                 .when().get("/" + dmpDO.getId() + "?template=SCIENCE_EUROPE")
@@ -86,7 +86,7 @@ public class DmpDocumentResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testExportTemplateEndpointWithTemplateType_Invalid() {
+    void testExportTemplateEndpointWithTemplateType_Invalid() {
         DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
         given()
                 .when().get("/" + dmpDO.getId() + "?template=invalid")

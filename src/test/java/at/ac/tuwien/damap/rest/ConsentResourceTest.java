@@ -17,7 +17,7 @@ import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusTest
 @TestHTTPEndpoint(ConsentResource.class)
-public class ConsentResourceTest {
+class ConsentResourceTest {
 
     @InjectMock
     SecurityService securityService;
@@ -29,7 +29,7 @@ public class ConsentResourceTest {
     }
 
     @Test
-    public void testGetConsentEndpoint_Invalid() {
+    void testGetConsentEndpoint_Invalid() {
         given()
                 .when().get()
                 .then()
@@ -38,7 +38,7 @@ public class ConsentResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testGetConsentEndpoint_Valid() {
+    void testGetConsentEndpoint_Valid() {
         given()
                 .when().get()
                 .then()
@@ -47,7 +47,7 @@ public class ConsentResourceTest {
     }
 
     @Test
-    public void testSaveConsentEndpoint_Invalid() {
+    void testSaveConsentEndpoint_Invalid() {
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(mockConsentDO())
@@ -59,7 +59,7 @@ public class ConsentResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testSaveConsentEndpoint_Valid() {
+    void testSaveConsentEndpoint_Valid() {
         given()
                 .when().get()
                 .then()

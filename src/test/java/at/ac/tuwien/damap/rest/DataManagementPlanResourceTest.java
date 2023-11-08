@@ -21,7 +21,7 @@ import static org.hamcrest.Matchers.is;
 
 @QuarkusTest
 @TestHTTPEndpoint(DataManagementPlanResource.class)
-public class DataManagementPlanResourceTest {
+class DataManagementPlanResourceTest {
 
     @Inject
     TestDOFactory testDOFactory;
@@ -39,7 +39,7 @@ public class DataManagementPlanResourceTest {
     }
 
     @Test
-    public void testGetAllPlansEndpoint_Invalid() {
+    void testGetAllPlansEndpoint_Invalid() {
         given()
                 .when().get("/all")
                 .then()
@@ -48,7 +48,7 @@ public class DataManagementPlanResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testGetAllPlansEndpoint_InvalidRole() {
+    void testGetAllPlansEndpoint_InvalidRole() {
         given()
                 .when().get("/all")
                 .then()
@@ -57,7 +57,7 @@ public class DataManagementPlanResourceTest {
 
     @Test
     @TestSecurity(user = "adminJwt", roles = "Damap Admin")
-    public void testGetAllPlansEndpoint_ValidRole() {
+    void testGetAllPlansEndpoint_ValidRole() {
         given()
                 .when().get("/all")
                 .then()
@@ -66,7 +66,7 @@ public class DataManagementPlanResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testGetPlansEndpoint_Valid() {
+    void testGetPlansEndpoint_Valid() {
         given()
                 .when().get("/list")
                 .then()
@@ -74,7 +74,7 @@ public class DataManagementPlanResourceTest {
     }
 
     @Test
-    public void testGetPlansEndpoint_Invalid() {
+    void testGetPlansEndpoint_Invalid() {
         given()
                 .when().get("/list")
                 .then()
@@ -82,7 +82,7 @@ public class DataManagementPlanResourceTest {
     }
 
     @Test
-    public void testPlanByIdEndpoint_Invalid() {
+    void testPlanByIdEndpoint_Invalid() {
         given()
                 .when().get("/1")
                 .then()
@@ -91,7 +91,7 @@ public class DataManagementPlanResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testPlanByIdEndpoint_Valid() {
+    void testPlanByIdEndpoint_Valid() {
         DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
         given()
                 .when().get("/" + dmpDO.getId())
@@ -101,7 +101,7 @@ public class DataManagementPlanResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testPlanByIdEndpoint_Unauthorized() {
+    void testPlanByIdEndpoint_Unauthorized() {
         given()
                 .when().get("/0")
                 .then()
@@ -110,7 +110,7 @@ public class DataManagementPlanResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testSavePlanEndpoint_Valid() {
+    void testSavePlanEndpoint_Valid() {
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(this.createDmpDO())
@@ -121,7 +121,7 @@ public class DataManagementPlanResourceTest {
     }
 
     @Test
-    public void testSavePlanEndpoint_Invalid() {
+    void testSavePlanEndpoint_Invalid() {
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(this.createDmpDO())
@@ -131,7 +131,7 @@ public class DataManagementPlanResourceTest {
     }
 
     @Test
-    public void testUpdatePlanEndpoint_Invalid() {
+    void testUpdatePlanEndpoint_Invalid() {
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body("{}")
@@ -140,10 +140,9 @@ public class DataManagementPlanResourceTest {
                 .statusCode(401);
     }
 
-    @Disabled
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testUpdatePlanEndpoint_Valid() {
+    void testUpdatePlanEndpoint_Valid() {
         DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDOEmpty();
         dmpDO.setMetadata("Different String for metadata");
         given()
@@ -156,10 +155,9 @@ public class DataManagementPlanResourceTest {
                 .body("title", is("EmptyTestDmp"));
     }
 
-    @Disabled
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testUpdatePlanEndpoint_Unauthorized() {
+    void testUpdatePlanEndpoint_Unauthorized() {
         DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDOEmpty();
         dmpDO.setMetadata("Different String for metadata");
         given()
@@ -193,7 +191,7 @@ public class DataManagementPlanResourceTest {
     }
 
     @Test
-    public void testGetDmpByIdAndRevisionlanEndpoint_Invalid() {
+    void testGetDmpByIdAndRevisionlanEndpoint_Invalid() {
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .when().get("/0/1")
@@ -203,7 +201,7 @@ public class DataManagementPlanResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testGetDmpByIdAndRevisionlanEndpoint_Unauthorized() {
+    void testGetDmpByIdAndRevisionlanEndpoint_Unauthorized() {
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .when().get("/0/1")
@@ -213,7 +211,7 @@ public class DataManagementPlanResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testGetDmpByIdAndRevisionlanEndpoint_Valid() {
+    void testGetDmpByIdAndRevisionlanEndpoint_Valid() {
         DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
         testDOFactory.getOrCreateTestVersionDO();
         given()

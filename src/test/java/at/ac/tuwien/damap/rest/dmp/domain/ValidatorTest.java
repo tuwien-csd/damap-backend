@@ -13,7 +13,7 @@ import javax.validation.ConstraintViolationException;
 
 @JBossLog
 @QuarkusTest
-public class ValidatorTest {
+class ValidatorTest {
 
     @Inject
     TestDOFactory testDOFactory;

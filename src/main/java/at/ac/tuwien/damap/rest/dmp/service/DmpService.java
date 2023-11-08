@@ -58,9 +58,8 @@ public class DmpService {
 
         List<Dmp> dmpList = dmpRepo.getAll();
         List<DmpListItemDO> dmpListItemDOList = new ArrayList<>();
-        dmpList.forEach(dmp -> {
-            dmpListItemDOList.add(DmpListItemDOMapper.mapEntityToDO(null, dmp, new DmpListItemDO()));
-        });
+        dmpList.forEach(
+                dmp -> dmpListItemDOList.add(DmpListItemDOMapper.mapEntityToDO(null, dmp, new DmpListItemDO())));
         return dmpListItemDOList;
     }
 
@@ -69,9 +68,8 @@ public class DmpService {
         List<Access> accessList = accessRepo.getAllDmpByUniversityId(personId);
 
         List<DmpListItemDO> dmpListItemDOS = new ArrayList<>();
-        accessList.forEach(access -> {
-            dmpListItemDOS.add(DmpListItemDOMapper.mapEntityToDO(access, access.getDmp(), new DmpListItemDO()));
-        });
+        accessList.forEach(access -> dmpListItemDOS
+                .add(DmpListItemDOMapper.mapEntityToDO(access, access.getDmp(), new DmpListItemDO())));
         return dmpListItemDOS;
     }
 
@@ -208,13 +206,10 @@ public class DmpService {
 
         List<Contributor> dmpContributors = dmp.getContributorList();
 
-        Optional<Contributor> alreadyExistingContributorLeader =
-                dmpContributors.stream()
-                        .filter(c -> {
-                            return c.getUniversityId().equals(
-                                    projectLeaderDO.getUniversityId());
-                        })
-                        .findFirst();
+        Optional<Contributor> alreadyExistingContributorLeader = dmpContributors.stream()
+                .filter(c -> c.getUniversityId().equals(
+                        projectLeaderDO.getUniversityId()))
+                .findFirst();
 
         Contributor projectLeaderContributor =
                 alreadyExistingContributorLeader.orElse(new Contributor());

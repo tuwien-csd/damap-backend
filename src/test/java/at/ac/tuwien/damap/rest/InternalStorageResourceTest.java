@@ -13,13 +13,13 @@ import static io.restassured.RestAssured.given;
 
 @QuarkusTest
 @TestHTTPEndpoint(InternalStorageResource.class)
-public class InternalStorageResourceTest {
+class InternalStorageResourceTest {
 
     @Inject
     TestDOFactory testDOFactory;
 
     @Test
-    public void testGetAllByLanguageEndpoint_Invalid() {
+    void testGetAllByLanguageEndpoint_Invalid() {
         given()
                 .when().get("/eng")
                 .then()
@@ -28,7 +28,7 @@ public class InternalStorageResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testGetAllByLanguageEndpoint_Valid() {
+    void testGetAllByLanguageEndpoint_Valid() {
         testDOFactory.prepareInternalStorageOption();
         given()
                 .when().get("/eng")

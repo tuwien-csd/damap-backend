@@ -21,12 +21,10 @@ public class ORCIDPersonMapper {
                 : orcidPerson.getAffiliations().get(0);
         contributorDO.setAffiliation(firstAffiliation);
 
-        IdentifierDO identifierContributorDO = new IdentifierDO() {
-            {
-                setIdentifier(orcidPerson.orcidId);
-                setType(EIdentifierType.ORCID);
-            }
-        };
+        IdentifierDO identifierContributorDO = new IdentifierDO();
+        identifierContributorDO.setIdentifier(orcidPerson.orcidId);
+        identifierContributorDO.setType(EIdentifierType.ORCID);
+
         contributorDO.setPersonId(identifierContributorDO);
 
         return contributorDO;

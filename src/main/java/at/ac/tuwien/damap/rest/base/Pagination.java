@@ -22,18 +22,20 @@ public class Pagination {
     }
 
     public void setPage(MultivaluedMap<String, String> map) {
-        var page = map.getFirst("page");
+        var p = map.getFirst("page");
         try {
-            this.page = Integer.parseUnsignedInt(page);
+            this.page = Integer.parseUnsignedInt(p);
         } catch (Exception e) {
+            this.page = 1;
         }
     }
 
     public void setPerPage(MultivaluedMap<String, String> map) {
-        var perPage = map.getFirst("perPage");
+        var pp = map.getFirst("perPage");
         try {
-            this.perPage = Integer.parseUnsignedInt(perPage);
+            this.perPage = Integer.parseUnsignedInt(pp);
         } catch (Exception e) {
+            this.perPage = 10;
         }
     }
 

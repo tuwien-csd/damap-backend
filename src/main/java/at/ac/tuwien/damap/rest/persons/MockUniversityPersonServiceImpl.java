@@ -31,8 +31,6 @@ public class MockUniversityPersonServiceImpl implements PersonService {
         var items = mockPersonRestService.getContributorSearchResult();
         var search = Search.fromMap(queryParams);
 
-        ResultList<ContributorDO> resultList = ResultList.fromItemsAndSearch(items, search);
-
-        return resultList;
+        return ResultList.fromItemsAndSearch(items, search);
     }
 }

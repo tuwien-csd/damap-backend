@@ -13,7 +13,7 @@ import javax.inject.Inject;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @QuarkusTest
-public class DmpServiceTest {
+class DmpServiceTest {
 
     @Inject
     DmpService dmpService;
