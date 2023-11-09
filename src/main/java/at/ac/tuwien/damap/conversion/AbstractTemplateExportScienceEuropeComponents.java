@@ -70,6 +70,8 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
         else
             addReplacement(replacements, "[projectname]", project.getTitle());
 
+        addReplacement(footerMap, "[projectname]", dmp.getProject().getTitle());
+
         // handling space in the cover depends on the title length
         switch (titleLength / 25) {
             case 0:
@@ -131,6 +133,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
         } else {
             addReplacement(replacements, "[grantid]", "");
         }
+        addReplacement(footerMap, "[grantid]", replacements.get("[grantid]"));
     }
 
     private String getContributorPersonIdentifier(Contributor contributor) {
@@ -334,6 +337,10 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
     public void datasetsInformation(){
         addReplacement(replacements, "[datageneration]", dmp.getDataGeneration());
         addReplacement(replacements, "[documentation]", dmp.getDocumentation());
+        if (dmp.getTargetAudience() != null)
+            addReplacement(replacements, "[targetaudience]", dmp.getTargetAudience());
+        else
+            addReplacement(replacements, "[targetaudience]", "");
     }
 
     public void storageInformation(){
@@ -693,8 +700,17 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
     //All tables variables replacement
     public void tableContent(List<XWPFTable> xwpfTables) {
         for (XWPFTable xwpfTable : xwpfTables) {
-            if (xwpfTable.getRow(1) != null) {
-                String tableIdentifier = xwpfTable.getRow(1).getCell(1).getParagraphs().get(0).getRuns().get(0).getText(0);
+            XWPFTableRow tableIdentifierRow = xwpfTable.getRow(1); 
+            if (tableIdentifierRow != null) {
+
+                // Making sure that static tables without identifiers are handled correctly.
+                XWPFTableCell tableIdentifierCell = tableIdentifierRow.getCell(1);
+                String tableIdentifier = "";
+                if (tableIdentifierCell != null) {
+                    tableIdentifier = tableIdentifierCell.getParagraphs().get(0).getRuns().get(0).getText(0);
+                }
+
+                tableIdentifier = tableIdentifier == null ? "" : tableIdentifier;
 
                 switch (tableIdentifier) {
                     case ("[datasetTable]"):
@@ -1063,11 +1079,6 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
             insertTableCells(xwpfTable, xwpfTable.getRows().get(xwpfTable.getRows().size() - 1), emptyContent);
         }
         xwpfTable.removeRow(1);
-
-        if (dmp.getTargetAudience() != null)
-            addReplacement(replacements, "[targetaudience]", dmp.getTargetAudience());
-        else
-            addReplacement(replacements, "[targetaudience]", "");
 
         //this snippet serves to merge the last column, which contains the [targetaudience] text valid for all rows.
         CTVMerge vMerge = CTVMerge.Factory.newInstance();

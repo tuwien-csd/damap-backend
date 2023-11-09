@@ -24,6 +24,9 @@ public class ExportTemplateBroker {
     @Inject
     ExportFWFTemplate exportFWFTemplate;
 
+    @Inject
+    ExportHorizonEuropeTemplate exportHorizonEuropeTemplate;
+
     /**
      * Decides which export template to use.
      * Currently only supports FWF and Science Europe templates.
@@ -39,13 +42,13 @@ public class ExportTemplateBroker {
                     IdentifierDO funderIdentifier = dmpDO.getProject().getFunding().getFunderId();
                     if (funderIdentifier.getType() != null)
                         if (funderIdentifier.getType().equals(EIdentifierType.FUNDREF))
-                            //FWF FUNDREF Identifier 501100002428
+                            // FWF FUNDREF Identifier 501100002428
                             if (funderIdentifier.getIdentifier() != null)
                                 if (funderIdentifier.getIdentifier().equals("501100002428"))
                                     return exportFWFTemplate.exportTemplate(dmpId);
                 }
 
-        //default export science europe template
+        // default export science europe template
         return exportScienceEuropeTemplate.exportTemplate(dmpId);
     }
 
@@ -53,6 +56,8 @@ public class ExportTemplateBroker {
         switch (type) {
             case FWF:
                 return exportFWFTemplate.exportTemplate(dmpId);
+            case HORIZON_EUROPE:
+                return exportHorizonEuropeTemplate.exportTemplate(dmpId);
             case SCIENCE_EUROPE:
             default:
                 return exportScienceEuropeTemplate.exportTemplate(dmpId);

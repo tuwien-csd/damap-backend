@@ -37,26 +37,27 @@ public abstract class AbstractTemplateExportSetup extends AbstractTemplateExport
 
     protected Map<String, String> replacements = new HashMap<>();
     protected Map<String, String> footerMap = new HashMap<>();
-    //Convert the date for readable format for the document
+    // Convert the date for readable format for the document
     protected Dmp dmp = null;
     protected List<Dataset> datasets = null;
     protected List<Dataset> deletedDatasets = null;
     protected List<Cost> costList = null;
-    //elements of the document that need to be navigated through
+    // elements of the document that need to be navigated through
     protected Properties prop = null;
     protected List<XWPFParagraph> xwpfParagraphs = null;
     protected List<XWPFTable> xwpfTables = null;
     protected ContributorDO projectCoordinator = null;
 
     protected void exportSetup(long dmpId) {
-        //Loading data related to the project from database
+        // Loading data related to the project from database
         dmp = dmpRepo.findById(dmpId);
         datasets = dmp.getDatasetList();
         deletedDatasets = getDeletedDatasets(datasets);
         costList = dmp.getCosts();
 
-        //determine project leader/coordinator/principal investigator
-        Optional<Contributor> projectLeaderOpt = dmp.getContributorList().stream().filter(contributor -> contributor.getContributorRole() == EContributorRole.PROJECT_LEADER).findFirst();
+        // determine project leader/coordinator/principal investigator
+        Optional<Contributor> projectLeaderOpt = dmp.getContributorList().stream()
+                .filter(contributor -> contributor.getContributorRole() == EContributorRole.PROJECT_LEADER).findFirst();
         if (projectLeaderOpt.isPresent())
             projectCoordinator = ContributorDOMapper.mapEntityToDO(projectLeaderOpt.get(), new ContributorDO());
         else
@@ -70,5 +71,18 @@ public abstract class AbstractTemplateExportSetup extends AbstractTemplateExport
 
     private List<Dataset> getDeletedDatasets(List<Dataset> datasets) {
         return datasets.stream().filter(Dataset::getDelete).collect(Collectors.toList());
+    }
+
+    protected List<Contributor> getContributorsByRole(List<Contributor> contributors, EContributorRole role) {
+        return contributors.stream()
+                .filter(c -> c.getContributorRole() == role).collect(Collectors.toList());
+
+    }
+
+    protected String getContributorsText(List<Contributor> contributors) {
+        return String.join(",",
+                contributors.stream()
+                        .map(c -> String.format("%s %s (%s)", c.getFirstName(), c.getLastName(), c.getMbox()))
+                        .collect(Collectors.toList()));
     }
 }
