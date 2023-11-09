@@ -16,8 +16,8 @@ jobs:
       - name: Setup Maven Action
         uses: s4u/setup-maven-action@v1.2.1
         with:
-          java-version: '11'
-          maven-version: '3.8.2'
+          java-version: '17'
+          maven-version: '3.9.5'
 
       - name: Build with Maven
         run: mvn -B clean install
