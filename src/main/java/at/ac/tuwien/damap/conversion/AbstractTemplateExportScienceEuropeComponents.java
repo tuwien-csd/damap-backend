@@ -138,7 +138,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
 
     private String getContributorPersonIdentifier(Contributor contributor) {
         String identifier = null;
-        Identifier personIdentifier = contributor.getPersonIdentifier();
+        Identifier personIdentifier = contributor != null ? contributor.getPersonIdentifier() : null;
 
         if (personIdentifier != null) 
         {
