@@ -282,7 +282,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
             }
 
             
-            contributorId = getContributorPersonIdentifier(dmp.getContact());
+            contributorId = getContributorPersonIdentifier(contributor);
             if (contributorId != null) {
                 contributorProperties.add(contributorId);
             }
@@ -501,51 +501,61 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
         addReplacement(replacements, "[sensitivedata]", sensitiveData);
     }
 
-    public void repoinfoAndToolsInformation() {
-        String repoSentence = "";
+    protected void repoInformation() {
         String repoInformation = "";
+        Set<Repository> repositories = new HashSet<>();
+        List<String> repoTexts = new ArrayList<>();
 
         for (Dataset dataset : datasets) {
-            if (dataset.getDistributionList() != null){
-                List<Distribution> distributions = dataset.getDistributionList();
-                List<String> repositories = new ArrayList<>();
-
-                for (Distribution distribution: distributions) {
-                    if (Repository.class.isAssignableFrom(distribution.getHost().getClass()))
-                        repositories.add(repositoriesService.getDescription(((Repository) distribution.getHost()).getRepositoryId()) + " " + repositoriesService.getRepositoryURL(((Repository) distribution.getHost()).getRepositoryId()));
-                }
-                if (repositories.size() > 0) {
-                    repoSentence = loadResourceService.loadVariableFromResource(prop, "repositories.avail");
-                    repositories.add(0,repoSentence);
-                    repoInformation = String.join("; ", repositories);
+            List<Distribution> distributions = dataset.getDistributionList();
+            for (Distribution distribution : distributions) {
+                Host host = distribution.getHost();
+                if (Repository.class.isAssignableFrom(host.getClass())) {
+                    repositories.add((Repository) distribution.getHost());
                 }
             }
+        }
+
+        if (!repositories.isEmpty()) {
+            repoTexts.add(loadResourceService.loadVariableFromResource(prop, "repositories.avail"));
+
+            repositories.forEach(repo -> repoTexts.add(repositoriesService
+                    .getDescription(repo.getRepositoryId()) + " "
+                    + repositoriesService
+                            .getRepositoryURL(repo.getRepositoryId())));
+
+            repoInformation = String.join("; ", repoTexts);
         }
 
         addReplacement(replacements, "[repoinformation]", repoInformation + (repoInformation.equals("") ? "" : ";"));
+    }
+
+    public void repoinfoAndToolsInformation() {
+        repoInformation();
 
         if (dmp.getTools() != null) {
             if (!Objects.equals(dmp.getTools(), "")) {
-                addReplacement(replacements, "[tools]", loadResourceService.loadVariableFromResource(prop, "tools.avail") + " " + dmp.getTools());
-            }
-            else {
+                addReplacement(replacements, "[tools]",
+                        loadResourceService.loadVariableFromResource(prop, "tools.avail") + " " + dmp.getTools());
+            } else {
                 addReplacement(replacements, "[tools]", loadResourceService.loadVariableFromResource(prop, "tools.no"));
             }
-        }
-        else {
+        } else {
             addReplacement(replacements, "[tools]", loadResourceService.loadVariableFromResource(prop, "tools.no"));
         }
 
         if (dmp.getRestrictedDataAccess() != null) {
             if (!Objects.equals(dmp.getRestrictedDataAccess(), "")) {
-                addReplacement(replacements, "[restrictedAccessInfo]", ";" + loadResourceService.loadVariableFromResource(prop, "restrictedAccess.avail") + " " + dmp.getRestrictedDataAccess());
+                addReplacement(replacements, "[restrictedAccessInfo]",
+                        ";" + loadResourceService.loadVariableFromResource(prop, "restrictedAccess.avail") + " "
+                                + dmp.getRestrictedDataAccess());
+            } else {
+                addReplacement(replacements, "[restrictedAccessInfo]",
+                        loadResourceService.loadVariableFromResource(prop, ""));
             }
-            else {
-                addReplacement(replacements, "[restrictedAccessInfo]", loadResourceService.loadVariableFromResource(prop, ""));
-            }
-        }
-        else {
-            addReplacement(replacements, "[restrictedAccessInfo]", loadResourceService.loadVariableFromResource(prop, ""));
+        } else {
+            addReplacement(replacements, "[restrictedAccessInfo]",
+                    loadResourceService.loadVariableFromResource(prop, ""));
         }
     }
 
