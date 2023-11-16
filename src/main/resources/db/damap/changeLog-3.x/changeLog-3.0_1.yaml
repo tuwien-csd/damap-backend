@@ -1,6 +1,0 @@
-databaseChangeLog:
-  - changeSet:
-      id: 9
-      author: John Doe
-      changes:
-        - empty: { }

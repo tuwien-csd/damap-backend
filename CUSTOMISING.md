@@ -111,6 +111,26 @@ damap:
       db-kind: postgresql # your database type
 ```
 
+If you want to customize liquibase for your own institutional backend:
+- Create a new folder in db with your institutions name - like e.g. tuwien
+- Create your own root changelog and change the liquibase path in application.yaml to point to your new root changelog
+- Your new root changelog should look something like this:
+```yaml
+databaseChangeLog:
+  - include:
+      file: db/tuwien/changeLog-root.yaml
+```
+- This include statement makes sure, that all damap changesets are automatically included in your seperate backend
+- After that, you can create your own changelogs in your custom institutional folder and include them in your root
+- Damap uses sequential integers as ids - to avoid conflicts, you should adpopt your own id system, that does not clash
+  with damap. Liquibase allows any type of id, as long as it is unique - e.g. tuwien_1, tuwien_2...
+
+If you want to completely do your own thing, keep everything above the same, but instead of including the changeLog-root.yaml
+file, include every changeset you want to keep separately. Beware - this approach requires a lot of maintenance, since
+every new damap version has to be checked for new changesets you might want to include.
+Also before version 3, all changesets where kept in db/changeLog.yaml. If you might want to remove certain changesets in
+this file, you would have to create your own version in your institutional folder. 
+
 ### Configuring Project and Person API
 Provide your CRIS system and person database API addresses in the config:
 

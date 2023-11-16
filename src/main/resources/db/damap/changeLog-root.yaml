@@ -1,31 +1,14 @@
-# Before version 3, all changeset where recorded in changelog.yaml.
-# changeLog.yaml is outside the damap folder for compatibility with older institutional backends.
-# To increase readability and customizability, future changes are going to be split into different files.
+# To increase readability and make it more customizable, changes are going to be split into different files.
 # As an id, consecutive integers are used.
-# Each main version Y has its own folder named changeLog-Y.x.
+# Each main version Y has its own folder named changeLog-Y.x (the x here is not to be substituted!!!).
 # Inside are the changesets. Each changeset has its own file named changeLog-Y.x_1, where Y is the version of the current
-# folder and x is the minor version the change belongs to. For example "changeLog-3.0_1.yaml". If two changes occur in the same
-# minor version, use "changeLog-3.0_2.yaml" to distinguish between them.
+# folder and x is the minor version the change belongs to. For example "changeLog-3.0.0_1.yaml". If two changes occur in the same
+# minor version, use "changeLog-3.0.0_2.yaml" to distinguish between them.
 # Please stick to these naming guidelines, to avoid conflicts.
-#
-# Using includeAll with this naming is not possible, since Liquibase would execute version 10 before version 2. A custom
-# comparator cannot be used, since liquibase is loaded via the quarkus class loader (Base Runtime ClassLoader),
-# which cannot load the application root or any hot deployed code.
 #
 # To include a new changeset, generate a new version folder (if not already there) and then create your changeset - follow
 # the naming guidelines. Then append an include statement below, including your new changeset.
-# Important - keep in mind the id - check which your predecessor used
-#
-# If you want to customize damap for your own institutional backend:
-# - Create a new folder in db with your institutions name - like e.g. tuwien
-# - Create your own root changelog and change the path in application.yaml to point to your new root changelog
-# - Your new root changelog should look something like this:
-# - databaseChangeLog:
-#  - include:
-#      file: db/damap/changeLog-root.yaml
-# - After that, you can create your own changelogs in your custom institutional folder and include them in your root
-# - To avoid conflicts with the damap changelogs, adopt your own id system, e.g. tuwien_1, tuwien_2...
-# - If you feel the need to remove a changeset in the damap project, comment out the unwanted include statement
+# Important - keep in mind the id - check which one your predecessor used.
 #
 # The commented out include statement below includes a sample changeset, to show how it should be done. If you are
 # the first one to add a changeset using the new system - uncomment it and adapt it to your needs.
@@ -35,4 +18,4 @@ databaseChangeLog:
   - include:
       file: db/changeLog.yaml # legacy changelog
   #- include:
-  #    file: db/damap/changeLog-3.x/changeLog-3.0_1.yaml
+  #    file: db/damap/changeLog-3.x/changeLog-3.0.0_1.yaml
