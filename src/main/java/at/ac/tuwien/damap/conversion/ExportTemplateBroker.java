@@ -15,17 +15,19 @@ import javax.inject.Inject;
 @JBossLog
 public class ExportTemplateBroker {
 
-    @Inject
-    DmpService dmpService;
+    private final DmpService dmpService;
+    private final ExportScienceEuropeTemplate exportScienceEuropeTemplate;
+    private final ExportFWFTemplate exportFWFTemplate;
+    private final ExportHorizonEuropeTemplate exportHorizonEuropeTemplate;
 
     @Inject
-    ExportScienceEuropeTemplate exportScienceEuropeTemplate;
-
-    @Inject
-    ExportFWFTemplate exportFWFTemplate;
-
-    @Inject
-    ExportHorizonEuropeTemplate exportHorizonEuropeTemplate;
+    public ExportTemplateBroker(DmpService dmpService, ExportScienceEuropeTemplate exportScienceEuropeTemplate,
+            ExportFWFTemplate exportFWFTemplate, ExportHorizonEuropeTemplate exportHorizonEuropeTemplate) {
+        this.dmpService = dmpService;
+        this.exportScienceEuropeTemplate = exportScienceEuropeTemplate;
+        this.exportFWFTemplate = exportFWFTemplate;
+        this.exportHorizonEuropeTemplate = exportHorizonEuropeTemplate;
+    }
 
     /**
      * Decides which export template to use.

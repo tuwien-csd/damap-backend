@@ -2,7 +2,6 @@ package at.ac.tuwien.damap.conversion;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 
@@ -93,8 +92,7 @@ public class ExportHorizonEuropeTemplate extends AbstractTemplateExportScienceEu
     public void composeTableDatasetRepository(XWPFTable xwpfTable) {
         log.debug("Export steps: Dataset Repository Table");
 
-        List<Dataset> newDatasets = getNewDatasets().stream().filter(dataset -> !dataset.getDelete())
-                .collect(Collectors.toList());
+        List<Dataset> newDatasets = getNewDatasets().stream().filter(dataset -> !dataset.getDelete()).toList();
         if (!newDatasets.isEmpty()) {
             for (int i = 0; i < newDatasets.size(); i++) {
 
@@ -104,6 +102,9 @@ public class ExportHorizonEuropeTemplate extends AbstractTemplateExportScienceEu
                 try {
                     newRow = insertNewTableRow(sourceTableRow, i + 2);
                 } catch (Exception e) {
+                    // new row could not be inserted. Silently fail for now.
+                    log.error("Could not insert row into dataset table", e);
+                    continue;
                 }
 
                 ArrayList<String> docVar = new ArrayList<>();
@@ -138,12 +139,6 @@ public class ExportHorizonEuropeTemplate extends AbstractTemplateExportScienceEu
             insertTableCells(xwpfTable, xwpfTable.getRows().get(xwpfTable.getRows().size() - 1), emptyContent);
         }
         xwpfTable.removeRow(1);
-
-        if (dmp.getTargetAudience() != null)
-            addReplacement(replacements, "[targetaudience]", dmp.getTargetAudience());
-        else
-            addReplacement(replacements, "[targetaudience]", "");
-
         commitTableRows(xwpfTable);
     }
 }

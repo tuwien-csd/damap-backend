@@ -15,7 +15,6 @@ import org.apache.poi.xwpf.usermodel.XWPFTable;
 
 import javax.inject.Inject;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * This class describes necessary setup for all template export classes.
@@ -70,12 +69,12 @@ public abstract class AbstractTemplateExportSetup extends AbstractTemplateExport
     }
 
     private List<Dataset> getDeletedDatasets(List<Dataset> datasets) {
-        return datasets.stream().filter(Dataset::getDelete).collect(Collectors.toList());
+        return datasets.stream().filter(Dataset::getDelete).toList();
     }
 
     protected List<Contributor> getContributorsByRole(List<Contributor> contributors, EContributorRole role) {
         return contributors.stream()
-                .filter(c -> c.getContributorRole() == role).collect(Collectors.toList());
+                .filter(c -> c.getContributorRole() == role).toList();
 
     }
 
@@ -83,6 +82,6 @@ public abstract class AbstractTemplateExportSetup extends AbstractTemplateExport
         return String.join(",",
                 contributors.stream()
                         .map(c -> String.format("%s %s (%s)", c.getFirstName(), c.getLastName(), c.getMbox()))
-                        .collect(Collectors.toList()));
+                        .toList());
     }
 }
