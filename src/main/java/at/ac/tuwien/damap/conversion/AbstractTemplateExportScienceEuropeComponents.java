@@ -70,6 +70,8 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
         else
             addReplacement(replacements, "[projectname]", project.getTitle());
 
+        addReplacement(footerMap, "[projectname]", dmp.getProject().getTitle());
+
         // handling space in the cover depends on the title length
         switch (titleLength / 25) {
             case 0:
@@ -131,11 +133,12 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
         } else {
             addReplacement(replacements, "[grantid]", "");
         }
+        addReplacement(footerMap, "[grantid]", replacements.get("[grantid]"));
     }
 
     private String getContributorPersonIdentifier(Contributor contributor) {
         String identifier = null;
-        Identifier personIdentifier = contributor.getPersonIdentifier();
+        Identifier personIdentifier = contributor != null ? contributor.getPersonIdentifier() : null;
 
         if (personIdentifier != null) 
         {
@@ -279,7 +282,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
             }
 
             
-            contributorId = getContributorPersonIdentifier(dmp.getContact());
+            contributorId = getContributorPersonIdentifier(contributor);
             if (contributorId != null) {
                 contributorProperties.add(contributorId);
             }
@@ -334,6 +337,10 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
     public void datasetsInformation(){
         addReplacement(replacements, "[datageneration]", dmp.getDataGeneration());
         addReplacement(replacements, "[documentation]", dmp.getDocumentation());
+        if (dmp.getTargetAudience() != null)
+            addReplacement(replacements, "[targetaudience]", dmp.getTargetAudience());
+        else
+            addReplacement(replacements, "[targetaudience]", "");
     }
 
     public void storageInformation(){
@@ -494,51 +501,61 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
         addReplacement(replacements, "[sensitivedata]", sensitiveData);
     }
 
-    public void repoinfoAndToolsInformation() {
-        String repoSentence = "";
+    protected void repoInformation() {
         String repoInformation = "";
+        Set<Repository> repositories = new HashSet<>();
+        List<String> repoTexts = new ArrayList<>();
 
         for (Dataset dataset : datasets) {
-            if (dataset.getDistributionList() != null){
-                List<Distribution> distributions = dataset.getDistributionList();
-                List<String> repositories = new ArrayList<>();
-
-                for (Distribution distribution: distributions) {
-                    if (Repository.class.isAssignableFrom(distribution.getHost().getClass()))
-                        repositories.add(repositoriesService.getDescription(((Repository) distribution.getHost()).getRepositoryId()) + " " + repositoriesService.getRepositoryURL(((Repository) distribution.getHost()).getRepositoryId()));
-                }
-                if (repositories.size() > 0) {
-                    repoSentence = loadResourceService.loadVariableFromResource(prop, "repositories.avail");
-                    repositories.add(0,repoSentence);
-                    repoInformation = String.join("; ", repositories);
+            List<Distribution> distributions = dataset.getDistributionList();
+            for (Distribution distribution : distributions) {
+                Host host = distribution.getHost();
+                if (Repository.class.isAssignableFrom(host.getClass())) {
+                    repositories.add((Repository) distribution.getHost());
                 }
             }
+        }
+
+        if (!repositories.isEmpty()) {
+            repoTexts.add(loadResourceService.loadVariableFromResource(prop, "repositories.avail"));
+
+            repositories.forEach(repo -> repoTexts.add(repositoriesService
+                    .getDescription(repo.getRepositoryId()) + " "
+                    + repositoriesService
+                            .getRepositoryURL(repo.getRepositoryId())));
+
+            repoInformation = String.join("; ", repoTexts);
         }
 
         addReplacement(replacements, "[repoinformation]", repoInformation + (repoInformation.equals("") ? "" : ";"));
+    }
+
+    public void repoinfoAndToolsInformation() {
+        repoInformation();
 
         if (dmp.getTools() != null) {
             if (!Objects.equals(dmp.getTools(), "")) {
-                addReplacement(replacements, "[tools]", loadResourceService.loadVariableFromResource(prop, "tools.avail") + " " + dmp.getTools());
-            }
-            else {
+                addReplacement(replacements, "[tools]",
+                        loadResourceService.loadVariableFromResource(prop, "tools.avail") + " " + dmp.getTools());
+            } else {
                 addReplacement(replacements, "[tools]", loadResourceService.loadVariableFromResource(prop, "tools.no"));
             }
-        }
-        else {
+        } else {
             addReplacement(replacements, "[tools]", loadResourceService.loadVariableFromResource(prop, "tools.no"));
         }
 
         if (dmp.getRestrictedDataAccess() != null) {
             if (!Objects.equals(dmp.getRestrictedDataAccess(), "")) {
-                addReplacement(replacements, "[restrictedAccessInfo]", ";" + loadResourceService.loadVariableFromResource(prop, "restrictedAccess.avail") + " " + dmp.getRestrictedDataAccess());
+                addReplacement(replacements, "[restrictedAccessInfo]",
+                        ";" + loadResourceService.loadVariableFromResource(prop, "restrictedAccess.avail") + " "
+                                + dmp.getRestrictedDataAccess());
+            } else {
+                addReplacement(replacements, "[restrictedAccessInfo]",
+                        loadResourceService.loadVariableFromResource(prop, ""));
             }
-            else {
-                addReplacement(replacements, "[restrictedAccessInfo]", loadResourceService.loadVariableFromResource(prop, ""));
-            }
-        }
-        else {
-            addReplacement(replacements, "[restrictedAccessInfo]", loadResourceService.loadVariableFromResource(prop, ""));
+        } else {
+            addReplacement(replacements, "[restrictedAccessInfo]",
+                    loadResourceService.loadVariableFromResource(prop, ""));
         }
     }
 
@@ -693,8 +710,17 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
     //All tables variables replacement
     public void tableContent(List<XWPFTable> xwpfTables) {
         for (XWPFTable xwpfTable : xwpfTables) {
-            if (xwpfTable.getRow(1) != null) {
-                String tableIdentifier = xwpfTable.getRow(1).getCell(1).getParagraphs().get(0).getRuns().get(0).getText(0);
+            XWPFTableRow tableIdentifierRow = xwpfTable.getRow(1); 
+            if (tableIdentifierRow != null) {
+
+                // Making sure that static tables without identifiers are handled correctly.
+                XWPFTableCell tableIdentifierCell = tableIdentifierRow.getCell(1);
+                String tableIdentifier = "";
+                if (tableIdentifierCell != null) {
+                    tableIdentifier = tableIdentifierCell.getParagraphs().get(0).getRuns().get(0).getText(0);
+                }
+
+                tableIdentifier = tableIdentifier == null ? "" : tableIdentifier;
 
                 switch (tableIdentifier) {
                     case ("[datasetTable]"):
@@ -1063,11 +1089,6 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
             insertTableCells(xwpfTable, xwpfTable.getRows().get(xwpfTable.getRows().size() - 1), emptyContent);
         }
         xwpfTable.removeRow(1);
-
-        if (dmp.getTargetAudience() != null)
-            addReplacement(replacements, "[targetaudience]", dmp.getTargetAudience());
-        else
-            addReplacement(replacements, "[targetaudience]", "");
 
         //this snippet serves to merge the last column, which contains the [targetaudience] text valid for all rows.
         CTVMerge vMerge = CTVMerge.Factory.newInstance();

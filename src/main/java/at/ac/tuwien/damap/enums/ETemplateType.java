@@ -5,7 +5,8 @@ import java.util.HashMap;
 public enum ETemplateType {
 
     SCIENCE_EUROPE("SCIENCE_EUROPE"),
-    FWF("FWF");
+    FWF("FWF"),
+    HORIZON_EUROPE("HORIZON_EUROPE");
 
     private final String value;
 
