@@ -9,13 +9,7 @@
 # To include a new changeset, generate a new version folder (if not already there) and then create your changeset - follow
 # the naming guidelines. Then append an include statement below, including your new changeset.
 # Important - keep in mind the id - check which one your predecessor used.
-#
-# The commented out include statement below includes a sample changeset, to show how it should be done. If you are
-# the first one to add a changeset using the new system - uncomment it and adapt it to your needs.
-# Afterward please delete this comment-block.
 
 databaseChangeLog:
   - include:
-      file: db/changeLog.yaml # legacy changelog
-  #- include:
-  #    file: db/damap/changeLog-3.x/changeLog-3.0.0_1.yaml
+      file: at/ac/tuwien/damap/db/changeLog.yaml # legacy changelog

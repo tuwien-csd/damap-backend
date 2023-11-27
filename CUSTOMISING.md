@@ -110,15 +110,21 @@ damap:
       password: your-datasource-password
       db-kind: postgresql # your database type
 ```
+### Custom Database Changes
 
-If you want to customize liquibase for your own institutional backend:
+If you want to customize [liquibase](https://www.liquibase.org/get-started) for your own institutional backend:
 - Create a new folder in db with your institutions name - like e.g. tuwien
 - Create your own root changelog and change the liquibase path in application.yaml to point to your new root changelog
+```yaml
+liquibase:
+  migrate-at-start: true
+  change-log: db/tuwien/newChangeLog-root.yaml
+```
 - Your new root changelog should look something like this:
 ```yaml
 databaseChangeLog:
   - include:
-      file: db/tuwien/changeLog-root.yaml
+      file: db/damap/changeLog-root.yaml
 ```
 - This include statement makes sure, that all damap changesets are automatically included in your seperate backend
 - After that, you can create your own changelogs in your custom institutional folder and include them in your root
@@ -228,8 +234,8 @@ insert into damap.inter_storage_translation (id, version, internal_storage_id, l
 
 ### Export customisation
 
-[Export word template](src/main/resources/template/scienceEuropeTemplate.docx) and
-[its resource file](src/main/resources/template/scienceEuropeTemplate.resource)
+[Export word template](src/main/resources/at/ac/tuwien/damap/template/scienceEuropeTemplate.docx) and
+[its resource file](src/main/resources/at/ac/tuwien/damap/template/scienceEuropeTemplate.resource)
 can be replaced in the institutional project
 by adding a replacement file in the resources folder of your customisation project.
 Then write a class to extend

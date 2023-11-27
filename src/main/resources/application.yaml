@@ -69,7 +69,7 @@ quarkus:
 
   liquibase:
     migrate-at-start: true
-    change-log: db/damap/changeLog-root.yaml
+    change-log: at/ac/tuwien/damap/db/changeLog-root.yaml
 
 rest:
   projects/mp-rest/url: ${damap.projects-url}

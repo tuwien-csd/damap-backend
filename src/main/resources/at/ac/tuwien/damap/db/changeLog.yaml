@@ -1,4 +1,5 @@
 databaseChangeLog:
+  - logicalFilePath:  db/changeLog.yaml
   - changeSet:
       id: 1
       author: Zeno Casellato
