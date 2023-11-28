@@ -702,7 +702,8 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "http://localhost:8085/*"
+        "http://localhost:8085/*",
+        "http://localhost:4200/*"
       ],
       "webOrigins": [
         "+"

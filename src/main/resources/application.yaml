@@ -85,10 +85,16 @@ rest:
 "%dev":
   damap:
     origins: http://localhost:4200
+    auth:
+      backend:
+        url: http://localhost:8087/auth/realms/damap # https://your.authentication.server
     datasource:
-      url: jdbc:postgresql://localhost:5432/damap
+      url: jdbc:postgresql://localhost:8088/damap
       username: damap
       password: pw4damap
+    projects-url: http://localhost:8091
+    persons-url: http://localhost:8091
+    fits-url: http://localhost:8089/fits
 
 "%oracle":
   quarkus:
