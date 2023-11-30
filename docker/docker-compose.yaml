@@ -17,11 +17,8 @@ services:
       POSTGRES_USER: damap
       POSTGRES_PASSWORD: pw4damap
       POSTGRES_DB: damap
-
-    # Uncomment the following to directly access the database
-    # at localhost:8088
-    # ports:
-    #  - "8088:5432"
+    ports:
+      - "8088:5432"
 
   keycloak:
     image: jboss/keycloak
