@@ -5,6 +5,7 @@ services:
     # Since DAMAP containers are publicly available on Github packages one can
     # just pull the latest container image.
     image: ghcr.io/tuwien-csd/damap-backend:next
+    pull_policy: always
 
     # uncomment the following two lines and comment the previous
     # 'image' to directly build the backend container from this repository.
@@ -13,6 +14,7 @@ services:
 
   damap-db:
     image: postgres:12
+    pull_policy: always
     environment:
       POSTGRES_USER: damap
       POSTGRES_PASSWORD: pw4damap
@@ -22,6 +24,7 @@ services:
 
   keycloak:
     image: jboss/keycloak
+    pull_policy: always
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
@@ -54,6 +57,7 @@ services:
     # Since DAMAP containers are publicly available on Github packages one can
     # just pull the latest container image.
     image: ghcr.io/tuwien-csd/damap-frontend:next
+    pull_policy: always
 
     # uncomment the following two lines and comment the previous
     # 'image' to directly build the frontend container from the repository
@@ -63,6 +67,7 @@ services:
 
   api-mock:
     image: clue/json-server
+    pull_policy: always
     command: db.json --routes routes.json
     volumes:
       - ./api-mock/data/db.json:/data/db.json
@@ -75,6 +80,7 @@ services:
     # configuration needs a proxy to manage the connections between them,
     # as well as access from the outside.
     image: registry.hub.docker.com/library/nginx
+    pull_policy: always
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     ports:
@@ -82,6 +88,7 @@ services:
 
   fits-service:
     image: islandora/fits:main
+    pull_policy: always
     ports:
       - "8089:8080"
 
