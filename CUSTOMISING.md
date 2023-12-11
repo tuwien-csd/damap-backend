@@ -113,18 +113,18 @@ damap:
 ### Custom Database Changes
 
 If you want to customize [liquibase](https://www.liquibase.org/get-started) for your own institutional backend:
-- Create a new folder in db with your institutions name - like e.g. tuwien
+- Create a new namespace for your institutions name - like e.g. at/ac/tugraz/damap
 - Create your own root changelog and change the liquibase path in application.yaml to point to your new root changelog
 ```yaml
 liquibase:
   migrate-at-start: true
-  change-log: db/tuwien/newChangeLog-root.yaml
+  change-log: at/ac/tugraz/damap/db/newChangeLog-root.yaml
 ```
 - Your new root changelog should look something like this:
 ```yaml
 databaseChangeLog:
   - include:
-      file: db/damap/changeLog-root.yaml
+      file: at/ac/tuwien/damap/db/changeLog-root.yaml
 ```
 - This include statement makes sure, that all damap changesets are automatically included in your seperate backend
 - After that, you can create your own changelogs in your custom institutional folder and include them in your root
