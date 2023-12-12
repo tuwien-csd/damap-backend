@@ -1,0 +1,15 @@
+# To increase readability and make it more customizable, changes are going to be split into different files.
+# As an id, consecutive integers are used.
+# Each main version Y has its own folder named changeLog-Y.x (the x here is not to be substituted!!!).
+# Inside are the changesets. Each changeset has its own file named changeLog-Y.x_1, where Y is the version of the current
+# folder and x is the minor version the change belongs to. For example "changeLog-3.0.0_1.yaml". If two changes occur in the same
+# minor version, use "changeLog-3.0.0_2.yaml" to distinguish between them.
+# Please stick to these naming guidelines, to avoid conflicts.
+#
+# To include a new changeset, generate a new version folder (if not already there) and then create your changeset - follow
+# the naming guidelines. Then append an include statement below, including your new changeset.
+# Important - keep in mind the id - check which one your predecessor used.
+
+databaseChangeLog:
+  - include:
+      file: at/ac/tuwien/damap/db/changeLog.yaml # legacy changelog

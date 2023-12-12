@@ -19,32 +19,32 @@ public class TemplateFileBrokerServiceImpl implements TemplateFileBrokerService 
 
     @Override
     public Properties getScienceEuropeTemplateResource() {
-        return loadResource("template/scienceEuropeTemplate.resource");
+        return loadResource("at/ac/tuwien/damap/template/scienceEuropeTemplate.resource");
     }
 
     @Override
     public InputStream loadScienceEuropeTemplate() {
-        return loadTemplate("template/scienceEuropeTemplate.docx");
+        return loadTemplate("at/ac/tuwien/damap/template/scienceEuropeTemplate.docx");
     }
 
     @Override
     public Properties getFWFTemplateResource() {
-        return loadResource("template/scienceEuropeTemplate.resource");
+        return loadResource("at/ac/tuwien/damap/template/scienceEuropeTemplate.resource");
     }
 
     @Override
     public InputStream loadFWFTemplate() {
-        return loadTemplate("template/FWFTemplate.docx");
+        return loadTemplate("at/ac/tuwien/damap/template/FWFTemplate.docx");
     }
 
     @Override
     public InputStream loadHorizonEuropeTemplate() {
-        return loadTemplate("template/horizonEuropeTemplate.docx");
+        return loadTemplate("at/ac/tuwien/damap/template/horizonEuropeTemplate.docx");
     }
 
     @Override
     public Properties getHorizonEuropeTemplateResource() {
-        return loadResource("template/horizonEuropeTemplate.resource");
+        return loadResource("at/ac/tuwien/damap/template/horizonEuropeTemplate.resource");
     }
 
     public Properties loadResource(String resource) {
