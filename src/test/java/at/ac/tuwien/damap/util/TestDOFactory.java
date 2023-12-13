@@ -1,27 +1,56 @@
 package at.ac.tuwien.damap.util;
 
-import at.ac.tuwien.damap.domain.Dmp;
-import at.ac.tuwien.damap.domain.DmpVersion;
-import at.ac.tuwien.damap.domain.InternalStorage;
-import at.ac.tuwien.damap.domain.InternalStorageTranslation;
-import at.ac.tuwien.damap.enums.*;
-import at.ac.tuwien.damap.repo.DmpRepo;
-import at.ac.tuwien.damap.repo.DmpVersionRepo;
-import at.ac.tuwien.damap.repo.InternalStorageTranslationRepo;
-import at.ac.tuwien.damap.rest.dmp.domain.*;
-import at.ac.tuwien.damap.rest.dmp.mapper.DmpDOMapper;
-import at.ac.tuwien.damap.rest.version.VersionDO;
-import at.ac.tuwien.damap.rest.version.VersionDOMapper;
-import at.ac.tuwien.damap.rest.version.VersionService;
-import lombok.extern.jbosslog.JBossLog;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.io.Resources;
+
+import at.ac.tuwien.damap.domain.Dmp;
+import at.ac.tuwien.damap.domain.DmpVersion;
+import at.ac.tuwien.damap.domain.InternalStorage;
+import at.ac.tuwien.damap.domain.InternalStorageTranslation;
+import at.ac.tuwien.damap.enums.EAccessRight;
+import at.ac.tuwien.damap.enums.EAgreement;
+import at.ac.tuwien.damap.enums.EComplianceType;
+import at.ac.tuwien.damap.enums.EContributorRole;
+import at.ac.tuwien.damap.enums.ECostType;
+import at.ac.tuwien.damap.enums.EDataAccessType;
+import at.ac.tuwien.damap.enums.EDataKind;
+import at.ac.tuwien.damap.enums.EDataQualityType;
+import at.ac.tuwien.damap.enums.EDataSource;
+import at.ac.tuwien.damap.enums.EDataType;
+import at.ac.tuwien.damap.enums.EFundingState;
+import at.ac.tuwien.damap.enums.EIdentifierType;
+import at.ac.tuwien.damap.enums.ELicense;
+import at.ac.tuwien.damap.enums.ESecurityMeasure;
+import at.ac.tuwien.damap.repo.DmpRepo;
+import at.ac.tuwien.damap.repo.DmpVersionRepo;
+import at.ac.tuwien.damap.repo.InternalStorageTranslationRepo;
+import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
+import at.ac.tuwien.damap.rest.dmp.domain.CostDO;
+import at.ac.tuwien.damap.rest.dmp.domain.DatasetDO;
+import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
+import at.ac.tuwien.damap.rest.dmp.domain.ExternalStorageDO;
+import at.ac.tuwien.damap.rest.dmp.domain.FundingDO;
+import at.ac.tuwien.damap.rest.dmp.domain.IdentifierDO;
+import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
+import at.ac.tuwien.damap.rest.dmp.domain.RepositoryDO;
+import at.ac.tuwien.damap.rest.dmp.domain.StorageDO;
+import at.ac.tuwien.damap.rest.dmp.mapper.DmpDOMapper;
+import at.ac.tuwien.damap.rest.persons.orcid.models.ORCIDRecord;
+import at.ac.tuwien.damap.rest.version.VersionDO;
+import at.ac.tuwien.damap.rest.version.VersionDOMapper;
+import at.ac.tuwien.damap.rest.version.VersionService;
+import lombok.extern.jbosslog.JBossLog;
 
 @JBossLog
 @ApplicationScoped
@@ -154,14 +183,14 @@ public class TestDOFactory {
         return funding;
     }
 
-    private IdentifierDO getTestIdentifierDO(EIdentifierType type){
+    private IdentifierDO getTestIdentifierDO(EIdentifierType type) {
         IdentifierDO identifier = new IdentifierDO();
         identifier.setIdentifier("Unique Identifier 123456");
         identifier.setType(type);
         return identifier;
     }
 
-    public ContributorDO getTestContributorDO(){
+    public ContributorDO getTestContributorDO() {
         ContributorDO contributor = new ContributorDO();
         contributor.setUniversityId("Internal Identifier 123456");
         contributor.setPersonId(getTestIdentifierDO(EIdentifierType.ORCID));
@@ -174,7 +203,7 @@ public class TestDOFactory {
         return contributor;
     }
 
-    private List<ContributorDO> getTestContributorList(){
+    private List<ContributorDO> getTestContributorList() {
         ContributorDO contributor = getTestContributorDO();
         contributor.setRole(EContributorRole.DATA_MANAGER);
 
@@ -187,7 +216,7 @@ public class TestDOFactory {
         return Arrays.asList(contributor, secondContributor);
     }
 
-    private List<DatasetDO> getTestDatasetList(){
+    private List<DatasetDO> getTestDatasetList() {
         DatasetDO dataset = new DatasetDO();
         dataset.setTitle("Dataset Title");
         dataset.setSource(EDataSource.NEW);
@@ -225,7 +254,7 @@ public class TestDOFactory {
         return List.of(dataset, dataset2);
     }
 
-    private List<RepositoryDO> getTestRepositoryList(){
+    private List<RepositoryDO> getTestRepositoryList() {
         RepositoryDO repository = new RepositoryDO();
         repository.setRepositoryId("r3d100013557");
         repository.setTitle("TU Data");
@@ -233,19 +262,21 @@ public class TestDOFactory {
         return List.of(repository);
     }
 
-    private List<StorageDO> getTestStorageList(){
+    private List<StorageDO> getTestStorageList() {
         StorageDO storage = new StorageDO();
-        Optional<InternalStorageTranslation> testInternalStorage = internalStorageTranslationRepo.getAllInternalStorageByLanguage("eng").stream()
+        Optional<InternalStorageTranslation> testInternalStorage = internalStorageTranslationRepo
+                .getAllInternalStorageByLanguage("eng").stream()
                 .filter(a -> a.getTitle().equals("Test Storage Title"))
                 .findAny();
-        testInternalStorage.ifPresent(storageTranslation -> storage.setInternalStorageId(storageTranslation.getInternalStorageId().id));
+        testInternalStorage.ifPresent(
+                storageTranslation -> storage.setInternalStorageId(storageTranslation.getInternalStorageId().id));
         storage.setTitle("Internal Host");
         storage.setDatasets(List.of("referenceHash123456"));
 
         return List.of(storage);
     }
 
-    private List<ExternalStorageDO> getTestExternalStorageList(){
+    private List<ExternalStorageDO> getTestExternalStorageList() {
         ExternalStorageDO storage = new ExternalStorageDO();
         storage.setTitle("External Host");
         storage.setDatasets(List.of("referenceHash123456"));
@@ -256,7 +287,7 @@ public class TestDOFactory {
         return List.of(storage);
     }
 
-    private List<CostDO> getTestCostList(){
+    private List<CostDO> getTestCostList() {
         CostDO cost = new CostDO();
         cost.setTitle("Cost Item Title");
         cost.setValue(50000f);
@@ -266,7 +297,6 @@ public class TestDOFactory {
         cost.setTitle("Custom Typology");
         return List.of(cost);
     }
-
 
     public DmpDO getOrCreateTestDmpDOEmpty() {
         final Optional<Dmp> testDmp = dmpRepo.getAll().stream()
@@ -283,7 +313,7 @@ public class TestDOFactory {
     }
 
     @Transactional
-    public void prepareInternalStorageOption(){
+    public void prepareInternalStorageOption() {
 
         if (internalStorageTranslationRepo.listAll().size() > 0)
             return;
@@ -302,7 +332,6 @@ public class TestDOFactory {
         internalStorageTranslation.persistAndFlush();
     }
 
-
     @Transactional
     public DmpDO getOrCreateTestDmpDOInvalidData() {
         DmpDO newInvalidTestDmpDO = getOrCreateTestDmpDO();
@@ -316,7 +345,7 @@ public class TestDOFactory {
         return newInvalidTestDmpDO;
     }
 
-    public VersionDO getOrCreateTestVersionDO(){
+    public VersionDO getOrCreateTestVersionDO() {
         DmpDO dmpDO = getOrCreateTestDmpDO();
 
         final Optional<DmpVersion> testDmpVersion = dmpVersionRepo.getAll().stream()
@@ -333,5 +362,19 @@ public class TestDOFactory {
         versionService.createOrUpdate(versionDO);
 
         return getOrCreateTestVersionDO();
+    }
+
+    public ORCIDRecord getORCIDTestRecord() {
+        ORCIDRecord record = new ORCIDRecord();
+        URL url = Resources.getResource("json/orcidRecord.json");
+        try (InputStream in = url.openStream()) {
+            ObjectMapper mapper = new ObjectMapper();
+            record = mapper.readValue(in, ORCIDRecord.class);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return record;
     }
 }

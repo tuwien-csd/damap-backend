@@ -46,9 +46,14 @@ public class ORCIDMapper {
         contributorDO.setFirstName(orcidRecord.getPerson().getName().getGivenNames().getValue());
         contributorDO.setLastName(orcidRecord.getPerson().getName().getFamilyName().getValue());
 
-        var primaryMail = orcidRecord.getPerson().getEmails().getEmail().stream().filter(ORCIDEmail::isPrimary)
-                .findFirst();
-        contributorDO.setMbox(primaryMail.isPresent() ? primaryMail.get().getEmail() : null);
+        var emails = orcidRecord.getPerson().getEmails().getEmail();
+        if (!emails.isEmpty()) {
+            var primaryMail = emails.stream().filter(ORCIDEmail::isPrimary)
+                    .findFirst();
+
+            String mail = primaryMail.isPresent() ? primaryMail.get().getEmail() : emails.get(0).getEmail();
+            contributorDO.setMbox(mail);
+        }
 
         List<ORCIDAffiliation> affiliations = new ArrayList<>();
 

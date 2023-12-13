@@ -1,42 +1,31 @@
 package at.ac.tuwien.damap.rest;
 
-import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
-import at.ac.tuwien.damap.rest.version.VersionService;
-import at.ac.tuwien.damap.security.SecurityService;
-import at.ac.tuwien.damap.util.TestDOFactory;
-import io.quarkus.test.common.http.TestHTTPEndpoint;
-import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
-import io.quarkus.test.security.TestSecurity;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.is;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.is;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import at.ac.tuwien.damap.TestSetup;
+import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
+import at.ac.tuwien.damap.rest.version.VersionService;
+import at.ac.tuwien.damap.util.TestDOFactory;
+import io.quarkus.test.common.http.TestHTTPEndpoint;
+import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 
 @QuarkusTest
 @TestHTTPEndpoint(DataManagementPlanResource.class)
-class DataManagementPlanResourceTest {
+class DataManagementPlanResourceTest extends TestSetup {
 
     @Inject
     TestDOFactory testDOFactory;
 
     @Inject
     VersionService versionService;
-
-    @InjectMock
-    SecurityService securityService;
-
-    @BeforeEach
-    public void setup() {
-        Mockito.when(securityService.getUserId()).thenReturn("012345");
-        Mockito.when(securityService.getUserName()).thenReturn("testUser");
-    }
 
     @Test
     void testGetAllPlansEndpoint_Invalid() {
@@ -216,7 +205,9 @@ class DataManagementPlanResourceTest {
         testDOFactory.getOrCreateTestVersionDO();
         given()
                 .contentType(MediaType.APPLICATION_JSON)
-                .when().get("/" + dmpDO.getId() + "/" + versionService.getDmpVersions(dmpDO.getId()).get(0).getRevisionNumber())
+                .when()
+                .get("/" + dmpDO.getId() + "/"
+                        + versionService.getDmpVersions(dmpDO.getId()).get(0).getRevisionNumber())
                 .then()
                 .statusCode(200);
     }
