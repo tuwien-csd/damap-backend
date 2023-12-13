@@ -1,5 +1,19 @@
 package at.ac.tuwien.damap.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+
+import org.junit.jupiter.api.Test;
+
+import at.ac.tuwien.damap.TestSetup;
 import at.ac.tuwien.damap.domain.Contributor;
 import at.ac.tuwien.damap.enums.EFunctionRole;
 import at.ac.tuwien.damap.rest.gdpr.domain.GdprQuery;
@@ -8,32 +22,15 @@ import at.ac.tuwien.damap.rest.gdpr.service.GdprQueryUtil;
 import at.ac.tuwien.damap.rest.gdpr.service.GdprService;
 import at.ac.tuwien.damap.util.TestDOFactory;
 import io.quarkus.test.junit.QuarkusTest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import javax.inject.Inject;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
-class GdprServiceTest {
+class GdprServiceTest extends TestSetup {
 
     @Inject
     GdprService gdprService;
 
     @Inject
     TestDOFactory testDOFactory;
-
-    @BeforeEach
-    public void setup() {
-        testDOFactory.getOrCreateTestDmpDO();
-    }
 
     @Test
     void testGdprExtendedData_shouldReturnData() {

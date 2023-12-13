@@ -255,7 +255,13 @@ public class DmpService {
             var identifier = contributor.getPersonIdentifier();
             if (identifier != null
                     && identifier.getIdentifierType().equals(EIdentifierType.ORCID)) {
-                ContributorDOMapper.mapDOtoEntity(orcidPersonService.read(identifier.getIdentifier()), contributor);
+                try {
+                    ContributorDOMapper.mapDOtoEntity(orcidPersonService.read(identifier.getIdentifier()), contributor);
+                } catch (Exception e) {
+                    log.warn(String.format(
+                            "Could not fetch ORCID or map contributor info for identifier '%s'.%nDetail error message: %s",
+                            identifier.getIdentifier(), e));
+                }
             }
         });
     }
