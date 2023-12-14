@@ -2302,6 +2302,23 @@
       "realmRoles": [
         "default-roles-damap"
       ]
+    },
+    {
+      "username": "admin",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin"
+        }
+      ],
+      "attributes": {
+        "personID": "654321"
+      },
+      "realmRoles": [
+        "Damap Admin",
+        "default-roles-damap"
+      ]
     }
   ]
 }
