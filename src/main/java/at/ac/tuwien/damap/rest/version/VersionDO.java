@@ -17,4 +17,5 @@ public class VersionDO {
     private String versionName;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private Date versionDate;
+    private String editor;
 }

@@ -42,9 +42,9 @@ public class VersionService {
     @Transactional
     public VersionDO create(VersionDO versionDO) {
         log.info("Creating new DMP Version");
+        versionDO.setRevisionNumber(getCurrentRevisionNumber().longValue());
         DmpVersion version = VersionDOMapper.mapDOtoEntity(versionDO, new DmpVersion(), dmpRepo);
         version.setVersionDate(new Date());
-        version.setRevisionNumber(getCurrentRevisionNumber().longValue());
         version.persist();
         return getVersionById(version.id);
     }

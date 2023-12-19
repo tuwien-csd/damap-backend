@@ -1,0 +1,20 @@
+databaseChangeLog:
+    - changeSet:
+        id: 9
+        author: Valentin Futterer
+        changes:
+        - renameColumn:
+            tableName: dmp_version
+            newColumnName: revision_entity_id
+            oldColumnName: revision_number
+
+        - addForeignKeyConstraint:
+            baseColumnNames: revision_entity_id
+            baseTableName: dmp_version
+            constraintName: fk_version_revision_entity
+            onDelete: SET NULL
+            onUpdate: CASCADE
+            referencedColumnNames: id
+            referencedTableName: revinfo
+            validate: true
+
