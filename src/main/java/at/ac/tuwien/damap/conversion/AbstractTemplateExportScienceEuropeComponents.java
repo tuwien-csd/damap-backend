@@ -294,7 +294,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
             }
 
             contributorAffiliationId = getContributorAffiliationIdentifier(contributor);
-            if (contributorAffiliation != null) {
+            if (contributorAffiliationId != null) {
                 contributorProperties.add(contributorAffiliationId);
             }
 
