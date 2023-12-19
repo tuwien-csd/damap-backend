@@ -13,3 +13,5 @@
 databaseChangeLog:
   - include:
       file: at/ac/tuwien/damap/db/changeLog.yaml # legacy changelog
+  - include:
+      file: at/ac/tuwien/damap/db/changeLog-3.x/changeLog-3.0.0_1.yaml
