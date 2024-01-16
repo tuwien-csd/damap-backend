@@ -717,6 +717,9 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 XWPFTableCell tableIdentifierCell = tableIdentifierRow.getCell(1);
                 String tableIdentifier = "";
                 if (tableIdentifierCell != null) {
+                    if (tableIdentifierCell.getParagraphs().get(0).getRuns().isEmpty()) {
+                        tableIdentifierCell.getParagraphs().get(0).createRun();
+                    }
                     tableIdentifier = tableIdentifierCell.getParagraphs().get(0).getRuns().get(0).getText(0);
                 }
 

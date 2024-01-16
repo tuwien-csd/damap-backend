@@ -61,12 +61,18 @@ public abstract class AbstractTemplateExportFunctions {
                         //handle new line for contributor list and storage information
                         if (entry.getValue().contains(";")){
                             String[] value=entry.getValue().split(";");
-                            for(String text : value){
+                            for(int i = 0; i < value.length; i++){
                                 xwpfParagraph.setAlignment(ParagraphAlignment.LEFT);
-                                xwpfRun.setText(text.trim());
-                                xwpfRun.addBreak();
-                                xwpfRun.addBreak();
+                                xwpfRun.setText(value[i].trim());
+                                if (i < value.length - 1) {
+                                    xwpfRun.addCarriageReturn();
+                                    xwpfRun.addCarriageReturn();
+                                }
                             }
+                            // TODO: when xwpfRun.removeCarriageReturn is implemented:
+                            //  replace the above for loop with an enhanced one
+                            //  remove the extra if inside the loop
+                            //  call removeCarriageReturn twice outside the loop
                             xwpfRunText = "";
                         }
                         //general case for non contributor list
