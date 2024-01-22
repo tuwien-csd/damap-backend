@@ -80,8 +80,10 @@ public abstract class AbstractTemplateExportFunctions {
                             if (entry.getKey().equals("[projectname]") && entry.getValue().contains("#oversize")) { //resize title to be smaller
                                 xwpfRun.setFontSize(xwpfRun.getFontSize()-4);
                                 xwpfRunText = xwpfRunText.replace(entry.getKey(), entry.getValue().replace("#oversize", ""));
-                            }
-                            else {
+                            } else if (entry.getValue().contains("#color_green")) { // set the color to be green
+                                xwpfRun.setColor("92D050");
+                                xwpfRunText = xwpfRunText.replace(entry.getKey(), entry.getValue().replace("#color_green", ""));
+                            } else {
                                 xwpfRunText = xwpfRunText.replace(entry.getKey(), entry.getValue());
                             }
                         }

@@ -71,21 +71,31 @@ public class ExportHorizonEuropeTemplate extends AbstractTemplateExportScienceEu
 
         var dataManagers = getContributorsByRole(dmp.getContributorList(), EContributorRole.DATA_MANAGER);
 
-        String dataManagerInfo = loadResourceService.loadVariableFromResource(prop, "datamanagerInfo.none");
-
-        if (!dataManagers.isEmpty()) {
-            dataManagerInfo = getContributorsText(dataManagers);
-
-            dataManagerInfo = String.format("%s %s", dataManagerInfo,
-                    loadResourceService.loadVariableFromResource(prop, "datamanagerInfo"));
+        if (dataManagers.isEmpty()) {
+            addReplacement(replacements, "[datamanager]",
+                    loadResourceService.loadVariableFromResource(prop, "datamanager.none"));
+            addReplacement(replacements, "[datamanagerInfo]",
+                    loadResourceService.loadVariableFromResource(prop, "datamanagerInfo.singular"));
+        } else {
+            addReplacement(replacements, "[datamanager]", getContributorsText(dataManagers));
+            if (dataManagers.size() > 1) {
+                addReplacement(replacements, "[datamanagerInfo]",
+                        loadResourceService.loadVariableFromResource(prop, "datamanagerInfo.plural"));
+            } else {
+                addReplacement(replacements, "[datamanagerInfo]",
+                        loadResourceService.loadVariableFromResource(prop, "datamanagerInfo.singular"));
+            }
         }
-
-        addReplacement(replacements, "[datamanagerInfo]", dataManagerInfo);
     }
 
     public void workPackageLeadersInformation() {
         var workPackageLeaders = getContributorsByRole(dmp.getContributorList(), EContributorRole.WORK_PACKAGE_LEADER);
-        addReplacement(replacements, "[workPackageLeaders]", getContributorsText(workPackageLeaders));
+        if (workPackageLeaders.isEmpty()) {
+            addReplacement(replacements, "[workPackageLeaders]",
+                    loadResourceService.loadVariableFromResource(prop, "workPackageManger.none"));
+        } else {
+            addReplacement(replacements, "[workPackageLeaders]", getContributorsText(workPackageLeaders));
+        }
     }
 
     @Override
