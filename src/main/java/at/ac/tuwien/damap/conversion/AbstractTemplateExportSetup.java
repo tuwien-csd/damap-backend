@@ -79,9 +79,14 @@ public abstract class AbstractTemplateExportSetup extends AbstractTemplateExport
     }
 
     protected String getContributorsText(List<Contributor> contributors) {
-        return String.join(",",
-                contributors.stream()
-                        .map(c -> String.format("%s %s (%s)", c.getFirstName(), c.getLastName(), c.getMbox()))
-                        .toList());
+        if (contributors.isEmpty()) {
+            return "";
+        } else {
+            return String.join(", ",
+                    contributors.stream()
+                            .map(c -> String.format("%s %s%s", c.getFirstName(), c.getLastName(),
+                                    c.getMbox() == null ? "" : " ("+c.getMbox()+")"))
+                            .toList());
+        }
     }
 }

@@ -1,8 +1,11 @@
 metadata.avail=This will help others to identify, discover and reuse our data.
 metadata.no=As there are no domain specific metadata standards applicable, we will provide a README file [at file level/at dataset level/at project level] with an explanation of all values and terms used next to each file with data.
 
-datamanagerInfo=will act as the data manager who will be in charge of the actions described by this DMP.
-datamanagerInfo.none=No person has been specified to be the data manager of this DMP.
+datamanagerInfo.singular=will act as the data manager who will be in charge of the actions described by this DMP.
+datamanagerInfo.plural=will act as the data managers who will be in charge of the actions described by this DMP.
+datamanager.none=[name of data manager]#color_green
+
+workPackageManger.none=[the work package leaders]
 
 dataOrganisation.no=
 
