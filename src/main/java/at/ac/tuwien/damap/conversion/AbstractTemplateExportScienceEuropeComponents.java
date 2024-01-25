@@ -7,6 +7,7 @@ import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.*;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTVMerge;
 
+import java.lang.reflect.Field;
 import java.text.NumberFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -706,8 +707,9 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
     }
 
     //All tables variables replacement
-    public void tableContent(List<XWPFTable> xwpfTables) {
-        for (XWPFTable xwpfTable : xwpfTables) {
+    // Takes care of filling tables and deletes certain empty tables
+    public void tableContent(XWPFDocument document, List<XWPFTable> xwpfTables) {
+        for (XWPFTable xwpfTable : new ArrayList<>(xwpfTables)) {
             XWPFTableRow tableIdentifierRow = xwpfTable.getRow(1); 
             if (tableIdentifierRow != null) {
 
@@ -728,7 +730,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                         composeTableNewDatasets(xwpfTable);
                         break;
                     case ("[reusedDatasetTable]"):
-                        composeTableReusedDatasets(xwpfTable);
+                        composeTableReusedDatasets(document, xwpfTable);
                         break;
                     case ("[datasetAccessTable]"):
                         composeTableDataAccess(xwpfTable);
@@ -740,14 +742,20 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                         composeTableDatasetRepository(xwpfTable);
                         break;
                     case ("[datasetDeleteTable]"):
-                        composeTableDatasetDeletion(xwpfTable);
+                        composeTableDatasetDeletion(document, xwpfTable);
                         break;
                     case ("[costTable]"):
                         composeTableCost(xwpfTable);
                         break;
+                    default:
+                        break;
                 }
             }
-            replaceTableVariables(xwpfTable, replacements);
+        }
+
+        // prevents replacing table variables of deleted tables
+        for (XWPFTable table : getAllTables(document)) {
+            replaceTableVariables(table, replacements);
         }
     }
 
@@ -824,7 +832,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
         return datasets.stream().filter(dataset -> dataset.getSource().equals(EDataSource.REUSED)).collect(Collectors.toList());
     }
 
-    public void composeTableReusedDatasets(XWPFTable xwpfTable){
+    public void composeTableReusedDatasets(XWPFDocument document, XWPFTable xwpfTable){
         log.debug("Export steps: Reused Dataset Table");
 
         List<Dataset> reusedDatasets = getReusedDatasets();
@@ -877,13 +885,10 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 insertTableCells(xwpfTable, newRow, docVar);
             }
             xwpfTable.removeRow(xwpfTable.getRows().size() - 1);
+            xwpfTable.removeRow(1);
         } else {
-            //clean row
-            ArrayList<String> emptyContent = new ArrayList<String>(Arrays.asList("", "", "", "", "", ""));
-            insertTableCells(xwpfTable, xwpfTable.getRows().get(xwpfTable.getRows().size() - 1), emptyContent);
+            removeTableAndParagraphAbove(document, xwpfTable);
         }
-        //end of dynamic table rows code
-        xwpfTable.removeRow(1);
     }
 
     public void composeTableDataAccess(XWPFTable xwpfTable){
@@ -902,6 +907,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
             insertTableCells(xwpfTable, xwpfTable.getRows().get(xwpfTable.getRows().size() - 1), emptyContent);
         }
         xwpfTable.removeRow(1);
+        replaceTableVariables(xwpfTable, replacements);
     }
 
     private void insertComposeTableDataAccess(XWPFTable xwpfTable, List<Dataset> currentDatasets){
@@ -1100,7 +1106,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
         commitTableRows(xwpfTable);
     }
 
-    public void composeTableDatasetDeletion(XWPFTable xwpfTable){
+    public void composeTableDatasetDeletion(XWPFDocument document, XWPFTable xwpfTable){
         log.debug("Export steps: Dataset Deletion Table");
 
         if (deletedDatasets.size() > 0) {
@@ -1141,12 +1147,11 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 insertTableCells(xwpfTable, newRow, docVar);
             }
             xwpfTable.removeRow(xwpfTable.getRows().size() - 1);
+            xwpfTable.removeRow(1);
         } else {
-            //clean row
-            ArrayList<String> emptyContent = new ArrayList<String>(Arrays.asList("", "", "", "", ""));
-            insertTableCells(xwpfTable, xwpfTable.getRows().get(xwpfTable.getRows().size() - 1), emptyContent);
+            removeTableAndParagraphAbove(document, xwpfTable);
         }
-        xwpfTable.removeRow(1);
+
     }
 
     public void composeTableCost(XWPFTable xwpfTable){

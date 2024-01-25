@@ -51,7 +51,7 @@ public class ExportHorizonEuropeTemplate extends AbstractTemplateExportScienceEu
         // TO DO: combine the function with the first row generation to avoid double
         // code of similar modification.
         log.debug("Export steps: Replace in table");
-        tableContent(xwpfTables);
+        tableContent(document, xwpfTables);
 
         // Fourth step of the export: modify the content of the document's footer
         log.debug("Export steps: Replace in footer");
