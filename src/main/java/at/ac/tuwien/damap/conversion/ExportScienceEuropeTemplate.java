@@ -38,7 +38,7 @@ public class ExportScienceEuropeTemplate extends AbstractTemplateExportScienceEu
         //Third step of the export: dynamic table in all sections will be added from row number two until the end of data list.
         //TO DO: combine the function with the first row generation to avoid double code of similar modification.
         log.debug("Export steps: Replace in table");
-        tableContent(xwpfTables);
+        tableContent(document, xwpfTables);
 
         //Fourth step of the export: modify the content of the document's footer
         log.debug("Export steps: Replace in footer");

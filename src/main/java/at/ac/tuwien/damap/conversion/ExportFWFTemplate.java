@@ -38,7 +38,7 @@ public class ExportFWFTemplate extends AbstractTemplateExportScienceEuropeCompon
         //in FWF template this replaces paragraphs within the template table
         replaceTableVariables(templateTable, replacements);
         //this replaces the tables with the main template table
-        tableContent(templateXwpfTables);
+        tableContent(document, templateXwpfTables);
 
         return document;
     }
@@ -46,7 +46,7 @@ public class ExportFWFTemplate extends AbstractTemplateExportScienceEuropeCompon
     private List<XWPFTable> parseContentTables(XWPFTable templateTable) {
         List<XWPFTable> templateXwpfTables = new ArrayList<>();
         for (XWPFTableRow row : templateTable.getRows()){
-            if (row.getTableCells().size() > 1){
+            if (row.getTableCells().size() > 1) {
                 templateXwpfTables.addAll(row.getCell(1).getTables());
             }
         }

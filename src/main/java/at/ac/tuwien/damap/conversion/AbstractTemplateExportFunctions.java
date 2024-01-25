@@ -2,6 +2,7 @@ package at.ac.tuwien.damap.conversion;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.text.SimpleDateFormat;
 
@@ -35,7 +36,7 @@ public abstract class AbstractTemplateExportFunctions {
      * @return
      * @throws Exception
      */
-    public XWPFDocument loadTemplate (InputStream template, String startChar, String endChar) throws Exception{
+    public XWPFDocument loadTemplate(InputStream template, String startChar, String endChar) throws Exception {
         //Extract document using Apache POI https://poi.apache.org/
         XWPFDocument document = new XWPFDocument(template);
 
@@ -119,7 +120,7 @@ public abstract class AbstractTemplateExportFunctions {
      * @throws XmlException
      * @throws Exception
      */
-    public XWPFTableRow insertNewTableRow(XWPFTableRow sourceTableRow, int pos) throws XmlException, IOException  {
+    public XWPFTableRow insertNewTableRow(XWPFTableRow sourceTableRow, int pos) throws XmlException, IOException {
         XWPFTable table = sourceTableRow.getTable();
         CTRow newCTRrow = CTRow.Factory.parse(sourceTableRow.getCtRow().newInputStream());
         XWPFTableRow tableRow = new XWPFTableRow(newCTRrow, table);
@@ -152,7 +153,7 @@ public abstract class AbstractTemplateExportFunctions {
      * @param table
      * @param replacements
      */
-    static void replaceTableVariables(XWPFTable table, Map<String, String> replacements){
+    static void replaceTableVariables(XWPFTable table, Map<String, String> replacements) {
         //this replaces variables in tables (e.g. costcurrency)
         List<XWPFTableRow> tableRows = table.getRows();
         for (XWPFTableRow xwpfTableRow : tableRows) {
@@ -260,7 +261,7 @@ public abstract class AbstractTemplateExportFunctions {
      * @param startChar
      * @param endChar
      */
-    public void formattingTable(List<XWPFTable> xwpfTables, String startChar, String endChar){
+    public void formattingTable(List<XWPFTable> xwpfTables, String startChar, String endChar) {
         if (xwpfTables != null) {
             for (XWPFTable xwpfTable : xwpfTables) {
                 for (XWPFTableRow row : xwpfTable.getRows()) {
@@ -297,20 +298,18 @@ public abstract class AbstractTemplateExportFunctions {
                         if (!xwpfRunText.contains(endChar)) {
                             removeRunIndex.add(xwpfRuns.indexOf(xwpfRun));
                             mergeRun = true;
-                            if (sb.length()>0) {
+                            if (sb.length() > 0) {
                                 sb.delete(0, sb.length());
                             }
                             sb.append(xwpfRunText);
                         }
-                    }
-                    else {
+                    } else {
                         if (mergeRun) {
                             sb.append(xwpfRunText);
                             if (xwpfRunText.contains(endChar)) {
                                 mergeRun = false;
-                                xwpfRun.setText(sb.toString(),0);
-                            }
-                            else {
+                                xwpfRun.setText(sb.toString(), 0);
+                            } else {
                                 removeRunIndex.add(xwpfRuns.indexOf(xwpfRun));
                             }
                         }
@@ -325,5 +324,109 @@ public abstract class AbstractTemplateExportFunctions {
                 removeRunIndex.clear();
             }
         }
+    }
+
+    /**
+     * Removes a table inside a document or nested inside another table.
+     * For nested tables, this works only for depth 1.
+     * If the table is not to be found inside the doc or at depth 1, nothing happens.
+     *
+     * @param doc
+     * @param table
+     */
+    public void removeTable(XWPFDocument doc, XWPFTable table) {
+        int pos = doc.getPosOfTable(table);
+        if (pos != -1) {
+            doc.removeBodyElement(pos);
+        } else { // table not found in document -> nestedTable
+            removeNestedTable(doc, table);
+        }
+    }
+
+    /**
+     * Removes a table which is nested inside another table. Max nested depth is 1.
+     *
+     * @param doc
+     * @param table
+     */
+    private void removeNestedTable(XWPFDocument doc, XWPFTable table) {
+        for (XWPFTableCell cell : getAllOuterTableCells(doc)) {
+            for (XWPFTable nestedTable : cell.getTables()) {
+                if (nestedTable.equals(table)) {
+                    int pos = cell.getTables().indexOf(nestedTable);
+                    // dirty hack since POI XWPF does not offer functionality for removing nested tables
+                    try {
+                        Field beField = cell.getClass().getDeclaredField("tables");
+                        beField.setAccessible(true);
+                        ((List<XWPFTable>) beField.get(cell)).remove(pos); // higher level representation
+                    } catch (Exception ignored) {
+                    }
+                    cell.getCTTc().removeTbl(pos); // low level cell representation
+
+                    return;
+                }
+            }
+        }
+    }
+
+    /**
+     * Removes a table inside a document or nested inside another table. Also removes the paragraph above it.
+     * For nested tables, this works only for depth 1.
+     * If the table is not to be found inside the doc or at depth 1, nothing happens.
+     * If the there is no paragraph above the table, only the table will be removed.
+     *
+     * @param doc
+     * @param table
+     */
+    public void removeTableAndParagraphAbove(XWPFDocument doc, XWPFTable table) {
+        // paragraph above the table
+        if (doc.getPosOfTable(table) != -1) {
+            int paragraphPos = doc.getPosOfTable(table) - 1;
+            if (doc.getBodyElements().get(paragraphPos).getElementType().equals(BodyElementType.PARAGRAPH)) {
+                doc.removeBodyElement(paragraphPos);
+            }
+        } else {
+            for (XWPFTableCell cell : getAllOuterTableCells(doc)) {
+                for (XWPFTable nestedTable : cell.getTables()) {
+                    if (nestedTable.equals(table)) {
+                        int paragraphPos = cell.getBodyElements().indexOf(table) - 1;
+                        if (cell.getBodyElements().get(paragraphPos).getElementType().equals(BodyElementType.PARAGRAPH)) {
+                            XWPFParagraph paragraphToRemove = (XWPFParagraph) cell.getBodyElements().get(paragraphPos);
+                            cell.removeParagraph(cell.getParagraphs().indexOf(paragraphToRemove));
+                        }
+                    }
+                }
+            }
+        }
+        // delete unnecessary table
+        removeTable(doc, table);
+    }
+
+    /**
+     * Returns a list of all table cells of non nested tables in the document.
+     *
+     * @param doc
+     */
+    public List<XWPFTableCell> getAllOuterTableCells(XWPFDocument doc) {
+        List<XWPFTableCell> tableCells = new ArrayList<>();
+        for (XWPFTable outerTable : doc.getTables()) {
+            for (XWPFTableRow row : outerTable.getRows()) {
+                tableCells.addAll(row.getTableCells());
+            }
+        }
+        return tableCells;
+    }
+
+    /**
+     * Returns a list of all tables and nested tables with depth 1.
+     *
+     * @param doc
+     */
+    public List<XWPFTable> getAllTables(XWPFDocument doc) {
+        ArrayList<XWPFTable> tables = new ArrayList<>(doc.getTables());
+        for (XWPFTableCell cell : getAllOuterTableCells(doc)) {
+            tables.addAll(cell.getTables());
+        }
+        return tables;
     }
 }
