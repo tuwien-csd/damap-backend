@@ -5,6 +5,7 @@ import at.ac.tuwien.damap.enums.*;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
 import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.*;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTHyperlink;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTVMerge;
 
 import java.lang.reflect.Field;
@@ -867,6 +868,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
 
                 if (reusedDatasets.get(i).getLicense() != null) {
                     //TODO second String license option for reused datasets.
+                    //TODO use addHyperlinkRun to create hyperlinks - see publication table
                     docVar.add("");                }
                 else {
                     docVar.add("");
@@ -957,8 +959,8 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
         if (newDatasets.size() > 0) {
             for (int i = 0; i < newDatasets.size(); i++) {
 
-                XWPFTableRow sourceTableRow = xwpfTable.getRow(2);
-                XWPFTableRow newRow = new XWPFTableRow(sourceTableRow.getCtRow(), xwpfTable);
+                XWPFTableRow sourceTableRow = xwpfTable.getRow(i + 2);
+                XWPFTableRow newRow = null;
 
                 try {
                     newRow = insertNewTableRow(sourceTableRow, i + 2);
@@ -1034,6 +1036,15 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                     docVar.add("");
 
                 insertTableCells(xwpfTable, newRow, docVar);
+
+                if (newDatasets.get(i).getLicense() != null
+                        && !newDatasets.get(i).getDataAccess().equals(EDataAccessType.CLOSED)) {
+
+                    ELicense license = newDatasets.get(i).getLicense();
+                    XWPFParagraph paragraph = newRow.getCell(6).getParagraphs().get(0);
+                    turnRunIntoHyperlinkRun(paragraph.getRuns().get(0), license.getUrl());
+                    commitTableRows(xwpfTable);
+                }
             }
             xwpfTable.removeRow(xwpfTable.getRows().size() - 1);
         } else {

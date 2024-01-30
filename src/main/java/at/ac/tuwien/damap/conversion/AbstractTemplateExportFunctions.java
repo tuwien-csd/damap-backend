@@ -60,9 +60,9 @@ public abstract class AbstractTemplateExportFunctions {
                 for (Map.Entry<String, String> entry : replacements.entrySet()) {
                     if (xwpfRunText != null && xwpfRunText.contains(entry.getKey())) {
                         //handle new line for contributor list and storage information
-                        if (entry.getValue().contains(";")){
-                            String[] value=entry.getValue().split(";");
-                            for(int i = 0; i < value.length; i++){
+                        if (entry.getValue().contains(";")) {
+                            String[] value = entry.getValue().split(";");
+                            for (int i = 0; i < value.length; i++) {
                                 xwpfParagraph.setAlignment(ParagraphAlignment.LEFT);
                                 xwpfRun.setText(value[i].trim());
                                 if (i < value.length - 1) {
@@ -79,7 +79,7 @@ public abstract class AbstractTemplateExportFunctions {
                         //general case for non contributor list
                         else {
                             if (entry.getKey().equals("[projectname]") && entry.getValue().contains("#oversize")) { //resize title to be smaller
-                                xwpfRun.setFontSize(xwpfRun.getFontSize()-4);
+                                xwpfRun.setFontSize(xwpfRun.getFontSize() - 4);
                                 xwpfRunText = xwpfRunText.replace(entry.getKey(), entry.getValue().replace("#oversize", ""));
                             } else if (entry.getValue().contains("#color_green")) { // set the color to be green
                                 xwpfRun.setColor("92D050");
@@ -108,7 +108,7 @@ public abstract class AbstractTemplateExportFunctions {
                 && (dmpContent.getClass() == java.sql.Timestamp.class || dmpContent.getClass() == Date.class)) {
             content = formatter.format(dmpContent);
         }
-        
+
         replacements.put(variable, content);
     }
 
@@ -430,5 +430,37 @@ public abstract class AbstractTemplateExportFunctions {
             tables.addAll(cell.getTables());
         }
         return tables;
+    }
+
+    /**
+     * Replaces a run with a hyperlink version of itself. Replaces styling, but keeps fontsize and font family.
+     * As of apache 4.1.2 there is no way to insert a hyperlink run anywhere but the end. Therefore, the whole
+     * paragraph has to be deleted and rebuilt after the run in question.
+     *
+     * @param run
+     * @param URI
+     */
+    void turnRunIntoHyperlinkRun(XWPFRun run, String URI) {
+        XWPFParagraph paragraph = (XWPFParagraph) run.getParent();
+        int runPos = paragraph.getRuns().indexOf(run);
+        int runsAfterHyperlinkRun = paragraph.getRuns().size() - runPos - 1;
+
+        XWPFHyperlinkRun hyperlink = paragraph.createHyperlinkRun(URI);
+        hyperlink.setStyle("Hyperlink");
+        hyperlink.setFontSize(run.getFontSize());
+        hyperlink.setFontFamily(run.getFontFamily());
+        hyperlink.setText(run.getText(0));
+
+        paragraph.removeRun(runPos);
+
+        for (int i = 0; i < runsAfterHyperlinkRun; i++) {
+            XWPFRun runToRemove = paragraph.getRuns().get(runPos);
+
+            XWPFRun createdRun = paragraph.createRun();
+            createdRun.getCTR().setRPr(runToRemove.getCTR().getRPr());
+            createdRun.setText(runToRemove.getText(0));
+
+            paragraph.removeRun(runPos);
+        }
     }
 }
