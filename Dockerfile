@@ -65,7 +65,4 @@ EXPOSE 8080
 # for Openshift based unprivilegued Kubernetes environments, we will set the user to 1001
 USER 1001
 
-HEALTHCHECK --interval=5m --timeout=3s \
-  CMD curl -f http://localhost/q/health/live || exit 1
-
 ENTRYPOINT [ "/deployments/run-java.sh" ]
