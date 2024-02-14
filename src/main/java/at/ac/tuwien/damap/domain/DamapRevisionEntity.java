@@ -45,4 +45,3 @@ public class DamapRevisionEntity {
     @ModifiedEntityNames
     private Set<String> modifiedEntityNames = new HashSet<>();
 }
-
