@@ -517,7 +517,6 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
         }
 
         if (!repositories.isEmpty()) {
-            repoTexts.add(loadResourceService.loadVariableFromResource(prop, "repositories.avail"));
 
             repositories.forEach(repo -> repoTexts.add(repositoriesService
                     .getDescription(repo.getRepositoryId()) + " "
