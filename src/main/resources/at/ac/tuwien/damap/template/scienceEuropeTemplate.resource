@@ -6,8 +6,6 @@ dataOrganisation.no=
 dataQualityControl.avail=The following data quality checks will be done:
 dataQualityControl.default=Data quality checks will be done, e.g. checks of consistency of labels, logical errors in the data, data curation, and version control.
 
-repositories.avail=The repositories used in this project are described in the following paragraph:
-
 tools.avail=Methods or software needed to access and use data:
 tools.no=No specific tool or software is required to access and reuse the data.
 

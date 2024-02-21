@@ -12,8 +12,6 @@ dataOrganisation.no=
 dataQualityControl.avail=The following data quality checks will be done:
 dataQualityControl.default=Data quality checks will be done, e.g. checks of consistency of labels, logical errors in the data, data curation, and version control.
 
-repositories.avail=The repositories used in this project are described in the following paragraph:
-
 tools.avail=Methods or software needed to access and use data:
 tools.no=No specific tool or software is required to access and reuse the data.
 
@@ -35,7 +33,7 @@ sensitiveMeasure.multiple=are taken.
 sensitiveAccess=Only
 sensitiveAccess.avail=will be authorised to access sensitive data.
 
-personal.avail=In this project, we will process personal data (see section 1a).
+personal.avail=In this project, we will process personal data (see section 1).
 personal.no=At this stage, it is not foreseen to process any personal data in the project. If this changes, advice will be sought from the data protection specialist at our institution, and the DMP will be updated.
 personalDataset=will contain personal data.
 personalCompliance=We will ensure compliance with data protection laws,
