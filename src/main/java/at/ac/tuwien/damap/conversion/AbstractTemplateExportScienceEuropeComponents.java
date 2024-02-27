@@ -546,7 +546,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
         if (dmp.getRestrictedDataAccess() != null) {
             if (!Objects.equals(dmp.getRestrictedDataAccess(), "")) {
                 addReplacement(replacements, "[restrictedAccessInfo]",
-                        ";" + loadResourceService.loadVariableFromResource(prop, "restrictedAccess.avail") + " "
+                        loadResourceService.loadVariableFromResource(prop, "restrictedAccess.avail") + " "
                                 + dmp.getRestrictedDataAccess());
             } else {
                 addReplacement(replacements, "[restrictedAccessInfo]",
