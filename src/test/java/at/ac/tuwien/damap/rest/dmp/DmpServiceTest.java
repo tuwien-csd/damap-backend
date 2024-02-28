@@ -4,10 +4,14 @@ import at.ac.tuwien.damap.enums.EContributorRole;
 import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
+import at.ac.tuwien.damap.rest.dmp.domain.RepositoryDO;
 import at.ac.tuwien.damap.util.MockDmpService;
 import at.ac.tuwien.damap.util.TestDOFactory;
 import io.quarkus.test.junit.QuarkusTest;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
 import org.junit.jupiter.api.Assertions;
@@ -115,5 +119,30 @@ class DmpServiceTest {
         Assertions.assertTrue(projectLead.get().isContact());
         Assertions.assertEquals(
             EContributorRole.PROJECT_LEADER, projectLead.get().getRole());
+    }
+
+    @Test
+    void givenRepositoryIsRemoved_whenUpdatingDMP_thenRepositoryShouldBeRemoved() {
+        DmpDO testDMP = testDOFactory.getOrCreateTestDmpDO();
+        Assertions.assertEquals(1, testDMP.getRepositories().size());
+        testDMP.setRepositories(new ArrayList<>());
+        DmpDO updatedDMP = dmpService.update(testDMP);
+        Assertions.assertEquals(0, updatedDMP.getRepositories().size());
+    }
+
+    @Test
+    void givenRepositoryIsAdded_whenUpdatingDMP_thenRepositoryShouldBeAdded() {
+        DmpDO testDMP = testDOFactory.getOrCreateTestDmpDO();
+        Assertions.assertEquals(1, testDMP.getRepositories().size());
+
+        List<RepositoryDO> repoList = testDMP.getRepositories();
+        RepositoryDO repositoryToAdd = new RepositoryDO();
+        repositoryToAdd.setRepositoryId("r3d100013558");
+        repositoryToAdd.setTitle("TU Data 2");
+        repositoryToAdd.setDatasets(List.of("referenceHash123456", "referenceHash234567"));
+        repoList.add(repositoryToAdd);
+
+        DmpDO updatedDMP = dmpService.update(testDMP);
+        Assertions.assertEquals(2, updatedDMP.getRepositories().size());
     }
 }
