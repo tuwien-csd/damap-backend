@@ -66,14 +66,14 @@ public abstract class AbstractTemplateExportFunctions {
                                 xwpfParagraph.setAlignment(ParagraphAlignment.LEFT);
                                 xwpfRun.setText(value[i].trim());
                                 if (i < value.length - 1) {
-                                    xwpfRun.addCarriageReturn();
-                                    xwpfRun.addCarriageReturn();
+                                    xwpfRun.addBreak();
+                                    xwpfRun.addBreak();
                                 }
                             }
-                            // TODO: when xwpfRun.removeCarriageReturn is implemented:
+                            // TODO: when xwpfRun.removeBreak is implemented:
                             //  replace the above for loop with an enhanced one
                             //  remove the extra if inside the loop
-                            //  call removeCarriageReturn twice outside the loop
+                            //  call removeBreak twice outside the loop
                             xwpfRunText = "";
                         }
                         //general case for non contributor list
