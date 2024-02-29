@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 @UtilityClass
 @JBossLog
@@ -326,6 +325,8 @@ public class DmpDOMapper {
             }
 
         });
+
+        hostList.removeAll(hostListToRemove);
 
         // update existing Repository objects and create new ones
         dmpDO.getRepositories().forEach(hostDO -> {
