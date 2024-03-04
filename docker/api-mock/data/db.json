@@ -89,14 +89,184 @@
   ],
   "persons": [
     {
-      "universityId": "personId0",
+      "universityId": "654321",
       "personId": {
-        "identifier":  "some_orcid_id0",
+        "identifier":  "admin_orcid_id0",
         "type": "ORCID"
       },
-      "firstName": "Firstname",
-      "lastName": "Lastname",
+      "firstName": "Admin",
+      "lastName": "Admin",
+      "mbox": "admin.admin@address.com",
+      "affiliation": "affId0",
+      "affiliationId": {
+        "identifier":  "some_id0",
+        "type": "ROR"
+      },
+      "contact": false,
+      "roleInProject": "Role In Project"
+    },
+    {
+      "universityId": "123456",
+      "personId": {
+        "identifier":  "user_orcid_id0",
+        "type": "ORCID"
+      },
+      "firstName": "User",
+      "lastName": "User",
       "mbox": "mbox@address.com",
+      "affiliation": "affId0",
+      "affiliationId": {
+        "identifier":  "some_id0",
+        "type": "ROR"
+      },
+      "contact": false,
+      "roleInProject": "Role In Project"
+    },
+    {
+      "universityId": "rose_tennsion_uni_id",
+      "personId": {
+        "identifier":  "rose_tennison_orcid_id0",
+        "type": "ORCID"
+      },
+      "firstName": "Rose",
+      "lastName": "Tennison",
+      "mbox": "rose.tennison@address.com",
+      "affiliation": "affId0",
+      "affiliationId": {
+        "identifier":  "some_id0",
+        "type": "ROR"
+      },
+      "contact": false,
+      "roleInProject": "Role In Project"
+    },
+    {
+      "universityId": "karl_sylvester_uni_id",
+      "personId": {
+        "identifier":  "karl_sylvester_orcid_id0",
+        "type": "ORCID"
+      },
+      "firstName": "Karl",
+      "lastName": "Sylvester",
+      "mbox": "karl.sylvester@address.com",
+      "affiliation": "affId0",
+      "affiliationId": {
+        "identifier":  "some_id0",
+        "type": "ROR"
+      },
+      "contact": false,
+      "roleInProject": "Role In Project"
+    },
+    {
+      "universityId": "amanda_jones_uni_id",
+      "personId": {
+        "identifier":  "amanda_jones_orcid_id0",
+        "type": "ORCID"
+      },
+      "firstName": "Amanda",
+      "lastName": "Jones",
+      "mbox": "amanda.jones@address.com",
+      "affiliation": "affId0",
+      "affiliationId": {
+        "identifier":  "some_id0",
+        "type": "ROR"
+      },
+      "contact": false,
+      "roleInProject": "Role In Project"
+    },
+    {
+      "universityId": "benjamin_martinez_uni_id",
+      "personId": {
+        "identifier":  "benjamin_martinez_orcid_id0",
+        "type": "ORCID"
+      },
+      "firstName": "Benjamin",
+      "lastName": "Martinez",
+      "mbox": "benjamin.martinez@address.com",
+      "affiliation": "affId0",
+      "affiliationId": {
+        "identifier":  "some_id0",
+        "type": "ROR"
+      },
+      "contact": false,
+      "roleInProject": "Role In Project"
+    },
+    {
+      "universityId": "chloe_thompson_uni_id",
+      "personId": {
+        "identifier":  "chloe_thompson_orcid_id0",
+        "type": "ORCID"
+      },
+      "firstName": "Chloe",
+      "lastName": "Thompson",
+      "mbox": "chloe.thompson@address.com",
+      "affiliation": "affId0",
+      "affiliationId": {
+        "identifier":  "some_id0",
+        "type": "ROR"
+      },
+      "contact": false,
+      "roleInProject": "Role In Project"
+    },
+    {
+      "universityId": "david_rodriguez_uni_id",
+      "personId": {
+        "identifier":  "david_rodriguez_orcid_id0",
+        "type": "ORCID"
+      },
+      "firstName": "David",
+      "lastName": "Rodriguez",
+      "mbox": "david.rodriguez@address.com",
+      "affiliation": "affId0",
+      "affiliationId": {
+        "identifier":  "some_id0",
+        "type": "ROR"
+      },
+      "contact": false,
+      "roleInProject": "Role In Project"
+    },
+    {
+      "universityId": "emily_lee_uni_id",
+      "personId": {
+        "identifier":  "emily_lee_orcid_id0",
+        "type": "ORCID"
+      },
+      "firstName": "Emily",
+      "lastName": "Lee",
+      "mbox": "emily.lee@address.com",
+      "affiliation": "affId0",
+      "affiliationId": {
+        "identifier":  "some_id0",
+        "type": "ROR"
+      },
+      "contact": false,
+      "roleInProject": "Role In Project"
+    },
+    {
+      "universityId": "henry_smith_uni_id",
+      "personId": {
+        "identifier":  "henry_smith_orcid_id0",
+        "type": "ORCID"
+      },
+      "firstName": "Henry",
+      "lastName": "Smith",
+      "mbox": "henry.smith@address.com",
+      "affiliation": "affId0",
+      "affiliationId": {
+        "identifier":  "some_id0",
+        "type": "ROR"
+      },
+      "contact": false,
+      "roleInProject": "Role In Project"
+    },
+    {
+      "universityId": "isabella_johnson_uni_id",
+      "personId": {
+        "identifier":  "isabella_johnson_orcid_id0",
+        "type": "ORCID"
+      },
+      "firstName": "Isabella",
+      "lastName": "Johnson",
+      "mbox": "isabella.johnson@address.com",
       "affiliation": "affId0",
       "affiliationId": {
         "identifier":  "some_id0",
