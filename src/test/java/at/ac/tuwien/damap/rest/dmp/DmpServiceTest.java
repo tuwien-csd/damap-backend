@@ -161,7 +161,7 @@ class DmpServiceTest extends TestSetup {
 
     @Test
     void givenRepositoryIsRemoved_whenUpdatingDMP_thenRepositoryShouldBeRemoved() {
-        DmpDO testDMP = testDOFactory.getOrCreateTestDmpDO();
+        DmpDO testDMP = testDOFactory.createDmp(this.toString(), true);
         Assertions.assertEquals(1, testDMP.getRepositories().size());
         testDMP.setRepositories(new ArrayList<>());
         DmpDO updatedDMP = dmpService.update(testDMP);
@@ -170,7 +170,7 @@ class DmpServiceTest extends TestSetup {
 
     @Test
     void givenRepositoryIsAdded_whenUpdatingDMP_thenRepositoryShouldBeAdded() {
-        DmpDO testDMP = testDOFactory.getOrCreateTestDmpDO();
+        DmpDO testDMP = testDOFactory.createDmp(this.toString(), true);
         Assertions.assertEquals(1, testDMP.getRepositories().size());
 
         List<RepositoryDO> repoList = testDMP.getRepositories();

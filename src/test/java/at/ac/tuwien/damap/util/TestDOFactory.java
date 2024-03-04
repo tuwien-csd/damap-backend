@@ -10,6 +10,7 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.ValidationException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
@@ -74,6 +75,69 @@ public class TestDOFactory {
     private final String editorId = "012345";
 
     @Transactional
+    public DmpDO createDmp(String title, boolean withDefaultData) {
+
+        if ("TestDmp".equals(title)) {
+            // TODO: fix test cases to not depend on the TestDmp. Instead, create a new DMP
+            // if required.
+            throw new ValidationException(title + "is reserved for the TestDmp");
+        }
+
+        DmpDO newTestDmpDO = new DmpDO();
+        if (withDefaultData) {
+            this.setDataOnDMP(newTestDmpDO);
+        }
+        newTestDmpDO.setTitle(title);
+        return dmpService.create(newTestDmpDO, editorId);
+    }
+
+    private void setDataOnDMP(DmpDO dmpDO) {
+        dmpDO.setTitle("TestDmp");
+        dmpDO.setCreated(new Date());
+        dmpDO.setModified(new Date());
+        dmpDO.setDescription("This DMP is created for an automated test.");
+        dmpDO.setProject(getTestProjectDO());
+        dmpDO.setDataKind(EDataKind.NONE);
+        dmpDO.setReusedDataKind(EDataKind.UNKNOWN);
+        dmpDO.setContributors(getTestContributorList());
+        dmpDO.setNoDataExplanation("This is why there are no datasets.");
+        dmpDO.setMetadata("String for metadata.");
+        dmpDO.setDataGeneration("Text on data generation.");
+        dmpDO.setStructure("Structure of the data.");
+        dmpDO.setDataQuality(getDataQualityList());
+        dmpDO.setOtherDataQuality("Other data quality measures.");
+        dmpDO.setTargetAudience("This is the target audience.");
+        dmpDO.setTools("Tools used for gathering data.");
+        dmpDO.setRestrictedDataAccess("Here is why access to the data is restricted.");
+        dmpDO.setPersonalData(true);
+        dmpDO.setPersonalDataCompliance(getComplianceTypeList());
+        dmpDO.setOtherPersonalDataCompliance("Option for additional data compliance.");
+        dmpDO.setSensitiveData(true);
+        dmpDO.setSensitiveDataSecurity(getSensitiveDataSecurityList());
+        dmpDO.setOtherDataSecurityMeasures("Option for additional security measures.");
+        dmpDO.setSensitiveDataAccess("Text for sensitive data access.");
+        dmpDO.setLegalRestrictions(true);
+        dmpDO.setLegalRestrictionsDocuments(getLegalRestrictionsDocuments());
+        dmpDO.setOtherLegalRestrictionsDocument("Option for additional legal restriction documents.");
+        dmpDO.setLegalRestrictionsComment("Additional legal restriction comment.");
+        dmpDO.setDataRightsAndAccessControl("List of people/institutions having access to the restricted data.");
+        dmpDO.setHumanParticipants(true);
+        dmpDO.setEthicalIssuesExist(true);
+        dmpDO.setCommitteeReviewed(true);
+        dmpDO.setDataKind(EDataKind.SPECIFY);
+        dmpDO.setReusedDataKind(EDataKind.SPECIFY);
+        dmpDO.setDatasets(getTestDatasetList());
+        dmpDO.setRepositories(getTestRepositoryList());
+        dmpDO.setStorage(getTestStorageList());
+        dmpDO.setExternalStorage(getTestExternalStorageList());
+        dmpDO.setExternalStorageInfo("Additional Info on the selected external storage.");
+        dmpDO.setRestrictedAccessInfo("Additional Info on how restricted access is handled.");
+        dmpDO.setClosedAccessInfo("Additional Info on how closed access for the data is handled");
+        dmpDO.setCostsExist(true);
+        dmpDO.setCosts(getTestCostList());
+    }
+
+    @Transactional
     public DmpDO getOrCreateTestDmpDO() {
 
         prepareInternalStorageOption();
@@ -85,50 +149,8 @@ public class TestDOFactory {
             return DmpDOMapper.mapEntityToDO(testDmp.get(), new DmpDO());
 
         DmpDO newTestDmpDO = new DmpDO();
-        newTestDmpDO.setTitle("TestDmp");
-        newTestDmpDO.setCreated(new Date());
-        newTestDmpDO.setModified(new Date());
-        newTestDmpDO.setDescription("This DMP is created for an automated test.");
-        newTestDmpDO.setProject(getTestProjectDO());
-        newTestDmpDO.setDataKind(EDataKind.NONE);
-        newTestDmpDO.setReusedDataKind(EDataKind.UNKNOWN);
-        newTestDmpDO.setContributors(getTestContributorList());
-        newTestDmpDO.setNoDataExplanation("This is why there are no datasets.");
-        newTestDmpDO.setMetadata("String for metadata.");
-        newTestDmpDO.setDataGeneration("Text on data generation.");
-        newTestDmpDO.setStructure("Structure of the data.");
-        newTestDmpDO.setDataQuality(getDataQualityList());
-        newTestDmpDO.setOtherDataQuality("Other data quality measures.");
-        newTestDmpDO.setTargetAudience("This is the target audience.");
-        newTestDmpDO.setTools("Tools used for gathering data.");
-        newTestDmpDO.setRestrictedDataAccess("Here is why access to the data is restricted.");
-        newTestDmpDO.setPersonalData(true);
-        newTestDmpDO.setPersonalDataCompliance(getComplianceTypeList());
-        newTestDmpDO.setOtherPersonalDataCompliance("Option for additional data compliance.");
-        newTestDmpDO.setSensitiveData(true);
-        newTestDmpDO.setSensitiveDataSecurity(getSensitiveDataSecurityList());
-        newTestDmpDO.setOtherDataSecurityMeasures("Option for additional security measures.");
-        newTestDmpDO.setSensitiveDataAccess("Text for sensitive data access.");
-        newTestDmpDO.setLegalRestrictions(true);
-        newTestDmpDO.setLegalRestrictionsDocuments(getLegalRestrictionsDocuments());
-        newTestDmpDO.setOtherLegalRestrictionsDocument("Option for additional legal restriction documents.");
-        newTestDmpDO.setLegalRestrictionsComment("Additional legal restriction comment.");
-        newTestDmpDO.setDataRightsAndAccessControl("List of people/institutions having access to the restricted data.");
-        newTestDmpDO.setHumanParticipants(true);
-        newTestDmpDO.setEthicalIssuesExist(true);
-        newTestDmpDO.setCommitteeReviewed(true);
-        newTestDmpDO.setDataKind(EDataKind.SPECIFY);
-        newTestDmpDO.setReusedDataKind(EDataKind.SPECIFY);
-        newTestDmpDO.setDatasets(getTestDatasetList());
-        newTestDmpDO.setRepositories(getTestRepositoryList());
-        newTestDmpDO.setStorage(getTestStorageList());
-        newTestDmpDO.setExternalStorage(getTestExternalStorageList());
-        newTestDmpDO.setExternalStorageInfo("Additional Info on the selected external storage.");
-        newTestDmpDO.setRestrictedAccessInfo("Additional Info on how restricted access is handled.");
-        newTestDmpDO.setClosedAccessInfo("Additional Info on how closed access for the data is handled");
-        newTestDmpDO.setCostsExist(true);
-        newTestDmpDO.setCosts(getTestCostList());
 
+        this.setDataOnDMP(newTestDmpDO);
         dmpService.create(newTestDmpDO, editorId);
         return getOrCreateTestDmpDO();
     }
