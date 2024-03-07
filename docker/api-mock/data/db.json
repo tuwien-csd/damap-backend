@@ -11,20 +11,64 @@
       "dmpExists": false
     },
     {
-      "acronym": "RP.20230313.0",
-      "universityId": "uniProjectIdRecommended0",
-      "description": "Recommended project description text.",
-      "title": "Recommended Project Numero Uno",
+      "acronym": "PROJ.NO-FUNDING",
+      "universityId": "uniProjectIdNoFunding0",
+      "description": "This project has no funding and is recommended.",
+      "title": "No Funding Sample Project",
       "funding": null,
       "start": "2022-01-01T00:00:00.000Z",
       "end": "2024-12-31T00:00:00.000Z",
       "dmpExists": false
     },
     {
-      "acronym": "PROJ.FUNDER",
-      "universityId": "uniProjectIdFunderInfo",
-      "description": "Funder supported Project description text.",
-      "title": "Project Title - Funder Supported",
+      "acronym": "PROJ.HORIZON-EUROPE",
+      "universityId": "uniProjectIdHorizonEurope0",
+      "description": "This project is funded by the EU and is recommended.",
+      "title": "Horizon Europe Sample Project",
+      "funding": {
+        "fundingName": null,
+        "fundingProgram": null,
+        "funderId": {
+          "identifier": "501100000780",
+          "type": "FUNDREF"
+        },
+        "grantId": {
+          "identifier": null,
+          "type": null
+        },
+        "fundingStatus": "GRANTED"
+      },
+      "start": "2022-01-01T00:00:00.000Z",
+      "end": "2024-12-31T00:00:00.000Z",
+      "dmpExists": false
+    },
+    {
+      "acronym": "PROJ.FWF",
+      "universityId": "uniProjectIdFWF0",
+      "description": "This project is funded by the FWF and is recommended.",
+      "title": "FWF Sample Project",
+      "funding": {
+        "fundingName": null,
+        "fundingProgram": null,
+        "funderId": {
+          "identifier": "501100002428",
+          "type": "FUNDREF"
+        },
+        "grantId": {
+          "identifier": null,
+          "type": null
+        },
+        "fundingStatus": "GRANTED"
+      },
+      "start": "2022-01-01T00:00:00.000Z",
+      "end": "2024-12-31T00:00:00.000Z",
+      "dmpExists": false
+    },
+    {
+      "acronym": "PROJ.UNKNOWN-FUNDING",
+      "universityId": "uniProjectIdUnknownFunder0",
+      "description": "This project is funded by an unknown entity and is recommended.",
+      "title": "Unknown Funder Sample Project",
       "funding": {
         "fundingName": null,
         "fundingProgram": null,
