@@ -246,3 +246,7 @@ The new filepath will look into the local resource folder and take the file plac
 This .docx file needs to contain the placeholder keywords found in the sample template provided in the generic project, 
 in order to replace the text at those specific places.
 By replacing the resource file instead, the default texts used to compose the document can be adapted.
+
+The template is selected automatically when exporting, if the project has a funder. You may want to override this functionality, 
+if you have custom templates for example. To override this, write a class that extends [TemplateSelectorServiceImpl](src/main/java/at/ac/tuwien/damap/conversion/TemplateSelectorServiceImpl.java)
+and have it override the methods that determine the template.
