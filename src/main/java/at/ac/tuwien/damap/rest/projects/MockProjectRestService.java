@@ -26,7 +26,7 @@ public interface MockProjectRestService {
 
     @GET
     @Path("/projects")
-    List<ProjectDO> getRecommended(@QueryParam("title_like") @DefaultValue("recommend") String title);
+    List<ProjectDO> getRecommended(@QueryParam("description_like") @DefaultValue("recommend") String description);
 
     @GET
     @Path("/project-supplement")
