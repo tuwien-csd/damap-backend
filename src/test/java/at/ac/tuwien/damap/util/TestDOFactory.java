@@ -278,8 +278,8 @@ public class TestDOFactory {
 
     private List<RepositoryDO> getTestRepositoryList() {
         RepositoryDO repository = new RepositoryDO();
-        repository.setRepositoryId("r3d100013557");
-        repository.setTitle("TU Data");
+        repository.setRepositoryId("r3d100010468");
+        repository.setTitle("Zenodo");
         repository.setDatasets(List.of("referenceHash123456", "referenceHash234567"));
         return List.of(repository);
     }
