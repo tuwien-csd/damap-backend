@@ -29,7 +29,7 @@ public class DmpDO {
     private ProjectDO project;
     private EDataKind dataKind;
     private EDataKind reusedDataKind;
-    private List<ContributorDO> contributors = new ArrayList<ContributorDO>();
+    private List<ContributorDO> contributors = new ArrayList<>();
     @Size(max = 4000)
     private String noDataExplanation;
     @Size(max = 4000)
@@ -38,7 +38,7 @@ public class DmpDO {
     private String dataGeneration;
     @Size(max = 4000)
     private String structure;
-    private List<EDataQualityType> dataQuality = new ArrayList<EDataQualityType>();
+    private List<EDataQualityType> dataQuality = new ArrayList<>();
     @Size(max = 4000)
     private String otherDataQuality;
     @Size(max = 4000)
@@ -49,19 +49,19 @@ public class DmpDO {
     private String restrictedDataAccess;
     private Boolean personalData;
     private Boolean personalDataCris;
-    private List<EComplianceType> personalDataCompliance = new ArrayList<EComplianceType>();
+    private List<EComplianceType> personalDataCompliance = new ArrayList<>();
     @Size(max = 4000)
     private String otherPersonalDataCompliance;
     private Boolean sensitiveData;
     private Boolean sensitiveDataCris;
-    private List<ESecurityMeasure> sensitiveDataSecurity = new ArrayList<ESecurityMeasure>();
+    private List<ESecurityMeasure> sensitiveDataSecurity = new ArrayList<>();
     @Size(max = 4000)
     private String otherDataSecurityMeasures;
     @Size(max = 4000)
     private String sensitiveDataAccess;
     private Boolean legalRestrictions;
     private Boolean legalRestrictionsCris;
-    private List<EAgreement> legalRestrictionsDocuments = new ArrayList<EAgreement>();
+    private List<EAgreement> legalRestrictionsDocuments = new ArrayList<>();
     @Size(max = 4000)
     private String otherLegalRestrictionsDocument;
     @Size(max = 4000)
@@ -74,10 +74,10 @@ public class DmpDO {
     private Boolean ethicalIssuesExistCris;
     private Boolean committeeReviewed;
     private Boolean committeeReviewedCris;
-    private List<DatasetDO> datasets = new ArrayList<DatasetDO>();
-    private List<RepositoryDO> repositories = new ArrayList<RepositoryDO>();
-    private List<StorageDO> storage = new ArrayList<StorageDO>();
-    private List<ExternalStorageDO> externalStorage = new ArrayList<ExternalStorageDO>();
+    private List<DatasetDO> datasets = new ArrayList<>();
+    private List<RepositoryDO> repositories = new ArrayList<>();
+    private List<StorageDO> storage = new ArrayList<>();
+    private List<ExternalStorageDO> externalStorage = new ArrayList<>();
     @Size(max = 4000)
     private String externalStorageInfo;
     @Size(max = 4000)
@@ -86,11 +86,11 @@ public class DmpDO {
     private String closedAccessInfo;
     private Boolean costsExist;
     private Boolean costsExistCris;
-    private List<CostDO> costs = new ArrayList<CostDO>();
+    private List<CostDO> costs = new ArrayList<>();
     @Size(max = 4000)
     private String documentation;
 
-    public ContributorDO getContact(){
+    public ContributorDO getContact() {
         Optional<ContributorDO> contact = contributors.stream().filter(ContributorDO::isContact).findFirst();
         return contact.orElse(null);
     }

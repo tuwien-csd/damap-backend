@@ -6,10 +6,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
-public interface ResourceUpdate<Entity, Schema> {
+public interface ResourceUpdate<E, S> {
 
     @PUT
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    Entity update(@PathParam("id") String id, Schema data);
+    E update(@PathParam("id") String id, S data);
 }

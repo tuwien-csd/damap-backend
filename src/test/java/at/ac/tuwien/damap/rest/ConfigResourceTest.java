@@ -10,13 +10,13 @@ import static org.hamcrest.Matchers.is;
 
 @QuarkusTest
 @TestHTTPEndpoint(ConfigResource.class)
-public class ConfigResourceTest {
+class ConfigResourceTest {
 
     @ConfigProperty(name = "damap.auth.frontend.url")
     String authUrl;
 
     @Test
-    public void testGetConfigEndpoint() {
+    void testGetConfigEndpoint() {
         given()
                 .when().get()
                 .then()

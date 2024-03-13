@@ -702,7 +702,8 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "http://localhost:8085/*"
+        "http://localhost:8085/*",
+        "http://localhost:4200/*"
       ],
       "webOrigins": [
         "+"
@@ -2299,6 +2300,23 @@
         "personID": "123456"
       },
       "realmRoles": [
+        "default-roles-damap"
+      ]
+    },
+    {
+      "username": "admin",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin"
+        }
+      ],
+      "attributes": {
+        "personID": "654321"
+      },
+      "realmRoles": [
+        "Damap Admin",
         "default-roles-damap"
       ]
     }

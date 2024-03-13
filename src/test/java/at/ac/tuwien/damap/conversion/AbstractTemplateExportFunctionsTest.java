@@ -10,7 +10,7 @@ import javax.enterprise.inject.Instance;
 import java.util.*;
 
 @QuarkusTest
-public class AbstractTemplateExportFunctionsTest {
+class AbstractTemplateExportFunctionsTest {
 
     @Inject
     Instance<AbstractTemplateExportFunctions> documentConversionServices;
@@ -19,7 +19,7 @@ public class AbstractTemplateExportFunctionsTest {
     Instance<TemplateFileBrokerService> templateFileBrokerServices;
 
     @Test
-    public void testLoadTemplate() throws Exception {
+    void testLoadTemplate() throws Exception {
         for (AbstractTemplateExportFunctions documentConversionService : documentConversionServices) {
             XWPFDocument document = documentConversionService.loadTemplate(templateFileBrokerServices.get().loadScienceEuropeTemplate(), "[", "]");
             Assertions.assertNotNull(document);
@@ -31,6 +31,8 @@ public class AbstractTemplateExportFunctionsTest {
             String result4 = documentConversionService.multipleVariableAnd(testThreeVariable());
             Assertions.assertEquals(twoVariables(), result1);
             Assertions.assertEquals(threeVariables(), result2);
+            Assertions.assertEquals(twoVariablesAnd(), result3);
+            Assertions.assertEquals(threeVariablesAnd(), result4);
         }
     }
 
@@ -53,10 +55,10 @@ public class AbstractTemplateExportFunctionsTest {
     }
 
     private String twoVariablesAnd() {
-        return "var1 and var2";
+        return "var1, and var2";
     }
 
     private String threeVariablesAnd() {
-        return "var1, var2 and var3";
+        return "var1, var2, and var3";
     }
 }

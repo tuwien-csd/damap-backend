@@ -18,13 +18,12 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 @JBossLog
-public class VersionTest {
+class VersionTest {
 
     @Inject
     TestDOFactory testDOFactory;
@@ -49,30 +48,30 @@ public class VersionTest {
         assertNotNull(versionDO.getDmpId());
         assertNotNull(versionDO.getVersionDate());
         assertNotNull(versionDO.getRevisionNumber());
-        assertEquals(versionDO.getVersionName(), "TestVersion");
+        assertEquals("TestVersion", versionDO.getVersionName());
     }
 
     @Test
     void getVersionListTest(){
         VersionDO versionDO = testDOFactory.getOrCreateTestVersionDO();
 
+        assertEquals("TestVersion", versionDO.getVersionName());
+
         List<VersionDO> versionDOList = versionService.getDmpVersions(versionDO.getDmpId());
         assertNotNull(versionDOList);
         assertFalse(versionDOList.isEmpty());
-        assertEquals("TestVersion", versionDOList.get(0).getVersionName());
+
+        System.out.println("size " + versionDOList.size());
+
+        assertEquals(versionDO.getId(), versionDOList.get(versionDOList.size() - 1).getId());
+        assertEquals("TestVersion", versionDOList.get(versionDOList.size() - 1).getVersionName());
     }
 
     @Test
     void updateVersionTest(){
         VersionDO versionDO = testDOFactory.getOrCreateTestVersionDO();
         versionDO.setVersionName("TestVersionUpdate");
-        versionService.createOrUpdate(versionDO);
-
-        VersionDO versionDOupdate = new VersionDO();
-        final Optional<DmpVersion> testDmpVersion = dmpVersionRepo.getAll().stream()
-                .filter(a -> a.getVersionName().equals("TestVersionUpdate"))
-                .findAny();
-        testDmpVersion.ifPresent(version -> VersionDOMapper.mapEntityToDO(version, versionDOupdate));
+        var versionDOupdate = versionService.createOrUpdate(versionDO);
 
         assertNotNull(versionDOupdate);
         assertEquals(versionDO.getId(), versionDOupdate.getId());

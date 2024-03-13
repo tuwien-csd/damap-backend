@@ -12,4 +12,8 @@ public interface TemplateFileBrokerService {
     Properties getFWFTemplateResource();
 
     InputStream loadFWFTemplate();
+
+    InputStream loadHorizonEuropeTemplate();
+
+    Properties getHorizonEuropeTemplateResource();
 }

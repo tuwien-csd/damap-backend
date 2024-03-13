@@ -5,11 +5,12 @@ import java.util.HashMap;
 public enum ETemplateType {
 
     SCIENCE_EUROPE("SCIENCE_EUROPE"),
-    FWF("FWF");
+    FWF("FWF"),
+    HORIZON_EUROPE("HORIZON_EUROPE");
 
     private final String value;
 
-    private static final HashMap<String, ETemplateType> MAP = new HashMap<String, ETemplateType>();
+    private static final HashMap<String, ETemplateType> MAP = new HashMap<>();
 
     ETemplateType(String value) {
         this.value = value;

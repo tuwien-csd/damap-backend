@@ -5,10 +5,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 
-public interface ResourceCreate<Entity, Schema> {
+public interface ResourceCreate<E, S> {
 
     @POST
     @Path("")
     @Consumes(MediaType.APPLICATION_JSON)
-    Entity create(Schema data);
+    E create(S data);
 }

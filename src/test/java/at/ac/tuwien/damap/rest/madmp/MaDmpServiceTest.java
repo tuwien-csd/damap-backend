@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import javax.inject.Inject;
 
 @QuarkusTest
-public class MaDmpServiceTest {
+class MaDmpServiceTest {
 
 
     @Inject

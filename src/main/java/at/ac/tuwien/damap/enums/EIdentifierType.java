@@ -38,6 +38,8 @@ public enum EIdentifierType {
 
         funderIdentifierType.add(EIdentifierType.FUNDREF);
         funderIdentifierType.add(EIdentifierType.URL);
+        funderIdentifierType.add(EIdentifierType.ROR);
+        funderIdentifierType.add(EIdentifierType.ISNI);
         funderIdentifierType.add(EIdentifierType.OTHER);
 
         grantIdentifierType.add(EIdentifierType.URL);
@@ -55,19 +57,19 @@ public enum EIdentifierType {
         return personIdentifierType;
     }
 
-    public List<EIdentifierType> getDatasetIdentifierTypeList() {
+    public static List<EIdentifierType> getDatasetIdentifierTypeList() {
         return datasetIdentifierType;
     }
 
-    public List<EIdentifierType> getFunderIdentifierTypeList() {
+    public static List<EIdentifierType> getFunderIdentifierTypeList() {
         return funderIdentifierType;
     }
 
-    public List<EIdentifierType> getGrantIdentifierTypeList() {
+    public static List<EIdentifierType> getGrantIdentifierTypeList() {
         return grantIdentifierType;
     }
 
-    public List<EIdentifierType> getMetadataIdentifierTypeList() {
+    public static List<EIdentifierType> getMetadataIdentifierTypeList() {
         return metadataIdentifierType;
     }
 

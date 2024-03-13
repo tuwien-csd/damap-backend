@@ -8,10 +8,10 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.hasItem;
 
 @QuarkusTest
-public class RepositoriesResourceTest {
+class RepositoriesResourceTest {
 
     @Test
-    public void testRepositoriesEndpoint_Invalid() {
+    void testRepositoriesEndpoint_Invalid() {
         given()
                 .when().get("/api/repositories")
                 .then()
@@ -19,7 +19,7 @@ public class RepositoriesResourceTest {
     }
 
     @Test
-    public void testRepositoriesRecommendedEndpoint_Invalid() {
+    void testRepositoriesRecommendedEndpoint_Invalid() {
         given()
                 .when().get("/api/repositories/recommended")
                 .then()
@@ -27,7 +27,7 @@ public class RepositoriesResourceTest {
     }
 
     @Test
-    public void testRepositoryByIdEndpoint_Invalid() {
+    void testRepositoryByIdEndpoint_Invalid() {
         given()
                 .when().get("/api/repositories/1")
                 .then()
@@ -35,7 +35,7 @@ public class RepositoriesResourceTest {
     }
 
     @Test
-    public void testRepositoriesSearchEndpoint_Invalid() {
+    void testRepositoriesSearchEndpoint_Invalid() {
         given()
                 .when().get("/api/repositories/search?pidSystems=DOI")
                 .then()
@@ -44,7 +44,7 @@ public class RepositoriesResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testRepositoriesEndpoint_Valid() {
+    void testRepositoriesEndpoint_Valid() {
         given()
                 .when().get("/api/repositories")
                 .then()
@@ -53,7 +53,7 @@ public class RepositoriesResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testRepositoriesRecommendedEndpoint_Valid() {
+    void testRepositoriesRecommendedEndpoint_Valid() {
         given()
                 .when().get("/api/repositories/recommended")
                 .then()
@@ -63,7 +63,7 @@ public class RepositoriesResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testRepositoryByIdEndpoint_Valid() {
+    void testRepositoryByIdEndpoint_Valid() {
         given()
                 .when().get("/api/repositories/r3d100013557")
                 .then()
@@ -72,7 +72,7 @@ public class RepositoriesResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testRepositoriesSearchEndpoint_Valid() {
+    void testRepositoriesSearchEndpoint_Valid() {
         given()
                 .when().get("/api/repositories/search?pidSystems=DOI")
                 .then()

@@ -25,12 +25,17 @@ public class DmpVersion extends PanacheEntity {
     @EqualsAndHashCode.Exclude
     private Dmp dmp;
 
-    @Column(name = "revision_number")
-    private long revisionNumber;
-
     @Column(name = "version_date")
     private Date versionDate;
 
     @Column(name = "version_name")
     private String versionName;
+
+    @JsonIgnore
+    @OneToOne(fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @JoinColumn(name = "revision_entity_id")
+    private DamapRevisionEntity revisionEntity;
+
+
 }

@@ -13,45 +13,51 @@ public class RepositoryMapper {
 
     public RepositoryDetails mapToRepositoryDetails(Re3Data re3Data, String id) {
         RepositoryDetails repositoryDetails = new RepositoryDetails();
-        if (re3Data.getRepository().size() > 0) {
-            Re3Data.Repository repo = re3Data.getRepository().get(0);
-            repositoryDetails.setId(id);
-            repositoryDetails.setName(repo.getRepositoryName().getValue());
-            repositoryDetails.setRepositoryURL(repo.getRepositoryURL());
-            repositoryDetails.setDescription(repo.getDescription().getValue());
-            repositoryDetails.setVersioning(mapYesNoToBoolean(repo.getVersioning()));
-            repositoryDetails.setRepositoryIdentifier(repo.getRepositoryIdentifier());
 
-            if (repo.getRepositoryLanguage().size() > 0) {
-                ArrayList<String> languages = new ArrayList<>();
-                for (Languages lang : repo.getRepositoryLanguage()) {
-                    languages.add(lang.value());
-                }
-                repositoryDetails.setRepositoryLanguages(languages);
-            }
+        if (re3Data.getRepository().isEmpty()) {
+            return repositoryDetails;
+        }
 
-            if (repo.getMetadataStandard().size() > 0) {
-                ArrayList<String> metadata = new ArrayList<>();
-                for (Re3Data.Repository.MetadataStandard mds : repo.getMetadataStandard()) {
-                    metadata.add(mds.getMetadataStandardName().getValue().value());
-                }
-                repositoryDetails.setMetadataStandards(metadata);
-            }
+        Re3Data.Repository repo = re3Data.getRepository().get(0);
+        repositoryDetails.setId(id);
+        repositoryDetails.setName(repo.getRepositoryName().getValue());
+        repositoryDetails.setRepositoryURL(repo.getRepositoryURL());
+        repositoryDetails.setDescription(repo.getDescription().getValue());
+        repositoryDetails.setVersioning(mapYesNoToBoolean(repo.getVersioning()));
+        repositoryDetails.setRepositoryIdentifier(repo.getRepositoryIdentifier());
 
-            if (repo.getContentType().size() > 0) {
-                ArrayList<String> types = new ArrayList<>();
-                for (Re3Data.Repository.ContentType ct : repo.getContentType()) {
-                    types.add(ct.getValue().value());
-                }
-                repositoryDetails.setContentTypes(types);
+        if (!repo.getRepositoryLanguage().isEmpty()) {
+            ArrayList<String> languages = new ArrayList<>();
+            for (Languages lang : repo.getRepositoryLanguage()) {
+                languages.add(lang.value());
             }
+            repositoryDetails.setRepositoryLanguages(languages);
+        }
+
+        if (!repo.getMetadataStandard().isEmpty()) {
+            ArrayList<String> metadata = new ArrayList<>();
+            for (Re3Data.Repository.MetadataStandard mds : repo.getMetadataStandard()) {
+                metadata.add(mds.getMetadataStandardName().getValue().value());
+            }
+            repositoryDetails.setMetadataStandards(metadata);
+        }
+
+        if (!repo.getContentType().isEmpty()) {
+            ArrayList<String> types = new ArrayList<>();
+            for (Re3Data.Repository.ContentType ct : repo.getContentType()) {
+                types.add(ct.getValue().value());
+            }
+            repositoryDetails.setContentTypes(types);
         }
 
         return repositoryDetails;
     }
 
+    @javax.annotation.Nullable
     public Boolean mapYesNoToBoolean(Yesno value) {
-        if (value == null) return null;
+        if (value == null) {
+            return null;
+        }
         return value.value().equals(Yesno.YES.value());
     }
 }

@@ -5,18 +5,18 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>at.ac.tuwien</groupId>
   <artifactId>damap-backend</artifactId>
-  <version>2.5.1</version>
+  <version>3.0.0</version>
 
   <url>https://github.com/tuwien-csd/damap-backend</url>
 
   <properties>
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
-    <maven.compiler.target>11</maven.compiler.target>
-    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.parameters>true</maven.compiler.parameters>
-    <compiler-plugin.version>3.8.1</compiler-plugin.version>
+    <compiler-plugin.version>3.11.0</compiler-plugin.version>
     <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
     <quarkus.platform.version>2.16.2.Final</quarkus.platform.version>
@@ -235,11 +235,11 @@
         </executions>
         <configuration>
           <sources>
-            <source>src/main/resources/spec/fits/fits_output.xsd</source>
-            <source>src/main/resources/spec/re3data/re3dataV3-0.xsd</source>
-            <source>src/main/resources/spec/re3data/re3dataV2-2.xsd</source>
-            <source>src/main/resources/spec/re3data/re3data_index_V1-0.xsd</source>
-            <source>src/main/resources/spec/oaf/oaf-response-1.0.xsd</source>
+            <source>src/main/resources/at/ac/tuwien/damap/spec/fits/fits_output.xsd</source>
+            <source>src/main/resources/at/ac/tuwien/damap/spec/re3data/re3dataV3-0.xsd</source>
+            <source>src/main/resources/at/ac/tuwien/damap/spec/re3data/re3dataV2-2.xsd</source>
+            <source>src/main/resources/at/ac/tuwien/damap/spec/re3data/re3data_index_V1-0.xsd</source>
+            <source>src/main/resources/at/ac/tuwien/damap/spec/oaf/oaf-response-1.0.xsd</source>
           </sources>
         </configuration>
       </plugin>
@@ -262,7 +262,7 @@
         <version>1.1.1</version>
         <configuration>
           <annotationStyle>jackson</annotationStyle>
-          <sourceDirectory>${basedir}/src/main/resources/schema</sourceDirectory>
+          <sourceDirectory>${basedir}/src/main/resources/at/ac/tuwien/damap/schema</sourceDirectory>
           <targetPackage>at.ac.tuwien.damap.rest.madmp.dto</targetPackage>
         </configuration>
         <executions>

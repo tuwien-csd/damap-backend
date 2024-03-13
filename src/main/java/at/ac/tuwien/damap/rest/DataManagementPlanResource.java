@@ -33,6 +33,10 @@ public class DataManagementPlanResource {
     @Inject
     DmpService dmpService;
 
+    private final String unauthorizedMessage(long id) {
+        return "Not authorized to access dmp with id " + id;
+    }
+
     // ADMIN
 
     @GET
@@ -81,7 +85,7 @@ public class DataManagementPlanResource {
         String personId = this.getPersonId();
         long dmpId = Long.parseLong(id);
         if(!accessValidator.canViewDmp(dmpId, personId)){
-            throw new ForbiddenException("Not authorized to access dmp with id " + dmpId);
+            throw new ForbiddenException(unauthorizedMessage(dmpId));
         }
         return dmpService.getDmpById(dmpId);
     }
@@ -102,7 +106,7 @@ public class DataManagementPlanResource {
         String personId = this.getPersonId();
         long dmpId = Long.parseLong(id);
         if(!accessValidator.canEditDmp(dmpId, personId)){
-            throw new ForbiddenException("Not authorized to access dmp with id " + dmpId);
+            throw new ForbiddenException(unauthorizedMessage(dmpId));
         }
         return dmpService.update(dmpDO);
     }
@@ -114,7 +118,7 @@ public class DataManagementPlanResource {
         String personId = this.getPersonId();
         long dmpId = Long.parseLong(id);
         if (!accessValidator.canDeleteDmp(dmpId, personId)) {
-            throw new ForbiddenException("Not authorized to delete dmp with id " + dmpId);
+            throw new ForbiddenException(unauthorizedMessage(dmpId));
         }
         dmpService.delete(dmpId);
     }
@@ -133,7 +137,7 @@ public class DataManagementPlanResource {
         String personId = this.getPersonId();
         long dmpId = Long.parseLong(id);
         if(!accessValidator.canViewDmp(dmpId, personId)){
-            throw new ForbiddenException("Not authorized to access dmp with id " + dmpId);
+            throw new ForbiddenException(unauthorizedMessage(dmpId));
         }
         return dmpService.getDmpByIdAndRevision(dmpId, revision);
     }

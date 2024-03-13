@@ -1,6 +1,7 @@
 package at.ac.tuwien.damap.conversion;
 
 import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
+import at.ac.tuwien.damap.rest.persons.orcid.ORCIDPersonServiceImpl;
 import at.ac.tuwien.damap.rest.projects.MockProjectServiceImpl;
 import at.ac.tuwien.damap.util.TestDOFactory;
 import io.quarkus.test.junit.QuarkusTest;
@@ -13,11 +14,12 @@ import org.mockito.Mockito;
 
 import javax.inject.Inject;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
 @QuarkusTest
 @JBossLog
-public class AbstractTemplateExportScienceEuropeComponentsTest extends AbstractTemplateExportScienceEuropeComponents {
+class AbstractTemplateExportScienceEuropeComponentsTest extends AbstractTemplateExportScienceEuropeComponents {
 
     @Inject
     TestDOFactory testDOFactory;
@@ -25,13 +27,17 @@ public class AbstractTemplateExportScienceEuropeComponentsTest extends AbstractT
     @InjectMock
     MockProjectServiceImpl mockProjectService;
 
+    @InjectMock
+    ORCIDPersonServiceImpl orcidPersonServiceImpl;
+
     @BeforeEach
     public void setup() {
         Mockito.when(mockProjectService.read(anyString())).thenReturn(testDOFactory.getTestProjectDO());
+        Mockito.when(orcidPersonServiceImpl.read(any(String.class))).thenReturn(testDOFactory.getTestContributorDO());
     }
 
     @Test
-    void determinteDatasetIDsTest(){
+    void determinteDatasetIDsTest() {
         DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
         exportSetup(dmpDO.getId());
         Assertions.assertEquals(datasetTableIDs.size(), datasets.size(), dmpDO.getDatasets().size());

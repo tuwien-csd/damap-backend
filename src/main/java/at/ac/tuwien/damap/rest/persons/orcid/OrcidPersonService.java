@@ -10,6 +10,9 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
+import at.ac.tuwien.damap.rest.persons.orcid.models.ORCIDExpandedSearchResult;
+import at.ac.tuwien.damap.rest.persons.orcid.models.ORCIDRecord;
+
 @RegisterRestClient(configKey = "rest.orcid.search")
 @Path("/v3.0")
 @Produces(MediaType.APPLICATION_JSON)
@@ -20,8 +23,8 @@ public interface OrcidPersonService {
     @ClientHeaderParam(name = "accept", value = MediaType.APPLICATION_JSON)
     ORCIDExpandedSearchResult getAll(@QueryParam("q") String query, @QueryParam("rows") int rows);
 
-    @Path("/{orcid}/person")
+    @Path("/{orcid}/record")
     @GET
     @ClientHeaderParam(name = "accept", value = MediaType.APPLICATION_JSON)
-    ORCIDPerson get(@PathParam(value = "orcid") String orcid);
+    ORCIDRecord get(@PathParam(value = "orcid") String orcid);
 }

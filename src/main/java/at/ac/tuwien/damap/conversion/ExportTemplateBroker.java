@@ -15,14 +15,23 @@ import javax.inject.Inject;
 @JBossLog
 public class ExportTemplateBroker {
 
-    @Inject
-    DmpService dmpService;
+    private final DmpService dmpService;
+    private final ExportScienceEuropeTemplate exportScienceEuropeTemplate;
+    private final ExportFWFTemplate exportFWFTemplate;
+    private final ExportHorizonEuropeTemplate exportHorizonEuropeTemplate;
+
+    private final TemplateSelectorServiceImpl templateSelectorService;
 
     @Inject
-    ExportScienceEuropeTemplate exportScienceEuropeTemplate;
-
-    @Inject
-    ExportFWFTemplate exportFWFTemplate;
+    public ExportTemplateBroker(DmpService dmpService, ExportScienceEuropeTemplate exportScienceEuropeTemplate,
+            ExportFWFTemplate exportFWFTemplate, ExportHorizonEuropeTemplate exportHorizonEuropeTemplate,
+                                TemplateSelectorServiceImpl templateSelectorService) {
+        this.dmpService = dmpService;
+        this.exportScienceEuropeTemplate = exportScienceEuropeTemplate;
+        this.exportFWFTemplate = exportFWFTemplate;
+        this.exportHorizonEuropeTemplate = exportHorizonEuropeTemplate;
+        this.templateSelectorService = templateSelectorService;
+    }
 
     /**
      * Decides which export template to use.
@@ -32,27 +41,15 @@ public class ExportTemplateBroker {
      * @return
      */
     public XWPFDocument exportTemplate(long dmpId) {
-        DmpDO dmpDO = dmpService.getDmpById(dmpId);
-        if (dmpDO.getProject() != null)
-            if (dmpDO.getProject().getFunding() != null)
-                if (dmpDO.getProject().getFunding().getFunderId() != null) {
-                    IdentifierDO funderIdentifier = dmpDO.getProject().getFunding().getFunderId();
-                    if (funderIdentifier.getType() != null)
-                        if (funderIdentifier.getType().equals(EIdentifierType.FUNDREF))
-                            //FWF FUNDREF Identifier 501100002428
-                            if (funderIdentifier.getIdentifier() != null)
-                                if (funderIdentifier.getIdentifier().equals("501100002428"))
-                                    return exportFWFTemplate.exportTemplate(dmpId);
-                }
-
-        //default export science europe template
-        return exportScienceEuropeTemplate.exportTemplate(dmpId);
+        return exportTemplateByType(dmpId, templateSelectorService.selectTemplate(dmpService.getDmpById(dmpId)));
     }
 
     public XWPFDocument exportTemplateByType(long dmpId, ETemplateType type) {
         switch (type) {
             case FWF:
                 return exportFWFTemplate.exportTemplate(dmpId);
+            case HORIZON_EUROPE:
+                return exportHorizonEuropeTemplate.exportTemplate(dmpId);
             case SCIENCE_EUROPE:
             default:
                 return exportScienceEuropeTemplate.exportTemplate(dmpId);

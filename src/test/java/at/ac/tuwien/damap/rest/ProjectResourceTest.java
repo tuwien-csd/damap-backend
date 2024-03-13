@@ -30,7 +30,7 @@ import io.quarkus.test.security.TestSecurity;
 
 @QuarkusTest
 @TestHTTPEndpoint(ProjectResource.class)
-public class ProjectResourceTest {
+class ProjectResourceTest {
 
     @Inject
     TestDOFactory testDOFactory;
@@ -52,7 +52,7 @@ public class ProjectResourceTest {
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
-    public void testGetRecommendedProjects() {
+    void testGetRecommendedProjects() {
         given()
                 .get("/recommended")
                 .then()

@@ -1,39 +1,44 @@
 package at.ac.tuwien.damap.rest.dmp.service;
 
-import at.ac.tuwien.damap.domain.Access;
-import at.ac.tuwien.damap.domain.Contributor;
-import at.ac.tuwien.damap.domain.Dmp;
-import at.ac.tuwien.damap.enums.EContributorRole;
-import at.ac.tuwien.damap.enums.EFunctionRole;
-import at.ac.tuwien.damap.repo.AccessRepo;
-import at.ac.tuwien.damap.repo.DmpRepo;
-import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
-import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
-import at.ac.tuwien.damap.rest.dmp.domain.DmpListItemDO;
-import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
-import at.ac.tuwien.damap.rest.dmp.mapper.ContributorDOMapper;
-import at.ac.tuwien.damap.rest.dmp.mapper.DmpDOMapper;
-import at.ac.tuwien.damap.rest.dmp.mapper.DmpListItemDOMapper;
-import at.ac.tuwien.damap.rest.dmp.mapper.MapperService;
-import at.ac.tuwien.damap.rest.dmp.mapper.ProjectSupplementDOMapper;
-import at.ac.tuwien.damap.rest.projects.ProjectService;
-import at.ac.tuwien.damap.rest.projects.ProjectSupplementDO;
-import at.ac.tuwien.damap.rest.version.VersionDO;
-import at.ac.tuwien.damap.rest.version.VersionService;
-import lombok.extern.jbosslog.JBossLog;
-import org.hibernate.envers.AuditReader;
-import org.hibernate.envers.AuditReaderFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
+
+import at.ac.tuwien.damap.domain.Access;
+import at.ac.tuwien.damap.domain.Contributor;
+import at.ac.tuwien.damap.domain.Dmp;
+import at.ac.tuwien.damap.enums.EContributorRole;
+import at.ac.tuwien.damap.enums.EFunctionRole;
+import at.ac.tuwien.damap.enums.EIdentifierType;
+import at.ac.tuwien.damap.repo.AccessRepo;
+import at.ac.tuwien.damap.repo.DmpRepo;
+import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
+import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
+import at.ac.tuwien.damap.rest.dmp.domain.DmpListItemDO;
+import at.ac.tuwien.damap.rest.dmp.domain.IdentifierDO;
+import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
+import at.ac.tuwien.damap.rest.dmp.mapper.ContributorDOMapper;
+import at.ac.tuwien.damap.rest.dmp.mapper.DmpDOMapper;
+import at.ac.tuwien.damap.rest.dmp.mapper.DmpListItemDOMapper;
+import at.ac.tuwien.damap.rest.dmp.mapper.MapperService;
+import at.ac.tuwien.damap.rest.dmp.mapper.ProjectSupplementDOMapper;
+import at.ac.tuwien.damap.rest.persons.orcid.ORCIDPersonServiceImpl;
+import at.ac.tuwien.damap.rest.projects.ProjectService;
+import at.ac.tuwien.damap.rest.projects.ProjectSupplementDO;
+import at.ac.tuwien.damap.rest.version.VersionDO;
+import at.ac.tuwien.damap.rest.version.VersionService;
+import lombok.extern.jbosslog.JBossLog;
 
 @ApplicationScoped
 @JBossLog
@@ -54,13 +59,15 @@ public class DmpService {
     @Inject
     VersionService versionService;
 
+    @Inject
+    ORCIDPersonServiceImpl orcidPersonService;
+
     public List<DmpListItemDO> getAll() {
 
         List<Dmp> dmpList = dmpRepo.getAll();
         List<DmpListItemDO> dmpListItemDOList = new ArrayList<>();
-        dmpList.forEach(dmp -> {
-            dmpListItemDOList.add(DmpListItemDOMapper.mapEntityToDO(null, dmp, new DmpListItemDO()));
-        });
+        dmpList.forEach(
+                dmp -> dmpListItemDOList.add(DmpListItemDOMapper.mapEntityToDO(null, dmp, new DmpListItemDO())));
         return dmpListItemDOList;
     }
 
@@ -69,9 +76,8 @@ public class DmpService {
         List<Access> accessList = accessRepo.getAllDmpByUniversityId(personId);
 
         List<DmpListItemDO> dmpListItemDOS = new ArrayList<>();
-        accessList.forEach(access -> {
-            dmpListItemDOS.add(DmpListItemDOMapper.mapEntityToDO(access, access.getDmp(), new DmpListItemDO()));
-        });
+        accessList.forEach(access -> dmpListItemDOS
+                .add(DmpListItemDOMapper.mapEntityToDO(access, access.getDmp(), new DmpListItemDO())));
         return dmpListItemDOS;
     }
 
@@ -85,6 +91,7 @@ public class DmpService {
         DmpConsistencyUtility.enforceDmpConsistency(dmpDO);
         Dmp dmp = DmpDOMapper.mapDOtoEntity(dmpDO, new Dmp(), mapperService);
         dmp.setCreated(new Date());
+        fetchORCIDContributorInfo(dmp);
         updateDmpSupplementalInfo(dmp);
         updateProjectLead(dmp);
         dmp.persistAndFlush();
@@ -100,6 +107,7 @@ public class DmpService {
         boolean projectSelectionChanged = projectSelectionChanged(dmp, dmpDO);
         DmpDOMapper.mapDOtoEntity(dmpDO, dmp, mapperService);
         dmp.setModified(new Date());
+        fetchORCIDContributorInfo(dmp);
         if (projectSelectionChanged) {
             updateDmpSupplementalInfo(dmp);
             updateProjectLead(dmp);
@@ -147,8 +155,10 @@ public class DmpService {
         Dmp dmp = dmpRepo.findById(id);
         if (dmp != null) {
             if (dmp.getProject() != null) {
-                if (dmp.getProject().getUniversityId() != null && projectService.read(dmp.getProject().getUniversityId()) != null) {
-                    filename = "DMP_" + projectService.read(dmp.getProject().getUniversityId()).getAcronym() + "_" + formatter.format(date);
+                if (dmp.getProject().getUniversityId() != null
+                        && projectService.read(dmp.getProject().getUniversityId()) != null) {
+                    filename = "DMP_" + projectService.read(dmp.getProject().getUniversityId()).getAcronym() + "_"
+                            + formatter.format(date);
                 } else if (dmp.getProject().getTitle() != null)
                     filename = "DMP_" + dmp.getProject().getTitle() + "_" + formatter.format(date);
             } else {
@@ -176,8 +186,9 @@ public class DmpService {
         return projectDOList;
     }
 
-    // This method will retrieve the Project Supplement values from the connected CRIS System
-    // and it will reset them to null in case the project is not from a connected system.
+    // This method will retrieve the Project Supplement values from the connected
+    // CRIS System and it will reset them to null in case the project is not from a
+    // connected system.
     private void updateDmpSupplementalInfo(Dmp dmp) {
         if (dmp.getProject() != null) {
             ProjectSupplementDO projectSupplementDO = null;
@@ -201,23 +212,18 @@ public class DmpService {
         if (dmp.getProject() == null || dmp.getProject().getUniversityId() == null)
             return;
 
-        ContributorDO projectLeaderDO =
-                projectService.getProjectLeader(dmp.getProject().getUniversityId());
+        ContributorDO projectLeaderDO = projectService.getProjectLeader(dmp.getProject().getUniversityId());
         if (projectLeaderDO == null)
             return;
 
         List<Contributor> dmpContributors = dmp.getContributorList();
 
-        Optional<Contributor> alreadyExistingContributorLeader =
-                dmpContributors.stream()
-                        .filter(c -> {
-                            return c.getUniversityId().equals(
-                                    projectLeaderDO.getUniversityId());
-                        })
-                        .findFirst();
+        Optional<Contributor> alreadyExistingContributorLeader = dmpContributors.stream()
+                .filter(c -> c.getUniversityId().equals(
+                        projectLeaderDO.getUniversityId()))
+                .findFirst();
 
-        Contributor projectLeaderContributor =
-                alreadyExistingContributorLeader.orElse(new Contributor());
+        Contributor projectLeaderContributor = alreadyExistingContributorLeader.orElse(new Contributor());
 
         // Adding project leader as contributor if it was not there yet.
         if (alreadyExistingContributorLeader.isEmpty()) {
@@ -237,6 +243,27 @@ public class DmpService {
         if (dmpContributors.stream().noneMatch(c -> c.getContact())) {
             projectLeaderContributor.setContact(true);
         }
+    }
+
+    private void fetchORCIDContributorInfo(Dmp dmp) {
+        dmp.getContributorList().forEach(contributor -> {
+            // Existing contributor? Do not fetch data.
+            if (contributor.id != null) {
+                return;
+            }
+
+            var identifier = contributor.getPersonIdentifier();
+            if (identifier != null
+                    && identifier.getIdentifierType().equals(EIdentifierType.ORCID)) {
+                try {
+                    ContributorDOMapper.mapDOtoEntity(orcidPersonService.read(identifier.getIdentifier()), contributor);
+                } catch (Exception e) {
+                    log.warn(String.format(
+                            "Could not fetch ORCID or map contributor info for identifier '%s'.%nDetail error message: %s",
+                            identifier.getIdentifier(), e));
+                }
+            }
+        });
     }
 
     private boolean projectSelectionChanged(Dmp dmp, DmpDO dmpDO) {

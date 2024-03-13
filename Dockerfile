@@ -2,7 +2,7 @@
 
 # Create a first stage container to build the application, this container image will be dropped once
 # the runner is built
-FROM adoptopenjdk/maven-openjdk11 as builder
+FROM maven:3.9.5-eclipse-temurin-17-alpine as builder
 
 # This Dockerfile uses labels from the label-schema namespace from http://label-schema.org/rc1/
 LABEL maintainer="zeno.casellato@tuwien.ac.at" \
@@ -30,7 +30,7 @@ RUN mvn -Duser.home=$BUILD_HOME -B package -DskipTests -Dquarkus.profile=${BUILD
 # Create a second stage container which will only contain the runtime binaries without build dependencies
 FROM rockylinux:8.5 as runner
 
-ARG JAVA_PACKAGE=java-11-openjdk-headless
+ARG JAVA_PACKAGE=java-17-openjdk-headless
 ARG RUN_JAVA_VERSION=1.3.8
 
 # path to copy built binaries from builder container
@@ -64,8 +64,5 @@ EXPOSE 8080
 
 # for Openshift based unprivilegued Kubernetes environments, we will set the user to 1001
 USER 1001
-
-HEALTHCHECK --interval=5m --timeout=3s \
-  CMD curl -f http://localhost/q/health/live || exit 1
 
 ENTRYPOINT [ "/deployments/run-java.sh" ]

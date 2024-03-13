@@ -14,14 +14,15 @@ public class ResultList<T> {
     public static <T> ResultList<T> fromItemsAndSearch(List<T> items, Search search) {
         ResultList<T> result = new ResultList<>();
         result.setItems(items != null ? items : List.of());
-        result.setSearch(search != null ? search : (Search.fromMap(new MultivaluedHashMap<String, String>())));
+        result.setSearch(search != null ? search : (Search.fromMap(new MultivaluedHashMap<>())));
 
         if (result.search.getPagination() == null) {
-            result.search.setPagination(new Pagination());
-            search.getPagination().setNumTotalItems(items.size());
+            Pagination p = new Pagination();
+            p.setNumTotalItems(result.items.size());
+            result.search.setPagination(p);
         }
 
-        search.getPagination().calculateFields();
+        result.search.getPagination().calculateFields();
 
         return result;
     }

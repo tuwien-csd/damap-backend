@@ -13,8 +13,10 @@ import at.ac.tuwien.damap.rest.base.ResultList;
 import at.ac.tuwien.damap.rest.base.Search;
 import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.persons.PersonService;
+import lombok.extern.jbosslog.JBossLog;
 
 @ApplicationScoped
+@JBossLog
 public class ORCIDPersonServiceImpl implements PersonService {
 
     @Inject
@@ -23,7 +25,7 @@ public class ORCIDPersonServiceImpl implements PersonService {
 
     @Override
     public ContributorDO read(String id, MultivaluedMap<String, String> queryParams) {
-        return ORCIDPersonMapper.mapEntityToDO(orcidRestClient.get(id), new ContributorDO());
+        return ORCIDMapper.mapRecordEntityToPersonDO(orcidRestClient.get(id), new ContributorDO());
     }
 
     @Override
@@ -32,20 +34,19 @@ public class ORCIDPersonServiceImpl implements PersonService {
 
         List<ContributorDO> contributors = null;
         try {
-            var orcidSearch = orcidRestClient.getAll(search.getQuery(), 10);
+            var orcidSearch = orcidRestClient.getAll(search.getQuery(), search.getPagination().getPerPage());
 
             if (orcidSearch.getNumFound() > 0 && orcidSearch.getPersons() != null) {
                 contributors = orcidSearch.getPersons().stream().map(o -> {
                     var c = new ContributorDO();
-                    ORCIDPersonMapper.mapEntityToDO(o, c);
+                    ORCIDMapper.mapExpandedSearchPersonEntityToDO(o, c);
                     return c;
                 }).collect(Collectors.toList());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Issue searching ORCID persons", e);
         }
 
         return ResultList.fromItemsAndSearch(contributors, search);
-        
     }
 }

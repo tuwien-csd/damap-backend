@@ -21,7 +21,7 @@ damap:
     recommendation: [ your-recommended-repositories ]
   projects-url: http://api-mock:80
   persons-url: http://api-mock:80
-  fits-url: http://your.fits.service:1234
+  fits-url: http://fits-service:8080/fits
   person-services:
     - display-text: 'University'
       query-value: 'UNIVERSITY'
@@ -38,6 +38,9 @@ quarkus:
       origins: ${damap.origins}
       headers: origin,content-type,accept,authorization
       access-control-max-age: 1
+    # needed for the fits service. Specify how large a single file for upload may be.
+    limits:
+      max-body-size: 10M
 
   oidc:
     auth-server-url: ${damap.auth.backend.url}
@@ -66,7 +69,7 @@ quarkus:
 
   liquibase:
     migrate-at-start: true
-    change-log: db/changeLog.yaml
+    change-log: at/ac/tuwien/damap/db/changeLog-root.yaml
 
 rest:
   projects/mp-rest/url: ${damap.projects-url}
@@ -82,10 +85,16 @@ rest:
 "%dev":
   damap:
     origins: http://localhost:4200
+    auth:
+      backend:
+        url: http://localhost:8087/auth/realms/damap # https://your.authentication.server
     datasource:
-      url: jdbc:postgresql://localhost:5432/damap
+      url: jdbc:postgresql://localhost:8088/damap
       username: damap
       password: pw4damap
+    projects-url: http://localhost:8091
+    persons-url: http://localhost:8091
+    fits-url: http://localhost:8089/fits
 
 "%oracle":
   quarkus:

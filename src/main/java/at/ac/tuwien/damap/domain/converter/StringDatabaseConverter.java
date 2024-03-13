@@ -20,7 +20,8 @@ public class StringDatabaseConverter implements AttributeConverter<String, Strin
     public String convertToEntityAttribute(String s) {
         if (s == null)
             return null;
-        else if (s.isEmpty())
+        
+        if (s.isEmpty())
             return null;
 
         return s;

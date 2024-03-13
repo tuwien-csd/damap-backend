@@ -1,14 +1,16 @@
-package at.ac.tuwien.damap.rest.persons.orcid;
+package at.ac.tuwien.damap.rest.persons.orcid.models;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 
 import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ORCIDPerson {
+public class ORCIDExpandedSearchPerson {
 
     @JsonProperty(value = "orcid-id")
     String orcidId;
@@ -20,8 +22,10 @@ public class ORCIDPerson {
     String familyNames;
 
     @JsonProperty(value = "email")
-    List<String> emails;
+    @JsonSetter(nulls = Nulls.AS_EMPTY)
+    List<String> emails = List.of();
 
     @JsonProperty(value = "institution-name")
-    List<String> affiliations;
+    @JsonSetter(nulls = Nulls.AS_EMPTY)
+    List<String> affiliations = List.of();
 }
