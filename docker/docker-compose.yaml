@@ -24,7 +24,7 @@ services:
       retries: 5
 
   damap-db:
-    image: postgres:12
+    image: postgres:16
     pull_policy: always
     restart: unless-stopped
     environment:
@@ -40,36 +40,33 @@ services:
       retries: 5
 
   keycloak:
-    image: jboss/keycloak
+    image: bitnami/keycloak:23
     pull_policy: always
     restart: unless-stopped
     environment:
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
 
-      # Uncomment the following block to use a postgres
-      # database for keycloak
-      # DB_ADDR: keycloak-db
-      # DB_DATABASE: keycloak
-      # DB_USER: keycloak
-      # DB_PORT: 5432
-      # DB_PASSWORD: keycloak
-      KEYCLOAK_IMPORT: /tmp/sample-damap-realm-export.json
+      KEYCLOAK_DATABASE_HOST: keycloak-db
+      KEYCLOAK_DATABASE_NAME: keycloak
+      KEYCLOAK_DATABASE_USER: keycloak
+      KEYCLOAK_DATABASE_PORT: 5432
+      KEYCLOAK_DATABASE_PASSWORD: keycloak
+
+      # Import realms found in /opt/bitnami/keycloak/data/import
+      KEYCLOAK_EXTRA_ARGS: "--import-realm"
     ports:
       - "8087:8080"
     volumes:
-      - ./sample-damap-realm-export.json:/tmp/sample-damap-realm-export.json
+      - ./sample-damap-realm-export.json:/opt/bitnami/keycloak/data/import/sample-damap-realm-export.json
 
-  # Uncomment the following service block to start a Postgres
-  # database for Keycloak. Also see the commented block in the keycloak
-  # service.
-  # keycloak-db:
-  #  image: postgres:12
-  #  environment:
-  #    POSTGRES_USER: keycloak
-  #    POSTGRES_PASSWORD: keycloak
-  #    POSTGRES_DB: keycloak
-  #    DB_VENDOR: postgres
+  keycloak-db:
+   image: postgres:16
+   environment:
+     POSTGRES_USER: keycloak
+     POSTGRES_PASSWORD: keycloak
+     POSTGRES_DB: keycloak
+     DB_VENDOR: postgres
 
   damap-fe:
     # Since DAMAP containers are publicly available on Github packages one can

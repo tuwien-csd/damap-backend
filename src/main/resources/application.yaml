@@ -5,10 +5,10 @@ damap:
   origins: http://localhost:8085 # https://your.frontend.com,https://*.yourdomain.com
   auth:
     backend:
-      url: http://keycloak:8080/auth/realms/damap # https://your.authentication.server
+      url: http://keycloak:8080/realms/damap # https://your.authentication.server
       client: 'damap-be' # your-backend-authentication-client-id
     frontend:
-      url: http://localhost:8087/auth/realms/damap # usually the same as the backend url
+      url: http://localhost:8087/realms/damap # usually the same as the backend url
       client: 'damap' # your-frontend-authentication-client-id
     scope: 'openid profile email offline_access microprofile-jwt roles personID' # your-backend-authentication-scope, including your variable for your user IDs
     user: 'personID' # the variable name for your user IDs
@@ -88,7 +88,7 @@ rest:
     origins: http://localhost:4200
     auth:
       backend:
-        url: http://localhost:8087/auth/realms/damap # https://your.authentication.server
+        url: http://localhost:8087/realms/damap # https://your.authentication.server
     datasource:
       url: jdbc:postgresql://localhost:8088/damap
       username: damap
