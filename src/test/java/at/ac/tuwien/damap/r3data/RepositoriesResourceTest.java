@@ -58,14 +58,14 @@ class RepositoriesResourceTest {
                 .when().get("/api/repositories/recommended")
                 .then()
                 .statusCode(200)
-                .body("id", hasItem("r3d100013557"));
+                .body("id", hasItem("r3d100010468"));
     }
 
     @Test
     @TestSecurity(user = "userJwt", roles = "user")
     void testRepositoryByIdEndpoint_Valid() {
         given()
-                .when().get("/api/repositories/r3d100013557")
+                .when().get("/api/repositories/r3d100010468")
                 .then()
                 .statusCode(200);
     }
