@@ -4,9 +4,9 @@ import java.util.HashMap;
 
 public enum EDataAccessType {
 
-    OPEN("Open"),
-    RESTRICTED("Restricted"),
-    CLOSED("Closed");
+    OPEN("open"),
+    RESTRICTED("restricted"),
+    CLOSED("closed");
 
     private final String value;
 

@@ -31,6 +31,9 @@ damap:
       query-value: 'ORCID'
       class-name: 'at.ac.tuwien.damap.rest.persons.orcid.ORCIDPersonServiceImpl'
 
+invenio:
+  shared-secret: "secret stuff or token"
+
 # general config settings
 quarkus:
   http:
