@@ -75,7 +75,7 @@ public class TestDOFactory {
     private final String editorId = "012345";
 
     @Transactional
-    public DmpDO createDmp(String title, boolean withDefaultData) {
+    public DmpDO createDmp(String title, boolean withDefaultData, String editorId) {
 
         if ("TestDmp".equals(title)) {
             // TODO: fix test cases to not depend on the TestDmp. Instead, create a new DMP
@@ -89,6 +89,11 @@ public class TestDOFactory {
         }
         newTestDmpDO.setTitle(title);
         return dmpService.create(newTestDmpDO, editorId);
+    }
+
+    @Transactional
+    public DmpDO createDmp(String title, boolean withDefaultData) {
+        return createDmp(title, withDefaultData, editorId);
     }
 
     private void setDataOnDMP(DmpDO dmpDO) {
@@ -394,7 +399,7 @@ public class TestDOFactory {
             record = mapper.readValue(in, ORCIDRecord.class);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error when fetching ORCID info: " + e);
         }
 
         return record;
