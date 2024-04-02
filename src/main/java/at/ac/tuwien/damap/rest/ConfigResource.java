@@ -12,6 +12,9 @@ import at.ac.tuwien.damap.rest.config.domain.ConfigDO;
 import at.ac.tuwien.damap.rest.config.domain.PersonServiceConfigurations;
 import lombok.extern.jbosslog.JBossLog;
 
+import java.net.URL;
+import java.util.Optional;
+
 @Path("/api/config")
 @Produces(MediaType.APPLICATION_JSON)
 @PermitAll
@@ -35,6 +38,9 @@ public class ConfigResource {
     @ConfigProperty(name = "damap.person-services")
     PersonServiceConfigurations personServiceConfigurations;
 
+    @ConfigProperty(name = "damap.fits-url")
+    Optional<URL> fitsUrl;
+
     @GET
     public ConfigDO config() {
         ConfigDO configDO = new ConfigDO();
@@ -44,7 +50,12 @@ public class ConfigResource {
         configDO.setAuthUser(authUser);
         configDO.setEnv(env);
         configDO.setPersonSearchServiceConfigs(personServiceConfigurations.getConfigs());
+        configDO.setFitsServiceAvailable(getFitsServiceAvailability());
 
         return configDO;
+    }
+
+    private boolean getFitsServiceAvailability() {
+        return fitsUrl.isPresent();
     }
 }

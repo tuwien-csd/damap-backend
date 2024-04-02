@@ -16,4 +16,5 @@ public class ConfigDO {
     private String authUser;
     private String env;
     private List<ServiceConfig> personSearchServiceConfigs;
+    private boolean fitsServiceAvailable;
 }
