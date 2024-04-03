@@ -154,8 +154,11 @@ class DmpServiceTest extends TestSetup {
         dmpDO = dmpService.create(dmpDO, "");
         var contributorDOs = dmpDO.getContributors();
         Assertions.assertFalse(contributorDOs.isEmpty());
-        Assertions.assertEquals(testRecord.getPerson().getName().getPath(),
-                contributorDOs.get(0).getPersonId().getIdentifier());
+        Assertions.assertEquals(testRecord.getPerson().getName().getGivenNames().getValue(),
+                contributorDOs.get(0).getFirstName());
+
+        Assertions.assertEquals(testRecord.getPerson().getName().getFamilyName().getValue(),
+                contributorDOs.get(0).getLastName());
 
     }
 
