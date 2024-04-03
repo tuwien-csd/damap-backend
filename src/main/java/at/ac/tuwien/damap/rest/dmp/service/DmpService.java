@@ -12,6 +12,8 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import at.ac.tuwien.damap.domain.Identifier;
+import at.ac.tuwien.damap.rest.dmp.mapper.*;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 
@@ -28,11 +30,6 @@ import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpListItemDO;
 import at.ac.tuwien.damap.rest.dmp.domain.IdentifierDO;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
-import at.ac.tuwien.damap.rest.dmp.mapper.ContributorDOMapper;
-import at.ac.tuwien.damap.rest.dmp.mapper.DmpDOMapper;
-import at.ac.tuwien.damap.rest.dmp.mapper.DmpListItemDOMapper;
-import at.ac.tuwien.damap.rest.dmp.mapper.MapperService;
-import at.ac.tuwien.damap.rest.dmp.mapper.ProjectSupplementDOMapper;
 import at.ac.tuwien.damap.rest.persons.orcid.ORCIDPersonServiceImpl;
 import at.ac.tuwien.damap.rest.projects.ProjectService;
 import at.ac.tuwien.damap.rest.projects.ProjectSupplementDO;
@@ -206,7 +203,7 @@ public class DmpService {
      * Set the project leader as contact, if there is no other contact selected.
      * Add the project leader as a contributor, if it is not already added.
      *
-     * @param Dmp Data management plan
+     * @param dmp Data management plan
      */
     private void updateProjectLead(Dmp dmp) {
         if (dmp.getProject() == null || dmp.getProject().getUniversityId() == null)
@@ -256,7 +253,19 @@ public class DmpService {
             if (identifier != null
                     && identifier.getIdentifierType().equals(EIdentifierType.ORCID)) {
                 try {
-                    ContributorDOMapper.mapDOtoEntity(orcidPersonService.read(identifier.getIdentifier()), contributor);
+                    ContributorDO contributorDO = orcidPersonService.read(identifier.getIdentifier());
+                    if (contributor.getMbox() == null || contributor.getMbox().isEmpty())
+                        contributor.setMbox(contributorDO.getMbox());
+
+                    if (contributor.getAffiliation() == null || contributor.getAffiliation().isEmpty())
+                        contributor.setAffiliation(contributorDO.getAffiliation());
+
+                    if (contributor.getFirstName() == null || contributor.getFirstName().isEmpty())
+                        contributor.setFirstName(contributorDO.getFirstName());
+
+                    if (contributor.getLastName() == null || contributor.getLastName().isEmpty())
+                        contributor.setLastName(contributorDO.getLastName());
+
                 } catch (Exception e) {
                     log.warn(String.format(
                             "Could not fetch ORCID or map contributor info for identifier '%s'.%nDetail error message: %s",

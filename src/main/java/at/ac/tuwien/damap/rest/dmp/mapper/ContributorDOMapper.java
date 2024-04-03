@@ -62,6 +62,7 @@ public class ContributorDOMapper {
             contributor.setAffiliationId(affiliationIdentifier);
         } else
             contributor.setAffiliationId(null);
+
         contributor.setContact(contributorDO.isContact());
         contributor.setContributorRole(contributorDO.getRole());
 
