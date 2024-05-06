@@ -5,10 +5,8 @@ import at.ac.tuwien.damap.enums.*;
 import at.ac.tuwien.damap.rest.dmp.domain.ProjectDO;
 import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.*;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTHyperlink;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTVMerge;
 
-import java.lang.reflect.Field;
 import java.text.NumberFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -63,8 +61,6 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
 
         // mapping general information
         Integer titleLength = (project.getTitle() == null) ? 0 : project.getTitle().length();
-        Integer coverSpace = 0;
-        String coverSpaceVar = "";
 
         // variable project name
         if (titleLength / 25 > 2) // Title too long, need to be resized
@@ -72,28 +68,8 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
         else
             addReplacement(replacements, "[projectname]", project.getTitle());
 
-        addReplacement(footerMap, "[projectname]", dmp.getProject().getTitle());
-
-        // handling space in the cover depends on the title length
-        switch (titleLength / 25) {
-            case 0:
-            case 4:
-                coverSpace = 2;
-                break;
-            default:
-                coverSpace = 1;
-                break;
-        }
-
-        if (titleLength / 25 < 6) {
-            for (int i = 0; i < coverSpace; i++) {
-                coverSpaceVar = coverSpaceVar.concat(" ;");
-            }
-        }
-        if (titleLength / 25 < 3)
-            coverSpaceVar = coverSpaceVar.concat(" ");
-
-        addReplacement(replacements, "[coverspace]", coverSpaceVar);
+        addReplacement(replacements, "[projectnameText]", project.getTitle());
+        addReplacement(footerMap, "[projectnameText]", project.getTitle());
 
         ProjectDO projectCRIS = null;
         if (project.getUniversityId() != null)
