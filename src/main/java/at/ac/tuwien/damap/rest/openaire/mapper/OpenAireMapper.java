@@ -3,9 +3,7 @@ package at.ac.tuwien.damap.rest.openaire.mapper;
 import at.ac.tuwien.damap.enums.*;
 import at.ac.tuwien.damap.rest.dmp.domain.DatasetDO;
 import at.ac.tuwien.damap.rest.dmp.domain.IdentifierDO;
-import eu.openaire.oaf.QualifierType;
-import eu.openaire.oaf.Result;
-import eu.openaire.oaf.StructuredPropertyElementType;
+import eu.openaire.oaf.*;
 import generated.Response;
 import lombok.experimental.UtilityClass;
 
@@ -30,6 +28,28 @@ public class OpenAireMapper {
                     datasetDO = mapAtoB(element.getName().getLocalPart(), (QualifierType) element.getValue(), datasetDO);
                 else if (element.getDeclaredType() == String.class)
                     datasetDO = mapAtoB(element.getName().getLocalPart(), (String) element.getValue(), datasetDO);
+                else if (element.getDeclaredType() == ResultChildrenType.class) {
+                    for (InstanceType instance : ((ResultChildrenType) element.getValue()).getInstance()) {
+                        for (JAXBElement<?> instanceElement : instance.getLicenseOrAccessrightOrInstancetype()) {
+                            if (instanceElement.getDeclaredType() == FieldType.class) {
+                                datasetDO = mapAtoB(instanceElement.getName().getLocalPart(), (FieldType) instanceElement.getValue(), datasetDO);
+                            }
+                        }
+                    }
+                }
+                /*
+                else if (element.getDeclaredType() == InstancesType.class) {
+                    for (InstanceType instance : ((InstancesType) element.getValue()).getInstance()) {
+                        for (JAXBElement<?> instanceElement : instance.getLicenseOrAccessrightOrInstancetype()) {
+                            if (instanceElement.getDeclaredType() == FieldType.class) {
+                                datasetDO = mapAtoB(instanceElement.getName().getLocalPart(), (FieldType) instanceElement.getValue(), datasetDO);
+                            }
+                        }
+                    }
+                }
+                */
+
+
             }
         } catch (NullPointerException e) {
             // Return null if no result present
@@ -112,6 +132,15 @@ public class OpenAireMapper {
             default:
         }
 
+        return datasetDO;
+    }
+
+    public DatasetDO mapAtoB(String propertyName, FieldType elementType, DatasetDO datasetDO) {
+        if ("license".equals(propertyName)) {
+            if (datasetDO.getLicense() == null) {
+                datasetDO.setLicense(elementType.getValue());
+            }
+        }
         return datasetDO;
     }
 

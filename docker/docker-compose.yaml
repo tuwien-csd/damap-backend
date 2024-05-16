@@ -9,8 +9,8 @@ services:
 
     # uncomment the following two lines and comment the previous
     # 'image' to directly build the backend container from this repository.
-    # build:
-    #  context: ../
+    #  build:
+    #   context: ../
 
   damap-db:
     image: postgres:12
@@ -45,13 +45,14 @@ services:
   # Uncomment the following service block to start a Postgres
   # database for Keycloak. Also see the commented block in the keycloak
   # service.
-  # keycloak-db:
-  #  image: postgres:12
-  #  environment:
-  #    POSTGRES_USER: keycloak
-  #    POSTGRES_PASSWORD: keycloak
-  #    POSTGRES_DB: keycloak
-  #    DB_VENDOR: postgres
+  keycloak-db:
+    image: postgres:12
+    environment:
+       POSTGRES_USER: keycloak
+       POSTGRES_PASSWORD: keycloak
+       POSTGRES_DB: keycloak
+       DB_VENDOR: postgres
+       PGGSSENCMODE: disable
 
   damap-fe:
     # Since DAMAP containers are publicly available on Github packages one can
@@ -62,8 +63,8 @@ services:
     # uncomment the following two lines and comment the previous
     # 'image' to directly build the frontend container from the repository
     # assumed to be checked-out beside the 'damap-backend' repository.
-    # build:
-      # context: ../../damap-frontend
+    #build:
+    #  context: ../../damap-frontend
 
   api-mock:
     image: clue/json-server
@@ -93,7 +94,7 @@ services:
       - "8089:8080"
 
 # Uncomment the following block to persist postgres data.
-#    volumes:
-#      - damap-db-data:/var/lib/postgresql/data
-#volumes:
-#  damap-db-data:
+    volumes:
+      - damap-db-data:/var/lib/postgresql/data
+volumes:
+  damap-db-data:

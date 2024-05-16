@@ -858,8 +858,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 }
 
                 if (reusedDatasets.get(i).getLicense() != null) {
-                    //TODO second String license option for reused datasets.
-                    docVar.add("");                }
+                    docVar.add(reusedDatasets.get(i).getLicense().getAcronym());                }
                 else {
                     docVar.add("");
                 }
