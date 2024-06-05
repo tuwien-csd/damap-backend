@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+{#let projectName = (dmp.project == null ? "[Project Title]" : dmp.project.getTitle())}
+{#let contactPerson = dmp.getContact()}
+{#let contactPersonName = (contactPerson == null ? "[Contact Perseon]" : (contactPerson.firstName + " " + contactPerson.lastName)) }
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    </meta>
+    <title>{dmp.title}</title>
+
+    <style>
+        .center-text {
+            text-align: center;
+        }
+
+
+        th {
+            color: blue;
+            border: 1px dotted #ddd;
+        }
+
+        ol {
+            counter-reset: section;
+            /* Creates a new instance of the
+                             section counter with each ol
+                             element */
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        li::before {
+            counter-increment: section;
+            /* Increments only this instance
+                                            of the section counter */
+            content: counters(section, ".") " ";
+            /* Combines the values of all instances
+                                          of the section counter, separated
+                                          by a period */
+        }
+    </style>
+
+</head>
+
+<body>
+    <h1 class="center-text">
+        {projectName}
+    </h1>
+    <h2 class="center-text">
+        {#if dmp.project != null && dmp.project.getAcronym() != null && dmp.project.getAcronym().length > 0}
+        {dmp.project.getAcronym()}
+        {#else}
+        Project Acronym
+        {/if}
+    </h2>
+    <h2 class="center-text">Data Management Plan</h2>
+
+
+    <ol>
+        <li>
+            <h2>Executive Summary</h2>
+            <ol>
+                <li>
+                    <h4>
+                        Introduction
+                    </h4>
+                    A data management plan (DMP) is a structured document that keeps record of what research data
+                    is created or reused and what happens to that data during and after a project. It helps with
+                    planning the research process and defining responsibilities in a research project involving
+                    several researchers or institutions. For writing this DMP, we followed the Horizon Europe DMP
+                    template.
+
+                    {contactPersonName} will act as the data manager who will be in charge of the actions
+                    described by this DMP.
+                </li>
+                <li>
+                    <h4>Data Summary</h4>
+
+                    <div style="border: 2px solid blue; width: 100vw;">
+                        Lorem ipsum dolor sit amet ...
+                        Lorem ipsum dolor sit amet ...
+                        Lorem ipsum dolor sit amet ...
+                        Lorem ipsum dolor sit amet ...
+                        Lorem ipsum dolor sit amet ...
+                        Lorem ipsum dolor sit amet ...
+                        Lorem ipsum dolor sit amet ...
+                    </div>
+
+                    <h4>Produced datasets</h4>
+                    <table aria-describedby="Produced Datasets">
+                        <tr>
+                            <th>Dataset ID</th>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Format</th>
+                            <th>Estimated Volume</th>
+                            <th>Contains Sensitive Data</th>
+                        </tr>
+                        {#for ds in dmp.getProducedDatasets()}
+                        <tr>
+                            <td>P{ds_count}</td>
+                            <td>{ds.title}</td>
+                            <td>{#for type in ds.type}{type} {/for}</td>
+                            <td></td>
+                            <td>{ds.datasetSize}</td>
+                            <td>{ds.sensitiveData ? "Yes" : "No"}</td>
+                        </tr>
+                        {/for}
+                    </table>
+
+                    <h4>Reused datasets</h4>
+                </li>
+            </ol>
+        </li>
+    </ol>
+
+</body>
+
+</html>
+
+{/let}
+{/let}
+{/let}

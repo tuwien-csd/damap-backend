@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Valid
 @Data
@@ -93,5 +94,9 @@ public class DmpDO {
     public ContributorDO getContact() {
         Optional<ContributorDO> contact = contributors.stream().filter(ContributorDO::isContact).findFirst();
         return contact.orElse(null);
+    }
+
+    public List<DatasetDO> getProducedDatasets() {
+        return datasets.stream().filter(dataset -> dataset.getSource().equals(EDataSource.NEW)).collect(Collectors.toList());
     }
 }
