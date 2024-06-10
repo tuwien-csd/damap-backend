@@ -5,16 +5,19 @@ import java.util.List;
 
 public enum EIdentifierType {
 
-    ORCID("orcid"),
-    ISNI("isni"),
-    OPENID("openid"),
-    OTHER("other"),
-    HANDLE("handle"),
-    DOI("doi"),
-    ARK("ark"),
-    URL("url"),
-    FUNDREF("fundref"),
-    ROR("ror");
+    ORCID("ORCID"),
+    ISNI("ISNI"),
+    OPENID("OpenId"),
+    OTHER("Other"),
+    HANDLE("Handle"),
+    DOI("DOI"),
+    ARK("ARK"),
+    URL("URL"),
+    HDL("HDL"),
+    PURL("PURL"),
+    URN("URN"),
+    FUNDREF("FundRef"),
+    ROR("ROR");
 
     private final String type;
 
@@ -35,6 +38,9 @@ public enum EIdentifierType {
         datasetIdentifierType.add(EIdentifierType.ARK);
         datasetIdentifierType.add(EIdentifierType.URL);
         datasetIdentifierType.add(EIdentifierType.OTHER);
+        datasetIdentifierType.add(EIdentifierType.HDL);
+        datasetIdentifierType.add(EIdentifierType.PURL);
+        datasetIdentifierType.add(EIdentifierType.URN);
 
         funderIdentifierType.add(EIdentifierType.FUNDREF);
         funderIdentifierType.add(EIdentifierType.URL);
@@ -53,7 +59,11 @@ public enum EIdentifierType {
         this.type = type;
     }
 
-    public List<EIdentifierType> getPersonIdentifierTypeList() {
+    public String getType() {
+        return type;
+    }
+
+    public static List<EIdentifierType> getPersonIdentifierTypeList() {
         return personIdentifierType;
     }
 

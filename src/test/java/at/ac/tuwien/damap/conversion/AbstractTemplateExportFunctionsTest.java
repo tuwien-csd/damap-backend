@@ -25,10 +25,10 @@ class AbstractTemplateExportFunctionsTest {
             Assertions.assertNotNull(document);
 
             //testing multiple variable handling
-            String result1 = documentConversionService.multipleVariable(testTwoVariable());
-            String result2 = documentConversionService.multipleVariable(testThreeVariable());
-            String result3 = documentConversionService.multipleVariableAnd(testTwoVariable());
-            String result4 = documentConversionService.multipleVariableAnd(testThreeVariable());
+            String result1 = documentConversionService.joinWithComma(testTwoVariable());
+            String result2 = documentConversionService.joinWithComma(testThreeVariable());
+            String result3 = documentConversionService.joinWithCommaAnd(testTwoVariable());
+            String result4 = documentConversionService.joinWithCommaAnd(testThreeVariable());
             Assertions.assertEquals(twoVariables(), result1);
             Assertions.assertEquals(threeVariables(), result2);
             Assertions.assertEquals(twoVariablesAnd(), result3);
@@ -55,10 +55,10 @@ class AbstractTemplateExportFunctionsTest {
     }
 
     private String twoVariablesAnd() {
-        return "var1, and var2";
+        return "var1 and var2";
     }
 
     private String threeVariablesAnd() {
-        return "var1, var2, and var3";
+        return "var1, var2 and var3";
     }
 }

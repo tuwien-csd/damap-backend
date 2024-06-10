@@ -1,5 +1,7 @@
 package at.ac.tuwien.damap.r3data.dto;
 
+import at.ac.tuwien.damap.domain.Identifier;
+import at.ac.tuwien.damap.enums.EIdentifierType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
@@ -18,5 +20,6 @@ public class RepositoryDetails {
     private Boolean versioning;
     private List<String> contentTypes;
     private List<String> metadataStandards;
+    private List<EIdentifierType> pidSystems;
 
 }

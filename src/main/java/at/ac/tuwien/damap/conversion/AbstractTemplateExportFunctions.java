@@ -208,24 +208,18 @@ public abstract class AbstractTemplateExportFunctions {
      * @param variableList
      * @return
      */
-    public String multipleVariable(List<String> variableList) {
-        switch (variableList.size()) {
-            case 0:
-                return "";
-            default:
-                return String.join(", ", variableList);
-        }
+    public String joinWithComma (List<String> variableList) {
+        return String.join(", ", variableList);
     }
 
-    public String multipleVariableAnd(List<String> variableList) {
-        switch (variableList.size()) {
-            case 0:
-                return "";
-            case 1:
-                return variableList.get(0);
-            default:
-                return String.join(", ", variableList.subList(0, (variableList.size() - 1))) + ", and " + variableList.get(variableList.size() - 1);
-        }
+    public String joinWithCommaAnd(List<String> variableList) {
+        return switch (variableList.size()) {
+            case 0 -> "";
+            case 1 -> variableList.get(0);
+            default ->
+                    String.join(", ", variableList.subList(0, (variableList.size() - 1))) + " and "
+                            + variableList.get(variableList.size() - 1);
+        };
     }
 
     /**

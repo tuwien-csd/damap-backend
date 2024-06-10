@@ -109,6 +109,15 @@ public class Dataset extends PanacheEntity {
     @Column(name = "dataset_source")
     private EDataSource source;
 
+    public List<Repository> getRepositories() {
+        List<Repository> repositories = new ArrayList<>();
+        for (Distribution distribution : this.getDistributionList()) {
+            if (Repository.class.isAssignableFrom(distribution.getHost().getClass()))
+                repositories.add((Repository) distribution.getHost());
+        }
+        return repositories;
+    }
+
     @EqualsAndHashCode.Include
     public Long getId() {
         return id;

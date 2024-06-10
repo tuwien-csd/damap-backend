@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: 11
+      author: Valentin Futterer
+      changes:
+        - insert:
+            tableName: e_identifier_type
+            columns:
+              - column:
+                  name: type
+                  value: 'HDL'
+        - insert:
+            tableName: e_identifier_type
+            columns:
+              - column:
+                  name: type
+                  value: 'PURL'
+        - insert:
+            tableName: e_identifier_type
+            columns:
+              - column:
+                  name: type
+                  value: 'URN'
