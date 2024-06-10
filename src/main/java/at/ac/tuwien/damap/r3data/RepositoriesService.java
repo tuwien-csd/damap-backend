@@ -1,5 +1,6 @@
 package at.ac.tuwien.damap.r3data;
 
+import at.ac.tuwien.damap.enums.EIdentifierType;
 import at.ac.tuwien.damap.r3data.dto.RepositoryDetails;
 import at.ac.tuwien.damap.r3data.mapper.RepositoryMapper;
 import generated.Repository;
@@ -79,5 +80,9 @@ public class RepositoriesService {
 
     public String getRepositoryURL(String id) {
         return RepositoryMapper.mapToRepositoryDetails(getById(id), id).getRepositoryURL();
+    }
+
+    public List<EIdentifierType> getPidSystems(String id) {
+        return RepositoryMapper.mapToRepositoryDetails(getById(id), id).getPidSystems();
     }
 }

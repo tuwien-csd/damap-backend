@@ -2,6 +2,7 @@ package at.ac.tuwien.damap.conversion;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
@@ -118,18 +119,10 @@ public class ExportHorizonEuropeTemplate extends AbstractTemplateExportScienceEu
 
                 ArrayList<String> docVar = new ArrayList<>();
                 docVar.add(datasetTableIDs.get(newDatasets.get(i).id));
-                if (newDatasets.get(i).getDistributionList() != null) {
-                    List<Distribution> distributions = newDatasets.get(i).getDistributionList();
-                    List<String> repositories = new ArrayList<>();
-                    for (Distribution distribution : distributions) {
-                        if (Repository.class.isAssignableFrom(distribution.getHost().getClass()))
-                            repositories.add(distribution.getHost().getTitle());
-                    }
-                    if (!repositories.isEmpty()) {
-                        docVar.add(multipleVariable(repositories));
-                    } else {
-                        docVar.add("");
-                    }
+                List<Repository> repositories = newDatasets.get(i).getRepositories();
+                if (!repositories.isEmpty()) {
+                    List<String> repositoryTitles = repositories.stream().map(Repository::getTitle).toList();
+                    docVar.add(joinWithComma(repositoryTitles));
                 } else {
                     docVar.add("");
                 }

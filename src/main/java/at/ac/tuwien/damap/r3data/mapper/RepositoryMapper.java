@@ -1,12 +1,15 @@
 package at.ac.tuwien.damap.r3data.mapper;
 
+import at.ac.tuwien.damap.enums.EIdentifierType;
 import at.ac.tuwien.damap.r3data.dto.RepositoryDetails;
 import lombok.experimental.UtilityClass;
 import org.re3data.schema._2_2.Languages;
+import org.re3data.schema._2_2.PidSystems;
 import org.re3data.schema._2_2.Re3Data;
 import org.re3data.schema._2_2.Yesno;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @UtilityClass
 public class RepositoryMapper {
@@ -49,6 +52,15 @@ public class RepositoryMapper {
             }
             repositoryDetails.setContentTypes(types);
         }
+
+        List<PidSystems> pidSystems = repo.getPidSystem();
+        List<EIdentifierType> pidIdentifiers = new ArrayList<>();
+        for (PidSystems pidSystem : pidSystems) {
+            if (!pidSystem.name().equals("NONE")) {
+                pidIdentifiers.add(EIdentifierType.valueOf(pidSystem.name()));
+            }
+        }
+        repositoryDetails.setPidSystems(pidIdentifiers);
 
         return repositoryDetails;
     }
