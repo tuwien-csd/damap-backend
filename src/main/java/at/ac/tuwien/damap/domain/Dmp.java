@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Setter;
 
 import org.hibernate.envers.Audited;
+import org.hibernate.Length;
 
 import jakarta.persistence.*;
 
@@ -35,8 +36,7 @@ public class Dmp extends PanacheEntity {
 
     private String title;
 
-    @Lob
-    @Column(columnDefinition = "CLOB")
+    @Column(length = Length.LONG32)
     private String description;
 
     @ManyToOne(cascade = CascadeType.ALL)

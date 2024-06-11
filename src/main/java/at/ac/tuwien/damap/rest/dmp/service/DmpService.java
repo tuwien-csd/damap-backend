@@ -172,7 +172,6 @@ public class DmpService {
         return filename;
     }
 
-    @Transactional
     public List<ProjectDO> checkExistingDmps(List<ProjectDO> projectDOList) {
 
         for (Dmp dmp : dmpRepo.getAll()) {
@@ -290,7 +289,6 @@ public class DmpService {
                 !Objects.equals(dmp.getProject().getUniversityId(), dmpDO.getProject().getUniversityId());
     }
 
-    @Transactional
     public DmpDO getDmpByIdAndRevision(long dmpId, long revision) {
         AuditReader reader = AuditReaderFactory.get(dmpRepo.getEntityManager());
         Dmp dmpRevision = reader.find(Dmp.class, dmpId, revision);

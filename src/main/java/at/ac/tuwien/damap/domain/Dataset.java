@@ -4,6 +4,7 @@ import at.ac.tuwien.damap.enums.*;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import lombok.*;
 
+import org.hibernate.Length;
 import org.hibernate.envers.Audited;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -43,8 +44,7 @@ public class Dataset extends PanacheEntity {
     @Column(name = "data_size")
     private Long size;
 
-    @Lob
-    @Column(name = "description")
+    @Column(name = "description", length = Length.LONG32)
     private String description;
 
     @Column(name = "personal_data")

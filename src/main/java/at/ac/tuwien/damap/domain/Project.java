@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+
+import org.hibernate.Length;
 import org.hibernate.envers.Audited;
 
 import jakarta.persistence.*;
@@ -25,8 +27,7 @@ public class Project extends PanacheEntity {
 
     private String title;
 
-    @Lob
-    @Column(columnDefinition = "CLOB")
+    @Column(length = Length.LONG32)
     private String description;
 
     @ManyToOne(cascade = CascadeType.ALL)
