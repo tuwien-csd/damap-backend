@@ -5,9 +5,9 @@ import at.ac.tuwien.damap.rest.persons.PersonService;
 import io.quarkus.arc.All;
 import lombok.extern.jbosslog.JBossLog;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.ws.rs.core.MultivaluedMap;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.util.LinkedHashMap;
 import java.util.List;

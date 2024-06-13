@@ -6,9 +6,8 @@ import at.ac.tuwien.damap.enums.ETemplateType;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
 import at.ac.tuwien.damap.rest.dmp.domain.IdentifierDO;
 import io.quarkus.arc.DefaultBean;
+import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.jbosslog.JBossLog;
-
-import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 @DefaultBean

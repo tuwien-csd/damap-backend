@@ -1,6 +1,6 @@
 package at.ac.tuwien.damap.conversion;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.junit.jupiter.api.Assertions;
@@ -10,8 +10,8 @@ import at.ac.tuwien.damap.TestSetup;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
 import at.ac.tuwien.damap.rest.projects.MockProjectServiceImpl;
 import at.ac.tuwien.damap.util.TestDOFactory;
+import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
 import io.quarkus.test.security.TestSecurity;
 
 @QuarkusTest

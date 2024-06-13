@@ -6,11 +6,12 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
+import org.hibernate.envers.Audited;
+import org.hibernate.Length;
+
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +36,7 @@ public class Dmp extends PanacheEntity {
 
     private String title;
 
+    @Column(length = Length.LONG32)
     private String description;
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -148,16 +150,13 @@ public class Dmp extends PanacheEntity {
     @Column(name = "committee_reviewed_cris")
     private Boolean committeeReviewedCris;
 
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Contributor> contributorList = new ArrayList<>();
 
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Dataset> datasetList = new ArrayList<>();
 
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Host> hostList = new ArrayList<>();
 
     @Column(name = "external_storage_info")
@@ -175,8 +174,7 @@ public class Dmp extends PanacheEntity {
     @Column(name = "costs_exist_cris")
     private Boolean costsExistCris;
 
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(mappedBy = "dmp", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Cost> costs = new ArrayList<>();
 
     private String documentation;

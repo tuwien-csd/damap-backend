@@ -8,8 +8,8 @@ import lombok.extern.jbosslog.JBossLog;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
-import javax.validation.ConstraintViolationException;
+import jakarta.inject.Inject;
+import jakarta.validation.ConstraintViolationException;
 
 @JBossLog
 @QuarkusTest

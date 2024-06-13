@@ -2,10 +2,10 @@ package at.ac.tuwien.damap.rest.projects;
 
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.core.MultivaluedMap;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.core.MultivaluedMap;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 

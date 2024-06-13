@@ -7,10 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import javax.validation.ValidationException;
+import jakarta.inject.Inject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
@@ -51,6 +48,9 @@ import at.ac.tuwien.damap.rest.persons.orcid.models.ORCIDRecord;
 import at.ac.tuwien.damap.rest.version.VersionDO;
 import at.ac.tuwien.damap.rest.version.VersionDOMapper;
 import at.ac.tuwien.damap.rest.version.VersionService;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
+import jakarta.validation.ValidationException;
 import lombok.extern.jbosslog.JBossLog;
 
 @JBossLog

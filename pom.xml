@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>at.ac.tuwien</groupId>
@@ -10,16 +12,16 @@
   <url>https://github.com/tuwien-csd/damap-backend</url>
 
   <properties>
-    <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
+    <surefire-plugin.version>3.2.3</surefire-plugin.version>
     <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.source>17</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.parameters>true</maven.compiler.parameters>
-    <compiler-plugin.version>3.11.0</compiler-plugin.version>
-    <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
+    <compiler-plugin.version>3.12.1</compiler-plugin.version>
+    <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-    <quarkus.platform.version>2.16.2.Final</quarkus.platform.version>
+    <quarkus.platform.version>3.11.1</quarkus.platform.version>
     <sonar.version>3.9.0.2155</sonar.version>
   </properties>
 
@@ -101,11 +103,11 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-rest-client</artifactId>
+      <artifactId>quarkus-resteasy-client</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-rest-client-jaxb</artifactId>
+      <artifactId>quarkus-resteasy-client-jaxb</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -138,8 +140,8 @@
       <artifactId>quarkus-jdbc-postgresql</artifactId>
     </dependency>
     <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-jdbc-oracle</artifactId>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-oracle</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -148,12 +150,11 @@
     <dependency>
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
-      <version>1.32</version>
     </dependency>
     <!-- Health -->
     <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-smallrye-health</artifactId>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-health</artifactId>
     </dependency>
     <!-- Utility -->
     <dependency>
@@ -178,8 +179,8 @@
       <version>4.1.2</version>
     </dependency>
     <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-config-yaml</artifactId>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-config-yaml</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -208,7 +209,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${compiler-plugin.version}</version>
         <configuration>
-            <parameters>${maven.compiler.parameters}</parameters>
+          <parameters>${maven.compiler.parameters}</parameters>
         </configuration>
       </plugin>
       <plugin>
@@ -224,7 +225,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>jaxb2-maven-plugin</artifactId>
-        <version>2.5.0</version>
+        <version>3.1.0</version>
         <executions>
           <execution>
             <id>xjc</id>
@@ -297,7 +298,7 @@
                 <configuration>
                   <systemPropertyVariables>
                     <native.image.path>
-                        ${project.build.directory}/${project.build.finalName}-runner
+                      ${project.build.directory}/${project.build.finalName}-runner
                     </native.image.path>
                     <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                     <maven.home>${maven.home}</maven.home>
@@ -309,7 +310,8 @@
         </plugins>
       </build>
       <properties>
-        <quarkus.package.type>native</quarkus.package.type>
+        <quarkus.native.enabled>true</quarkus.native.enabled>
+        <quarkus.package.jar.enabled>false</quarkus.package.jar.enabled>
       </properties>
     </profile>
 

@@ -53,7 +53,7 @@ public class RepositoryMapper {
         return repositoryDetails;
     }
 
-    @javax.annotation.Nullable
+    @jakarta.annotation.Nullable
     public Boolean mapYesNoToBoolean(Yesno value) {
         if (value == null) {
             return null;

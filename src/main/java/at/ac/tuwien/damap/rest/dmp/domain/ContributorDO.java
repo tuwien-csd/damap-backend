@@ -4,7 +4,7 @@ import at.ac.tuwien.damap.enums.EContributorRole;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
 /**
  * Damap compatible representation of persons

@@ -1,21 +1,17 @@
 package at.ac.tuwien.damap.rest.dmp;
 
-import at.ac.tuwien.damap.domain.Dmp;
-import at.ac.tuwien.damap.domain.DmpVersion;
 import at.ac.tuwien.damap.repo.DmpRepo;
 import at.ac.tuwien.damap.repo.DmpVersionRepo;
 import at.ac.tuwien.damap.rest.dmp.domain.DmpDO;
 import at.ac.tuwien.damap.rest.dmp.service.DmpService;
 import at.ac.tuwien.damap.rest.version.VersionDO;
-import at.ac.tuwien.damap.rest.version.VersionDOMapper;
 import at.ac.tuwien.damap.rest.version.VersionService;
 import at.ac.tuwien.damap.util.TestDOFactory;
 import io.quarkus.test.junit.QuarkusTest;
 import lombok.extern.jbosslog.JBossLog;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
-import javax.transaction.Transactional;
+import jakarta.inject.Inject;
 
 import java.util.List;
 
@@ -41,7 +37,7 @@ class VersionTest {
     DmpService dmpService;
 
     @Test
-    void createVersionTest(){
+    void createVersionTest() {
         VersionDO versionDO = testDOFactory.getOrCreateTestVersionDO();
         assertNotNull(versionDO);
         assertNotNull(versionDO.getId());
@@ -52,7 +48,7 @@ class VersionTest {
     }
 
     @Test
-    void getVersionListTest(){
+    void getVersionListTest() {
         VersionDO versionDO = testDOFactory.getOrCreateTestVersionDO();
 
         assertEquals("TestVersion", versionDO.getVersionName());
@@ -68,7 +64,7 @@ class VersionTest {
     }
 
     @Test
-    void updateVersionTest(){
+    void updateVersionTest() {
         VersionDO versionDO = testDOFactory.getOrCreateTestVersionDO();
         versionDO.setVersionName("TestVersionUpdate");
         var versionDOupdate = versionService.createOrUpdate(versionDO);
@@ -80,20 +76,17 @@ class VersionTest {
     }
 
     @Test
-    void updateDMPTest(){
+    void updateDMPTest() {
         VersionDO versionDO = testDOFactory.getOrCreateTestVersionDO();
-        updateDMP(versionDO.getDmpId());
+
+        DmpDO dmp = dmpService.getDmpById(versionDO.getDmpId());
+        dmp.setTitle("TestDmp updated for revision");
+        dmpService.update(dmp);
 
         DmpDO dmpDOCurrent = dmpService.getDmpById(versionDO.getDmpId());
-        DmpDO dmpDOPreviousVersion = dmpService.getDmpByIdAndRevision(versionDO.getDmpId(), versionDO.getRevisionNumber());
+        DmpDO dmpDOPreviousVersion = dmpService.getDmpByIdAndRevision(versionDO.getDmpId(),
+                versionDO.getRevisionNumber());
 
         assertNotEquals(dmpDOCurrent.getTitle(), dmpDOPreviousVersion.getTitle());
-    }
-
-    @Transactional
-    private void updateDMP(long id){
-        Dmp dmp = dmpRepo.findById(id);
-        dmp.setTitle("TestDmp updated for revision");
-        dmp.persist();
     }
 }

@@ -3,8 +3,6 @@ package at.ac.tuwien.damap.conversion;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
-
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
@@ -13,6 +11,7 @@ import at.ac.tuwien.damap.domain.Dataset;
 import at.ac.tuwien.damap.domain.Distribution;
 import at.ac.tuwien.damap.domain.Repository;
 import at.ac.tuwien.damap.enums.EContributorRole;
+import jakarta.enterprise.context.RequestScoped;
 import lombok.extern.jbosslog.JBossLog;
 
 @RequestScoped
