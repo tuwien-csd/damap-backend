@@ -931,7 +931,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
         log.debug("Export steps: Data Publication Table");
 
         List<Dataset> newDatasets = getNewDatasets();
-        if (newDatasets.size() > 0) {
+        if (!newDatasets.isEmpty()) {
             for (int i = 0; i < newDatasets.size(); i++) {
 
                 XWPFTableRow sourceTableRow = xwpfTable.getRow(i + 2);
@@ -967,7 +967,9 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                     docVar.add("");
                 }
 
-                if (newDatasets.get(i).getStart() != null) {
+                if (newDatasets.get(i).getDataAccess() == EDataAccessType.CLOSED) {
+                    docVar.add("");
+                } else if (newDatasets.get(i).getStart() != null) {
                     docVar.add(formatter.format(newDatasets.get(i).getStart()));
                 }
                 else {
@@ -983,13 +985,13 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 if (newDatasets.get(i).getDistributionList() != null){
                     List<Distribution> distributions = newDatasets.get(i).getDistributionList();
                     List<String> repositories = new ArrayList<>();
-                    if (distributions.size() > 0) {
+                    if (!distributions.isEmpty()) {
                         for (Distribution distribution: distributions) {
                             if (Repository.class.isAssignableFrom(distribution.getHost().getClass()))
                                 repositories.add(distribution.getHost().getTitle());
                         }
                     }
-                    if (repositories.size() > 0) {
+                    if (!repositories.isEmpty()) {
                         docVar.add(String.join(", ", repositories));
                     }
                     else {

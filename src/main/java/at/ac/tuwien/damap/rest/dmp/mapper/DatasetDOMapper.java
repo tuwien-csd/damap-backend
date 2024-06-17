@@ -2,6 +2,7 @@ package at.ac.tuwien.damap.rest.dmp.mapper;
 
 import at.ac.tuwien.damap.domain.Dataset;
 import at.ac.tuwien.damap.domain.Identifier;
+import at.ac.tuwien.damap.enums.EDataAccessType;
 import at.ac.tuwien.damap.enums.EDataType;
 import at.ac.tuwien.damap.rest.dmp.domain.ContributorDO;
 import at.ac.tuwien.damap.rest.dmp.domain.DatasetDO;
@@ -64,7 +65,11 @@ public class DatasetDOMapper {
         dataset.setSensitiveData(datasetDO.getSensitiveData());
         dataset.setLegalRestrictions(datasetDO.getLegalRestrictions());
         dataset.setLicense(datasetDO.getLicense());
-        dataset.setStart(datasetDO.getStartDate());
+        if (datasetDO.getDataAccess() == EDataAccessType.CLOSED) {
+            dataset.setStart(null);
+        } else {
+            dataset.setStart(datasetDO.getStartDate());
+        }
         dataset.setReferenceHash(datasetDO.getReferenceHash());
         dataset.setDataAccess(datasetDO.getDataAccess());
         dataset.setSelectedProjectMembersAccess(datasetDO.getSelectedProjectMembersAccess());
