@@ -23,6 +23,7 @@
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
     <quarkus.platform.version>3.11.1</quarkus.platform.version>
     <sonar.version>3.9.0.2155</sonar.version>
+    <spotless.version>2.44.0.BETA1</spotless.version>
   </properties>
 
   <scm>
@@ -271,6 +272,36 @@
             <goals>
               <goal>generate</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <version>${spotless.version}</version>
+        <configuration>
+          <java>
+            <!-- These are the defaults, you can override if you want -->
+            <includes>
+              <include>src/main/java/**/*.java</include>
+              <include>src/test/java/**/*.java</include>
+            </includes>
+
+            <!-- Cleanthat will refactor your code, but it may break your style: apply it before
+            your formatter -->
+            <cleanthat />
+            <googleJavaFormat></googleJavaFormat>
+            <importOrder /> <!-- standard import order -->
+            <removeUnusedImports /> <!-- self-explanatory -->
+            <formatAnnotations />  <!-- fixes formatting of type annotations -->
+          </java>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <phase>verify</phase>
           </execution>
         </executions>
       </plugin>
