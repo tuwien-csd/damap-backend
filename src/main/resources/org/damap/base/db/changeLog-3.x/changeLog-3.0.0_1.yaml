@@ -1,4 +1,5 @@
 databaseChangeLog:
+    - logicalFilePath: at/ac/tuwien/damap/db/changeLog-3.x/changeLog-3.0.0_1.yaml
     - changeSet:
         id: 9
         author: Valentin Futterer
