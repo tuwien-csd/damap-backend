@@ -26,10 +26,10 @@ damap:
   person-services:
     - display-text: 'University'
       query-value: 'UNIVERSITY'
-      class-name: 'at.ac.tuwien.damap.rest.persons.MockUniversityPersonServiceImpl'
+      class-name: 'org.damap.base.rest.persons.MockUniversityPersonServiceImpl'
     - display-text: 'ORCID'
       query-value: 'ORCID'
-      class-name: 'at.ac.tuwien.damap.rest.persons.orcid.ORCIDPersonServiceImpl'
+      class-name: 'org.damap.base.rest.persons.orcid.ORCIDPersonServiceImpl'
 
 # general config settings
 quarkus:
@@ -70,7 +70,7 @@ quarkus:
 
   liquibase:
     migrate-at-start: true
-    change-log: at/ac/tuwien/damap/db/changeLog-root.yaml
+    change-log: org/damap/base/db/changeLog-root.yaml
 
 rest:
   projects/mp-rest/url: ${damap.projects-url}
