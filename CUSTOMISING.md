@@ -18,8 +18,8 @@ as well as all of its functionalities:
 
 ```xml
 <dependency>
-  <groupId>at.ac.tuwien</groupId>
-  <artifactId>damap-backend</artifactId>
+  <groupId>org.damap</groupId>
+  <artifactId>base</artifactId>
   <type>jar</type>
   <version>1.2.0-SNAPSHOT</version>
 </dependency>
@@ -124,7 +124,7 @@ liquibase:
 ```yaml
 databaseChangeLog:
   - include:
-      file: at/ac/tuwien/damap/db/changeLog-root.yaml
+      file: org/damap/base/db/changeLog-root.yaml
 ```
 - This include statement makes sure, that all damap changesets are automatically included in your seperate backend
 - After that, you can create your own changelogs in your custom institutional folder and include them in your root
@@ -143,8 +143,8 @@ Provide your CRIS system and person database API addresses in the config:
 In your institutional project, write custom API services for retrieving project and person information from your
 services, as well as mappers, to map their information to damaps classes.
 To this end you need to implement the API services
-[ProjectService.class](src/main/java/at/ac/tuwien/damap/rest/projects/ProjectService.java) and
-[PersonService.class](src/main/java/at/ac/tuwien/damap/rest/persons/PersonService.java).
+[ProjectService.class](src/main/java/org/damap/base/rest/projects/ProjectService.java) and
+[PersonService.class](src/main/java/org/damap/base/rest/persons/PersonService.java).
 
 You can then integrate the project service by overriding the mock implementation 
 through the annotation @Priority(1). 
@@ -159,10 +159,10 @@ so no further changes are necessary there.
   person-services:
     - display-text: 'University'
       query-value: 'UNIVERSITY'
-      class-name: 'at.ac.tuwien.damap.rest.persons.MockUniversityPersonServiceImpl'
+      class-name: 'org.damap.base.rest.persons.MockUniversityPersonServiceImpl'
     - display-text: 'ORCID'
       query-value: 'ORCID'
-      class-name: 'at.ac.tuwien.damap.rest.persons.orcid.ORCIDPersonServiceImpl'
+      class-name: 'org.damap.base.rest.persons.orcid.ORCIDPersonServiceImpl'
 ```
 
 ### Providing a FITS service
@@ -234,12 +234,12 @@ insert into damap.inter_storage_translation (id, version, internal_storage_id, l
 
 ### Export customisation
 
-[Export word template](src/main/resources/at/ac/tuwien/damap/template/scienceEuropeTemplate.docx) and
-[its resource file](src/main/resources/at/ac/tuwien/damap/template/scienceEuropeTemplate.resource)
+[Export word template](src/main/resources/org/damap/base/template/scienceEuropeTemplate.docx) and
+[its resource file](src/main/resources/org/damap/base/template/scienceEuropeTemplate.resource)
 can be replaced in the institutional project
 by adding a replacement file in the resources folder of your customisation project.
 Then write a class to extend
-[TemplateFileBrokerServiceImpl](src/main/java/at/ac/tuwien/damap/conversion/TemplateFileBrokerServiceImpl.java)
+[TemplateFileBrokerServiceImpl](src/main/java/org/damap/base/conversion/TemplateFileBrokerServiceImpl.java)
 and have it override the methods which retrieve those files.
 
 The new filepath will look into the local resource folder and take the file placed there.
@@ -248,5 +248,5 @@ in order to replace the text at those specific places.
 By replacing the resource file instead, the default texts used to compose the document can be adapted.
 
 The template is selected automatically when exporting, if the project has a funder. You may want to override this functionality, 
-if you have custom templates for example. To override this, write a class that extends [TemplateSelectorServiceImpl](src/main/java/at/ac/tuwien/damap/conversion/TemplateSelectorServiceImpl.java)
+if you have custom templates for example. To override this, write a class that extends [TemplateSelectorServiceImpl](src/main/java/org/damap/base/conversion/TemplateSelectorServiceImpl.java)
 and have it override the methods that determine the template.

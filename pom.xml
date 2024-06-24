@@ -5,8 +5,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>at.ac.tuwien</groupId>
-  <artifactId>damap-backend</artifactId>
+  <groupId>org.damap</groupId>
+  <artifactId>base</artifactId>
   <version>3.1.0-SNAPSHOT</version>
 
   <url>https://github.com/tuwien-csd/damap-backend</url>
@@ -236,11 +236,11 @@
         </executions>
         <configuration>
           <sources>
-            <source>src/main/resources/at/ac/tuwien/damap/spec/fits/fits_output.xsd</source>
-            <source>src/main/resources/at/ac/tuwien/damap/spec/re3data/re3dataV3-0.xsd</source>
-            <source>src/main/resources/at/ac/tuwien/damap/spec/re3data/re3dataV2-2.xsd</source>
-            <source>src/main/resources/at/ac/tuwien/damap/spec/re3data/re3data_index_V1-0.xsd</source>
-            <source>src/main/resources/at/ac/tuwien/damap/spec/oaf/oaf-response-1.0.xsd</source>
+            <source>src/main/resources/org/damap/base/spec/fits/fits_output.xsd</source>
+            <source>src/main/resources/org/damap/base/spec/re3data/re3dataV3-0.xsd</source>
+            <source>src/main/resources/org/damap/base/spec/re3data/re3dataV2-2.xsd</source>
+            <source>src/main/resources/org/damap/base/spec/re3data/re3data_index_V1-0.xsd</source>
+            <source>src/main/resources/org/damap/base/spec/oaf/oaf-response-1.0.xsd</source>
           </sources>
         </configuration>
       </plugin>
@@ -263,8 +263,8 @@
         <version>1.1.1</version>
         <configuration>
           <annotationStyle>jackson</annotationStyle>
-          <sourceDirectory>${basedir}/src/main/resources/at/ac/tuwien/damap/schema</sourceDirectory>
-          <targetPackage>at.ac.tuwien.damap.rest.madmp.dto</targetPackage>
+          <sourceDirectory>${basedir}/src/main/resources/org/damap/base/schema</sourceDirectory>
+          <targetPackage>org.damap.base.rest.madmp.dto</targetPackage>
         </configuration>
         <executions>
           <execution>
