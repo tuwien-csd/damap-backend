@@ -82,7 +82,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
 
         // variable project start date and end date
         addReplacement(replacements, "[startdate]", project.getStart() == null ? "" : formatter.format(project.getStart()));
-        addReplacement(replacements, "[enddate]", project.getStart() == null ? "" : formatter.format(project.getEnd()));
+        addReplacement(replacements, "[enddate]", project.getEnd() == null ? "" : formatter.format(project.getEnd()));
 
 
         // add funding program to funding item variables
