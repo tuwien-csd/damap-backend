@@ -9,5 +9,5 @@ import lombok.EqualsAndHashCode;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StorageDO extends HostDO {
 
-    private Long internalStorageId;
+  private Long internalStorageId;
 }

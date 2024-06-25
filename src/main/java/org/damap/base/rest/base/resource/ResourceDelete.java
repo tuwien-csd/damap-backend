@@ -6,7 +6,7 @@ import jakarta.ws.rs.PathParam;
 
 public interface ResourceDelete {
 
-    @DELETE
-    @Path("/{id}")
-    void delete(@PathParam("id") String id);
+  @DELETE
+  @Path("/{id}")
+  void delete(@PathParam("id") String id);
 }

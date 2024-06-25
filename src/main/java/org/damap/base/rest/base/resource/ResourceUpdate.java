@@ -8,8 +8,8 @@ import jakarta.ws.rs.core.MediaType;
 
 public interface ResourceUpdate<E, S> {
 
-    @PUT
-    @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    E update(@PathParam("id") String id, S data);
+  @PUT
+  @Path("/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  E update(@PathParam("id") String id, S data);
 }

@@ -1,13 +1,11 @@
 package org.damap.base.domain;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import lombok.*;
-import org.hibernate.envers.Audited;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.*;
 import jakarta.persistence.Access;
+import lombok.*;
+import org.hibernate.envers.Audited;
 
 @Data
 @Entity
@@ -17,17 +15,21 @@ import jakarta.persistence.Access;
 @Table(name = "inter_storage_translation")
 public class InternalStorageTranslation extends PanacheEntity {
 
-    @Version
-    @Setter(AccessLevel.NONE)
-    private long version;
-    @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "internal_storage_id")
-    private InternalStorage internalStorageId;
-    @Column(name = "language_code")
-    private String languageCode;
-    private String title;
-    private String description;
-    @Column(name = "backup_frequency")
-    private String backupFrequency;
+  @Version
+  @Setter(AccessLevel.NONE)
+  private long version;
+
+  @JsonIgnore
+  @ManyToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "internal_storage_id")
+  private InternalStorage internalStorageId;
+
+  @Column(name = "language_code")
+  private String languageCode;
+
+  private String title;
+  private String description;
+
+  @Column(name = "backup_frequency")
+  private String backupFrequency;
 }

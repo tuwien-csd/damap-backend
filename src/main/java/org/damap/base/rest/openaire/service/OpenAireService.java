@@ -1,22 +1,19 @@
 package org.damap.base.rest.openaire.service;
 
-import org.damap.base.rest.openaire.OpenAireRemoteResource;
 import generated.Response;
-import lombok.extern.jbosslog.JBossLog;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import lombok.extern.jbosslog.JBossLog;
+import org.damap.base.rest.openaire.OpenAireRemoteResource;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @ApplicationScoped
 @JBossLog
 public class OpenAireService {
 
-    @Inject
-    @RestClient
-    OpenAireRemoteResource openAireRemoteResource;
+  @Inject @RestClient OpenAireRemoteResource openAireRemoteResource;
 
-    public Response search(String doi) {
-        return openAireRemoteResource.search(doi);
-    }
+  public Response search(String doi) {
+    return openAireRemoteResource.search(doi);
+  }
 }

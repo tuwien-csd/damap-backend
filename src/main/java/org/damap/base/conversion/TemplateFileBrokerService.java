@@ -5,15 +5,15 @@ import java.util.Properties;
 
 public interface TemplateFileBrokerService {
 
-    Properties getScienceEuropeTemplateResource();
+  Properties getScienceEuropeTemplateResource();
 
-    InputStream loadScienceEuropeTemplate();
+  InputStream loadScienceEuropeTemplate();
 
-    Properties getFWFTemplateResource();
+  Properties getFWFTemplateResource();
 
-    InputStream loadFWFTemplate();
+  InputStream loadFWFTemplate();
 
-    InputStream loadHorizonEuropeTemplate();
+  InputStream loadHorizonEuropeTemplate();
 
-    Properties getHorizonEuropeTemplateResource();
+  Properties getHorizonEuropeTemplateResource();
 }

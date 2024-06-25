@@ -1,11 +1,10 @@
 package org.damap.base.domain;
 
+import jakarta.persistence.*;
+import jakarta.persistence.Access;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.envers.Audited;
-
-import jakarta.persistence.Access;
-import jakarta.persistence.*;
 
 @Data
 @Entity
@@ -15,6 +14,6 @@ import jakarta.persistence.*;
 @Audited
 public class Repository extends Host {
 
-    @Column(name = "repository_id")
-    private String repositoryId;
+  @Column(name = "repository_id")
+  private String repositoryId;
 }
