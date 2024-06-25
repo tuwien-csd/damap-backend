@@ -24,7 +24,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
     @Override
     protected void exportSetup(long dmpId) {
         super.exportSetup(dmpId);
-        determinteDatasetIDs();
+        determineDatasetIDs();
     }
 
     public void loadScienceEuropeContent(){
@@ -39,7 +39,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
         costInformation();
     }
 
-    public void determinteDatasetIDs(){
+    public void determineDatasetIDs(){
         int newIDprogression = 0;
         int reuseIDprogression = 0;
 
@@ -766,7 +766,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 }
 
                 if (newDatasets.get(i).getSensitiveData() != null) {
-                    if (newDatasets.get(i).getSensitiveData()) {
+                    if (Boolean.TRUE.equals(newDatasets.get(i).getSensitiveData())) {
                         docVar.add("yes");
                     } else {
                         docVar.add("no");
@@ -837,7 +837,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 }
 
                 if (reusedDatasets.get(i).getSensitiveData() != null) {
-                    if (reusedDatasets.get(i).getSensitiveData()) {
+                    if (Boolean.TRUE.equals(reusedDatasets.get(i).getSensitiveData())) {
                         docVar.add("yes");
                     } else {
                         docVar.add("no");
@@ -941,7 +941,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents extends Abst
                 }
 
                 if (newDatasets.get(i).getLegalRestrictions() != null) {
-                    if (newDatasets.get(i).getLegalRestrictions()) {
+                    if (Boolean.TRUE.equals(newDatasets.get(i).getLegalRestrictions())) {
                         if (dmp.getLegalRestrictionsComment() != null)
                             docVar.add(dmp.getLegalRestrictionsComment());
                         else

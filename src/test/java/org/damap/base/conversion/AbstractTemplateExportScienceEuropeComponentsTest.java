@@ -1,8 +1,11 @@
 package org.damap.base.conversion;
 
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.damap.base.rest.dmp.domain.DmpDO;
+import org.damap.base.rest.dmp.domain.ProjectDO;
 import org.damap.base.rest.persons.orcid.ORCIDPersonServiceImpl;
 import org.damap.base.rest.projects.MockProjectServiceImpl;
+import org.damap.base.util.MockDmpService;
 import org.damap.base.util.TestDOFactory;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.InjectMock;
@@ -30,6 +33,12 @@ class AbstractTemplateExportScienceEuropeComponentsTest extends AbstractTemplate
     @InjectMock
     ORCIDPersonServiceImpl orcidPersonServiceImpl;
 
+    @Inject
+    MockDmpService dmpService;
+
+    @Inject
+    ExportScienceEuropeTemplate exportScienceEuropeTemplate;
+
     @BeforeEach
     public void setup() {
         Mockito.when(mockProjectService.read(anyString())).thenReturn(testDOFactory.getTestProjectDO());
@@ -37,9 +46,26 @@ class AbstractTemplateExportScienceEuropeComponentsTest extends AbstractTemplate
     }
 
     @Test
-    void determinteDatasetIDsTest() {
+    void determineDatasetIDsTest() {
         DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
         exportSetup(dmpDO.getId());
         Assertions.assertEquals(datasetTableIDs.size(), datasets.size(), dmpDO.getDatasets().size());
+    }
+    @Test
+    void givenDmpHasNoDates_whenDmpIsExported_thenShouldNotFail() {
+        DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
+        ProjectDO project = dmpDO.getProject();
+        project.setStart(null);
+        project.setEnd(null);
+        dmpDO.setProject(project);
+        dmpDO = dmpService.update(dmpDO);
+
+        XWPFDocument document = null;
+        try {
+            document = exportScienceEuropeTemplate.exportTemplate(dmpDO.getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Assertions.assertNotNull(document);
     }
 }
