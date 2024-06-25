@@ -1,16 +1,15 @@
 package org.damap.base.rest;
 
+import io.quarkus.security.Authenticated;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import lombok.extern.jbosslog.JBossLog;
 import org.damap.base.rest.dmp.domain.DatasetDO;
 import org.damap.base.rest.dmp.domain.MultipartBodyDO;
 import org.damap.base.rest.dmp.mapper.DatasetDOMapper;
 import org.damap.base.rest.fits.service.FitsService;
-import io.quarkus.security.Authenticated;
-import lombok.extern.jbosslog.JBossLog;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
-
-import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
 
 @Path("/api/fits")
 @Authenticated
@@ -19,13 +18,12 @@ import jakarta.ws.rs.core.MediaType;
 @JBossLog
 public class FitsResource {
 
-    @Inject
-    FitsService fitsService;
+  @Inject FitsService fitsService;
 
-    @POST
-    @Path("/examine")
-    public DatasetDO examine(@MultipartForm MultipartBodyDO data) {
-        log.info("Analyse file");
-        return DatasetDOMapper.mapEntityToDO(fitsService.analyseFile(data), new DatasetDO());
-    }
+  @POST
+  @Path("/examine")
+  public DatasetDO examine(@MultipartForm MultipartBodyDO data) {
+    log.info("Analyse file");
+    return DatasetDOMapper.mapEntityToDO(fitsService.analyseFile(data), new DatasetDO());
+  }
 }

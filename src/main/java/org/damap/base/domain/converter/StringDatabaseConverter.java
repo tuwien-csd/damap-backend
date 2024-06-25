@@ -6,24 +6,22 @@ import jakarta.persistence.Converter;
 @Converter(autoApply = true)
 public class StringDatabaseConverter implements AttributeConverter<String, String> {
 
-    /*
-        This converter serves to equalize the behavior of different databases (postgres and oracle in our case).
-        One stores empty/null strings as empty, the other as null. Now both will always return null from the database.
-     */
+  /*
+     This converter serves to equalize the behavior of different databases (postgres and oracle in our case).
+     One stores empty/null strings as empty, the other as null. Now both will always return null from the database.
+  */
 
-    @Override
-    public String convertToDatabaseColumn(String s) {
-        return s;
-    }
+  @Override
+  public String convertToDatabaseColumn(String s) {
+    return s;
+  }
 
-    @Override
-    public String convertToEntityAttribute(String s) {
-        if (s == null)
-            return null;
-        
-        if (s.isEmpty())
-            return null;
+  @Override
+  public String convertToEntityAttribute(String s) {
+    if (s == null) return null;
 
-        return s;
-    }
+    if (s.isEmpty()) return null;
+
+    return s;
+  }
 }

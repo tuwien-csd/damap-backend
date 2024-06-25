@@ -1,16 +1,14 @@
 package org.damap.base.domain;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.persistence.*;
+import java.util.Date;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
-
 import org.hibernate.Length;
 import org.hibernate.envers.Audited;
-
-import jakarta.persistence.*;
-import java.util.Date;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -18,25 +16,25 @@ import java.util.Date;
 @Audited
 public class Project extends PanacheEntity {
 
-    @Version
-    @Setter(AccessLevel.NONE)
-    private long version;
+  @Version
+  @Setter(AccessLevel.NONE)
+  private long version;
 
-    @Column(name = "university_id")
-    private String universityId;
+  @Column(name = "university_id")
+  private String universityId;
 
-    private String title;
+  private String title;
 
-    @Column(length = Length.LONG32)
-    private String description;
+  @Column(length = Length.LONG32)
+  private String description;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "funding_id")
-    private Funding funding;
+  @ManyToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "funding_id")
+  private Funding funding;
 
-    @Column(name = "project_start")
-    private Date start;
+  @Column(name = "project_start")
+  private Date start;
 
-    @Column(name = "project_end")
-    private Date end;
+  @Column(name = "project_end")
+  private Date end;
 }

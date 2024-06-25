@@ -7,8 +7,8 @@ import jakarta.ws.rs.core.MediaType;
 
 public interface ResourceCreate<E, S> {
 
-    @POST
-    @Path("")
-    @Consumes(MediaType.APPLICATION_JSON)
-    E create(S data);
+  @POST
+  @Path("")
+  @Consumes(MediaType.APPLICATION_JSON)
+  E create(S data);
 }

@@ -8,7 +8,7 @@ import jakarta.ws.rs.core.UriInfo;
 
 public interface ResourceRead<E> {
 
-    @GET
-    @Path("/{id}")
-    E read(@PathParam("id") String id, @Context UriInfo uriInfo);
+  @GET
+  @Path("/{id}")
+  E read(@PathParam("id") String id, @Context UriInfo uriInfo);
 }

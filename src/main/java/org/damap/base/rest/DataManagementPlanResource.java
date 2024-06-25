@@ -1,22 +1,21 @@
 package org.damap.base.rest;
 
-import org.damap.base.rest.dmp.domain.DmpDO;
-import org.damap.base.rest.dmp.domain.DmpListItemDO;
-import org.damap.base.rest.dmp.service.DmpService;
-import org.damap.base.security.SecurityService;
-import org.damap.base.validation.AccessValidator;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.AuthenticationFailedException;
 import io.quarkus.security.ForbiddenException;
 import jakarta.annotation.security.RolesAllowed;
-import lombok.extern.jbosslog.JBossLog;
-import org.jboss.resteasy.annotations.jaxrs.PathParam;
-
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import java.util.List;
+import lombok.extern.jbosslog.JBossLog;
+import org.damap.base.rest.dmp.domain.DmpDO;
+import org.damap.base.rest.dmp.domain.DmpListItemDO;
+import org.damap.base.rest.dmp.service.DmpService;
+import org.damap.base.security.SecurityService;
+import org.damap.base.validation.AccessValidator;
+import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
 @Path("/api/dmps")
 @Authenticated
@@ -24,121 +23,117 @@ import java.util.List;
 @JBossLog
 public class DataManagementPlanResource {
 
-    @Inject
-    SecurityService securityService;
+  @Inject SecurityService securityService;
 
-    @Inject
-    AccessValidator accessValidator;
+  @Inject AccessValidator accessValidator;
 
-    @Inject
-    DmpService dmpService;
+  @Inject DmpService dmpService;
 
-    private final String unauthorizedMessage(long id) {
-        return "Not authorized to access dmp with id " + id;
+  private final String unauthorizedMessage(long id) {
+    return "Not authorized to access dmp with id " + id;
+  }
+
+  // ADMIN
+
+  @GET
+  @Path("/all")
+  @RolesAllowed("Damap Admin")
+  public List<DmpListItemDO> getAll() {
+    log.info("Return all Dmps");
+    return dmpService.getAll();
+  }
+
+  /*@GET
+  @Path("/person/{personId}")
+  @RolesAllowed("Damap Admin")
+  public List<DmpListItemDO> getDmpListByPerson(@PathParam String personId) {
+      log.info("Return dmp for person id: " + personId);
+      return dmpService.getDmpListByPersonId(personId);
+  }*/
+
+  // USER
+
+  @GET
+  @Path("/list")
+  public List<DmpListItemDO> getDmpList() {
+    log.info("Return dmp list for user");
+    String personId = this.getPersonId();
+    log.info("User id: " + personId);
+    return dmpService.getDmpListByPersonId(personId);
+  }
+
+  /*@GET
+  @Path("/subordinates")
+  @RolesAllowed("user")
+  public List<DmpListItemDO> getDmpsSubordinates() {
+      log.info("Return dmp list for subordinates");
+      String personId = this.getPersonId();
+      log.info("User id: " + personId);
+      // TODO: Service stub
+      return dmpService.getDmpListByPersonId(personId);
+  }*/
+
+  @GET
+  @Path("/{id}")
+  public DmpDO getDmpById(@PathParam String id) {
+    log.info("Return dmp with id: " + id);
+    String personId = this.getPersonId();
+    long dmpId = Long.parseLong(id);
+    if (!accessValidator.canViewDmp(dmpId, personId)) {
+      throw new ForbiddenException(unauthorizedMessage(dmpId));
     }
+    return dmpService.getDmpById(dmpId);
+  }
 
-    // ADMIN
+  @POST
+  @Consumes(MediaType.APPLICATION_JSON)
+  public DmpDO saveDmp(@Valid DmpDO dmpDO) {
+    log.info("Save dmp");
+    String personId = this.getPersonId();
+    return dmpService.create(dmpDO, personId);
+  }
 
-    @GET
-    @Path("/all")
-    @RolesAllowed("Damap Admin")
-    public List<DmpListItemDO> getAll() {
-        log.info("Return all Dmps");
-        return dmpService.getAll();
+  @PUT
+  @Path("/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public DmpDO updateDmp(@PathParam String id, @Valid DmpDO dmpDO) {
+    log.info("Update dmp with id: " + id);
+    String personId = this.getPersonId();
+    long dmpId = Long.parseLong(id);
+    if (!accessValidator.canEditDmp(dmpId, personId)) {
+      throw new ForbiddenException(unauthorizedMessage(dmpId));
     }
+    return dmpService.update(dmpDO);
+  }
 
-    /*@GET
-    @Path("/person/{personId}")
-    @RolesAllowed("Damap Admin")
-    public List<DmpListItemDO> getDmpListByPerson(@PathParam String personId) {
-        log.info("Return dmp for person id: " + personId);
-        return dmpService.getDmpListByPersonId(personId);
-    }*/
-
-    // USER
-
-    @GET
-    @Path("/list")
-    public List<DmpListItemDO> getDmpList() {
-        log.info("Return dmp list for user");
-        String personId = this.getPersonId();
-        log.info("User id: " + personId);
-        return dmpService.getDmpListByPersonId(personId);
+  @DELETE
+  @Path("/{id}")
+  public void deleteDmp(@PathParam String id) {
+    log.info("Delete dmp with id: " + id);
+    String personId = this.getPersonId();
+    long dmpId = Long.parseLong(id);
+    if (!accessValidator.canDeleteDmp(dmpId, personId)) {
+      throw new ForbiddenException(unauthorizedMessage(dmpId));
     }
+    dmpService.delete(dmpId);
+  }
 
-
-    /*@GET
-    @Path("/subordinates")
-    @RolesAllowed("user")
-    public List<DmpListItemDO> getDmpsSubordinates() {
-        log.info("Return dmp list for subordinates");
-        String personId = this.getPersonId();
-        log.info("User id: " + personId);
-        // TODO: Service stub
-        return dmpService.getDmpListByPersonId(personId);
-    }*/
-
-    @GET
-    @Path("/{id}")
-    public DmpDO getDmpById(@PathParam String id) {
-        log.info("Return dmp with id: " + id);
-        String personId = this.getPersonId();
-        long dmpId = Long.parseLong(id);
-        if(!accessValidator.canViewDmp(dmpId, personId)){
-            throw new ForbiddenException(unauthorizedMessage(dmpId));
-        }
-        return dmpService.getDmpById(dmpId);
+  private String getPersonId() {
+    if (securityService == null) {
+      throw new AuthenticationFailedException("User ID is missing.");
     }
+    return securityService.getUserId();
+  }
 
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    public DmpDO saveDmp(@Valid DmpDO dmpDO) {
-        log.info("Save dmp");
-        String personId = this.getPersonId();
-        return dmpService.create(dmpDO, personId);
+  @GET
+  @Path("/{id}/{revision}")
+  public DmpDO getDmpByIdAndRevision(@PathParam String id, @PathParam long revision) {
+    log.info("Return dmp with id: " + id + " and revision number: " + revision);
+    String personId = this.getPersonId();
+    long dmpId = Long.parseLong(id);
+    if (!accessValidator.canViewDmp(dmpId, personId)) {
+      throw new ForbiddenException(unauthorizedMessage(dmpId));
     }
-
-    @PUT
-    @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public DmpDO updateDmp(@PathParam String id, @Valid DmpDO dmpDO) {
-        log.info("Update dmp with id: " + id);
-        String personId = this.getPersonId();
-        long dmpId = Long.parseLong(id);
-        if(!accessValidator.canEditDmp(dmpId, personId)){
-            throw new ForbiddenException(unauthorizedMessage(dmpId));
-        }
-        return dmpService.update(dmpDO);
-    }
-
-    @DELETE
-    @Path("/{id}")
-    public void deleteDmp(@PathParam String id) {
-        log.info("Delete dmp with id: " + id);
-        String personId = this.getPersonId();
-        long dmpId = Long.parseLong(id);
-        if (!accessValidator.canDeleteDmp(dmpId, personId)) {
-            throw new ForbiddenException(unauthorizedMessage(dmpId));
-        }
-        dmpService.delete(dmpId);
-    }
-
-    private String getPersonId() {
-        if (securityService == null) {
-            throw new AuthenticationFailedException("User ID is missing.");
-        }
-        return securityService.getUserId();
-    }
-
-    @GET
-    @Path("/{id}/{revision}")
-    public DmpDO getDmpByIdAndRevision(@PathParam String id, @PathParam long revision) {
-        log.info("Return dmp with id: " + id + " and revision number: " + revision);
-        String personId = this.getPersonId();
-        long dmpId = Long.parseLong(id);
-        if(!accessValidator.canViewDmp(dmpId, personId)){
-            throw new ForbiddenException(unauthorizedMessage(dmpId));
-        }
-        return dmpService.getDmpByIdAndRevision(dmpId, revision);
-    }
+    return dmpService.getDmpByIdAndRevision(dmpId, revision);
+  }
 }

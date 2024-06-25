@@ -10,56 +10,52 @@ import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.util.List;
-
+import io.quarkus.test.InjectMock;
+import io.quarkus.test.common.http.TestHTTPEndpoint;
+import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import jakarta.inject.Inject;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
+import java.util.List;
 import org.damap.base.rest.base.ResultList;
 import org.damap.base.rest.base.Search;
 import org.damap.base.rest.projects.MockProjectServiceImpl;
 import org.damap.base.security.SecurityService;
 import org.damap.base.util.TestDOFactory;
-import io.quarkus.test.common.http.TestHTTPEndpoint;
-import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.InjectMock;
-import io.quarkus.test.security.TestSecurity;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 @QuarkusTest
 @TestHTTPEndpoint(ProjectResource.class)
 class ProjectResourceTest {
 
-    @Inject
-    TestDOFactory testDOFactory;
+  @Inject TestDOFactory testDOFactory;
 
-    @InjectMock
-    SecurityService securityService;
+  @InjectMock SecurityService securityService;
 
-    @InjectMock
-    MockProjectServiceImpl mockProjectService;
+  @InjectMock MockProjectServiceImpl mockProjectService;
 
-    @BeforeEach
-    public void setup() {
-        Mockito.when(securityService.getUserId()).thenReturn("012345");
-        Mockito.when(securityService.getUserName()).thenReturn("testUser");
-        Mockito.when(mockProjectService.read(anyString())).thenReturn(testDOFactory.getTestProjectDO());
-        Mockito.when(mockProjectService.getRecommended(any())).thenReturn(
-                ResultList.fromItemsAndSearch(List.of(testDOFactory.getRecommendedTestProjectDO()), new Search()));
-    }
+  @BeforeEach
+  public void setup() {
+    Mockito.when(securityService.getUserId()).thenReturn("012345");
+    Mockito.when(securityService.getUserName()).thenReturn("testUser");
+    Mockito.when(mockProjectService.read(anyString())).thenReturn(testDOFactory.getTestProjectDO());
+    Mockito.when(mockProjectService.getRecommended(any()))
+        .thenReturn(
+            ResultList.fromItemsAndSearch(
+                List.of(testDOFactory.getRecommendedTestProjectDO()), new Search()));
+  }
 
-    @Test
-    @TestSecurity(user = "userJwt", roles = "user")
-    void testGetRecommendedProjects() {
-        given()
-                .get("/recommended")
-                .then()
-                .statusCode(200)
-                .body("items.size()", equalTo(1))
-                .body("items.title", everyItem(containsStringIgnoringCase("recommend")));
+  @Test
+  @TestSecurity(user = "userJwt", roles = "user")
+  void testGetRecommendedProjects() {
+    given()
+        .get("/recommended")
+        .then()
+        .statusCode(200)
+        .body("items.size()", equalTo(1))
+        .body("items.title", everyItem(containsStringIgnoringCase("recommend")));
 
-        verify(mockProjectService, times(1)).getRecommended(notNull());
-    }
+    verify(mockProjectService, times(1)).getRecommended(notNull());
+  }
 }

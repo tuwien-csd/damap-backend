@@ -1,15 +1,14 @@
 package org.damap.base.domain;
 
-import org.damap.base.enums.EFunctionRole;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.persistence.*;
+import java.util.Date;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import org.damap.base.enums.EFunctionRole;
 import org.hibernate.envers.Audited;
-
-import jakarta.persistence.*;
-import java.util.Date;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -17,19 +16,19 @@ import java.util.Date;
 @Audited
 public class Administration extends PanacheEntity {
 
-    @Version
-    @Setter(AccessLevel.NONE)
-    private long version;
+  @Version
+  @Setter(AccessLevel.NONE)
+  private long version;
 
-    @Column(name = "university_id")
-    private String universityId;
+  @Column(name = "university_id")
+  private String universityId;
 
-    @Enumerated(EnumType.STRING)
-    private EFunctionRole role;
+  @Enumerated(EnumType.STRING)
+  private EFunctionRole role;
 
-    @Column(name = "start_date")
-    private Date start;
+  @Column(name = "start_date")
+  private Date start;
 
-    @Column(name = "until_date")
-    private Date until;
+  @Column(name = "until_date")
+  private Date until;
 }

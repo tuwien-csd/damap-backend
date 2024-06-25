@@ -4,16 +4,16 @@ import lombok.Data;
 
 @Data
 public class ORCIDValueType {
-    String value;
+  String value;
 
-    public Integer asInt() {
-        Integer converted = null;
-        try {
-            converted = Integer.parseInt(value, 10);
-        } catch (Exception e) {
-            // will return null
-        }
-
-        return converted;
+  public Integer asInt() {
+    Integer converted = null;
+    try {
+      converted = Integer.parseInt(value, 10);
+    } catch (Exception e) {
+      // will return null
     }
+
+    return converted;
+  }
 }

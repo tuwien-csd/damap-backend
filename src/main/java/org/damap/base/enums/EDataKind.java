@@ -1,19 +1,18 @@
 package org.damap.base.enums;
 
 public enum EDataKind {
+  UNKNOWN("UNKNOWN"),
+  NONE("NONE"),
+  SPECIFY("SPECIFY");
 
-    UNKNOWN("UNKNOWN"),
-    NONE("NONE"),
-    SPECIFY("SPECIFY");
+  private final String kind;
 
-    private final String kind;
+  EDataKind(String kind) {
+    this.kind = kind;
+  }
 
-    EDataKind(String kind) {
-        this.kind = kind;
-    }
-
-    @Override
-    public String toString() {
-        return kind;
-    }
+  @Override
+  public String toString() {
+    return kind;
+  }
 }
