@@ -78,7 +78,7 @@ jobs:
           # git tag: v1.2.3, output: 1.2.3
           tags: |
             type=semver,pattern={{version}},enable=${{ env.is-version-tag }}
-            type=raw,value={{branch}},enable=${{ env.is-master-branch || env.is-next-branch }}
+            type=raw,value={{branch}},enable=${{ env.is-master-branch == 'true' || env.is-next-branch == 'true' }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
