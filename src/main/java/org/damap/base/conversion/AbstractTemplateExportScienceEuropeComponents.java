@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.*;
 import org.damap.base.domain.*;
+import org.damap.base.domain.DatasetSizeRange;
 import org.damap.base.enums.*;
 import org.damap.base.rest.dmp.domain.ProjectDO;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTVMerge;
@@ -858,7 +859,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
         docVar.add("");
 
         if (newDatasets.get(i).getSize() != null) {
-          docVar.add(format(newDatasets.get(i).getSize()) + "B");
+          docVar.add(DatasetSizeRange.getLabelForSize(newDatasets.get(i).getSize()));
         } else {
           docVar.add("");
         }

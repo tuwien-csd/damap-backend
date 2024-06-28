@@ -8,6 +8,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.damap.base.domain.DatasetSizeRange;
 import org.damap.base.rest.dmp.domain.DmpDO;
 import org.damap.base.rest.dmp.domain.ProjectDO;
 import org.damap.base.rest.persons.orcid.ORCIDPersonServiceImpl;
@@ -46,6 +47,11 @@ class AbstractTemplateExportScienceEuropeComponentsTest
     DmpDO dmpDO = testDOFactory.getOrCreateTestDmpDO();
     exportSetup(dmpDO.getId());
     Assertions.assertEquals(datasetTableIDs.size(), datasets.size(), dmpDO.getDatasets().size());
+  }
+
+  @Test
+  void testAddLabelForDatasetSize() {
+    Assertions.assertEquals("500 - 1000 GB", DatasetSizeRange.getLabelForSize(500_000_000_000L));
   }
 
   @Test
