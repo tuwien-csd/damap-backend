@@ -20,26 +20,6 @@ permissions:
   packages: write
 
 jobs:
-  maven-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Maven Central Repository
-        uses: actions/setup-java@v4.2.1
-        with:
-          distribution: "adopt"
-          java-version: 17.0
-          server-id: ossrh
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
-      - name: Publish package
-        run: mvn --batch-mode deploy
-        env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-          DEPLOY_PROFILE: maven # same as specified in the deploy-mvn-repository profile in pom.xml
-
   github-deploy:
     runs-on: ubuntu-latest
 
