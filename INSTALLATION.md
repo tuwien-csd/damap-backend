@@ -6,12 +6,13 @@ In order to set up the whole system consisting of multiple components a
 `docker-compose` file has been prepared. With this file it should be
 straight forward to get a sample system up and running.
 
-The full system will be comprised of 
-* damap-backend,
-* damap-frontend,
-* dummy Keycloak with login name "user" and password "user"
-* dummy postgres database
-* and dummy APIs providing person and project data
+The full system will be comprised of
+
+- damap-backend,
+- damap-frontend,
+- dummy Keycloak with login name "user" and password "user"
+- dummy postgres database
+- and dummy APIs providing person and project data
 
 To start up the cluster of components just issue the following command:
 
@@ -62,3 +63,14 @@ docker-compose exec damap-db psql -U damap damap
 
 In order to adapt the project and deploy it in your own institutional environment
 follow the [deployment instructions](INSTALLATION.md).
+
+## OpenAPI Documentation
+
+Per default, an OpenAPI documentation will be generated. Additionally, a
+Swagger-UI is available with the previously created documentation. This provides
+an easy overview of the available endpoints as well as testing them. The UI for
+an instance is available at `<domain>/q/swagger-ui`. Examples:
+
+- instance setup with docker compose: http://localhost:8085/q/swagger-ui/
+- local development: http://localhost:8080/q/swagger-ui/
+- deployed instance: http://my-domain/q/swagger-ui

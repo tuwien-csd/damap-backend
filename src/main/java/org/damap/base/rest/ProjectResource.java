@@ -39,6 +39,7 @@ public class ProjectResource implements ResourceSearch<ProjectDO> {
   }
 
   @Override
+  @GET
   public ResultList<ProjectDO> search(UriInfo uriInfo) {
     var queryParams = uriInfo.getQueryParameters();
     log.info("Return projects for query=" + queryParams.toString());
