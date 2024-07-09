@@ -1,5 +1,6 @@
 package org.damap.base.rest;
 
+import io.quarkus.security.Authenticated;
 import io.quarkus.security.AuthenticationFailedException;
 import io.quarkus.security.ForbiddenException;
 import jakarta.inject.Inject;
@@ -15,6 +16,7 @@ import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
 @Path("/api/versions")
 @Produces(MediaType.APPLICATION_JSON)
+@Authenticated
 @JBossLog
 public class VersionResource {
 

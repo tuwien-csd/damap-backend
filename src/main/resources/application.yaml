@@ -72,6 +72,13 @@ quarkus:
     migrate-at-start: true
     change-log: org/damap/base/db/changeLog-root.yaml
 
+  smallrye-openapi:
+    info-title: DAMAP API
+
+  swagger-ui:
+    always-include: true # set to false if swagger-ui should only be available in dev mode
+    oauth-client-id: ${damap.auth.frontend.client}
+
 rest:
   projects/mp-rest/url: ${damap.projects-url}
   persons/mp-rest/url: ${damap.persons-url}

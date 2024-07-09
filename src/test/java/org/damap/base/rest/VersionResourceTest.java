@@ -33,7 +33,7 @@ class VersionResourceTest {
 
   @Test
   void testGetDmpVersionsEndpoint_Unauthorized() {
-    given().when().get("/list/0").then().statusCode(403);
+    given().when().get("/list/0").then().statusCode(401);
   }
 
   @Test
@@ -54,7 +54,7 @@ class VersionResourceTest {
         .when()
         .put()
         .then()
-        .statusCode(403);
+        .statusCode(401);
   }
 
   @Test
