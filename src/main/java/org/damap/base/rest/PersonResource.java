@@ -3,7 +3,6 @@ package org.damap.base.rest;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
@@ -26,7 +25,6 @@ public class PersonResource implements ResourceRead<ContributorDO>, ResourceSear
   @Inject PersonServiceBroker personServiceBroker;
 
   @Override
-  @GET
   public ContributorDO read(String id, UriInfo uriInfo) {
     var queryParams = uriInfo.getQueryParameters();
     log.info("Return person details for id=" + id + " and query=" + queryParams.toString());
@@ -41,7 +39,6 @@ public class PersonResource implements ResourceRead<ContributorDO>, ResourceSear
   }
 
   @Override
-  @GET
   public ResultList<ContributorDO> search(UriInfo uriInfo) {
     var queryParams = uriInfo.getQueryParameters();
     log.info("Return person list for query=" + queryParams.toString());
