@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.envers.Audited;
 
+/** Distribution class. */
 @Data
 @EqualsAndHashCode(
     callSuper = true,

@@ -14,6 +14,7 @@ import org.damap.base.repo.DmpRepo;
 import org.damap.base.rest.access.domain.AccessDO;
 import org.damap.base.security.SecurityService;
 
+/** AccessValidator class. */
 @ApplicationScoped
 public class AccessValidator {
 
@@ -23,6 +24,13 @@ public class AccessValidator {
 
   @Inject SecurityService securityService;
 
+  /**
+   * canViewDmp.
+   *
+   * @param dmpId a long
+   * @param personId a {@link java.lang.String} object
+   * @return a boolean
+   */
   public boolean canViewDmp(long dmpId, String personId) {
     if (securityService.isAdmin()) {
       return true;
@@ -36,6 +44,13 @@ public class AccessValidator {
     return dmpAccess.isPresent();
   }
 
+  /**
+   * canEditDmp.
+   *
+   * @param dmpId a long
+   * @param personId a {@link java.lang.String} object
+   * @return a boolean
+   */
   public boolean canEditDmp(long dmpId, String personId) {
     if (securityService.isAdmin()) {
       return true;
@@ -55,10 +70,24 @@ public class AccessValidator {
     return dmpAccess.isPresent();
   }
 
+  /**
+   * canExportDmp.
+   *
+   * @param dmpId a long
+   * @param personId a {@link java.lang.String} object
+   * @return a boolean
+   */
   public boolean canExportDmp(long dmpId, String personId) {
     return this.canViewDmp(dmpId, personId);
   }
 
+  /**
+   * canDeleteDmp.
+   *
+   * @param dmpId a long
+   * @param personId a {@link java.lang.String} object
+   * @return a boolean
+   */
   public boolean canDeleteDmp(long dmpId, String personId) {
     if (securityService.isAdmin()) {
       return true;
@@ -77,6 +106,12 @@ public class AccessValidator {
     return dmpAccess.isPresent();
   }
 
+  /**
+   * canViewAccess.
+   *
+   * @param dmpId a long
+   * @return a boolean
+   */
   public boolean canViewAccess(long dmpId) {
     if (securityService.isAdmin()) {
       return true;
@@ -100,6 +135,12 @@ public class AccessValidator {
     return dmpAccess.isPresent();
   }
 
+  /**
+   * canCreateAccess.
+   *
+   * @param accessDO a {@link org.damap.base.rest.access.domain.AccessDO} object
+   * @return a boolean
+   */
   public boolean canCreateAccess(AccessDO accessDO) {
     if (accessDO.getAccess().equals(EFunctionRole.OWNER)) {
       return false;
@@ -128,6 +169,12 @@ public class AccessValidator {
     return canGetAccess(accessDO) && hasPermission;
   }
 
+  /**
+   * canDeleteAccess.
+   *
+   * @param id a long
+   * @return a boolean
+   */
   public boolean canDeleteAccess(long id) {
     Access access = accessRepo.findById(id);
 
@@ -161,6 +208,12 @@ public class AccessValidator {
   // Can the selected user be given access to this dmp
   // Can be overwritten if necessary
   // current implementation allows only institutional personnel which are also contributors
+  /**
+   * canGetAccess.
+   *
+   * @param accessDO a {@link org.damap.base.rest.access.domain.AccessDO} object
+   * @return a boolean
+   */
   public boolean canGetAccess(AccessDO accessDO) {
     Dmp dmp = dmpRepo.findById(accessDO.getDmpId());
     List<Contributor> contributors = dmp == null ? new ArrayList<>() : dmp.getContributorList();

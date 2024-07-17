@@ -50,6 +50,7 @@ import org.damap.base.rest.version.VersionDO;
 import org.damap.base.rest.version.VersionDOMapper;
 import org.damap.base.rest.version.VersionService;
 
+/** TestDOFactory class. */
 @JBossLog
 @ApplicationScoped
 public class TestDOFactory {
@@ -66,6 +67,13 @@ public class TestDOFactory {
 
   private final String editorId = "012345";
 
+  /**
+   * createDmp.
+   *
+   * @param title a {@link java.lang.String} object
+   * @param withDefaultData a boolean
+   * @return a {@link org.damap.base.rest.dmp.domain.DmpDO} object
+   */
   @Transactional
   public DmpDO createDmp(String title, boolean withDefaultData) {
 
@@ -130,6 +138,11 @@ public class TestDOFactory {
     dmpDO.setCosts(getTestCostList());
   }
 
+  /**
+   * getOrCreateTestDmpDO.
+   *
+   * @return a {@link org.damap.base.rest.dmp.domain.DmpDO} object
+   */
   @Transactional
   public DmpDO getOrCreateTestDmpDO() {
 
@@ -164,6 +177,11 @@ public class TestDOFactory {
     return Arrays.asList(EAgreement.CONSORTIUM_AGREEMENT, EAgreement.CONFIDENTIALITY_AGREEMENT);
   }
 
+  /**
+   * getTestProjectDO.
+   *
+   * @return a {@link org.damap.base.rest.dmp.domain.ProjectDO} object
+   */
   public ProjectDO getTestProjectDO() {
     ProjectDO project = new ProjectDO();
     project.setAcronym("TEST");
@@ -176,6 +194,11 @@ public class TestDOFactory {
     return project;
   }
 
+  /**
+   * getRecommendedTestProjectDO.
+   *
+   * @return a {@link org.damap.base.rest.dmp.domain.ProjectDO} object
+   */
   public ProjectDO getRecommendedTestProjectDO() {
     ProjectDO project = new ProjectDO();
     project.setAcronym("RECOMMENDED");
@@ -205,6 +228,11 @@ public class TestDOFactory {
     return identifier;
   }
 
+  /**
+   * getTestContributorDO.
+   *
+   * @return a {@link org.damap.base.rest.dmp.domain.ContributorDO} object
+   */
   public ContributorDO getTestContributorDO() {
     ContributorDO contributor = new ContributorDO();
     contributor.setUniversityId("Internal Identifier 123456");
@@ -313,6 +341,11 @@ public class TestDOFactory {
     return List.of(cost);
   }
 
+  /**
+   * getOrCreateTestDmpDOEmpty.
+   *
+   * @return a {@link org.damap.base.rest.dmp.domain.DmpDO} object
+   */
   public DmpDO getOrCreateTestDmpDOEmpty() {
     final Optional<Dmp> testDmp =
         dmpRepo.getAll().stream().filter(a -> a.getTitle().equals("EmptyTestDmp")).findAny();
@@ -325,6 +358,7 @@ public class TestDOFactory {
     return getOrCreateTestDmpDOEmpty();
   }
 
+  /** prepareInternalStorageOption. */
   @Transactional
   public void prepareInternalStorageOption() {
 
@@ -345,6 +379,11 @@ public class TestDOFactory {
     internalStorageTranslation.persistAndFlush();
   }
 
+  /**
+   * getOrCreateTestDmpDOInvalidData.
+   *
+   * @return a {@link org.damap.base.rest.dmp.domain.DmpDO} object
+   */
   @Transactional
   public DmpDO getOrCreateTestDmpDOInvalidData() {
     DmpDO newInvalidTestDmpDO = getOrCreateTestDmpDO();
@@ -358,6 +397,11 @@ public class TestDOFactory {
     return newInvalidTestDmpDO;
   }
 
+  /**
+   * getOrCreateTestVersionDO.
+   *
+   * @return a {@link org.damap.base.rest.version.VersionDO} object
+   */
   public VersionDO getOrCreateTestVersionDO() {
     DmpDO dmpDO = getOrCreateTestDmpDO();
 
@@ -378,6 +422,11 @@ public class TestDOFactory {
     return getOrCreateTestVersionDO();
   }
 
+  /**
+   * getORCIDTestRecord.
+   *
+   * @return a {@link org.damap.base.rest.persons.orcid.models.ORCIDRecord} object
+   */
   public ORCIDRecord getORCIDTestRecord() {
     ORCIDRecord record = new ORCIDRecord();
     URL url = Resources.getResource("json/orcidRecord.json");

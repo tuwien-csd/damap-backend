@@ -14,6 +14,7 @@ import org.damap.base.enums.*;
 import org.hibernate.Length;
 import org.hibernate.envers.Audited;
 
+/** Dmp class. */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -192,6 +193,11 @@ public class Dmp extends PanacheEntity {
 
   private String documentation;
 
+  /**
+   * getContact.
+   *
+   * @return a {@link org.damap.base.domain.Contributor} object
+   */
   public Contributor getContact() {
     Optional<Contributor> contact =
         contributorList.stream()

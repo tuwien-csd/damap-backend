@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
  * <p>If the type of a field marked with {@code @GdprExtended} is not primitive (e.g. Integer,
  * String etc.), all primitive fields of that type are considered extended information.
  *
- * <p>For usage instructions, see {@link Gdpr}.
+ * <p>For usage instructions, see {@link org.damap.base.annotations.gdpr.Gdpr}.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

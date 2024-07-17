@@ -11,6 +11,7 @@ import org.damap.base.annotations.gdpr.*;
 import org.damap.base.enums.EFunctionRole;
 import org.hibernate.envers.Audited;
 
+/** Access class. */
 @Gdpr
 @Data
 @EqualsAndHashCode(callSuper = true)

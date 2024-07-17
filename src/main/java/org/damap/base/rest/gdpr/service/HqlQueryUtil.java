@@ -6,9 +6,17 @@ import lombok.experimental.UtilityClass;
 import org.damap.base.rest.gdpr.domain.GdprQuery;
 import org.damap.base.rest.gdpr.domain.HqlQuery;
 
+/** HqlQueryUtil class. */
 @UtilityClass
 public class HqlQueryUtil {
 
+  /**
+   * buildHqlQuery.
+   *
+   * @param query a {@link org.damap.base.rest.gdpr.domain.GdprQuery} object
+   * @param extended a boolean
+   * @return a {@link org.damap.base.rest.gdpr.domain.HqlQuery} object
+   */
   public HqlQuery buildHqlQuery(GdprQuery query, boolean extended) {
 
     HqlQuery hqlQuery = new HqlQuery();

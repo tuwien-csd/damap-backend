@@ -5,10 +5,17 @@ import java.util.*;
 import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.*;
 
+/** ExportFWFTemplate class. */
 @RequestScoped
 @JBossLog
 public class ExportFWFTemplate extends AbstractTemplateExportScienceEuropeComponents {
 
+  /**
+   * exportTemplate.
+   *
+   * @param dmpId a long
+   * @return a {@link org.apache.poi.xwpf.usermodel.XWPFDocument} object
+   */
   public XWPFDocument exportTemplate(long dmpId) {
     log.info("Exporting FWF document for DMP with ID: " + dmpId);
     // load project

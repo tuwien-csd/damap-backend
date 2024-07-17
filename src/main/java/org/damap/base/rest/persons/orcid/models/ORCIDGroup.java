@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.Nulls;
 import java.util.List;
 import lombok.Data;
 
+/** ORCIDGroup class. */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ORCIDGroup<T extends ORCIDAffiliationSummary> {

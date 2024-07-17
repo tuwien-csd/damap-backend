@@ -17,6 +17,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
    extend this class in your custom project, for your implementation
 */
 
+/** MockProjectServiceImpl class. */
 @ApplicationScoped
 @DefaultBean
 public class MockProjectServiceImpl implements ProjectService {
@@ -25,11 +26,13 @@ public class MockProjectServiceImpl implements ProjectService {
 
   @Inject @RestClient MockProjectRestService mockProjectRestService;
 
+  /** {@inheritDoc} */
   @Override
   public List<ContributorDO> getProjectStaff(String projectId) {
     return mockPersonRestService.getContributorSearchResult();
   }
 
+  /** {@inheritDoc} */
   @Override
   public ProjectSupplementDO getProjectSupplement(String projectId) {
     try {
@@ -39,11 +42,13 @@ public class MockProjectServiceImpl implements ProjectService {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public ContributorDO getProjectLeader(String projectId) {
     return mockPersonRestService.getContributorSearchResult().get(0);
   }
 
+  /** {@inheritDoc} */
   @Override
   public ResultList<ProjectDO> search(MultivaluedMap<String, String> queryParams) {
     var search = Search.fromMap(queryParams);
@@ -52,11 +57,13 @@ public class MockProjectServiceImpl implements ProjectService {
     return ResultList.fromItemsAndSearch(items, search);
   }
 
+  /** {@inheritDoc} */
   @Override
   public ProjectDO read(String id, MultivaluedMap<String, String> queryParams) {
     return mockProjectRestService.getProjectDetails(id).get(0);
   }
 
+  /** {@inheritDoc} */
   @Override
   public ResultList<ProjectDO> getRecommended(MultivaluedMap<String, String> queryParams) {
     var search = Search.fromMap(queryParams);

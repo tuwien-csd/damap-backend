@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.Data;
 import org.damap.base.enums.EIdentifierType;
 
+/** RepositoryDetails class. */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RepositoryDetails {

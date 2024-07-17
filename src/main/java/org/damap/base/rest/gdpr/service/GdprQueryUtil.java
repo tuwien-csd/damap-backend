@@ -17,6 +17,7 @@ import org.damap.base.rest.gdpr.domain.GdprQuery;
 import org.damap.base.rest.gdpr.exceptions.MissingGdprKeyException;
 import org.damap.base.rest.gdpr.exceptions.NoSuchContextPropertyException;
 
+/** GdprQueryUtil class. */
 @UtilityClass
 @JBossLog
 public class GdprQueryUtil {
@@ -26,10 +27,12 @@ public class GdprQueryUtil {
    * GdprQuery} object (which will later be used to build the HQL query).
    *
    * @param gdprClass class to extract information from.
-   * @return {@link GdprQuery} object containing all information necessary to build HQL query.
-   * @throws MissingGdprKeyException if the given class is missing a {@link GdprKey} annotation.
-   * @throws NoSuchContextPropertyException if a property, tried to be accessed via {@link
-   *     GdprContext}, does not exist.
+   * @return {@link org.damap.base.rest.gdpr.domain.GdprQuery} object containing all information
+   *     necessary to build HQL query.
+   * @throws org.damap.base.rest.gdpr.exceptions.MissingGdprKeyException if the given class is
+   *     missing a {@link org.damap.base.annotations.gdpr.GdprKey} annotation.
+   * @throws org.damap.base.rest.gdpr.exceptions.NoSuchContextPropertyException if a property, tried
+   *     to be accessed via {@link GdprContext}, does not exist.
    */
   public GdprQuery buildQueryObject(Class<?> gdprClass)
       throws MissingGdprKeyException, NoSuchContextPropertyException {
@@ -112,6 +115,14 @@ public class GdprQueryUtil {
   }
 
   // Recursive method used to join multiple tables (GdprContext only)
+  /**
+   * getContextJoinQuery.
+   *
+   * @param field a {@link java.lang.reflect.Field} object
+   * @param properties a {@link java.util.List} object
+   * @return a {@link org.damap.base.rest.gdpr.domain.GdprQuery} object
+   * @throws org.damap.base.rest.gdpr.exceptions.NoSuchContextPropertyException if any.
+   */
   public GdprQuery getContextJoinQuery(Field field, List<String> properties)
       throws NoSuchContextPropertyException {
 

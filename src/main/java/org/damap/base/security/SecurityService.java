@@ -9,6 +9,7 @@ import java.security.Principal;
 import lombok.extern.jbosslog.JBossLog;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+/** SecurityService class. */
 @JBossLog
 @Unremovable
 // @UnlessBuildProfile("test")
@@ -19,6 +20,11 @@ public class SecurityService {
   @ConfigProperty(name = "damap.auth.user")
   String authUser;
 
+  /**
+   * getUserId.
+   *
+   * @return a {@link java.lang.String} object
+   */
   public String getUserId() {
     final Principal principal = securityIdentity.getPrincipal();
     if (!(principal instanceof OidcJwtCallerPrincipal)) return null;
@@ -26,12 +32,22 @@ public class SecurityService {
     return ((OidcJwtCallerPrincipal) principal).getClaims().getClaimValue(authUser).toString();
   }
 
+  /**
+   * getUserName.
+   *
+   * @return a {@link java.lang.String} object
+   */
   public String getUserName() {
     final Principal principal = securityIdentity.getPrincipal();
     if (!(principal instanceof OidcJwtCallerPrincipal)) return null;
     return ((OidcJwtCallerPrincipal) principal).getName();
   }
 
+  /**
+   * isAdmin.
+   *
+   * @return a boolean
+   */
   public boolean isAdmin() {
     return securityIdentity.hasRole("Damap Admin");
   }

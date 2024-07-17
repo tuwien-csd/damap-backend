@@ -14,9 +14,18 @@ import org.damap.base.enums.*;
 import org.damap.base.rest.dmp.domain.DatasetDO;
 import org.damap.base.rest.dmp.domain.IdentifierDO;
 
+/** OpenAireMapper class. */
 @UtilityClass
 public class OpenAireMapper {
 
+  /**
+   * mapAtoB.
+   *
+   * @param doi a {@link java.lang.String} object
+   * @param openaireResponse a {@link generated.Response} object
+   * @param datasetDO a {@link org.damap.base.rest.dmp.domain.DatasetDO} object
+   * @return a {@link org.damap.base.rest.dmp.domain.DatasetDO} object
+   */
   public DatasetDO mapAtoB(String doi, Response openaireResponse, DatasetDO datasetDO) {
     datasetDO.setSource(EDataSource.REUSED);
     try {
@@ -52,6 +61,14 @@ public class OpenAireMapper {
     return datasetDO;
   }
 
+  /**
+   * mapAtoB.
+   *
+   * @param propertyName a {@link java.lang.String} object
+   * @param elementType a {@link eu.openaire.oaf.StructuredPropertyElementType} object
+   * @param datasetDO a {@link org.damap.base.rest.dmp.domain.DatasetDO} object
+   * @return a {@link org.damap.base.rest.dmp.domain.DatasetDO} object
+   */
   public DatasetDO mapAtoB(
       String propertyName, StructuredPropertyElementType elementType, DatasetDO datasetDO) {
     if ("title".equals(propertyName)) {
@@ -63,6 +80,14 @@ public class OpenAireMapper {
     return datasetDO;
   }
 
+  /**
+   * mapAtoB.
+   *
+   * @param propertyName a {@link java.lang.String} object
+   * @param qualifierType a {@link eu.openaire.oaf.QualifierType} object
+   * @param datasetDO a {@link org.damap.base.rest.dmp.domain.DatasetDO} object
+   * @return a {@link org.damap.base.rest.dmp.domain.DatasetDO} object
+   */
   public DatasetDO mapAtoB(String propertyName, QualifierType qualifierType, DatasetDO datasetDO) {
     if ("bestaccessright".equals(propertyName)) {
       datasetDO.setDataAccess(getDataAccessType(qualifierType.getClassid().toLowerCase()));
@@ -91,6 +116,14 @@ public class OpenAireMapper {
     return datasetDO;
   }
 
+  /**
+   * mapAtoB.
+   *
+   * @param propertyName a {@link java.lang.String} object
+   * @param string a {@link java.lang.String} object
+   * @param datasetDO a {@link org.damap.base.rest.dmp.domain.DatasetDO} object
+   * @return a {@link org.damap.base.rest.dmp.domain.DatasetDO} object
+   */
   public DatasetDO mapAtoB(String propertyName, String string, DatasetDO datasetDO) {
     switch (propertyName) {
       case "description":

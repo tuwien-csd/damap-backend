@@ -20,6 +20,7 @@ class DmpServiceTest {
 
   private DmpDO dmpDO;
 
+  /** setup. */
   @BeforeEach
   public void setup() {
     // needs to be run before test avoid caching issues

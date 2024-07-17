@@ -6,9 +6,17 @@ import org.damap.base.domain.Identifier;
 import org.damap.base.rest.dmp.domain.ContributorDO;
 import org.damap.base.rest.dmp.domain.IdentifierDO;
 
+/** ContributorDOMapper class. */
 @UtilityClass
 public class ContributorDOMapper {
 
+  /**
+   * mapEntityToDO.
+   *
+   * @param contributor a {@link org.damap.base.domain.Contributor} object
+   * @param contributorDO a {@link org.damap.base.rest.dmp.domain.ContributorDO} object
+   * @return a {@link org.damap.base.rest.dmp.domain.ContributorDO} object
+   */
   public ContributorDO mapEntityToDO(Contributor contributor, ContributorDO contributorDO) {
 
     contributorDO.setId(contributor.id);
@@ -35,6 +43,13 @@ public class ContributorDOMapper {
     return contributorDO;
   }
 
+  /**
+   * mapDOtoEntity.
+   *
+   * @param contributorDO a {@link org.damap.base.rest.dmp.domain.ContributorDO} object
+   * @param contributor a {@link org.damap.base.domain.Contributor} object
+   * @return a {@link org.damap.base.domain.Contributor} object
+   */
   public Contributor mapDOtoEntity(ContributorDO contributorDO, Contributor contributor) {
 
     if (contributorDO.getId() != null) contributor.id = contributorDO.getId();

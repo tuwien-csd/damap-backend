@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.damap.base.enums.EFundingState;
 import org.hibernate.envers.Audited;
 
+/** Funding class. */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity

@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.hibernate.Length;
 import org.hibernate.envers.Audited;
 
+/** Project class. */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity

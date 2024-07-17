@@ -18,6 +18,7 @@ import org.re3data.schema._2_2.PidSystems;
 import org.re3data.schema._2_2.Re3Data;
 import org.re3data.schema._2_2.Yesno;
 
+/** MaDmpMapper class. */
 @JBossLog
 @UtilityClass
 public class MaDmpMapper {
@@ -26,6 +27,14 @@ public class MaDmpMapper {
   // exported
   static final String DEFAULT_LANGUAGE_CODE = "eng";
 
+  /**
+   * mapToMaDmp.
+   *
+   * @param dmpDO a {@link org.damap.base.rest.dmp.domain.DmpDO} object
+   * @param dmp a {@link org.damap.base.rest.madmp.dto.Dmp} object
+   * @param mapperService a {@link org.damap.base.rest.dmp.mapper.MapperService} object
+   * @return a {@link org.damap.base.rest.madmp.dto.Dmp} object
+   */
   public Dmp mapToMaDmp(DmpDO dmpDO, Dmp dmp, MapperService mapperService) {
 
     if (dmpDO.getContact() != null) dmp.setContact(mapToMaDmp(dmpDO.getContact(), new Contact()));
@@ -70,6 +79,13 @@ public class MaDmpMapper {
     return dmp;
   }
 
+  /**
+   * mapToMaDmp.
+   *
+   * @param contactDO a {@link org.damap.base.rest.dmp.domain.ContributorDO} object
+   * @param contact a {@link org.damap.base.rest.madmp.dto.Contact} object
+   * @return a {@link org.damap.base.rest.madmp.dto.Contact} object
+   */
   public Contact mapToMaDmp(ContributorDO contactDO, Contact contact) {
 
     if (contactDO.getPersonId() != null)
@@ -80,6 +96,13 @@ public class MaDmpMapper {
     return contact;
   }
 
+  /**
+   * mapToMaDmp.
+   *
+   * @param identifierDO a {@link org.damap.base.rest.dmp.domain.IdentifierDO} object
+   * @param contactId a {@link org.damap.base.rest.madmp.dto.ContactId} object
+   * @return a {@link org.damap.base.rest.madmp.dto.ContactId} object
+   */
   public ContactId mapToMaDmp(IdentifierDO identifierDO, ContactId contactId) {
 
     contactId.setIdentifier(identifierDO.getIdentifier());
@@ -99,6 +122,13 @@ public class MaDmpMapper {
     return contactId;
   }
 
+  /**
+   * mapToMaDmp.
+   *
+   * @param contributorDO a {@link org.damap.base.rest.dmp.domain.ContributorDO} object
+   * @param contributor a {@link org.damap.base.rest.madmp.dto.Contributor} object
+   * @return a {@link org.damap.base.rest.madmp.dto.Contributor} object
+   */
   public Contributor mapToMaDmp(ContributorDO contributorDO, Contributor contributor) {
 
     if (contributorDO.getPersonId() != null)
@@ -113,6 +143,13 @@ public class MaDmpMapper {
     return contributor;
   }
 
+  /**
+   * mapToMaDmp.
+   *
+   * @param identifierDO a {@link org.damap.base.rest.dmp.domain.IdentifierDO} object
+   * @param contributorId a {@link org.damap.base.rest.madmp.dto.ContributorId} object
+   * @return a {@link org.damap.base.rest.madmp.dto.ContributorId} object
+   */
   public ContributorId mapToMaDmp(IdentifierDO identifierDO, ContributorId contributorId) {
 
     contributorId.setIdentifier(identifierDO.getIdentifier());
@@ -132,6 +169,13 @@ public class MaDmpMapper {
     return contributorId;
   }
 
+  /**
+   * mapToMaDmp.
+   *
+   * @param costDO a {@link org.damap.base.rest.dmp.domain.CostDO} object
+   * @param cost a {@link org.damap.base.rest.madmp.dto.Cost} object
+   * @return a {@link org.damap.base.rest.madmp.dto.Cost} object
+   */
   public Cost mapToMaDmp(CostDO costDO, Cost cost) {
 
     if (costDO.getCurrencyCode() != null)
@@ -143,6 +187,15 @@ public class MaDmpMapper {
     return cost;
   }
 
+  /**
+   * mapToMaDmp.
+   *
+   * @param dmpDO a {@link org.damap.base.rest.dmp.domain.DmpDO} object
+   * @param datasetDO a {@link org.damap.base.rest.dmp.domain.DatasetDO} object
+   * @param dataset a {@link org.damap.base.rest.madmp.dto.Dataset} object
+   * @param mapperService a {@link org.damap.base.rest.dmp.mapper.MapperService} object
+   * @return a {@link org.damap.base.rest.madmp.dto.Dataset} object
+   */
   public Dataset mapToMaDmp(
       DmpDO dmpDO, DatasetDO datasetDO, Dataset dataset, MapperService mapperService) {
 
@@ -190,6 +243,12 @@ public class MaDmpMapper {
     return dataset;
   }
 
+  /**
+   * mapToMaDmpDatasetType.
+   *
+   * @param types a {@link java.util.List} object
+   * @return a {@link java.lang.String} object
+   */
   public String mapToMaDmpDatasetType(List<EDataType> types) {
     if (types == null || types.isEmpty()) {
       return "";
@@ -197,6 +256,13 @@ public class MaDmpMapper {
     return types.stream().map(EDataType::getValue).collect(Collectors.joining(", "));
   }
 
+  /**
+   * mapToMaDmp.
+   *
+   * @param datasetDO a {@link org.damap.base.rest.dmp.domain.DatasetDO} object
+   * @param distribution a {@link org.damap.base.rest.madmp.dto.Distribution} object
+   * @return a {@link org.damap.base.rest.madmp.dto.Distribution} object
+   */
   public Distribution mapToMaDmp(DatasetDO datasetDO, Distribution distribution) {
 
     if (datasetDO.getDateOfDeletion() != null)
@@ -214,6 +280,12 @@ public class MaDmpMapper {
     return distribution;
   }
 
+  /**
+   * mapToMaDmpDatasetFormat.
+   *
+   * @param types a {@link java.util.List} object
+   * @return a {@link java.util.List} object
+   */
   public List<String> mapToMaDmpDatasetFormat(List<EDataType> types) {
     if (types == null || types.isEmpty()) {
       return new ArrayList<>();
@@ -221,6 +293,14 @@ public class MaDmpMapper {
     return types.stream().map(EDataType::getValue).collect(Collectors.toList());
   }
 
+  /**
+   * mapToMaDmpFromRepository.
+   *
+   * @param repositoryDO a {@link org.damap.base.rest.dmp.domain.RepositoryDO} object
+   * @param distribution a {@link org.damap.base.rest.madmp.dto.Distribution} object
+   * @param mapperService a {@link org.damap.base.rest.dmp.mapper.MapperService} object
+   * @return a {@link org.damap.base.rest.madmp.dto.Distribution} object
+   */
   public Distribution mapToMaDmpFromRepository(
       RepositoryDO repositoryDO, Distribution distribution, MapperService mapperService) {
 
@@ -231,6 +311,14 @@ public class MaDmpMapper {
     return distribution;
   }
 
+  /**
+   * mapToMaDmpFromStorage.
+   *
+   * @param storageDO a {@link org.damap.base.rest.dmp.domain.StorageDO} object
+   * @param distribution a {@link org.damap.base.rest.madmp.dto.Distribution} object
+   * @param mapperService a {@link org.damap.base.rest.dmp.mapper.MapperService} object
+   * @return a {@link org.damap.base.rest.madmp.dto.Distribution} object
+   */
   public Distribution mapToMaDmpFromStorage(
       StorageDO storageDO, Distribution distribution, MapperService mapperService) {
 
@@ -244,6 +332,13 @@ public class MaDmpMapper {
     return distribution;
   }
 
+  /**
+   * mapToMaDmpFromExternalStorage.
+   *
+   * @param externalStorageDO a {@link org.damap.base.rest.dmp.domain.ExternalStorageDO} object
+   * @param distribution a {@link org.damap.base.rest.madmp.dto.Distribution} object
+   * @return a {@link org.damap.base.rest.madmp.dto.Distribution} object
+   */
   public Distribution mapToMaDmpFromExternalStorage(
       ExternalStorageDO externalStorageDO, Distribution distribution) {
 
@@ -252,6 +347,12 @@ public class MaDmpMapper {
     return distribution;
   }
 
+  /**
+   * getDataAccess.
+   *
+   * @param eDataAccessType a {@link org.damap.base.enums.EDataAccessType} object
+   * @return a {@link org.damap.base.rest.madmp.dto.Distribution.DataAccess} object
+   */
   public Distribution.DataAccess getDataAccess(EDataAccessType eDataAccessType) {
     switch (eDataAccessType) {
       case CLOSED:
@@ -264,6 +365,13 @@ public class MaDmpMapper {
     }
   }
 
+  /**
+   * mapToMaDmpFromRepository.
+   *
+   * @param repository a {@link org.re3data.schema._2_2.Re3Data.Repository} object
+   * @param host a {@link org.damap.base.rest.madmp.dto.Host} object
+   * @return a {@link org.damap.base.rest.madmp.dto.Host} object
+   */
   public Host mapToMaDmpFromRepository(Re3Data.Repository repository, Host host) {
 
     host.setAvailability(null);
@@ -290,6 +398,12 @@ public class MaDmpMapper {
     return host;
   }
 
+  /**
+   * getCertifiedWith.
+   *
+   * @param certificates a {@link java.util.List} object
+   * @return a {@link org.damap.base.rest.madmp.dto.Host.CertifiedWith} object
+   */
   public Host.CertifiedWith getCertifiedWith(List<Certificates> certificates) {
     // This currently returns the very first available certificate it can map to.
     for (Certificates certificate : certificates) {
@@ -319,6 +433,12 @@ public class MaDmpMapper {
     return null;
   }
 
+  /**
+   * getPidSystem.
+   *
+   * @param pidSystems a {@link org.re3data.schema._2_2.PidSystems} object
+   * @return a {@link org.damap.base.rest.madmp.dto.PidSystem} object
+   */
   public PidSystem getPidSystem(PidSystems pidSystems) {
     switch (pidSystems) {
       case ARK:
@@ -339,12 +459,25 @@ public class MaDmpMapper {
     }
   }
 
+  /**
+   * getSupportVersioning.
+   *
+   * @param versioning a {@link org.re3data.schema._2_2.Yesno} object
+   * @return a {@link org.damap.base.rest.madmp.dto.Host.SupportVersioning} object
+   */
   public Host.SupportVersioning getSupportVersioning(Yesno versioning) {
     if (versioning == Yesno.YES) return Host.SupportVersioning.YES;
     if (versioning == Yesno.NO) return Host.SupportVersioning.NO;
     return Host.SupportVersioning.UNKNOWN;
   }
 
+  /**
+   * mapToMaDmpFromInternalStorage.
+   *
+   * @param internalStorageDO a {@link org.damap.base.rest.storage.InternalStorageDO} object
+   * @param host a {@link org.damap.base.rest.madmp.dto.Host} object
+   * @return a {@link org.damap.base.rest.madmp.dto.Host} object
+   */
   public Host mapToMaDmpFromInternalStorage(InternalStorageDO internalStorageDO, Host host) {
 
     host.setAvailability(null);
@@ -361,6 +494,13 @@ public class MaDmpMapper {
     return host;
   }
 
+  /**
+   * mapToMaDmpFromExternalStorage.
+   *
+   * @param externalStorageDO a {@link org.damap.base.rest.dmp.domain.ExternalStorageDO} object
+   * @param host a {@link org.damap.base.rest.madmp.dto.Host} object
+   * @return a {@link org.damap.base.rest.madmp.dto.Host} object
+   */
   public Host mapToMaDmpFromExternalStorage(ExternalStorageDO externalStorageDO, Host host) {
 
     host.setAvailability(null);
@@ -377,6 +517,13 @@ public class MaDmpMapper {
     return host;
   }
 
+  /**
+   * mapToMaDmp.
+   *
+   * @param datasetDO a {@link org.damap.base.rest.dmp.domain.DatasetDO} object
+   * @param license a {@link org.damap.base.rest.madmp.dto.License} object
+   * @return a {@link org.damap.base.rest.madmp.dto.License} object
+   */
   public License mapToMaDmp(DatasetDO datasetDO, License license) {
 
     if (datasetDO.getLicense() != null)
@@ -385,6 +532,12 @@ public class MaDmpMapper {
     return license;
   }
 
+  /**
+   * getPersonalData.
+   *
+   * @param datasetDO a {@link org.damap.base.rest.dmp.domain.DatasetDO} object
+   * @return a {@link org.damap.base.rest.madmp.dto.Dataset.PersonalData} object
+   */
   public Dataset.PersonalData getPersonalData(DatasetDO datasetDO) {
 
     if (Boolean.TRUE.equals(datasetDO.getPersonalData())) return Dataset.PersonalData.YES;
@@ -392,6 +545,13 @@ public class MaDmpMapper {
     return Dataset.PersonalData.UNKNOWN;
   }
 
+  /**
+   * getSecurityAndPrivacyList.
+   *
+   * @param dmpDO a {@link org.damap.base.rest.dmp.domain.DmpDO} object
+   * @param datasetDO a {@link org.damap.base.rest.dmp.domain.DatasetDO} object
+   * @return a {@link java.util.List} object
+   */
   public List<SecurityAndPrivacy> getSecurityAndPrivacyList(DmpDO dmpDO, DatasetDO datasetDO) {
 
     List<SecurityAndPrivacy> securityAndPrivacyList = new ArrayList<>();
@@ -422,6 +582,13 @@ public class MaDmpMapper {
     return securityAndPrivacyList;
   }
 
+  /**
+   * mapToMaDmp.
+   *
+   * @param eSecurityMeasure a {@link org.damap.base.enums.ESecurityMeasure} object
+   * @param securityAndPrivacy a {@link org.damap.base.rest.madmp.dto.SecurityAndPrivacy} object
+   * @return a {@link org.damap.base.rest.madmp.dto.SecurityAndPrivacy} object
+   */
   public SecurityAndPrivacy mapToMaDmp(
       ESecurityMeasure eSecurityMeasure, SecurityAndPrivacy securityAndPrivacy) {
 
@@ -430,6 +597,13 @@ public class MaDmpMapper {
     return securityAndPrivacy;
   }
 
+  /**
+   * mapToMaDmp.
+   *
+   * @param eComplianceType a {@link org.damap.base.enums.EComplianceType} object
+   * @param securityAndPrivacy a {@link org.damap.base.rest.madmp.dto.SecurityAndPrivacy} object
+   * @return a {@link org.damap.base.rest.madmp.dto.SecurityAndPrivacy} object
+   */
   public SecurityAndPrivacy mapToMaDmp(
       EComplianceType eComplianceType, SecurityAndPrivacy securityAndPrivacy) {
 
@@ -438,6 +612,13 @@ public class MaDmpMapper {
     return securityAndPrivacy;
   }
 
+  /**
+   * mapToMaDmp.
+   *
+   * @param eAgreement a {@link org.damap.base.enums.EAgreement} object
+   * @param securityAndPrivacy a {@link org.damap.base.rest.madmp.dto.SecurityAndPrivacy} object
+   * @return a {@link org.damap.base.rest.madmp.dto.SecurityAndPrivacy} object
+   */
   public SecurityAndPrivacy mapToMaDmp(
       EAgreement eAgreement, SecurityAndPrivacy securityAndPrivacy) {
 
@@ -446,6 +627,12 @@ public class MaDmpMapper {
     return securityAndPrivacy;
   }
 
+  /**
+   * getSensitiveData.
+   *
+   * @param datasetDO a {@link org.damap.base.rest.dmp.domain.DatasetDO} object
+   * @return a {@link org.damap.base.rest.madmp.dto.Dataset.SensitiveData} object
+   */
   public Dataset.SensitiveData getSensitiveData(DatasetDO datasetDO) {
 
     if (Boolean.TRUE.equals(datasetDO.getSensitiveData())) return Dataset.SensitiveData.YES;
@@ -453,6 +640,12 @@ public class MaDmpMapper {
     return Dataset.SensitiveData.UNKNOWN;
   }
 
+  /**
+   * getEthicalIssuesExist.
+   *
+   * @param dmpDO a {@link org.damap.base.rest.dmp.domain.DmpDO} object
+   * @return a {@link org.damap.base.rest.madmp.dto.Dmp.EthicalIssuesExist} object
+   */
   public Dmp.EthicalIssuesExist getEthicalIssuesExist(DmpDO dmpDO) {
 
     if (Boolean.TRUE.equals(dmpDO.getEthicalIssuesExist())
@@ -462,6 +655,13 @@ public class MaDmpMapper {
     return Dmp.EthicalIssuesExist.UNKNOWN;
   }
 
+  /**
+   * mapToMaDmp.
+   *
+   * @param projectDO a {@link org.damap.base.rest.dmp.domain.ProjectDO} object
+   * @param project a {@link org.damap.base.rest.madmp.dto.Project} object
+   * @return a {@link org.damap.base.rest.madmp.dto.Project} object
+   */
   public Project mapToMaDmp(ProjectDO projectDO, Project project) {
 
     project.setDescription(projectDO.getDescription());
@@ -479,6 +679,13 @@ public class MaDmpMapper {
     return project;
   }
 
+  /**
+   * mapToMaDmp.
+   *
+   * @param fundingDO a {@link org.damap.base.rest.dmp.domain.FundingDO} object
+   * @param funding a {@link org.damap.base.rest.madmp.dto.Funding} object
+   * @return a {@link org.damap.base.rest.madmp.dto.Funding} object
+   */
   public Funding mapToMaDmp(FundingDO fundingDO, Funding funding) {
 
     if (fundingDO.getFunderId() != null)
@@ -506,6 +713,13 @@ public class MaDmpMapper {
     return funding;
   }
 
+  /**
+   * mapToMaDmp.
+   *
+   * @param identifierDO a {@link org.damap.base.rest.dmp.domain.IdentifierDO} object
+   * @param funderId a {@link org.damap.base.rest.madmp.dto.FunderId} object
+   * @return a {@link org.damap.base.rest.madmp.dto.FunderId} object
+   */
   public FunderId mapToMaDmp(IdentifierDO identifierDO, FunderId funderId) {
 
     funderId.setIdentifier(identifierDO.getIdentifier());
@@ -524,6 +738,13 @@ public class MaDmpMapper {
     return funderId;
   }
 
+  /**
+   * mapToMaDmp.
+   *
+   * @param identifierDO a {@link org.damap.base.rest.dmp.domain.IdentifierDO} object
+   * @param grantId a {@link org.damap.base.rest.madmp.dto.GrantId} object
+   * @return a {@link org.damap.base.rest.madmp.dto.GrantId} object
+   */
   public GrantId mapToMaDmp(IdentifierDO identifierDO, GrantId grantId) {
 
     grantId.setIdentifier(identifierDO.getIdentifier());

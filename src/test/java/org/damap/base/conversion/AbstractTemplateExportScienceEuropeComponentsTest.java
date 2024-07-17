@@ -35,6 +35,7 @@ class AbstractTemplateExportScienceEuropeComponentsTest
 
   @Inject ExportScienceEuropeTemplate exportScienceEuropeTemplate;
 
+  /** setup. */
   @BeforeEach
   public void setup() {
     Mockito.when(mockProjectService.read(anyString())).thenReturn(testDOFactory.getTestProjectDO());

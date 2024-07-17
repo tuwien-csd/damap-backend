@@ -11,9 +11,16 @@ import org.damap.base.domain.Dataset;
 import org.damap.base.domain.Repository;
 import org.damap.base.enums.EContributorRole;
 
+/** ExportHorizonEuropeTemplate class. */
 @RequestScoped
 @JBossLog
 public class ExportHorizonEuropeTemplate extends AbstractTemplateExportScienceEuropeComponents {
+  /**
+   * exportTemplate.
+   *
+   * @param dmpId a long
+   * @return a {@link org.apache.poi.xwpf.usermodel.XWPFDocument} object
+   */
   public XWPFDocument exportTemplate(long dmpId) {
     log.info("Exporting Horzion Europe document for DMP with ID: " + dmpId);
     // load project
@@ -57,11 +64,13 @@ public class ExportHorizonEuropeTemplate extends AbstractTemplateExportScienceEu
     return document;
   }
 
+  /** loadHorizonEuropeContent. */
   public void loadHorizonEuropeContent() {
     super.loadScienceEuropeContent();
     workPackageLeadersInformation();
   }
 
+  /** {@inheritDoc} */
   @Override
   public void datasetsInformation() {
     super.datasetsInformation();
@@ -94,6 +103,7 @@ public class ExportHorizonEuropeTemplate extends AbstractTemplateExportScienceEu
     }
   }
 
+  /** workPackageLeadersInformation. */
   public void workPackageLeadersInformation() {
     var workPackageLeaders =
         getContributorsByRole(dmp.getContributorList(), EContributorRole.WORK_PACKAGE_LEADER);
@@ -107,6 +117,7 @@ public class ExportHorizonEuropeTemplate extends AbstractTemplateExportScienceEu
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public void composeTableDatasetRepository(XWPFTable xwpfTable) {
     log.debug("Export steps: Dataset Repository Table");

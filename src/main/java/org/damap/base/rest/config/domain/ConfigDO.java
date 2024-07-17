@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 import lombok.Data;
 
+/** ConfigDO class. */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ConfigDO {

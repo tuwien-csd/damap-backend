@@ -7,6 +7,7 @@ import lombok.*;
 import org.damap.base.enums.ECostType;
 import org.hibernate.envers.Audited;
 
+/** Cost class. */
 @Data
 @EqualsAndHashCode(
     callSuper = true,

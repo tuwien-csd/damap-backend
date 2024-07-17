@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 
 // Common config for test case setup
+/** TestSetup class. */
 @QuarkusTest
 public class TestSetup {
   @Inject TestDOFactory testDOFactory;
@@ -27,6 +28,7 @@ public class TestSetup {
 
   protected DmpDO dmpDO;
 
+  /** setup. */
   @BeforeEach
   public void setup() {
     Mockito.when(securityService.getUserId()).thenReturn("012345");

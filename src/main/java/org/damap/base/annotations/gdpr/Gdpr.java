@@ -7,9 +7,10 @@ import java.lang.annotation.Target;
 
 /**
  * Marks a class that holds information that is subject to the EU General Data Protection
- * Regulation. {@code @Gdpr} is meant to be used in conjunction with {@link GdprKey}, {@link
- * GdprContext}, {@link GdprBase} and {@link GdprExtended}, which mark all relevant fields in the
- * class.
+ * Regulation. {@code @Gdpr} is meant to be used in conjunction with {@link
+ * org.damap.base.annotations.gdpr.GdprKey}, {@link GdprContext}, {@link
+ * org.damap.base.annotations.gdpr.GdprBase} and {@link
+ * org.damap.base.annotations.gdpr.GdprExtended}, which mark all relevant fields in the class.
  *
  * <p>A class annotated with {@code @Gdpr} must also contain exactly one field annotated with {@link
  * GdprKey}.

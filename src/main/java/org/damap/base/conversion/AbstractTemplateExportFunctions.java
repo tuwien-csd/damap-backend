@@ -13,6 +13,7 @@ import org.damap.base.repo.DmpRepo;
 import org.damap.base.repo.InternalStorageTranslationRepo;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
 
+/** Abstract AbstractTemplateExportFunctions class. */
 @JBossLog
 public abstract class AbstractTemplateExportFunctions {
 
@@ -26,11 +27,11 @@ public abstract class AbstractTemplateExportFunctions {
   /**
    * Method to load the export template
    *
-   * @param template
-   * @param startChar
-   * @param endChar
-   * @return
-   * @throws Exception
+   * @param template a {@link java.io.InputStream} object
+   * @param startChar a {@link java.lang.String} object
+   * @param endChar a {@link java.lang.String} object
+   * @throws java.lang.Exception
+   * @return a {@link org.apache.poi.xwpf.usermodel.XWPFDocument} object
    */
   public XWPFDocument loadTemplate(InputStream template, String startChar, String endChar)
       throws Exception {
@@ -101,9 +102,9 @@ public abstract class AbstractTemplateExportFunctions {
   /**
    * Method to do a replacement of variable with desired value
    *
-   * @param replacements
-   * @param variable
-   * @param dmpContent
+   * @param replacements a {@link java.util.Map} object
+   * @param variable a {@link java.lang.String} object
+   * @param dmpContent a {@link java.lang.Object} object
    */
   public void addReplacement(Map<String, String> replacements, String variable, Object dmpContent) {
     String content = (dmpContent == null) ? "" : String.valueOf(dmpContent);
@@ -119,12 +120,12 @@ public abstract class AbstractTemplateExportFunctions {
   /**
    * Method to add new row in a table
    *
-   * @param sourceTableRow
-   * @param pos
-   * @return
-   * @throws IOException
-   * @throws XmlException
-   * @throws Exception
+   * @param sourceTableRow a {@link org.apache.poi.xwpf.usermodel.XWPFTableRow} object
+   * @param pos a int
+   * @throws java.io.IOException
+   * @throws org.apache.xmlbeans.XmlException
+   * @throws org.apache.xmlbeans.XmlException
+   * @return a {@link org.apache.poi.xwpf.usermodel.XWPFTableRow} object
    */
   public XWPFTableRow insertNewTableRow(XWPFTableRow sourceTableRow, int pos)
       throws XmlException, IOException {
@@ -188,8 +189,8 @@ public abstract class AbstractTemplateExportFunctions {
   /**
    * Method to do a replacement specific in document's footer area
    *
-   * @param doc
-   * @param replacements
+   * @param doc a {@link org.apache.poi.xwpf.usermodel.XWPFDocument} object
+   * @param replacements a {@link java.util.Map} object
    */
   public void replaceTextInFooter(XWPFDocument doc, Map<String, String> replacements) {
     for (XWPFFooter footer : doc.getFooterList()) {
@@ -211,13 +212,19 @@ public abstract class AbstractTemplateExportFunctions {
    * Method to combine multiple values become one string. Can be used for generate values from a
    * list of object or replace one variable with multiple values in one execution.
    *
-   * @param variableList
-   * @return
+   * @param variableList a {@link java.util.List} object
+   * @return a {@link java.lang.String} object
    */
   public String joinWithComma(List<String> variableList) {
     return String.join(", ", variableList);
   }
 
+  /**
+   * joinWithCommaAnd.
+   *
+   * @param variableList a {@link java.util.List} object
+   * @return a {@link java.lang.String} object
+   */
   public String joinWithCommaAnd(List<String> variableList) {
     return switch (variableList.size()) {
       case 0 -> "";
@@ -234,11 +241,11 @@ public abstract class AbstractTemplateExportFunctions {
    * variables (currently, text started with "[" and end with "]") that are seperated to multiple
    * runs.
    *
-   * @param document
-   * @param startChar
-   * @param endChar
-   * @return
-   * @throws Exception
+   * @param document a {@link org.apache.poi.xwpf.usermodel.XWPFDocument} object
+   * @param startChar a {@link java.lang.String} object
+   * @param endChar a {@link java.lang.String} object
+   * @throws java.lang.Exception
+   * @return a {@link org.apache.poi.xwpf.usermodel.XWPFDocument} object
    */
   public XWPFDocument templateFormatting(XWPFDocument document, String startChar, String endChar)
       throws Exception {
@@ -265,9 +272,9 @@ public abstract class AbstractTemplateExportFunctions {
   /**
    * Loop to format tables within tables in the template.
    *
-   * @param xwpfTables
-   * @param startChar
-   * @param endChar
+   * @param xwpfTables a {@link java.util.List} object
+   * @param startChar a {@link java.lang.String} object
+   * @param endChar a {@link java.lang.String} object
    */
   public void formattingTable(List<XWPFTable> xwpfTables, String startChar, String endChar) {
     if (xwpfTables != null) {
@@ -285,9 +292,9 @@ public abstract class AbstractTemplateExportFunctions {
   /**
    * Method to preprocessing format of the paragraph list
    *
-   * @param xwpfParagraphs
-   * @param startChar
-   * @param endChar
+   * @param xwpfParagraphs a {@link java.util.List} object
+   * @param startChar a {@link java.lang.String} object
+   * @param endChar a {@link java.lang.String} object
    */
   public void formattingParagraph(
       List<XWPFParagraph> xwpfParagraphs, String startChar, String endChar) {
@@ -344,8 +351,8 @@ public abstract class AbstractTemplateExportFunctions {
    * only for depth 1. If the table is not to be found inside the doc or at depth 1, nothing
    * happens.
    *
-   * @param doc
-   * @param table
+   * @param doc a {@link org.apache.poi.xwpf.usermodel.XWPFDocument} object
+   * @param table a {@link org.apache.poi.xwpf.usermodel.XWPFTable} object
    */
   public void removeTable(XWPFDocument doc, XWPFTable table) {
     int pos = doc.getPosOfTable(table);
@@ -388,8 +395,8 @@ public abstract class AbstractTemplateExportFunctions {
    * inside the doc or at depth 1, nothing happens. If the there is no paragraph above the table,
    * only the table will be removed.
    *
-   * @param doc
-   * @param table
+   * @param doc a {@link org.apache.poi.xwpf.usermodel.XWPFDocument} object
+   * @param table a {@link org.apache.poi.xwpf.usermodel.XWPFTable} object
    */
   public void removeTableAndParagraphAbove(XWPFDocument doc, XWPFTable table) {
     // paragraph above the table
@@ -425,7 +432,8 @@ public abstract class AbstractTemplateExportFunctions {
   /**
    * Returns a list of all table cells of non nested tables in the document.
    *
-   * @param doc
+   * @param doc a {@link org.apache.poi.xwpf.usermodel.XWPFDocument} object
+   * @return a {@link java.util.List} object
    */
   public List<XWPFTableCell> getAllOuterTableCells(XWPFDocument doc) {
     List<XWPFTableCell> tableCells = new ArrayList<>();
@@ -440,7 +448,8 @@ public abstract class AbstractTemplateExportFunctions {
   /**
    * Returns a list of all tables and nested tables with depth 1.
    *
-   * @param doc
+   * @param doc a {@link org.apache.poi.xwpf.usermodel.XWPFDocument} object
+   * @return a {@link java.util.List} object
    */
   public List<XWPFTable> getAllTables(XWPFDocument doc) {
     ArrayList<XWPFTable> tables = new ArrayList<>(doc.getTables());

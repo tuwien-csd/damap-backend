@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.Nulls;
 import java.util.List;
 import lombok.Data;
 
+/** ORCIDExpandedSearchPerson class. */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ORCIDExpandedSearchPerson {

@@ -1,5 +1,6 @@
 package org.damap.base.domain;
 
+/** DatasetSizeRange class. */
 public enum DatasetSizeRange {
   LESS_THAN_100MB(0, 99_999_999L, "< 100 MB"),
   FROM_100MB_TO_1GB(100_000_000L, 999_999_999L, "100 - 1000 MB"),
@@ -27,14 +28,29 @@ public enum DatasetSizeRange {
     this.label = label;
   }
 
+  /**
+   * Getter for the field <code>minSize</code>.
+   *
+   * @return a long
+   */
   public long getMinSize() {
     return minSize;
   }
 
+  /**
+   * Getter for the field <code>maxSize</code>.
+   *
+   * @return a long
+   */
   public long getMaxSize() {
     return maxSize;
   }
 
+  /**
+   * Getter for the field <code>label</code>.
+   *
+   * @return a {@link java.lang.String} object
+   */
   public String getLabel() {
     return label;
   }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+/** ServiceConfig class. */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ServiceConfig {

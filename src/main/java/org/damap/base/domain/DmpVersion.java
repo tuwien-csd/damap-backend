@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+/** DmpVersion class. */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(exclude = "dmp")

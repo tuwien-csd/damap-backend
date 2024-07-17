@@ -7,11 +7,19 @@ import java.util.*;
 import org.damap.base.rest.gdpr.domain.GdprResult;
 import org.damap.base.rest.gdpr.domain.HqlQuery;
 
+/** GdprRepo class. */
 @ApplicationScoped
 public class GdprRepo {
 
   @Inject EntityManager entityManager;
 
+  /**
+   * getGdprDataByUniversityId.
+   *
+   * @param queries a {@link java.util.List} object
+   * @param universityId a {@link java.lang.String} object
+   * @return a {@link java.util.List} object
+   */
   public List<GdprResult> getGdprDataByUniversityId(List<HqlQuery> queries, String universityId) {
 
     List<GdprResult> results = new ArrayList<>();

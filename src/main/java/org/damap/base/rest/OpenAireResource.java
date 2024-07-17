@@ -12,6 +12,7 @@ import org.damap.base.rest.openaire.mapper.OpenAireMapper;
 import org.damap.base.rest.openaire.service.OpenAireService;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
 
+/** OpenAireResource class. */
 @Path("/api/openaire")
 @Authenticated
 @Produces(MediaType.APPLICATION_JSON)
@@ -20,6 +21,12 @@ public class OpenAireResource {
 
   @Inject OpenAireService openAireService;
 
+  /**
+   * search.
+   *
+   * @param doi a {@link java.lang.String} object
+   * @return a {@link org.damap.base.rest.dmp.domain.DatasetDO} object
+   */
   @GET
   public DatasetDO search(@QueryParam String doi) {
     log.info("Search for dataset with DOI: " + doi);

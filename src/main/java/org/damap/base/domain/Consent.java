@@ -10,6 +10,7 @@ import org.damap.base.annotations.gdpr.Gdpr;
 import org.damap.base.annotations.gdpr.GdprExtended;
 import org.damap.base.annotations.gdpr.GdprKey;
 
+/** Consent class. */
 @Gdpr
 @Data
 @EqualsAndHashCode(callSuper = true)

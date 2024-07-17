@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/** InternalStorageDO class. */
 @EqualsAndHashCode
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)

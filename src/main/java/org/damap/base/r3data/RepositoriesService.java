@@ -15,6 +15,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.re3data.schema._2_2.Re3Data;
 
+/** RepositoriesService class. */
 @JBossLog
 @ApplicationScoped
 public class RepositoriesService {
@@ -24,11 +25,21 @@ public class RepositoriesService {
   @ConfigProperty(name = "damap.repositories.recommendation")
   String[] repositoriesRecommendation;
 
+  /**
+   * getAll.
+   *
+   * @return a {@link java.util.List} object
+   */
   @CacheResult(cacheName = "repositories")
   public List<Repository> getAll() {
     return repositoriesRemoteResource.getAll();
   }
 
+  /**
+   * getRecommended.
+   *
+   * @return a {@link java.util.List} object
+   */
   @CacheResult(cacheName = "recommendedRepositories")
   public List<RepositoryDetails> getRecommended() {
     List<RepositoryDetails> recommendedRepositories = new ArrayList<>();
@@ -45,11 +56,23 @@ public class RepositoriesService {
     return recommendedRepositories;
   }
 
+  /**
+   * getById.
+   *
+   * @param id a {@link java.lang.String} object
+   * @return a {@link org.re3data.schema._2_2.Re3Data} object
+   */
   @CacheResult(cacheName = "repository")
   public Re3Data getById(String id) {
     return repositoriesRemoteResource.getById(id);
   }
 
+  /**
+   * search.
+   *
+   * @param params a {@link jakarta.ws.rs.core.MultivaluedMap} object
+   * @return a {@link java.util.List} object
+   */
   public List<Repository> search(MultivaluedMap<String, String> params) {
     List<String> subjects = params.get("subjects");
     List<String> contentTypes = params.get("contentTypes");
@@ -82,14 +105,32 @@ public class RepositoriesService {
         metadataStandards);
   }
 
+  /**
+   * getDescription.
+   *
+   * @param id a {@link java.lang.String} object
+   * @return a {@link java.lang.String} object
+   */
   public String getDescription(String id) {
     return RepositoryMapper.mapToRepositoryDetails(getById(id), id).getDescription();
   }
 
+  /**
+   * getRepositoryURL.
+   *
+   * @param id a {@link java.lang.String} object
+   * @return a {@link java.lang.String} object
+   */
   public String getRepositoryURL(String id) {
     return RepositoryMapper.mapToRepositoryDetails(getById(id), id).getRepositoryURL();
   }
 
+  /**
+   * getPidSystems.
+   *
+   * @param id a {@link java.lang.String} object
+   * @return a {@link java.util.List} object
+   */
   public List<EIdentifierType> getPidSystems(String id) {
     return RepositoryMapper.mapToRepositoryDetails(getById(id), id).getPidSystems();
   }

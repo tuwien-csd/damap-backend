@@ -9,10 +9,12 @@ import org.damap.base.enums.ETemplateType;
 import org.damap.base.rest.dmp.domain.DmpDO;
 import org.damap.base.rest.dmp.domain.IdentifierDO;
 
+/** TemplateSelectorServiceImpl class. */
 @ApplicationScoped
 @DefaultBean
 @JBossLog
 public class TemplateSelectorServiceImpl implements TemplateSelectorService {
+  /** {@inheritDoc} */
   @Override
   public ETemplateType selectTemplate(DmpDO dmpDO) {
     if (dmpDO.getProject() != null && dmpDO.getProject().getFunding() != null) {
@@ -31,11 +33,13 @@ public class TemplateSelectorServiceImpl implements TemplateSelectorService {
     return ETemplateType.SCIENCE_EUROPE;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isHorizonEuropeTemplate(IdentifierDO identifierDO) {
     return (EFunderIds.getEUFunderIds().contains(identifierDO.getIdentifier()));
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isFWFTemplate(IdentifierDO identifierDO) {
     return (EFunderIds.getFWFFunderIds().contains(identifierDO.getIdentifier()));

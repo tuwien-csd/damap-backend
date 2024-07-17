@@ -7,6 +7,7 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.damap.base.enums.ETemplateType;
 import org.damap.base.rest.dmp.service.DmpService;
 
+/** ExportTemplateBroker class. */
 @ApplicationScoped
 @JBossLog
 public class ExportTemplateBroker {
@@ -19,6 +20,18 @@ public class ExportTemplateBroker {
   private final TemplateSelectorServiceImpl templateSelectorService;
 
   @Inject
+  /**
+   * Constructor for ExportTemplateBroker.
+   *
+   * @param dmpService a {@link org.damap.base.rest.dmp.service.DmpService} object
+   * @param exportScienceEuropeTemplate a {@link
+   *     org.damap.base.conversion.ExportScienceEuropeTemplate} object
+   * @param exportFWFTemplate a {@link org.damap.base.conversion.ExportFWFTemplate} object
+   * @param exportHorizonEuropeTemplate a {@link
+   *     org.damap.base.conversion.ExportHorizonEuropeTemplate} object
+   * @param templateSelectorService a {@link org.damap.base.conversion.TemplateSelectorServiceImpl}
+   *     object
+   */
   public ExportTemplateBroker(
       DmpService dmpService,
       ExportScienceEuropeTemplate exportScienceEuropeTemplate,
@@ -35,14 +48,21 @@ public class ExportTemplateBroker {
   /**
    * Decides which export template to use. Currently only supports FWF and Science Europe templates.
    *
-   * @param dmpId
-   * @return
+   * @param dmpId a long
+   * @return a {@link org.apache.poi.xwpf.usermodel.XWPFDocument} object
    */
   public XWPFDocument exportTemplate(long dmpId) {
     return exportTemplateByType(
         dmpId, templateSelectorService.selectTemplate(dmpService.getDmpById(dmpId)));
   }
 
+  /**
+   * exportTemplateByType.
+   *
+   * @param dmpId a long
+   * @param type a {@link org.damap.base.enums.ETemplateType} object
+   * @return a {@link org.apache.poi.xwpf.usermodel.XWPFDocument} object
+   */
   public XWPFDocument exportTemplateByType(long dmpId, ETemplateType type) {
     switch (type) {
       case FWF:

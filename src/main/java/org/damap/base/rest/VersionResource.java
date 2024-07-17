@@ -14,6 +14,7 @@ import org.damap.base.security.SecurityService;
 import org.damap.base.validation.AccessValidator;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
+/** VersionResource class. */
 @Path("/api/versions")
 @Produces(MediaType.APPLICATION_JSON)
 @Authenticated
@@ -26,6 +27,12 @@ public class VersionResource {
 
   @Inject VersionService versionService;
 
+  /**
+   * getDmpVersions.
+   *
+   * @param id a {@link java.lang.String} object
+   * @return a {@link java.util.List} object
+   */
   @GET
   @Path("/list/{id}")
   public List<VersionDO> getDmpVersions(@PathParam String id) {
@@ -38,6 +45,12 @@ public class VersionResource {
     return versionService.getDmpVersions(dmpId);
   }
 
+  /**
+   * saveVersion.
+   *
+   * @param versionDO a {@link org.damap.base.rest.version.VersionDO} object
+   * @return a {@link org.damap.base.rest.version.VersionDO} object
+   */
   @PUT
   @Consumes(MediaType.APPLICATION_JSON)
   public VersionDO saveVersion(VersionDO versionDO) {

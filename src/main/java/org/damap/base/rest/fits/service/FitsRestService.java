@@ -10,11 +10,18 @@ import org.damap.base.rest.fits.dto.MultipartBodyDTO;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
+/** FitsRestService interface. */
 @RegisterRestClient(configKey = "rest.fits")
 @Produces(MediaType.APPLICATION_XML)
 @Consumes(MediaType.MULTIPART_FORM_DATA)
 public interface FitsRestService {
 
+  /**
+   * analyseFile.
+   *
+   * @param datafile a {@link org.damap.base.rest.fits.dto.MultipartBodyDTO} object
+   * @return a {@link edu.harvard.fits.Fits} object
+   */
   @POST
   @Path("/examine")
   Fits analyseFile(@MultipartForm MultipartBodyDTO datafile);

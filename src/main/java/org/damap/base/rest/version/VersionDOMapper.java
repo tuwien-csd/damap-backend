@@ -7,9 +7,17 @@ import org.damap.base.repo.DmpRepo;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 
+/** VersionDOMapper class. */
 @UtilityClass
 public class VersionDOMapper {
 
+  /**
+   * mapEntityToDO.
+   *
+   * @param version a {@link org.damap.base.domain.DmpVersion} object
+   * @param versionDO a {@link org.damap.base.rest.version.VersionDO} object
+   * @return a {@link org.damap.base.rest.version.VersionDO} object
+   */
   public VersionDO mapEntityToDO(DmpVersion version, VersionDO versionDO) {
     versionDO.setId(version.id);
     versionDO.setDmpId(version.getDmp().id);
@@ -21,6 +29,14 @@ public class VersionDOMapper {
     return versionDO;
   }
 
+  /**
+   * mapDOtoEntity.
+   *
+   * @param versionDO a {@link org.damap.base.rest.version.VersionDO} object
+   * @param version a {@link org.damap.base.domain.DmpVersion} object
+   * @param dmpRepo a {@link org.damap.base.repo.DmpRepo} object
+   * @return a {@link org.damap.base.domain.DmpVersion} object
+   */
   public DmpVersion mapDOtoEntity(VersionDO versionDO, DmpVersion version, DmpRepo dmpRepo) {
     if (versionDO.getId() != null) version.id = versionDO.getId();
     version.setDmp(dmpRepo.findById(versionDO.getDmpId()));

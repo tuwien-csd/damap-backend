@@ -6,9 +6,11 @@ import org.damap.base.domain.DamapRevisionEntity;
 import org.damap.base.security.SecurityService;
 import org.hibernate.envers.RevisionListener;
 
+/** DamapRevisionListener class. */
 @JBossLog
 public class DamapRevisionListener implements RevisionListener {
 
+  /** {@inheritDoc} */
   @Override
   public void newRevision(Object revisionEntity) {
     if (revisionEntity instanceof DamapRevisionEntity) {

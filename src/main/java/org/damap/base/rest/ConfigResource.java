@@ -12,6 +12,7 @@ import org.damap.base.rest.config.domain.ConfigDO;
 import org.damap.base.rest.config.domain.PersonServiceConfigurations;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+/** ConfigResource class. */
 @Path("/api/config")
 @Produces(MediaType.APPLICATION_JSON)
 @PermitAll
@@ -38,6 +39,11 @@ public class ConfigResource {
   @ConfigProperty(name = "damap.fits-url")
   Optional<URL> fitsUrl;
 
+  /**
+   * config.
+   *
+   * @return a {@link org.damap.base.rest.config.domain.ConfigDO} object
+   */
   @GET
   public ConfigDO config() {
     ConfigDO configDO = new ConfigDO();

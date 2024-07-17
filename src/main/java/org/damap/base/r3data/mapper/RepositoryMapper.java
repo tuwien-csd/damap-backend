@@ -10,9 +10,17 @@ import org.re3data.schema._2_2.PidSystems;
 import org.re3data.schema._2_2.Re3Data;
 import org.re3data.schema._2_2.Yesno;
 
+/** RepositoryMapper class. */
 @UtilityClass
 public class RepositoryMapper {
 
+  /**
+   * mapToRepositoryDetails.
+   *
+   * @param re3Data a {@link org.re3data.schema._2_2.Re3Data} object
+   * @param id a {@link java.lang.String} object
+   * @return a {@link org.damap.base.r3data.dto.RepositoryDetails} object
+   */
   public RepositoryDetails mapToRepositoryDetails(Re3Data re3Data, String id) {
     RepositoryDetails repositoryDetails = new RepositoryDetails();
 
@@ -64,6 +72,12 @@ public class RepositoryMapper {
     return repositoryDetails;
   }
 
+  /**
+   * mapYesNoToBoolean.
+   *
+   * @param value a {@link org.re3data.schema._2_2.Yesno} object
+   * @return a {@link java.lang.Boolean} object
+   */
   @jakarta.annotation.Nullable public Boolean mapYesNoToBoolean(Yesno value) {
     if (value == null) {
       return null;

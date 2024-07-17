@@ -3,6 +3,7 @@ package org.damap.base.rest.base;
 import jakarta.ws.rs.core.MultivaluedMap;
 import lombok.Data;
 
+/** Pagination class. */
 @Data
 public class Pagination {
   int page = 1;
@@ -12,6 +13,12 @@ public class Pagination {
   boolean hasNext;
   boolean hasPrevious;
 
+  /**
+   * fromMap.
+   *
+   * @param map a {@link jakarta.ws.rs.core.MultivaluedMap} object
+   * @return a {@link org.damap.base.rest.base.Pagination} object
+   */
   public static Pagination fromMap(MultivaluedMap<String, String> map) {
     Pagination p = new Pagination();
     p.setPage(map);
@@ -20,6 +27,11 @@ public class Pagination {
     return p;
   }
 
+  /**
+   * Setter for the field <code>page</code>.
+   *
+   * @param map a {@link jakarta.ws.rs.core.MultivaluedMap} object
+   */
   public void setPage(MultivaluedMap<String, String> map) {
     var p = map.getFirst("page");
     try {
@@ -29,6 +41,11 @@ public class Pagination {
     }
   }
 
+  /**
+   * Setter for the field <code>perPage</code>.
+   *
+   * @param map a {@link jakarta.ws.rs.core.MultivaluedMap} object
+   */
   public void setPerPage(MultivaluedMap<String, String> map) {
     var pp = map.getFirst("perPage");
     try {
@@ -38,6 +55,7 @@ public class Pagination {
     }
   }
 
+  /** calculateFields. */
   public void calculateFields() {
     hasPrevious = page > 1;
 

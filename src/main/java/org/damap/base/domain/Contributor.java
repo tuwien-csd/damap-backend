@@ -20,6 +20,7 @@ import org.damap.base.annotations.gdpr.*;
 import org.damap.base.enums.EContributorRole;
 import org.hibernate.envers.Audited;
 
+/** Contributor class. */
 @Gdpr
 @Data
 @EqualsAndHashCode(callSuper = true, exclude = "dmp")

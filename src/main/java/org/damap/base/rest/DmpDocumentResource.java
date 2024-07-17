@@ -17,6 +17,7 @@ import org.damap.base.rest.dmp.service.DmpService;
 import org.damap.base.security.SecurityService;
 import org.damap.base.validation.AccessValidator;
 
+/** DmpDocumentResource class. */
 @Path("/api/document")
 @Authenticated
 @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -31,6 +32,13 @@ public class DmpDocumentResource {
 
   @Inject DmpService dmpService;
 
+  /**
+   * exportTemplate.
+   *
+   * @param dmpId a long
+   * @param template a {@link org.damap.base.enums.ETemplateType} object
+   * @return a {@link jakarta.ws.rs.core.Response} object
+   */
   @GET
   @Path("/{dmpId}")
   public Response exportTemplate(

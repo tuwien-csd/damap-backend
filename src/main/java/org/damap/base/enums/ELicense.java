@@ -1,5 +1,6 @@
 package org.damap.base.enums;
 
+/** ELicense class. */
 public enum ELicense {
 
   // TODO: link is dead, fix it
@@ -148,14 +149,29 @@ public enum ELicense {
     this.url = url;
   }
 
+  /**
+   * Getter for the field <code>acronym</code>.
+   *
+   * @return a {@link java.lang.String} object
+   */
   public String getAcronym() {
     return this.acronym;
   }
 
+  /**
+   * Getter for the field <code>name</code>.
+   *
+   * @return a {@link java.lang.String} object
+   */
   public String getName() {
     return this.name;
   }
 
+  /**
+   * Getter for the field <code>url</code>.
+   *
+   * @return a {@link java.lang.String} object
+   */
   public String getUrl() {
     return this.url;
   }

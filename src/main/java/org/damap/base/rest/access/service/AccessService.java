@@ -19,6 +19,7 @@ import org.damap.base.rest.dmp.mapper.ContributorDOMapper;
 import org.damap.base.rest.dmp.mapper.MapperService;
 import org.damap.base.rest.persons.PersonService;
 
+/** AccessService class. */
 @ApplicationScoped
 @JBossLog
 public class AccessService {
@@ -34,6 +35,12 @@ public class AccessService {
 
   @Inject PersonServiceBroker personServiceBroker;
 
+  /**
+   * getByDmpId.
+   *
+   * @param dmpId a long
+   * @return a {@link java.util.List} object
+   */
   public List<ContributorDO> getByDmpId(long dmpId) {
     PersonService personService =
         personServiceBroker.getServiceForQueryParam(ENABLED_PERSON_SERVICE);
@@ -77,6 +84,12 @@ public class AccessService {
     return accessDOList;
   }
 
+  /**
+   * create.
+   *
+   * @param accessDO a {@link org.damap.base.rest.access.domain.AccessDO} object
+   * @return a {@link org.damap.base.rest.access.domain.AccessDO} object
+   */
   @Transactional
   public AccessDO create(AccessDO accessDO) {
     Access access = new Access();
@@ -89,6 +102,11 @@ public class AccessService {
     return AccessMapper.mapEntityToDO(access, new AccessDO());
   }
 
+  /**
+   * delete.
+   *
+   * @param id a long
+   */
   @Transactional
   public void delete(long id) {
     accessRepo.deleteById(id);

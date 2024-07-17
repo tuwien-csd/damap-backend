@@ -13,10 +13,18 @@ import org.damap.base.enums.EDataQualityType;
 import org.damap.base.enums.ESecurityMeasure;
 import org.damap.base.rest.dmp.domain.*;
 
+/** DmpDOMapper class. */
 @UtilityClass
 @JBossLog
 public class DmpDOMapper {
 
+  /**
+   * mapEntityToDO.
+   *
+   * @param dmp a {@link org.damap.base.domain.Dmp} object
+   * @param dmpDO a {@link org.damap.base.rest.dmp.domain.DmpDO} object
+   * @return a {@link org.damap.base.rest.dmp.domain.DmpDO} object
+   */
   public DmpDO mapEntityToDO(Dmp dmp, DmpDO dmpDO) {
     dmpDO.setId(dmp.id);
     dmpDO.setTitle(dmp.getTitle());
@@ -158,6 +166,14 @@ public class DmpDOMapper {
     return dmpDO;
   }
 
+  /**
+   * mapDOtoEntity.
+   *
+   * @param dmpDO a {@link org.damap.base.rest.dmp.domain.DmpDO} object
+   * @param dmp a {@link org.damap.base.domain.Dmp} object
+   * @param mapperService a {@link org.damap.base.rest.dmp.mapper.MapperService} object
+   * @return a {@link org.damap.base.domain.Dmp} object
+   */
   public Dmp mapDOtoEntity(DmpDO dmpDO, Dmp dmp, MapperService mapperService) {
     if (dmpDO.getId() != null) dmp.id = dmpDO.getId();
     dmp.setTitle(dmpDO.getTitle());

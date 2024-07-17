@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 import org.damap.base.rest.dmp.domain.ContributorDO;
 import org.damap.base.rest.projects.MockProjectServiceImpl;
 
+/** MockProjectService class. */
 @Mock
 @ApplicationScoped
 public class MockProjectService extends MockProjectServiceImpl {
@@ -14,6 +15,7 @@ public class MockProjectService extends MockProjectServiceImpl {
 
   @InjectMock MockProjectServiceImpl projectService;
 
+  /** {@inheritDoc} */
   @Override
   public ContributorDO getProjectLeader(String projectId) {
     return testDOFactory.getTestContributorDO();

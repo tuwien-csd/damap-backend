@@ -19,6 +19,7 @@ import org.damap.base.rest.dmp.domain.ProjectDO;
 import org.damap.base.rest.dmp.service.DmpService;
 import org.damap.base.rest.projects.ProjectService;
 
+/** ProjectResource class. */
 @Path("/api/projects")
 @Authenticated
 @Produces(MediaType.APPLICATION_JSON)
@@ -31,6 +32,12 @@ public class ProjectResource implements ResourceSearch<ProjectDO> {
   @Inject DmpService dmpService;
 
   /* TODO: Strategy for permission check required for restricted projects */
+  /**
+   * getProjectMembers.
+   *
+   * @param projectId a {@link java.lang.String} object
+   * @return a {@link java.util.List} object
+   */
   @GET
   @Path("/{id}/staff")
   public List<ContributorDO> getProjectMembers(@PathParam("id") String projectId) {
@@ -38,6 +45,7 @@ public class ProjectResource implements ResourceSearch<ProjectDO> {
     return projectService.getProjectStaff(projectId);
   }
 
+  /** {@inheritDoc} */
   @Override
   public ResultList<ProjectDO> search(UriInfo uriInfo) {
     var queryParams = uriInfo.getQueryParameters();
@@ -49,6 +57,12 @@ public class ProjectResource implements ResourceSearch<ProjectDO> {
     return resultList;
   }
 
+  /**
+   * recommended.
+   *
+   * @param uriInfo a {@link jakarta.ws.rs.core.UriInfo} object
+   * @return a {@link org.damap.base.rest.base.ResultList} object
+   */
   @GET
   @Path("/recommended")
   public ResultList<ProjectDO> recommended(@Context UriInfo uriInfo) {

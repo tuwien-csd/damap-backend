@@ -1,5 +1,6 @@
 package org.damap.base.enums;
 
+/** EFunctionRole class. */
 public enum EFunctionRole {
   ADMIN("ADMIN"),
   EDITOR("EDITOR"),
@@ -13,6 +14,7 @@ public enum EFunctionRole {
     this.role = role;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String toString() {
     return role;

@@ -13,6 +13,7 @@ import org.damap.base.rest.dmp.domain.ContributorDO;
 import org.damap.base.validation.AccessValidator;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
+/** AccessResource class. */
 @Path("/api/access")
 @Authenticated
 @Produces(MediaType.APPLICATION_JSON)
@@ -22,6 +23,12 @@ public class AccessResource {
   @Inject AccessValidator accessValidator;
   @Inject AccessService accessService;
 
+  /**
+   * getAccessForDmp.
+   *
+   * @param id a {@link java.lang.String} object
+   * @return a {@link java.util.List} object
+   */
   @GET
   @Path("/dmps/{id}")
   public List<ContributorDO> getAccessForDmp(@PathParam("id") String id) {
@@ -33,6 +40,12 @@ public class AccessResource {
     return accessService.getByDmpId(dmpId);
   }
 
+  /**
+   * create.
+   *
+   * @param accessDO a {@link org.damap.base.rest.access.domain.AccessDO} object
+   * @return a {@link org.damap.base.rest.access.domain.AccessDO} object
+   */
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   public AccessDO create(@Valid AccessDO accessDO) {
@@ -48,6 +61,11 @@ public class AccessResource {
     return accessService.create(accessDO);
   }
 
+  /**
+   * delete.
+   *
+   * @param id a {@link java.lang.String} object
+   */
   @DELETE
   @Path("/{id}")
   public void delete(@PathParam("id") String id) {

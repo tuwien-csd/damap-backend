@@ -12,17 +12,20 @@ import org.damap.base.rest.dmp.domain.ContributorDO;
 import org.damap.base.rest.persons.PersonService;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/** ORCIDPersonServiceImpl class. */
 @ApplicationScoped
 @JBossLog
 public class ORCIDPersonServiceImpl implements PersonService {
 
   @Inject @RestClient OrcidPersonService orcidRestClient;
 
+  /** {@inheritDoc} */
   @Override
   public ContributorDO read(String id, MultivaluedMap<String, String> queryParams) {
     return ORCIDMapper.mapRecordEntityToPersonDO(orcidRestClient.get(id), new ContributorDO());
   }
 
+  /** {@inheritDoc} */
   @Override
   public ResultList<ContributorDO> search(MultivaluedMap<String, String> queryParams) {
     Search search = Search.fromMap(queryParams);

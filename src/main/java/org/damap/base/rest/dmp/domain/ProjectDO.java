@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import java.util.Date;
 import lombok.Data;
 
+/** ProjectDO class. */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ProjectDO {

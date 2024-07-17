@@ -9,6 +9,7 @@ import org.damap.base.rest.dmp.mapper.MapperService;
 import org.damap.base.rest.madmp.dto.Dmp;
 import org.damap.base.rest.madmp.mapper.MaDmpMapper;
 
+/** MaDmpService class. */
 @ApplicationScoped
 public class MaDmpService {
 
@@ -16,6 +17,12 @@ public class MaDmpService {
 
   @Inject MapperService mapperService;
 
+  /**
+   * getById.
+   *
+   * @param id a long
+   * @return a {@link org.damap.base.rest.madmp.dto.Dmp} object
+   */
   public Dmp getById(long id) {
     // TODO: check permission
     return MaDmpMapper.mapToMaDmp(

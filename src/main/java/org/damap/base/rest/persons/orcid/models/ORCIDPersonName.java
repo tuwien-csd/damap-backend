@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.Nulls;
 import lombok.Data;
 import org.damap.base.rest.persons.orcid.models.base.ORCIDValueType;
 
+/** ORCIDPersonName class. */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ORCIDPersonName {

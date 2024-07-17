@@ -11,6 +11,7 @@ import java.util.Optional;
 import lombok.Data;
 import org.damap.base.enums.*;
 
+/** DmpDO class. */
 @Valid
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -116,6 +117,11 @@ public class DmpDO {
   @Size(max = 4000)
   private String documentation;
 
+  /**
+   * getContact.
+   *
+   * @return a {@link org.damap.base.rest.dmp.domain.ContributorDO} object
+   */
   public ContributorDO getContact() {
     Optional<ContributorDO> contact =
         contributors.stream().filter(ContributorDO::isContact).findFirst();

@@ -11,6 +11,7 @@ import org.damap.base.rest.dmp.mapper.DatasetDOMapper;
 import org.damap.base.rest.fits.service.FitsService;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
+/** FitsResource class. */
 @Path("/api/fits")
 @Authenticated
 @Produces(MediaType.APPLICATION_JSON)
@@ -20,6 +21,12 @@ public class FitsResource {
 
   @Inject FitsService fitsService;
 
+  /**
+   * examine.
+   *
+   * @param data a {@link org.damap.base.rest.dmp.domain.MultipartBodyDO} object
+   * @return a {@link org.damap.base.rest.dmp.domain.DatasetDO} object
+   */
   @POST
   @Path("/examine")
   public DatasetDO examine(@MultipartForm MultipartBodyDO data) {

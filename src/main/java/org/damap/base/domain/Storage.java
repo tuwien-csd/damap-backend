@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.envers.Audited;
 
+/** Storage class. */
 @Data
 @Entity
 @EqualsAndHashCode(callSuper = true)

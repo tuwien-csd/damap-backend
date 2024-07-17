@@ -6,6 +6,7 @@ import java.io.InputStream;
 import org.jboss.resteasy.annotations.providers.multipart.PartFilename;
 import org.jboss.resteasy.annotations.providers.multipart.PartType;
 
+/** MultipartBodyDTO class. */
 public class MultipartBodyDTO {
 
   @FormParam("datafile")

@@ -10,6 +10,7 @@ import org.damap.base.rest.dmp.domain.DatasetDO;
 import org.damap.base.rest.dmp.domain.DmpDO;
 import org.damap.base.rest.dmp.domain.HostDO;
 
+/** DmpConsistencyUtility class. */
 @UtilityClass
 public class DmpConsistencyUtility {
 
