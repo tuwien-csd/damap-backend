@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.Data;
 import org.damap.base.rest.persons.orcid.models.base.ORCIDEmail;
 
+/** ORCIDEmails class. */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ORCIDEmails {

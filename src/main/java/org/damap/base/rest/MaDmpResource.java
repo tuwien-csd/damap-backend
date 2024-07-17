@@ -17,6 +17,7 @@ import org.damap.base.security.SecurityService;
 import org.damap.base.validation.AccessValidator;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+/** MaDmpResource class. */
 @Path("/api/madmp")
 @Authenticated
 @Produces(MediaType.APPLICATION_JSON)
@@ -35,6 +36,12 @@ public class MaDmpResource {
   @ConfigProperty(name = "damap.auth.user")
   String authUser;
 
+  /**
+   * getById.
+   *
+   * @param id a long
+   * @return a {@link org.damap.base.rest.madmp.dto.Dmp} object
+   */
   @GET
   @Path("/{id}")
   public Dmp getById(@PathParam("id") long id) {
@@ -46,6 +53,12 @@ public class MaDmpResource {
     return maDmpService.getById(id);
   }
 
+  /**
+   * getFileById.
+   *
+   * @param id a long
+   * @return a {@link jakarta.ws.rs.core.Response} object
+   */
   @GET
   @Path("/file/{id}")
   public Response getFileById(@PathParam("id") long id) {

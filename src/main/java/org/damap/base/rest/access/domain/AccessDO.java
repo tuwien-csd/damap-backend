@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import org.damap.base.enums.EFunctionRole;
 import org.damap.base.rest.dmp.domain.ContributorDO;
 
+/** AccessDO class. */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)

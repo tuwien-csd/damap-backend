@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.damap.base.enums.EFundingState;
 
+/** FundingDO class. */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FundingDO {

@@ -28,6 +28,7 @@ class AccessValidatorTest {
   String guestId = "-3";
   String adminId = "-4";
 
+  /** setup. */
   @BeforeEach
   public void setup() {
     Mockito.when(securityService.isAdmin()).thenReturn(false);

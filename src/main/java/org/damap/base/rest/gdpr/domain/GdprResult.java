@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.Data;
 
+/** GdprResult class. */
 @Data
 public class GdprResult {
 

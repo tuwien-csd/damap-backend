@@ -11,9 +11,17 @@ import org.damap.base.rest.dmp.domain.ContributorDO;
 import org.damap.base.rest.dmp.domain.DatasetDO;
 import org.damap.base.rest.dmp.domain.IdentifierDO;
 
+/** DatasetDOMapper class. */
 @UtilityClass
 public class DatasetDOMapper {
 
+  /**
+   * mapEntityToDO.
+   *
+   * @param dataset a {@link org.damap.base.domain.Dataset} object
+   * @param datasetDO a {@link org.damap.base.rest.dmp.domain.DatasetDO} object
+   * @return a {@link org.damap.base.rest.dmp.domain.DatasetDO} object
+   */
   public DatasetDO mapEntityToDO(Dataset dataset, DatasetDO datasetDO) {
     datasetDO.setId(dataset.id);
     datasetDO.setTitle(dataset.getTitle());
@@ -57,6 +65,14 @@ public class DatasetDOMapper {
     return datasetDO;
   }
 
+  /**
+   * mapDOtoEntity.
+   *
+   * @param datasetDO a {@link org.damap.base.rest.dmp.domain.DatasetDO} object
+   * @param dataset a {@link org.damap.base.domain.Dataset} object
+   * @param mapperService a {@link org.damap.base.rest.dmp.mapper.MapperService} object
+   * @return a {@link org.damap.base.domain.Dataset} object
+   */
   public Dataset mapDOtoEntity(DatasetDO datasetDO, Dataset dataset, MapperService mapperService) {
     if (datasetDO.getId() != null) dataset.id = datasetDO.getId();
     dataset.setTitle(datasetDO.getTitle());

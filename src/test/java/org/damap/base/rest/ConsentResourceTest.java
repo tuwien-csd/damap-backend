@@ -20,6 +20,7 @@ class ConsentResourceTest {
 
   @InjectMock SecurityService securityService;
 
+  /** setup. */
   @BeforeEach
   public void setup() {
     Mockito.when(securityService.getUserId()).thenReturn("012345");
@@ -62,6 +63,11 @@ class ConsentResourceTest {
         .body("universityId", is("012345"));
   }
 
+  /**
+   * mockConsentDO.
+   *
+   * @return a {@link org.damap.base.rest.administration.domain.ConsentDO} object
+   */
   public ConsentDO mockConsentDO() {
     ConsentDO consentDO = new ConsentDO();
     consentDO.setUniversityId("012345");

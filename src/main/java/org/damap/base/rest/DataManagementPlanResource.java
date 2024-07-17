@@ -17,6 +17,7 @@ import org.damap.base.security.SecurityService;
 import org.damap.base.validation.AccessValidator;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
+/** DataManagementPlanResource class. */
 @Path("/api/dmps")
 @Authenticated
 @Produces(MediaType.APPLICATION_JSON)
@@ -35,6 +36,11 @@ public class DataManagementPlanResource {
 
   // ADMIN
 
+  /**
+   * getAll.
+   *
+   * @return a {@link java.util.List} object
+   */
   @GET
   @Path("/all")
   @RolesAllowed("Damap Admin")
@@ -53,6 +59,11 @@ public class DataManagementPlanResource {
 
   // USER
 
+  /**
+   * getDmpList.
+   *
+   * @return a {@link java.util.List} object
+   */
   @GET
   @Path("/list")
   public List<DmpListItemDO> getDmpList() {
@@ -73,6 +84,12 @@ public class DataManagementPlanResource {
       return dmpService.getDmpListByPersonId(personId);
   }*/
 
+  /**
+   * getDmpById.
+   *
+   * @param id a {@link java.lang.String} object
+   * @return a {@link org.damap.base.rest.dmp.domain.DmpDO} object
+   */
   @GET
   @Path("/{id}")
   public DmpDO getDmpById(@PathParam String id) {
@@ -85,6 +102,12 @@ public class DataManagementPlanResource {
     return dmpService.getDmpById(dmpId);
   }
 
+  /**
+   * saveDmp.
+   *
+   * @param dmpDO a {@link org.damap.base.rest.dmp.domain.DmpDO} object
+   * @return a {@link org.damap.base.rest.dmp.domain.DmpDO} object
+   */
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   public DmpDO saveDmp(@Valid DmpDO dmpDO) {
@@ -93,6 +116,13 @@ public class DataManagementPlanResource {
     return dmpService.create(dmpDO, personId);
   }
 
+  /**
+   * updateDmp.
+   *
+   * @param id a {@link java.lang.String} object
+   * @param dmpDO a {@link org.damap.base.rest.dmp.domain.DmpDO} object
+   * @return a {@link org.damap.base.rest.dmp.domain.DmpDO} object
+   */
   @PUT
   @Path("/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -106,6 +136,11 @@ public class DataManagementPlanResource {
     return dmpService.update(dmpDO);
   }
 
+  /**
+   * deleteDmp.
+   *
+   * @param id a {@link java.lang.String} object
+   */
   @DELETE
   @Path("/{id}")
   public void deleteDmp(@PathParam String id) {
@@ -125,6 +160,13 @@ public class DataManagementPlanResource {
     return securityService.getUserId();
   }
 
+  /**
+   * getDmpByIdAndRevision.
+   *
+   * @param id a {@link java.lang.String} object
+   * @param revision a long
+   * @return a {@link org.damap.base.rest.dmp.domain.DmpDO} object
+   */
   @GET
   @Path("/{id}/{revision}")
   public DmpDO getDmpByIdAndRevision(@PathParam String id, @PathParam long revision) {

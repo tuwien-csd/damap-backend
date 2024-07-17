@@ -5,6 +5,7 @@ import io.quarkus.test.Mock;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.damap.base.rest.dmp.service.DmpService;
 
+/** MockDmpService class. */
 @Mock
 @ApplicationScoped
 public class MockDmpService extends DmpService {

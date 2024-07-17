@@ -16,6 +16,7 @@ import org.damap.base.r3data.dto.RepositoryDetails;
 import org.damap.base.r3data.mapper.RepositoryMapper;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
+/** RepositoriesResource class. */
 @Path("/api/repositories")
 @Authenticated
 @Produces(MediaType.APPLICATION_JSON)
@@ -24,12 +25,22 @@ public class RepositoriesResource {
 
   @Inject RepositoriesService repositoriesService;
 
+  /**
+   * getAll.
+   *
+   * @return a {@link java.util.List} object
+   */
   @GET
   public List<Repository> getAll() {
     log.info("Get all repositories");
     return repositoriesService.getAll();
   }
 
+  /**
+   * getRecommended.
+   *
+   * @return a {@link java.util.List} object
+   */
   @GET
   @Path("/recommended")
   public List<RepositoryDetails> getRecommended() {
@@ -37,6 +48,12 @@ public class RepositoriesResource {
     return repositoriesService.getRecommended();
   }
 
+  /**
+   * getById.
+   *
+   * @param id a {@link java.lang.String} object
+   * @return a {@link org.damap.base.r3data.dto.RepositoryDetails} object
+   */
   @GET
   @Path("/{id}")
   public RepositoryDetails getById(@PathParam String id) {
@@ -44,6 +61,12 @@ public class RepositoriesResource {
     return RepositoryMapper.mapToRepositoryDetails(repositoriesService.getById(id), id);
   }
 
+  /**
+   * search.
+   *
+   * @param uriInfo a {@link jakarta.ws.rs.core.UriInfo} object
+   * @return a {@link java.util.List} object
+   */
   @GET
   @Path("/search")
   public List<Repository> search(@Context UriInfo uriInfo) {

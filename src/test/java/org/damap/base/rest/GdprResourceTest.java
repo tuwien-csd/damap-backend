@@ -22,6 +22,7 @@ class GdprResourceTest {
 
   @Inject TestDOFactory testDOFactory;
 
+  /** setup. */
   @BeforeEach
   public void setup() {
     Mockito.when(securityService.getUserId()).thenReturn("012345");

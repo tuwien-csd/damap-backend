@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.*;
 import org.hibernate.envers.Audited;
 
+/** Host class. */
 @Data
 @EqualsAndHashCode(
     callSuper = true,

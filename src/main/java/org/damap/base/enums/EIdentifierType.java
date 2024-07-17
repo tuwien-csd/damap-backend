@@ -3,6 +3,7 @@ package org.damap.base.enums;
 import java.util.ArrayList;
 import java.util.List;
 
+/** EIdentifierType class. */
 public enum EIdentifierType {
   ORCID("ORCID"),
   ISNI("ISNI"),
@@ -58,30 +59,61 @@ public enum EIdentifierType {
     this.type = type;
   }
 
+  /**
+   * Getter for the field <code>type</code>.
+   *
+   * @return a {@link java.lang.String} object
+   */
   public String getType() {
     return type;
   }
 
+  /**
+   * getPersonIdentifierTypeList.
+   *
+   * @return a {@link java.util.List} object
+   */
   public static List<EIdentifierType> getPersonIdentifierTypeList() {
     return personIdentifierType;
   }
 
+  /**
+   * getDatasetIdentifierTypeList.
+   *
+   * @return a {@link java.util.List} object
+   */
   public static List<EIdentifierType> getDatasetIdentifierTypeList() {
     return datasetIdentifierType;
   }
 
+  /**
+   * getFunderIdentifierTypeList.
+   *
+   * @return a {@link java.util.List} object
+   */
   public static List<EIdentifierType> getFunderIdentifierTypeList() {
     return funderIdentifierType;
   }
 
+  /**
+   * getGrantIdentifierTypeList.
+   *
+   * @return a {@link java.util.List} object
+   */
   public static List<EIdentifierType> getGrantIdentifierTypeList() {
     return grantIdentifierType;
   }
 
+  /**
+   * getMetadataIdentifierTypeList.
+   *
+   * @return a {@link java.util.List} object
+   */
   public static List<EIdentifierType> getMetadataIdentifierTypeList() {
     return metadataIdentifierType;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String toString() {
     return type;

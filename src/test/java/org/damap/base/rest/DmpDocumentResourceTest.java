@@ -26,6 +26,7 @@ class DmpDocumentResourceTest {
 
   @InjectMock MockProjectServiceImpl mockProjectService;
 
+  /** setup. */
   @BeforeEach
   public void setup() {
     Mockito.when(securityService.getUserId()).thenReturn("012345");

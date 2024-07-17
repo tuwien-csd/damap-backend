@@ -7,6 +7,7 @@ import jakarta.persistence.Access;
 import lombok.*;
 import org.hibernate.envers.Audited;
 
+/** InternalStorageTranslation class. */
 @Data
 @Entity
 @EqualsAndHashCode(callSuper = true)

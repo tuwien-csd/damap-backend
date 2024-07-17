@@ -11,9 +11,17 @@ import lombok.experimental.UtilityClass;
 import org.damap.base.domain.Dataset;
 import org.damap.base.enums.*;
 
+/** FitsMapper class. */
 @UtilityClass
 public class FitsMapper {
 
+  /**
+   * mapAtoB.
+   *
+   * @param fits a {@link edu.harvard.fits.Fits} object
+   * @param dataset a {@link org.damap.base.domain.Dataset} object
+   * @return a {@link org.damap.base.domain.Dataset} object
+   */
   public Dataset mapAtoB(Fits fits, Dataset dataset) {
     dataset.setSize(getSize(fits));
     IdentificationType.Identity identity = getMajorityVoteIdentity(fits);

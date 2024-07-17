@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
  * <p><i>Side note: Queries for nested properties are built using recursion, keep this in mind when
  * using this annotation.</i>
  *
- * <p>For more usage instructions, see {@link Gdpr}.
+ * <p>For more usage instructions, see {@link org.damap.base.annotations.gdpr.Gdpr}.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

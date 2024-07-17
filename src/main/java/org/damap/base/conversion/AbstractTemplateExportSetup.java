@@ -40,6 +40,11 @@ public abstract class AbstractTemplateExportSetup extends AbstractTemplateExport
   protected List<XWPFTable> xwpfTables = null;
   protected ContributorDO projectCoordinator = null;
 
+  /**
+   * exportSetup.
+   *
+   * @param dmpId a long
+   */
   protected void exportSetup(long dmpId) {
     // Loading data related to the project from database
     dmp = dmpRepo.findById(dmpId);
@@ -69,11 +74,24 @@ public abstract class AbstractTemplateExportSetup extends AbstractTemplateExport
     return datasets.stream().filter(Dataset::getDelete).toList();
   }
 
+  /**
+   * getContributorsByRole.
+   *
+   * @param contributors a {@link java.util.List} object
+   * @param role a {@link org.damap.base.enums.EContributorRole} object
+   * @return a {@link java.util.List} object
+   */
   protected List<Contributor> getContributorsByRole(
       List<Contributor> contributors, EContributorRole role) {
     return contributors.stream().filter(c -> c.getContributorRole() == role).toList();
   }
 
+  /**
+   * getContributorsText.
+   *
+   * @param contributors a {@link java.util.List} object
+   * @return a {@link java.lang.String} object
+   */
   protected String getContributorsText(List<Contributor> contributors) {
     if (contributors.isEmpty()) {
       return "";

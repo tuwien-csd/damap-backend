@@ -2,6 +2,7 @@ package org.damap.base.enums;
 
 import java.util.HashMap;
 
+/** EContributorRole class. */
 public enum EContributorRole {
   DATA_COLLECTOR("Data Collector"),
   DATA_CURATOR("Data Curator"),
@@ -32,15 +33,27 @@ public enum EContributorRole {
     this.role = role;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String toString() {
     return role;
   }
 
+  /**
+   * Getter for the field <code>role</code>.
+   *
+   * @return a {@link java.lang.String} object
+   */
   public String getRole() {
     return this.role;
   }
 
+  /**
+   * getByRole.
+   *
+   * @param role a {@link java.lang.String} object
+   * @return a {@link org.damap.base.enums.EContributorRole} object
+   */
   public static EContributorRole getByRole(String role) {
     return MAP.get(role);
   }

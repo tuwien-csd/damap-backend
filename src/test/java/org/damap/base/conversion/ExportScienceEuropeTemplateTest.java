@@ -24,6 +24,7 @@ class ExportScienceEuropeTemplateTest {
 
   String projectId = "-1";
 
+  /** setup. */
   @BeforeEach
   public void setup() {
     Mockito.when(mockProjectService.read(projectId)).thenReturn(testDOFactory.getTestProjectDO());

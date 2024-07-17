@@ -4,11 +4,20 @@ import jakarta.ws.rs.core.MultivaluedHashMap;
 import java.util.List;
 import lombok.Data;
 
+/** ResultList class. */
 @Data
 public class ResultList<T> {
   private Search search;
   private List<T> items;
 
+  /**
+   * fromItemsAndSearch.
+   *
+   * @param items a {@link java.util.List} object
+   * @param search a {@link org.damap.base.rest.base.Search} object
+   * @param <T> a T class
+   * @return a {@link org.damap.base.rest.base.ResultList} object
+   */
   public static <T> ResultList<T> fromItemsAndSearch(List<T> items, Search search) {
     ResultList<T> result = new ResultList<>();
     result.setItems(items != null ? items : List.of());

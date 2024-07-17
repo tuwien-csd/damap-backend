@@ -12,6 +12,7 @@ import org.damap.base.rest.storage.InternalStorageDO;
 import org.damap.base.rest.storage.InternalStorageService;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
+/** InternalStorageResource class. */
 @Path("/api/storages")
 @Authenticated
 @Produces(MediaType.APPLICATION_JSON)
@@ -20,6 +21,12 @@ public class InternalStorageResource {
 
   @Inject InternalStorageService internalStorageService;
 
+  /**
+   * getAllByLanguage.
+   *
+   * @param languageCode a {@link java.lang.String} object
+   * @return a {@link java.util.List} object
+   */
   @GET
   @Path("/{languageCode}")
   public List<InternalStorageDO> getAllByLanguage(@PathParam String languageCode) {

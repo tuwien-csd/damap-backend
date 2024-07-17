@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  *
  * <p>{@code @GdprBase} mark fields containing personal data.
  *
- * <p>For usage instructions, see {@link Gdpr}.
+ * <p>For usage instructions, see {@link org.damap.base.annotations.gdpr.Gdpr}.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

@@ -70,6 +70,7 @@ file.
 * [Luca Maestri](https://github.com/casualtimer)
 * [David Eckhard](https://github.com/rekt-hard)
 * [Laura Thaci](https://github.com/lpandath)
+* [Valentin Futterer](https://github.com/ValentinFutterer)
 
 ## License
 

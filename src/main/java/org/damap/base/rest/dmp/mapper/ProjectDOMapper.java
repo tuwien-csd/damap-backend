@@ -8,9 +8,17 @@ import org.damap.base.rest.dmp.domain.FundingDO;
 import org.damap.base.rest.dmp.domain.IdentifierDO;
 import org.damap.base.rest.dmp.domain.ProjectDO;
 
+/** ProjectDOMapper class. */
 @UtilityClass
 public class ProjectDOMapper {
 
+  /**
+   * mapEntityToDO.
+   *
+   * @param project a {@link org.damap.base.domain.Project} object
+   * @param projectDO a {@link org.damap.base.rest.dmp.domain.ProjectDO} object
+   * @return a {@link org.damap.base.rest.dmp.domain.ProjectDO} object
+   */
   public ProjectDO mapEntityToDO(Project project, ProjectDO projectDO) {
     projectDO.setId(project.id);
     projectDO.setUniversityId(project.getUniversityId());
@@ -30,10 +38,23 @@ public class ProjectDOMapper {
     return projectDO;
   }
 
+  /**
+   * checkFunderSupported.
+   *
+   * @param project a {@link org.damap.base.domain.Project} object
+   * @return a boolean
+   */
   public boolean checkFunderSupported(Project project) {
     return project != null && project.getFunding() != null;
   }
 
+  /**
+   * mapEntityToDO.
+   *
+   * @param funding a {@link org.damap.base.domain.Funding} object
+   * @param fundingDO a {@link org.damap.base.rest.dmp.domain.FundingDO} object
+   * @return a {@link org.damap.base.rest.dmp.domain.FundingDO} object
+   */
   public FundingDO mapEntityToDO(Funding funding, FundingDO fundingDO) {
     fundingDO.setId(funding.id);
     fundingDO.setFundingStatus(funding.getFundingStatus());
@@ -53,6 +74,13 @@ public class ProjectDOMapper {
     return fundingDO;
   }
 
+  /**
+   * mapDOtoEntity.
+   *
+   * @param projectDO a {@link org.damap.base.rest.dmp.domain.ProjectDO} object
+   * @param project a {@link org.damap.base.domain.Project} object
+   * @return a {@link org.damap.base.domain.Project} object
+   */
   public Project mapDOtoEntity(ProjectDO projectDO, Project project) {
     if (projectDO.getId() != null) project.id = projectDO.getId();
     project.setUniversityId(projectDO.getUniversityId());
@@ -71,6 +99,13 @@ public class ProjectDOMapper {
     return project;
   }
 
+  /**
+   * mapDOtoEntity.
+   *
+   * @param fundingDO a {@link org.damap.base.rest.dmp.domain.FundingDO} object
+   * @param funding a {@link org.damap.base.domain.Funding} object
+   * @return a {@link org.damap.base.domain.Funding} object
+   */
   public Funding mapDOtoEntity(FundingDO fundingDO, Funding funding) {
     if (fundingDO.getId() != null) funding.id = fundingDO.getId();
     funding.setFundingStatus(fundingDO.getFundingStatus());

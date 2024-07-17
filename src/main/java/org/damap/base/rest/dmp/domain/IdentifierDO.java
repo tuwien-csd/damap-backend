@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.damap.base.enums.EIdentifierType;
 
+/** IdentifierDO class. */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IdentifierDO {

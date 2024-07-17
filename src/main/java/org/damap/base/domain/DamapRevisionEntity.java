@@ -14,6 +14,7 @@ import org.hibernate.envers.RevisionEntity;
 import org.hibernate.envers.RevisionNumber;
 import org.hibernate.envers.RevisionTimestamp;
 
+/** DamapRevisionEntity class. */
 @Getter
 @Setter
 @Entity

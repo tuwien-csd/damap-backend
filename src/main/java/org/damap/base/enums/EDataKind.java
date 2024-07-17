@@ -1,5 +1,6 @@
 package org.damap.base.enums;
 
+/** EDataKind class. */
 public enum EDataKind {
   UNKNOWN("UNKNOWN"),
   NONE("NONE"),
@@ -11,6 +12,7 @@ public enum EDataKind {
     this.kind = kind;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String toString() {
     return kind;

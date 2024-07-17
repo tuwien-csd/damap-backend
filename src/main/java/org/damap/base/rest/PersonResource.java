@@ -15,6 +15,7 @@ import org.damap.base.rest.base.resource.ResourceSearch;
 import org.damap.base.rest.dmp.domain.ContributorDO;
 import org.damap.base.rest.persons.PersonService;
 
+/** PersonResource class. */
 @Path("/api/persons")
 @Authenticated
 @Produces(MediaType.APPLICATION_JSON)
@@ -24,6 +25,7 @@ public class PersonResource implements ResourceRead<ContributorDO>, ResourceSear
 
   @Inject PersonServiceBroker personServiceBroker;
 
+  /** {@inheritDoc} */
   @Override
   public ContributorDO read(String id, UriInfo uriInfo) {
     var queryParams = uriInfo.getQueryParameters();
@@ -38,6 +40,7 @@ public class PersonResource implements ResourceRead<ContributorDO>, ResourceSear
     return result;
   }
 
+  /** {@inheritDoc} */
   @Override
   public ResultList<ContributorDO> search(UriInfo uriInfo) {
     var queryParams = uriInfo.getQueryParameters();

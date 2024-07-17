@@ -6,6 +6,7 @@ import java.util.Date;
 import lombok.Data;
 import org.damap.base.enums.EFunctionRole;
 
+/** DmpListItemDO class. */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DmpListItemDO {

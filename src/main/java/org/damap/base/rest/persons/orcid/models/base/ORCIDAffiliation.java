@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.damap.base.rest.persons.orcid.models.ORCIDOrganization;
 
+/** ORCIDAffiliation class. */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ORCIDAffiliation {

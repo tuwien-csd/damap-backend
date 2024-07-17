@@ -7,9 +7,18 @@ import org.damap.base.rest.dmp.domain.ContributorDO;
 import org.damap.base.rest.dmp.domain.DmpListItemDO;
 import org.damap.base.rest.dmp.domain.ProjectDO;
 
+/** DmpListItemDOMapper class. */
 @UtilityClass
 public class DmpListItemDOMapper {
 
+  /**
+   * mapEntityToDO.
+   *
+   * @param access a {@link org.damap.base.domain.Access} object
+   * @param dmp a {@link org.damap.base.domain.Dmp} object
+   * @param dmpListItemDO a {@link org.damap.base.rest.dmp.domain.DmpListItemDO} object
+   * @return a {@link org.damap.base.rest.dmp.domain.DmpListItemDO} object
+   */
   public DmpListItemDO mapEntityToDO(Access access, Dmp dmp, DmpListItemDO dmpListItemDO) {
     dmpListItemDO.setId(dmp.id);
     dmpListItemDO.setTitle(dmp.getTitle());

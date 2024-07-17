@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.Data;
 import org.damap.base.enums.*;
 
+/** DatasetDO class. */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DatasetDO {

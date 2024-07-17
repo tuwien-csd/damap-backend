@@ -4,9 +4,17 @@ import lombok.experimental.UtilityClass;
 import org.damap.base.domain.Dmp;
 import org.damap.base.rest.projects.ProjectSupplementDO;
 
+/** ProjectSupplementDOMapper class. */
 @UtilityClass
 public class ProjectSupplementDOMapper {
 
+  /**
+   * mapDOtoEntity.
+   *
+   * @param projectSupplementDO a {@link org.damap.base.rest.projects.ProjectSupplementDO} object
+   * @param dmp a {@link org.damap.base.domain.Dmp} object
+   * @return a {@link org.damap.base.domain.Dmp} object
+   */
   public Dmp mapDOtoEntity(ProjectSupplementDO projectSupplementDO, Dmp dmp) {
 
     if (projectSupplementDO.getPersonalData() != null) {

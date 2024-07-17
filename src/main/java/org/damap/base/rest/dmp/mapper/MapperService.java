@@ -14,6 +14,7 @@ import org.re3data.schema._2_2.Re3Data;
    Service for injecting other services into mappers which are static
 */
 
+/** MapperService class. */
 @ApplicationScoped
 @JBossLog
 public class MapperService {
@@ -28,18 +29,43 @@ public class MapperService {
 
   @Inject DmpRepo dmpRepo;
 
+  /**
+   * getDmpById.
+   *
+   * @param id a {@link java.lang.Long} object
+   * @return a {@link org.damap.base.domain.Dmp} object
+   */
   public Dmp getDmpById(Long id) {
     return dmpRepo.findById(id);
   }
 
+  /**
+   * getRe3DataRepository.
+   *
+   * @param id a {@link java.lang.String} object
+   * @return a {@link org.re3data.schema._2_2.Re3Data.Repository} object
+   */
   public Re3Data.Repository getRe3DataRepository(String id) {
     return repositoriesService.getById(id).getRepository().get(0);
   }
 
+  /**
+   * getInternalStorageById.
+   *
+   * @param id a {@link java.lang.Long} object
+   * @return a {@link org.damap.base.domain.InternalStorage} object
+   */
   public InternalStorage getInternalStorageById(Long id) {
     return internalStorageRepo.findById(id);
   }
 
+  /**
+   * getInternalStorageDOById.
+   *
+   * @param id a {@link java.lang.Long} object
+   * @param languageCode a {@link java.lang.String} object
+   * @return a {@link org.damap.base.rest.storage.InternalStorageDO} object
+   */
   public InternalStorageDO getInternalStorageDOById(Long id, String languageCode) {
     InternalStorageTranslation internalStorageTranslation =
         internalStorageTranslationRepo.getInternalStorageById(id, languageCode);
@@ -49,6 +75,12 @@ public class MapperService {
     return null;
   }
 
+  /**
+   * getDeletionPerson.
+   *
+   * @param id a {@link java.lang.Long} object
+   * @return a {@link org.damap.base.domain.Contributor} object
+   */
   public Contributor getDeletionPerson(Long id) {
     return contributorRepo.findById(id);
   }

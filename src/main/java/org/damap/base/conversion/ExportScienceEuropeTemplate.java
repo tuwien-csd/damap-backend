@@ -4,10 +4,17 @@ import jakarta.enterprise.context.RequestScoped;
 import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.*;
 
+/** ExportScienceEuropeTemplate class. */
 @RequestScoped
 @JBossLog
 public class ExportScienceEuropeTemplate extends AbstractTemplateExportScienceEuropeComponents {
 
+  /**
+   * exportTemplate.
+   *
+   * @param dmpId a long
+   * @return a {@link org.apache.poi.xwpf.usermodel.XWPFDocument} object
+   */
   public XWPFDocument exportTemplate(long dmpId) {
     log.info("Exporting Science Europe document for DMP with ID: " + dmpId);
     // load project

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Date;
 import lombok.Data;
 
+/** ConsentDO class. */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ConsentDO {

@@ -23,12 +23,14 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
 
   protected Map<Long, String> datasetTableIDs = new HashMap<>();
 
+  /** {@inheritDoc} */
   @Override
   protected void exportSetup(long dmpId) {
     super.exportSetup(dmpId);
     determineDatasetIDs();
   }
 
+  /** loadScienceEuropeContent. */
   public void loadScienceEuropeContent() {
     titlePage();
     contributorInformation();
@@ -41,6 +43,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     costInformation();
   }
 
+  /** determineDatasetIDs. */
   public void determineDatasetIDs() {
     int newIDprogression = 0;
     int reuseIDprogression = 0;
@@ -55,6 +58,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     }
   }
 
+  /** titlePage. */
   public void titlePage() {
     Project project = dmp.getProject();
     if (project == null) {
@@ -290,12 +294,14 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     addReplacement(replacements, "[contributors]", String.join(";", contributorList));
   }
 
+  /** contributorInformation. */
   public void contributorInformation() {
     contactPersonInformation();
     projectCoordinatorInformation();
     dmpContributorInformation();
   }
 
+  /** costInformation. */
   public void costInformation() {
     if (Boolean.TRUE.equals(dmp.getCostsExist())) {
       addReplacement(
@@ -308,6 +314,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     }
   }
 
+  /** datasetsInformation. */
   public void datasetsInformation() {
     addReplacement(replacements, "[datageneration]", dmp.getDataGeneration());
     addReplacement(replacements, "[documentation]", dmp.getDocumentation());
@@ -316,6 +323,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     else addReplacement(replacements, "[targetaudience]", "");
   }
 
+  /** storageInformation. */
   public void storageInformation() {
     List<Host> hostList = dmp.getHostList();
     String storageVar = "";
@@ -387,6 +395,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     addReplacement(replacements, "[storage]", storageVar);
   }
 
+  /** dataQuality. */
   public void dataQuality() {
     String metadata = "";
 
@@ -450,6 +459,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     }
   }
 
+  /** sensitiveDataInformation. */
   public void sensitiveDataInformation() {
     log.debug("sensitive data part");
 
@@ -535,6 +545,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     addReplacement(replacements, "[sensitivedata]", sensitiveData);
   }
 
+  /** repoInformation. */
   protected void repoInformation() {
     String repoInformation = "";
     Set<Repository> repositories = new HashSet<>();
@@ -562,6 +573,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
         repoInformation + (repoInformation.isEmpty() ? "" : ";"));
   }
 
+  /** repoinfoAndToolsInformation. */
   public void repoinfoAndToolsInformation() {
     repoInformation();
 
@@ -606,12 +618,14 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     }
   }
 
+  /** legalEthicalInformation. */
   public void legalEthicalInformation() {
     personalDataText();
     intellectualPropertyText();
     ethicalIssuesText();
   }
 
+  /** personalDataText. */
   public void personalDataText() {
     log.debug("personal data part");
     String personalData = "";
@@ -652,6 +666,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
   }
 
   // Section 4b: legal restriction
+  /** intellectualPropertyText. */
   public void intellectualPropertyText() {
     log.debug("legal restriction part");
 
@@ -717,6 +732,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
   }
 
   // Section 4c: ethical issues
+  /** ethicalIssuesText. */
   public void ethicalIssuesText() {
     log.debug("ethical part");
     String ethicalStatement = "";
@@ -740,6 +756,12 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
   // Number conversion for data size in section 1
   private static final char[] SUFFIXES = {'K', 'M', 'G', 'T', 'P', 'E'};
 
+  /**
+   * format.
+   *
+   * @param number a long
+   * @return a {@link java.lang.String} object
+   */
   protected static String format(long number) {
     if (number < 1000) {
       // No need to format this
@@ -771,6 +793,12 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
 
   // All tables variables replacement
   // Takes care of filling tables and deletes certain empty tables
+  /**
+   * tableContent.
+   *
+   * @param document a {@link org.apache.poi.xwpf.usermodel.XWPFDocument} object
+   * @param xwpfTables a {@link java.util.List} object
+   */
   public void tableContent(XWPFDocument document, List<XWPFTable> xwpfTables) {
     for (XWPFTable xwpfTable : new ArrayList<>(xwpfTables)) {
       XWPFTableRow tableIdentifierRow = xwpfTable.getRow(1);
@@ -822,6 +850,11 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     }
   }
 
+  /**
+   * composeTableNewDatasets.
+   *
+   * @param xwpfTable a {@link org.apache.poi.xwpf.usermodel.XWPFTable} object
+   */
   public void composeTableNewDatasets(XWPFTable xwpfTable) {
     log.debug("Export steps: New Dataset Table");
 
@@ -887,18 +920,34 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     xwpfTable.removeRow(1);
   }
 
+  /**
+   * getNewDatasets.
+   *
+   * @return a {@link java.util.List} object
+   */
   public List<Dataset> getNewDatasets() {
     return datasets.stream()
         .filter(dataset -> dataset.getSource().equals(EDataSource.NEW))
         .toList();
   }
 
+  /**
+   * getReusedDatasets.
+   *
+   * @return a {@link java.util.List} object
+   */
   public List<Dataset> getReusedDatasets() {
     return datasets.stream()
         .filter(dataset -> dataset.getSource().equals(EDataSource.REUSED))
         .toList();
   }
 
+  /**
+   * composeTableReusedDatasets.
+   *
+   * @param document a {@link org.apache.poi.xwpf.usermodel.XWPFDocument} object
+   * @param xwpfTable a {@link org.apache.poi.xwpf.usermodel.XWPFTable} object
+   */
   public void composeTableReusedDatasets(XWPFDocument document, XWPFTable xwpfTable) {
     log.debug("Export steps: Reused Dataset Table");
 
@@ -956,6 +1005,11 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     }
   }
 
+  /**
+   * composeTableDataAccess.
+   *
+   * @param xwpfTable a {@link org.apache.poi.xwpf.usermodel.XWPFTable} object
+   */
   public void composeTableDataAccess(XWPFTable xwpfTable) {
     log.debug("Export steps: Data Access Table");
 
@@ -1014,6 +1068,11 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     }
   }
 
+  /**
+   * composeTableDatasetPublication.
+   *
+   * @param xwpfTable a {@link org.apache.poi.xwpf.usermodel.XWPFTable} object
+   */
   public void composeTableDatasetPublication(XWPFTable xwpfTable) {
     log.debug("Export steps: Data Publication Table");
 
@@ -1107,6 +1166,11 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     xwpfTable.removeRow(1);
   }
 
+  /**
+   * composeTableDatasetRepository.
+   *
+   * @param xwpfTable a {@link org.apache.poi.xwpf.usermodel.XWPFTable} object
+   */
   public void composeTableDatasetRepository(XWPFTable xwpfTable) {
     log.debug("Export steps: Dataset Repository Table");
 
@@ -1158,6 +1222,12 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     commitTableRows(xwpfTable);
   }
 
+  /**
+   * composeTableDatasetDeletion.
+   *
+   * @param document a {@link org.apache.poi.xwpf.usermodel.XWPFDocument} object
+   * @param xwpfTable a {@link org.apache.poi.xwpf.usermodel.XWPFTable} object
+   */
   public void composeTableDatasetDeletion(XWPFDocument document, XWPFTable xwpfTable) {
     log.debug("Export steps: Dataset Deletion Table");
 
@@ -1203,6 +1273,11 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     }
   }
 
+  /**
+   * composeTableCost.
+   *
+   * @param xwpfTable a {@link org.apache.poi.xwpf.usermodel.XWPFTable} object
+   */
   public void composeTableCost(XWPFTable xwpfTable) {
     log.debug("Export steps: Cost Table");
 

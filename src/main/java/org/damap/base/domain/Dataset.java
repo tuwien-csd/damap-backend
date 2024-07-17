@@ -11,6 +11,7 @@ import org.damap.base.enums.*;
 import org.hibernate.Length;
 import org.hibernate.envers.Audited;
 
+/** Dataset class. */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ToString(exclude = "dmp")
@@ -108,6 +109,11 @@ public class Dataset extends PanacheEntity {
   @Column(name = "dataset_source")
   private EDataSource source;
 
+  /**
+   * getRepositories.
+   *
+   * @return a {@link java.util.List} object
+   */
   public List<Repository> getRepositories() {
     List<Repository> repositories = new ArrayList<>();
     for (Distribution distribution : this.getDistributionList()) {
@@ -117,6 +123,11 @@ public class Dataset extends PanacheEntity {
     return repositories;
   }
 
+  /**
+   * getId.
+   *
+   * @return a {@link java.lang.Long} object
+   */
   @EqualsAndHashCode.Include
   public Long getId() {
     return id;

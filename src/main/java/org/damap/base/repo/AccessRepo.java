@@ -7,15 +7,28 @@ import java.util.List;
 import org.damap.base.domain.Access;
 import org.damap.base.domain.Dmp;
 
+/** AccessRepo class. */
 @ApplicationScoped
 public class AccessRepo implements PanacheRepository<Access> {
 
+  /**
+   * getAllDmpByUniversityId.
+   *
+   * @param universityId a {@link java.lang.String} object
+   * @return a {@link java.util.List} object
+   */
   public List<Access> getAllDmpByUniversityId(String universityId) {
     return list(
         "select access from Access access" + " where access.universityId = :universityId ",
         Parameters.with("universityId", universityId));
   }
 
+  /**
+   * getAccessByDmp.
+   *
+   * @param dmp a {@link org.damap.base.domain.Dmp} object
+   * @return a {@link java.util.List} object
+   */
   public List<Access> getAccessByDmp(Dmp dmp) {
     return list(
         "select access from Access access" + " where access.dmp = :dmp ",

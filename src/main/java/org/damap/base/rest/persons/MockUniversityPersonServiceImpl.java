@@ -12,16 +12,19 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
    extend this class in your custom project, for your implementation
 */
 
+/** MockUniversityPersonServiceImpl class. */
 @ApplicationScoped
 public class MockUniversityPersonServiceImpl implements PersonService {
 
   @Inject @RestClient MockPersonRestService mockPersonRestService;
 
+  /** {@inheritDoc} */
   @Override
   public ContributorDO read(String id, MultivaluedMap<String, String> queryParams) {
     return mockPersonRestService.getContributorDetails(id).get(0);
   }
 
+  /** {@inheritDoc} */
   @Override
   public ResultList<ContributorDO> search(MultivaluedMap<String, String> queryParams) {
     var items = mockPersonRestService.getContributorSearchResult();

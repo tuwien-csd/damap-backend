@@ -13,6 +13,7 @@ import org.damap.base.repo.DmpVersionRepo;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 
+/** VersionService class. */
 @ApplicationScoped
 @JBossLog
 public class VersionService {
@@ -21,6 +22,12 @@ public class VersionService {
 
   @Inject DmpRepo dmpRepo;
 
+  /**
+   * getDmpVersions.
+   *
+   * @param dmpId a long
+   * @return a {@link java.util.List} object
+   */
   public List<VersionDO> getDmpVersions(long dmpId) {
     List<VersionDO> versionDOList = new ArrayList<>();
     dmpVersionRepo
@@ -30,12 +37,24 @@ public class VersionService {
     return versionDOList;
   }
 
+  /**
+   * createOrUpdate.
+   *
+   * @param versionDO a {@link org.damap.base.rest.version.VersionDO} object
+   * @return a {@link org.damap.base.rest.version.VersionDO} object
+   */
   @Transactional
   public VersionDO createOrUpdate(VersionDO versionDO) {
     if (versionDO.getId() != null) return update(versionDO);
     else return create(versionDO);
   }
 
+  /**
+   * create.
+   *
+   * @param versionDO a {@link org.damap.base.rest.version.VersionDO} object
+   * @return a {@link org.damap.base.rest.version.VersionDO} object
+   */
   @Transactional
   public VersionDO create(VersionDO versionDO) {
     log.info("Creating new DMP Version");
@@ -46,6 +65,12 @@ public class VersionService {
     return getVersionById(version.id);
   }
 
+  /**
+   * update.
+   *
+   * @param versionDO a {@link org.damap.base.rest.version.VersionDO} object
+   * @return a {@link org.damap.base.rest.version.VersionDO} object
+   */
   @Transactional
   public VersionDO update(VersionDO versionDO) {
     log.info("Updating DMP Version with id " + versionDO.getId());
@@ -55,6 +80,11 @@ public class VersionService {
     return getVersionById(version.id);
   }
 
+  /**
+   * delete.
+   *
+   * @param versionId a long
+   */
   public void delete(long versionId) {
     log.info("Deleting DMP Version with id " + versionId);
     dmpVersionRepo.deleteById(versionId);

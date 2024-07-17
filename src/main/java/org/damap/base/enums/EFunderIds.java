@@ -3,6 +3,7 @@ package org.damap.base.enums;
 import java.util.ArrayList;
 import java.util.List;
 
+/** EFunderIds class. */
 public enum EFunderIds {
   EU_FUNDREF_ID("501100000780"),
   EU_ROR_ID("https://ror.org/032s10s29"),
@@ -31,14 +32,25 @@ public enum EFunderIds {
     this.funderId = funderId;
   }
 
+  /**
+   * getEUFunderIds.
+   *
+   * @return a {@link java.util.List} object
+   */
   public static List<String> getEUFunderIds() {
     return EUFunderIds;
   }
 
+  /**
+   * getFWFFunderIds.
+   *
+   * @return a {@link java.util.List} object
+   */
   public static List<String> getFWFFunderIds() {
     return FWFFunderIds;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String toString() {
     return funderId;

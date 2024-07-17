@@ -12,6 +12,7 @@ import org.damap.base.rest.administration.domain.ConsentDO;
 import org.damap.base.rest.administration.service.ConsentService;
 import org.damap.base.security.SecurityService;
 
+/** ConsentResource class. */
 @Path("/api/consent")
 @Authenticated
 @Produces(MediaType.APPLICATION_JSON)
@@ -25,6 +26,11 @@ public class ConsentResource {
 
   @Inject ConsentRepo consentRepo;
 
+  /**
+   * getConsent.
+   *
+   * @return a {@link org.damap.base.rest.administration.domain.ConsentDO} object
+   */
   @GET
   public ConsentDO getConsent() {
     if (consentRepo.getConsentByUniversityId(this.getPersonId()) != null) {
@@ -39,6 +45,12 @@ public class ConsentResource {
     }
   }
 
+  /**
+   * saveConsent.
+   *
+   * @param consentDO a {@link org.damap.base.rest.administration.domain.ConsentDO} object
+   * @return a {@link org.damap.base.rest.administration.domain.ConsentDO} object
+   */
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   public ConsentDO saveConsent(ConsentDO consentDO) {

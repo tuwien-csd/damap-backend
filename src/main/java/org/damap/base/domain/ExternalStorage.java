@@ -5,6 +5,7 @@ import jakarta.persistence.Access;
 import lombok.*;
 import org.hibernate.envers.Audited;
 
+/** ExternalStorage class. */
 @Data
 @Entity
 @EqualsAndHashCode(callSuper = true)

@@ -35,6 +35,7 @@ class PersonResourceTest {
 
   @InjectMock MockUniversityPersonServiceImpl mockPersonService;
 
+  /** setup. */
   @BeforeEach
   public void setup() {
     Mockito.when(securityService.getUserId()).thenReturn("012345");

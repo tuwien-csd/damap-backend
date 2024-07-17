@@ -13,6 +13,7 @@ import org.damap.base.rest.gdpr.domain.GdprResult;
 import org.damap.base.rest.gdpr.service.GdprService;
 import org.damap.base.security.SecurityService;
 
+/** GdprResource class. */
 @Path("api/gdpr")
 @Authenticated
 @Produces(MediaType.APPLICATION_JSON)
@@ -23,12 +24,22 @@ public class GdprResource {
 
   @Inject GdprService gdprService;
 
+  /**
+   * read.
+   *
+   * @return a {@link java.util.List} object
+   */
   @GET
   public List<GdprResult> read() {
     log.info("Get GDPR base data");
     return this.gdprService.getGdprBaseData(this.getPersonId());
   }
 
+  /**
+   * readExtended.
+   *
+   * @return a {@link java.util.List} object
+   */
   @GET
   @Path("extended")
   public List<GdprResult> readExtended() {

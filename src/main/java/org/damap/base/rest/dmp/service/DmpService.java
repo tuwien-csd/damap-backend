@@ -36,6 +36,7 @@ import org.damap.base.rest.version.VersionService;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 
+/** DmpService class. */
 @ApplicationScoped
 @JBossLog
 public class DmpService {
@@ -52,6 +53,11 @@ public class DmpService {
 
   @Inject ORCIDPersonServiceImpl orcidPersonService;
 
+  /**
+   * getAll.
+   *
+   * @return a {@link java.util.List} object
+   */
   public List<DmpListItemDO> getAll() {
 
     List<Dmp> dmpList = dmpRepo.getAll();
@@ -63,6 +69,12 @@ public class DmpService {
     return dmpListItemDOList;
   }
 
+  /**
+   * getDmpListByPersonId.
+   *
+   * @param personId a {@link java.lang.String} object
+   * @return a {@link java.util.List} object
+   */
   @Transactional
   public List<DmpListItemDO> getDmpListByPersonId(String personId) {
 
@@ -76,11 +88,24 @@ public class DmpService {
     return dmpListItemDOS;
   }
 
+  /**
+   * getDmpById.
+   *
+   * @param dmpId a long
+   * @return a {@link org.damap.base.rest.dmp.domain.DmpDO} object
+   */
   @Transactional
   public DmpDO getDmpById(long dmpId) {
     return DmpDOMapper.mapEntityToDO(dmpRepo.findById(dmpId), new DmpDO());
   }
 
+  /**
+   * create.
+   *
+   * @param dmpDO a {@link org.damap.base.rest.dmp.domain.DmpDO} object
+   * @param editedBy a {@link java.lang.String} object
+   * @return a {@link org.damap.base.rest.dmp.domain.DmpDO} object
+   */
   @Transactional
   public DmpDO create(@Valid DmpDO dmpDO, String editedBy) {
     log.info("Creating new DMP");
@@ -95,6 +120,12 @@ public class DmpService {
     return getDmpById(dmp.id);
   }
 
+  /**
+   * update.
+   *
+   * @param dmpDO a {@link org.damap.base.rest.dmp.domain.DmpDO} object
+   * @return a {@link org.damap.base.rest.dmp.domain.DmpDO} object
+   */
   @Transactional
   public DmpDO update(@Valid DmpDO dmpDO) {
     log.info("Updating DMP with id " + dmpDO.getId());
@@ -112,6 +143,11 @@ public class DmpService {
     return getDmpById(dmp.id);
   }
 
+  /**
+   * delete.
+   *
+   * @param dmpId a long
+   */
   @Transactional
   public void delete(long dmpId) {
     log.info("Deleting DMP with id " + dmpId);
@@ -121,6 +157,12 @@ public class DmpService {
     dmpRepo.deleteById(dmpId);
   }
 
+  /**
+   * createAccess.
+   *
+   * @param dmp a {@link org.damap.base.domain.Dmp} object
+   * @param editedById a {@link java.lang.String} object
+   */
   public void createAccess(Dmp dmp, String editedById) {
     Access access = new Access();
     access.setUniversityId(editedById);
@@ -142,6 +184,12 @@ public class DmpService {
     }
   }
 
+  /**
+   * getDefaultFileName.
+   *
+   * @param id a long
+   * @return a {@link java.lang.String} object
+   */
   public String getDefaultFileName(long id) {
     Date date = new Date();
     SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
@@ -170,6 +218,12 @@ public class DmpService {
     return filename;
   }
 
+  /**
+   * checkExistingDmps.
+   *
+   * @param projectDOList a {@link java.util.List} object
+   * @return a {@link java.util.List} object
+   */
   public List<ProjectDO> checkExistingDmps(List<ProjectDO> projectDOList) {
 
     for (Dmp dmp : dmpRepo.getAll()) {
@@ -287,6 +341,13 @@ public class DmpService {
             dmp.getProject().getUniversityId(), dmpDO.getProject().getUniversityId());
   }
 
+  /**
+   * getDmpByIdAndRevision.
+   *
+   * @param dmpId a long
+   * @param revision a long
+   * @return a {@link org.damap.base.rest.dmp.domain.DmpDO} object
+   */
   public DmpDO getDmpByIdAndRevision(long dmpId, long revision) {
     AuditReader reader = AuditReaderFactory.get(dmpRepo.getEntityManager());
     Dmp dmpRevision = reader.find(Dmp.class, dmpId, revision);

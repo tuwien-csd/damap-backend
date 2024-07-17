@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.damap.base.enums.EIdentifierType;
 import org.hibernate.envers.Audited;
 
+/** Identifier class. */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity

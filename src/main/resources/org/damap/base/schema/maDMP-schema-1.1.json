@@ -676,19 +676,19 @@
                 "items": {
                   "$id": "#/properties/dmp/properties/dataset/items/properties/security_and_privacy/items",
                   "type": "object",
-                  "title": "The Dataset Security & Policy Items Schema",
+                  "title": "The Dataset Security and Policy Items Schema",
                   "properties": {
                     "description": {
                       "$id": "#/properties/dmp/properties/dataset/items/properties/security_and_privacy/items/properties/description",
                       "type": "string",
-                      "title": "The Dataset Security & Policy Description Schema",
+                      "title": "The Dataset Security and Policy Description Schema",
                       "description": "Description",
                       "examples": ["Server with data must be kept in a locked room"]
                     },
                     "title": {
                       "$id": "#/properties/dmp/properties/dataset/items/properties/security_and_privacy/items/properties/title",
                       "type": "string",
-                      "title": "The Dataset Security & Policy Title Schema",
+                      "title": "The Dataset Security and Policy Title Schema",
                       "description": "Title",
                       "examples": ["Physical access control"]
                     }

@@ -11,6 +11,7 @@ import org.damap.base.rest.gdpr.domain.HqlQuery;
 import org.hibernate.proxy.HibernateProxy;
 import org.reflections.Reflections;
 
+/** GdprService class. */
 @ApplicationScoped
 public class GdprService {
 
@@ -19,14 +20,27 @@ public class GdprService {
   private List<HqlQuery> baseQueries;
   private List<HqlQuery> extendedQueries;
 
+  /** Constructor for GdprService. */
   public GdprService() {
     this.init();
   }
 
+  /**
+   * getGdprBaseData.
+   *
+   * @param universityId a {@link java.lang.String} object
+   * @return a {@link java.util.List} object
+   */
   public List<GdprResult> getGdprBaseData(String universityId) {
     return gdprRepo.getGdprDataByUniversityId(baseQueries, universityId);
   }
 
+  /**
+   * getGdprExtendedData.
+   *
+   * @param universityId a {@link java.lang.String} object
+   * @return a {@link java.util.List} object
+   */
   public List<GdprResult> getGdprExtendedData(String universityId) {
     return gdprRepo.getGdprDataByUniversityId(extendedQueries, universityId);
   }

@@ -2,10 +2,16 @@ package org.damap.base.rest.persons.orcid.models.base;
 
 import lombok.Data;
 
+/** ORCIDValueType class. */
 @Data
 public class ORCIDValueType {
   String value;
 
+  /**
+   * asInt.
+   *
+   * @return a {@link java.lang.Integer} object
+   */
   public Integer asInt() {
     Integer converted = null;
     try {

@@ -13,8 +13,17 @@ import org.damap.base.rest.persons.orcid.models.base.ORCIDAffiliation;
 import org.damap.base.rest.persons.orcid.models.base.ORCIDDate;
 import org.damap.base.rest.persons.orcid.models.base.ORCIDEmail;
 
+/** ORCIDMapper class. */
 @UtilityClass
 public class ORCIDMapper {
+  /**
+   * mapExpandedSearchPersonEntityToDO.
+   *
+   * @param orcidPerson a {@link org.damap.base.rest.persons.orcid.models.ORCIDExpandedSearchPerson}
+   *     object
+   * @param contributorDO a {@link org.damap.base.rest.dmp.domain.ContributorDO} object
+   * @return a {@link org.damap.base.rest.dmp.domain.ContributorDO} object
+   */
   public ContributorDO mapExpandedSearchPersonEntityToDO(
       ORCIDExpandedSearchPerson orcidPerson, ContributorDO contributorDO) {
 
@@ -38,6 +47,13 @@ public class ORCIDMapper {
     return contributorDO;
   }
 
+  /**
+   * mapRecordEntityToPersonDO.
+   *
+   * @param orcidRecord a {@link org.damap.base.rest.persons.orcid.models.ORCIDRecord} object
+   * @param contributorDO a {@link org.damap.base.rest.dmp.domain.ContributorDO} object
+   * @return a {@link org.damap.base.rest.dmp.domain.ContributorDO} object
+   */
   public ContributorDO mapRecordEntityToPersonDO(
       ORCIDRecord orcidRecord, ContributorDO contributorDO) {
 

@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.damap.base.enums.EFunctionRole;
 import org.hibernate.envers.Audited;
 
+/** Administration class. */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
