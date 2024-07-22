@@ -339,10 +339,27 @@
           </execution>
         </executions>
       </plugin>
+      <!-- Add liquibase commands -->
       <plugin>
         <groupId>org.liquibase</groupId>
         <artifactId>liquibase-maven-plugin</artifactId>
         <version>4.28.0</version>
+      </plugin>
+      <!-- Index resources for this package. When setting this package as a dependency, it will automatically
+      register all beans and resources and the endpoints are available.
+      -->
+      <plugin>
+        <groupId>io.smallrye</groupId>
+        <artifactId>jandex-maven-plugin</artifactId>
+        <version>3.1.8</version>
+        <executions>
+          <execution>
+            <id>make-index</id>
+            <goals>
+              <goal>jandex</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
