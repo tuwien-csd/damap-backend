@@ -38,6 +38,7 @@ class DatasetSizeRangeTest {
       {999_999_999_999_999L, "500 - 1000 TB"},
       {1_000_000_000_000_000L, "> 1 PB"},
       {Long.MAX_VALUE, "> 1 PB"},
+      {-1L, "I don't know yet"},
       {-1000L, "Unknown size"}
     };
 
