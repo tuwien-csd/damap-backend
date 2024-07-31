@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 12
+      author: David Eckhard
+      runAlways: true # Keep available procedures up to date. These should be created with `CREATE OR REPLACE`
+      changes:
+        - sqlFile:
+            dbms: "!h2"
+            comment: Create storage procedures
+            splitStatements: false
+            stripComments: false
+            path: org/damap/base/db/changeLog-4.x/storage_procedures.sql
