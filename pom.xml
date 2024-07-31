@@ -405,7 +405,7 @@
     <profile>
       <id>sonar</id>
       <properties>
-        <sonar.projectKey>at.ac.tuwien:damap-backend</sonar.projectKey>
+        <sonar.projectKey>tuwien-csd_damap-backend</sonar.projectKey>
         <sonar.coverage.jacoco.xmlReportPaths>
           ${project.build.directory}/jacoco-report/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
