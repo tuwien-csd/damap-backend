@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import lombok.extern.jbosslog.JBossLog;
 import org.apache.poi.xwpf.usermodel.*;
 import org.damap.base.domain.*;
-import org.damap.base.domain.DatasetSizeRange;
 import org.damap.base.enums.*;
 import org.damap.base.rest.dmp.domain.ProjectDO;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTVMerge;
@@ -836,7 +835,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
             composeTableDatasetDeletion(document, xwpfTable);
             break;
           case ("[costTable]"):
-            composeTableCost(xwpfTable);
+            composeTableCost(document, xwpfTable);
             break;
           default:
             break;
@@ -1278,7 +1277,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
    *
    * @param xwpfTable a {@link org.apache.poi.xwpf.usermodel.XWPFTable} object
    */
-  public void composeTableCost(XWPFTable xwpfTable) {
+  public void composeTableCost(XWPFDocument xwpfDocument, XWPFTable xwpfTable) {
     log.debug("Export steps: Cost Table");
 
     Float totalCost = 0f;
@@ -1307,13 +1306,10 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
         insertTableCells(xwpfTable, newRow, docVar);
       }
       xwpfTable.removeRow(xwpfTable.getRows().size() - 2);
+      xwpfTable.removeRow(1);
     } else {
-      // clean row
-      ArrayList<String> emptyContent = new ArrayList<String>(Arrays.asList("", "", "", "", ""));
-      insertTableCells(
-          xwpfTable, xwpfTable.getRows().get(xwpfTable.getRows().size() - 2), emptyContent);
+      removeTable(xwpfDocument, xwpfTable);
     }
-    xwpfTable.removeRow(1);
 
     Optional<Cost> costCurrencyTotal =
         costList.stream().filter(cost -> cost.getCurrencyCode() != null).findFirst();
