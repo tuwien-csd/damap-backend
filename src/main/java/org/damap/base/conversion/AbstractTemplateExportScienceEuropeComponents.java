@@ -858,24 +858,19 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     List<Dataset> newDatasets = getNewDatasets();
     if (!newDatasets.isEmpty()) {
       for (int i = 0; i < newDatasets.size(); i++) {
-        Dataset dataset = newDatasets.get(i);
 
         XWPFTableRow sourceTableRow = xwpfTable.getRow(2);
         XWPFTableRow newRow = new XWPFTableRow(sourceTableRow.getCtRow(), xwpfTable);
+        Dataset dataset = newDatasets.get(i);
 
         try {
           newRow = insertNewTableRow(sourceTableRow, i + 2);
         } catch (Exception e) {
         }
 
-        ArrayList<String> docVar = new ArrayList<String>();
+        ArrayList<String> docVar = new ArrayList<>();
         docVar.add(datasetTableIDs.get(dataset.id));
-
-        if (dataset.getTitle() != null) {
-          docVar.add(dataset.getTitle());
-        } else {
-          docVar.add("");
-        }
+        docVar.add(Optional.ofNullable(dataset.getTitle()).orElse(""));
 
         if (dataset.getType() != null) {
           docVar.add(
@@ -904,12 +899,14 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
           docVar.add("no");
         }
 
+        docVar.add(Optional.ofNullable(dataset.getDescription()).orElse(""));
+
         insertTableCells(xwpfTable, newRow, docVar);
       }
       xwpfTable.removeRow(xwpfTable.getRows().size() - 1);
     } else {
       // clean row
-      ArrayList<String> emptyContent = new ArrayList<String>(Arrays.asList("", "", "", "", "", ""));
+      ArrayList<String> emptyContent = new ArrayList<>(Arrays.asList("", "", "", "", "", "", ""));
       insertTableCells(
           xwpfTable, xwpfTable.getRows().get(xwpfTable.getRows().size() - 1), emptyContent);
     }
@@ -954,28 +951,24 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
 
         XWPFTableRow sourceTableRow = xwpfTable.getRow(2);
         XWPFTableRow newRow = new XWPFTableRow(sourceTableRow.getCtRow(), xwpfTable);
+        Dataset dataset = reusedDatasets.get(i);
 
         try {
           newRow = insertNewTableRow(sourceTableRow, i + 2);
         } catch (Exception e) {
         }
 
-        ArrayList<String> docVar = new ArrayList<String>();
-        docVar.add(datasetTableIDs.get(reusedDatasets.get(i).id));
+        ArrayList<String> docVar = new ArrayList<>();
+        docVar.add(datasetTableIDs.get(dataset.id));
+        docVar.add(Optional.ofNullable(dataset.getTitle()).orElse(""));
 
-        if (reusedDatasets.get(i).getTitle() != null) {
-          docVar.add(reusedDatasets.get(i).getTitle());
+        if (dataset.getDatasetIdentifier() != null) {
+          docVar.add(dataset.getDatasetIdentifier().getIdentifier());
         } else {
           docVar.add("");
         }
 
-        if (reusedDatasets.get(i).getDatasetIdentifier() != null) {
-          docVar.add(reusedDatasets.get(i).getDatasetIdentifier().getIdentifier());
-        } else {
-          docVar.add("");
-        }
-
-        if (reusedDatasets.get(i).getLicense() != null) {
+        if (dataset.getLicense() != null) {
           // TODO second String license option for reused datasets.
           // TODO use addHyperlinkRun to create hyperlinks - see publication table
           docVar.add("");
@@ -983,8 +976,8 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
           docVar.add("");
         }
 
-        if (reusedDatasets.get(i).getSensitiveData() != null) {
-          if (Boolean.TRUE.equals(reusedDatasets.get(i).getSensitiveData())) {
+        if (dataset.getSensitiveData() != null) {
+          if (Boolean.TRUE.equals(dataset.getSensitiveData())) {
             docVar.add("yes");
           } else {
             docVar.add("no");
@@ -992,6 +985,8 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
         } else {
           docVar.add("no");
         }
+
+        docVar.add(Optional.ofNullable(dataset.getDescription()).orElse(""));
 
         insertTableCells(xwpfTable, newRow, docVar);
       }
