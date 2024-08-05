@@ -61,19 +61,9 @@ public abstract class AbstractTemplateExportFunctions {
           if (xwpfRunText != null && xwpfRunText.contains(entry.getKey())) {
             // handle new line for contributor list and storage information
             if (entry.getValue().contains(";")) {
+              xwpfParagraph.setAlignment(ParagraphAlignment.LEFT);
               String[] value = entry.getValue().split(";");
-              for (int i = 0; i < value.length; i++) {
-                xwpfParagraph.setAlignment(ParagraphAlignment.LEFT);
-                xwpfRun.setText(value[i].trim());
-                if (i < value.length - 1) {
-                  xwpfRun.addBreak();
-                  xwpfRun.addBreak();
-                }
-              }
-              // TODO: when xwpfRun.removeBreak is implemented:
-              //  replace the above for loop with an enhanced one
-              //  remove the extra if inside the loop
-              //  call removeBreak twice outside the loop
+              addContentAsNewLines(xwpfRun, List.of(value), 2);
               xwpfRunText = "";
             }
             // general case for non contributor list
@@ -95,6 +85,21 @@ public abstract class AbstractTemplateExportFunctions {
           }
         }
         xwpfRun.setText(xwpfRunText, 0);
+      }
+    }
+  }
+
+  static void addContentAsNewLines(XWPFRun xwpfRun, List<String> content, int numberOfNewLines) {
+    // TODO: when xwpfRun.removeBreak is implemented:
+    // replace the for loop with an enhanced one
+    // remove the extra if inside the loop
+    // call removeBreak twice outside the loop
+    for (int i = 0; i < content.size(); i++) {
+      xwpfRun.setText(content.get(i).trim());
+      if (i < content.size() - 1) {
+        for (int nl = 0; nl < Math.max(1, numberOfNewLines); nl++) {
+          xwpfRun.addBreak();
+        }
       }
     }
   }
@@ -166,12 +171,24 @@ public abstract class AbstractTemplateExportFunctions {
     // Iterate over min(numCells, numContent) to prevent out of bounds
     for (int i = 0; i < Math.min(numCells, numContent); i++) {
       XWPFTableCell cell = cells.get(i);
-      String content = cellContent.get(i);
+      List<String> lines = cellContent.get(i).lines().toList();
 
-      //
+      // failsafe since sometimes cells dont have a run inside
+      if (cell.getParagraphs().isEmpty()) {
+        cell.addParagraph().createRun();
+      }
+
       for (XWPFParagraph paragraph : cell.getParagraphs()) {
         for (XWPFRun run : paragraph.getRuns()) {
-          run.setText(content, 0);
+          // If we do not set the text explicitly on position 0, it will somehow insert the text
+          // from the previous row... No real idea why though. So this is a workaround for now.
+
+          if (lines.size() > 1) {
+            run.setText("", 0);
+            addContentAsNewLines(run, lines, 1);
+          } else {
+            run.setText(lines.isEmpty() ? "" : lines.get(0), 0);
+          }
         }
       }
     }
