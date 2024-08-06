@@ -129,7 +129,6 @@ public abstract class AbstractTemplateExportFunctions {
    * @param pos a int
    * @throws java.io.IOException
    * @throws org.apache.xmlbeans.XmlException
-   * @throws org.apache.xmlbeans.XmlException
    * @return a {@link org.apache.poi.xwpf.usermodel.XWPFTableRow} object
    */
   public XWPFTableRow insertNewTableRow(XWPFTableRow sourceTableRow, int pos)
