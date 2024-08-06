@@ -1269,6 +1269,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
    * composeTableCost.
    *
    * @param xwpfTable a {@link org.apache.poi.xwpf.usermodel.XWPFTable} object
+   * @param xwpfDocument a {@link org.apache.poi.xwpf.usermodel.XWPFDocument} object
    */
   public void composeTableCost(XWPFDocument xwpfDocument, XWPFTable xwpfTable) {
     log.debug("Export steps: Cost Table");

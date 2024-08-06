@@ -32,7 +32,7 @@ public class GdprQueryUtil {
    * @throws org.damap.base.rest.gdpr.exceptions.MissingGdprKeyException if the given class is
    *     missing a {@link org.damap.base.annotations.gdpr.GdprKey} annotation.
    * @throws org.damap.base.rest.gdpr.exceptions.NoSuchContextPropertyException if a property, tried
-   *     to be accessed via {@link GdprContext}, does not exist.
+   *     to be accessed via {@link org.damap.base.annotations.gdpr.GdprContext}, does not exist.
    */
   public GdprQuery buildQueryObject(Class<?> gdprClass)
       throws MissingGdprKeyException, NoSuchContextPropertyException {
