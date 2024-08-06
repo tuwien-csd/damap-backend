@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.core.MultivaluedMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.extern.jbosslog.JBossLog;
 import org.damap.base.enums.EIdentifierType;
 import org.damap.base.r3data.dto.RepositoryDetails;
@@ -23,7 +24,7 @@ public class RepositoriesService {
   @Inject @RestClient RepositoriesRemoteResource repositoriesRemoteResource;
 
   @ConfigProperty(name = "damap.repositories.recommendation")
-  String[] repositoriesRecommendation;
+  Optional<String[]> repositoriesRecommendation;
 
   /**
    * getAll.
@@ -43,7 +44,11 @@ public class RepositoriesService {
   @CacheResult(cacheName = "recommendedRepositories")
   public List<RepositoryDetails> getRecommended() {
     List<RepositoryDetails> recommendedRepositories = new ArrayList<>();
-    for (String id : repositoriesRecommendation) {
+    if (repositoriesRecommendation.isEmpty()) {
+      return recommendedRepositories;
+    }
+
+    for (String id : repositoriesRecommendation.get()) {
       if (id.startsWith("r3d")) {
         try {
           Re3Data repo = this.getById(id);
