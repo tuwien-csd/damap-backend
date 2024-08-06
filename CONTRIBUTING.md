@@ -12,6 +12,25 @@ This allows to discuss the issue with a developer, who would then create a Pull 
 When describing issues, a reporter should describe the issue in a way that a developer can reproduce it. To
 help to create good issues, all the points in the issue template should be filled out.
 
+## Java Docs
+When publishing the package, java docs will be generated. In order to keep everything documented, adding java docs is really helpful.
+Times to run the java docs command:
+- Add, remove or update function
+- Add or remove class
+- Add, remove or update annotator/decorator
+- Add, remove or update test
+
+Creating java docs can be done via a command. We only care about:
+- parameters
+- return value
+- linking classes
+- throws info
+
+In order to run the command for the code in the src folder, run `mvn javadoc:fix -DfixTags=param,return,link,throws`
+In order to run the command for the code in the test folder, run `mvn javadoc:test-fix -DfixTags=param,return,link,throws`
+
+After that, also make sure to format the code ([see Code Formatting](#code-formatting)).
+
 ## Code Formatting
 
 This project uses a configured opinionated code formatter [spotless](https://github.com/diffplug/spotless). Letting a specific tool take care of the formatting lets developers
