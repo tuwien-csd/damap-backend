@@ -19,6 +19,7 @@ damap:
     db-kind: postgresql # your database
   repositories:
     # Zenodo, Open Science Framework, DRYAD, Mendeley Data
+    # can also be [] for no repositories recommendation
     recommendation: ['r3d100010468', 'r3d100011137', 'r3d100000044', 'r3d100011868'] # your-recommended-repositories
   projects-url: http://api-mock:80
   persons-url: http://api-mock:80
