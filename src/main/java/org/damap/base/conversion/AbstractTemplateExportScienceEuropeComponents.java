@@ -858,6 +858,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     List<Dataset> newDatasets = getNewDatasets();
     if (!newDatasets.isEmpty()) {
       for (int i = 0; i < newDatasets.size(); i++) {
+        Dataset dataset = newDatasets.get(i);
 
         XWPFTableRow sourceTableRow = xwpfTable.getRow(2);
         XWPFTableRow newRow = new XWPFTableRow(sourceTableRow.getCtRow(), xwpfTable);
@@ -868,34 +869,33 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
         }
 
         ArrayList<String> docVar = new ArrayList<String>();
-        docVar.add(datasetTableIDs.get(newDatasets.get(i).id));
+        docVar.add(datasetTableIDs.get(dataset.id));
 
-        if (newDatasets.get(i).getTitle() != null) {
-          docVar.add(newDatasets.get(i).getTitle());
+        if (dataset.getTitle() != null) {
+          docVar.add(dataset.getTitle());
         } else {
           docVar.add("");
         }
 
-        if (newDatasets.get(i).getType() != null) {
+        if (dataset.getType() != null) {
           docVar.add(
-              newDatasets.get(i).getType().stream()
+              dataset.getType().stream()
                   .map(EDataType::getValue)
                   .collect(Collectors.joining(", ")));
         } else {
           docVar.add("");
         }
 
-        // TODO: dataset format still not available
-        docVar.add("");
+        docVar.add(Optional.ofNullable(dataset.getFileFormat()).orElse(""));
 
-        if (newDatasets.get(i).getSize() != null) {
-          docVar.add(DatasetSizeRange.getLabelForSize(newDatasets.get(i).getSize()));
+        if (dataset.getSize() != null) {
+          docVar.add(DatasetSizeRange.getLabelForSize(dataset.getSize()));
         } else {
           docVar.add("");
         }
 
-        if (newDatasets.get(i).getSensitiveData() != null) {
-          if (Boolean.TRUE.equals(newDatasets.get(i).getSensitiveData())) {
+        if (dataset.getSensitiveData() != null) {
+          if (Boolean.TRUE.equals(dataset.getSensitiveData())) {
             docVar.add("yes");
           } else {
             docVar.add("no");

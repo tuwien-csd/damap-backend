@@ -26,6 +26,8 @@ public class FitsMapper {
     dataset.setSize(getSize(fits));
     IdentificationType.Identity identity = getMajorityVoteIdentity(fits);
     dataset.setType(mapFileFormat(identity));
+    // Set file format based on mime type
+    dataset.setFileFormat(Optional.ofNullable(identity.getMimetype()).orElse(""));
     dataset.setSource(EDataSource.NEW);
     dataset.setDataAccess(EDataAccessType.OPEN);
     dataset.setLicense(ELicense.CCBY);
