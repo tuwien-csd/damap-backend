@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 14
+      author: David Eckhard
+      description: Add file format column to dataset table
+      changes:
+        - addColumn:
+            tableName: dataset
+            columns:
+              - column:
+                  name: file_format
+                  type: VARCHAR(255)
+        - addColumn:
+            tableName: dataset_aud
+            columns:
+              - column:
+                  name: file_format
+                  type: VARCHAR(255)
+      rollback:
+        - dropColumn:
+            tableName: dataset
+            columnName: file_format
+        - dropColumn:
+            tableName: dataset_aud
+            columnName: file_format
