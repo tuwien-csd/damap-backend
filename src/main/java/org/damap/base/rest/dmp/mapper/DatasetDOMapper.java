@@ -61,6 +61,7 @@ public class DatasetDOMapper {
               }
             });
     datasetDO.setType(typeList);
+    datasetDO.setFileFormat(dataset.getFileFormat());
 
     return datasetDO;
   }
@@ -116,6 +117,7 @@ public class DatasetDOMapper {
               }
             });
     dataset.setType(typeList);
+    dataset.setFileFormat(datasetDO.getFileFormat());
 
     return dataset;
   }

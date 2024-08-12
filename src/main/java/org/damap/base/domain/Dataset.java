@@ -38,6 +38,9 @@ public class Dataset extends PanacheEntity {
   @Enumerated(EnumType.STRING)
   private List<EDataType> type;
 
+  @Column(name = "file_format")
+  private String fileFormat;
+
   @Column(name = "data_size")
   private Long size;
 

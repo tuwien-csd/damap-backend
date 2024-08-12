@@ -264,6 +264,7 @@ public class TestDOFactory {
     dataset.setTitle("Dataset Title");
     dataset.setSource(EDataSource.NEW);
     dataset.setType(List.of(EDataType.CONFIGURATION_DATA));
+    dataset.setFileFormat(".cfg");
     dataset.setSize(50000L);
     dataset.setDescription("Dataset description.");
     dataset.setRetentionPeriod(10);

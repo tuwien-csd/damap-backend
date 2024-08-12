@@ -20,6 +20,7 @@ public class DatasetDO {
   private String title;
 
   private List<EDataType> type = new ArrayList<>();
+  private String fileFormat = "";
   private Long size;
   private String description;
   private Boolean personalData;

@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import lombok.experimental.UtilityClass;
 import org.damap.base.enums.*;
 import org.damap.base.rest.dmp.domain.DatasetDO;
@@ -145,6 +146,9 @@ public class OpenAireMapper {
         } catch (ParseException ignored) {
           // Ignore
         }
+        break;
+      case "format":
+        datasetDO.setFileFormat(Optional.ofNullable(string).orElse(""));
         break;
       default:
     }
