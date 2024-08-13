@@ -176,4 +176,13 @@ class DmpServiceTest extends TestSetup {
     DmpDO updatedDMP = dmpService.update(testDMP);
     Assertions.assertEquals(2, updatedDMP.getRepositories().size());
   }
+
+  @Test
+  void givenDmpProjectAcronymIsUpdated_whenUpdatingDMP_thenProjectAcronymShouldBeUpdated() {
+    DmpDO testDMP = testDOFactory.createDmp(this.toString(), true);
+    Assertions.assertEquals("TEST", testDMP.getProject().getAcronym());
+    testDMP.getProject().setAcronym("newAcronym");
+    DmpDO updatedDMP = dmpService.update(testDMP);
+    Assertions.assertEquals("newAcronym", updatedDMP.getProject().getAcronym());
+  }
 }

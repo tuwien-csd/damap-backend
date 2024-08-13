@@ -26,6 +26,7 @@ public class ProjectDOMapper {
     projectDO.setDescription(project.getDescription());
     projectDO.setStart(project.getStart());
     projectDO.setEnd(project.getEnd());
+    projectDO.setAcronym(project.getAcronym());
 
     if (project.getFunding() != null) {
       FundingDO fundingDO = new FundingDO();
@@ -88,6 +89,7 @@ public class ProjectDOMapper {
     project.setDescription(projectDO.getDescription());
     project.setStart(projectDO.getStart());
     project.setEnd(projectDO.getEnd());
+    project.setAcronym(projectDO.getAcronym());
 
     if (projectDO.getFunding() != null) {
       Funding funding = new Funding();
