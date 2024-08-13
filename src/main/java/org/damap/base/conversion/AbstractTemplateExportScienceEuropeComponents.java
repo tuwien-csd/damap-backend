@@ -34,6 +34,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     titlePage();
     contributorInformation();
     datasetsInformation();
+    storageIntroInformation();
     storageInformation();
     dataQuality();
     sensitiveDataInformation();
@@ -318,6 +319,36 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     if (dmp.getTargetAudience() != null)
       addReplacement(replacements, "[targetaudience]", dmp.getTargetAudience());
     else addReplacement(replacements, "[targetaudience]", "");
+  }
+
+  /** storageIntroInformation */
+  public void storageIntroInformation() {
+    String coordinatorFullName;
+
+    if (projectCoordinator != null) {
+      coordinatorFullName =
+          projectCoordinator.getFirstName() + " " + projectCoordinator.getLastName();
+    } else {
+      coordinatorFullName = "Coordinator";
+    }
+
+    boolean usesExternalStorage =
+        dmp.getHostList().stream().anyMatch(ExternalStorage.class::isInstance);
+    boolean usesInternalStorage = dmp.getHostList().stream().anyMatch(Storage.class::isInstance);
+
+    String propName = "storageIntro.none";
+    if (usesExternalStorage && !usesInternalStorage) {
+      propName = "storageIntro.external";
+    } else if (usesInternalStorage && !usesExternalStorage) {
+      propName = "storageIntro.internal";
+    } else if (usesInternalStorage && usesExternalStorage) {
+      propName = "storageIntro.both";
+    }
+
+    String storageIntroReplacement = loadResourceService.loadVariableFromResource(prop, propName);
+    storageIntroReplacement = storageIntroReplacement.replace("[name]", coordinatorFullName);
+
+    addReplacement(replacements, "[storageintro]", storageIntroReplacement);
   }
 
   /** storageInformation. */
