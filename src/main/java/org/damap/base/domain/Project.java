@@ -38,4 +38,7 @@ public class Project extends PanacheEntity {
 
   @Column(name = "project_end")
   private Date end;
+
+  @Column(name = "acronym")
+  private String acronym;
 }

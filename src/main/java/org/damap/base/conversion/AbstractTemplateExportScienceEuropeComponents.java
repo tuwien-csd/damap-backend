@@ -75,14 +75,8 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     addReplacement(replacements, "[projectnameText]", project.getTitle());
     addReplacement(footerMap, "[projectnameText]", project.getTitle());
 
-    ProjectDO projectCRIS = null;
-    if (project.getUniversityId() != null)
-      projectCRIS = projectService.read(project.getUniversityId());
-    // variable project acronym from API
-    if (projectCRIS != null) {
-      addReplacement(replacements, "[acronym]", projectCRIS.getAcronym());
-      addReplacement(footerMap, "[acronym]", projectCRIS.getAcronym());
-    }
+    addReplacement(replacements, "[acronym]", project.getAcronym());
+    addReplacement(footerMap, "[acronym]", project.getAcronym());
 
     // variable project start date and end date
     addReplacement(
@@ -95,6 +89,10 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
         project.getEnd() == null ? "" : formatter.format(project.getEnd()));
 
     // add funding program to funding item variables
+    ProjectDO projectCRIS = null;
+    if (project.getUniversityId() != null)
+      projectCRIS = projectService.read(project.getUniversityId());
+
     titlePageFunding(project, projectCRIS);
 
     // variable project ID

@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: 13
+      author: Geoffrey Karnbach
+      changes:
+        - addColumn:
+            tableName: project
+            columns:
+              - column:
+                  name: acronym
+                  type: varchar(255)
+        - addColumn:
+            tableName: project_aud
+            columns:
+              - column:
+                  name: acronym
+                  type: varchar(255)
+      rollback:
+        - dropColumn:
+            tableName: project
+            columnName: acronym
+        - dropColumn:
+            tableName: project_aud
+            columnName: acronym
