@@ -1,6 +1,7 @@
 package org.damap.base.rest.dmp.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -147,6 +148,32 @@ public class DmpConsistencyUtility {
         datasetDO.setDateOfDeletion(null);
       }
     }
+
+    HashSet<String> seenDatasetDOI = new HashSet<>();
+    List<DatasetDO> uniqueDatasets = new ArrayList<>();
+
+    for (DatasetDO datasetDO : dmpDO.getDatasets()) {
+      if (datasetDO.getSource() == EDataSource.REUSED) {
+        // We have a reused dataset
+        if (datasetDO.getDatasetId() != null
+            && datasetDO.getDatasetId().getType() == EIdentifierType.DOI) {
+          // No duplicate DOIs - only add if not seen before
+          String datasetDOI = datasetDO.getDatasetId().getIdentifier();
+          if (!seenDatasetDOI.contains(datasetDOI)) {
+            uniqueDatasets.add(datasetDO);
+            seenDatasetDOI.add(datasetDOI);
+          }
+        } else {
+          // Manual entry - always add
+          uniqueDatasets.add(datasetDO);
+        }
+      } else {
+        // New dataset - always add
+        uniqueDatasets.add(datasetDO);
+      }
+    }
+
+    dmpDO.setDatasets(uniqueDatasets);
   }
 
   /**
