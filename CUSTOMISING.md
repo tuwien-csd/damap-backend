@@ -206,30 +206,63 @@ damap:
 
 In order to provide the user with a series of storage options, these must be added to the databse beforehand.
 After running the project once, liquibase will have added the entire databse structure.
+Additionally, database procedures for storage are available. These procedures allow to easily insert, update or upsert storage options. These procedures may be invoked by connecting to the database or by simply creating another change log.
+Available storage procedures can be found here: `src/main/resources/org/damap/base/db/changeLog-4.x/storage_procedures.sql`
 
-At this point you can add your own storage options by utilizing SQL statements like in the following example:
+Here is an example change log which invokes a storage procedures to insert a storage entry as well as a translation for it:
 
-```sql
-insert into damap.internal_storage (id, version, url, storage_location, backup_location)
-values (NEXTVAL('damap.hibernate_sequence'), 0, 'your-storage-url', 'AUT', 'AUT');
+```
+databaseChangeLog:
+  - changeSet:
+      id: storage_insert_1
+      author: David Eckhard
+      changes:
+        - sql:
+            dbms:  '!h2, postgresql'
+            splitStatements:  false
+            stripComments:  false
+            sql: >
+              CALL damap_insert_storage(
+                '/url/of/my/storage', 
+                0, # version
+                'Storage Location. Can also just be a country code (e.g. AT)',
+                'Storage backup location. Can also just be a country code (e.g. AT).'
+              );
+              CALL damap_insert_storage_translation(
+                '/url/of/my/storage', # Specify the url of the storage inserted before. This is used as a foreign key.
+                0,
+                'eng', # Language code. Has to be available in the database (default available are `deu` and `eng`)
+                'English name of my storage',
+                'Description of this storage option'
+              );
+```
 
-insert into damap.inter_storage_translation (id, version, internal_storage_id, language_code, title, description)
-values (NEXTVAL('damap.hibernate_sequence'),
-    0,
-    (select id from damap.internal_storage insto where insto.url = 'your-storage-url'),
-    'eng',
-    'Storage-name',
-    'Loquacious storage description.'
-);
-
-insert into damap.inter_storage_translation (id, version, internal_storage_id, language_code, title, description)
-    values (NEXTVAL('damap.hibernate_sequence'),
-    0,
-    (select id from damap.internal_storage insto where insto.url = 'your-storage-url'),
-    'deu',
-    'Storage-name',
-    'Loquacious storage description.'
-);  
+Here is an example change log which invokes a storage procedures to upsert a storage entry as well as a translation for it (it will either insert, if such an entity not exist yet or update an existing entity):
+```
+databaseChangeLog:
+  - changeSet:
+      id: storage_upsert_1
+      author: David Eckhard
+      changes:
+        - sql:
+            dbms:  '!h2, postgresql'
+            splitStatements:  false
+            stripComments:  false
+            sql: >
+              CALL damap_upsert_storage(
+                'old /url/of/my/storage', # if an existing storage should be updated, put the old url here. Otherwise, use the same value here and in the new url
+                'new /url/of/my/storage', # if an existing storage should be updated, put the new url here. Otherwise, use the same value here and in the old url
+                0, # version
+                'Storage Location. Can also just be a country code (e.g. AT)',
+                'Storage backup location. Can also just be a country code (e.g. AT).'
+              );
+              CALL damap_upsert_storage_translation(
+                '/url/of/my/storage', # Specify the url of the storage inserted before. This is used as a foreign key.
+                0,
+                'eng', # Language code. Has to be available in the database (default available are `deu` and `eng`)
+                'English name of my storage',
+                'Description of this storage option'
+              );
 ```
 
 ### Export customisation
