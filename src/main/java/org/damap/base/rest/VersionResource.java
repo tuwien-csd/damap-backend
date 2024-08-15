@@ -12,7 +12,7 @@ import org.damap.base.rest.version.VersionDO;
 import org.damap.base.rest.version.VersionService;
 import org.damap.base.security.SecurityService;
 import org.damap.base.validation.AccessValidator;
-import org.jboss.resteasy.annotations.jaxrs.PathParam;
+import org.jboss.resteasy.reactive.RestPath;
 
 /** VersionResource class. */
 @Path("/api/versions")
@@ -35,7 +35,7 @@ public class VersionResource {
    */
   @GET
   @Path("/list/{id}")
-  public List<VersionDO> getDmpVersions(@PathParam String id) {
+  public List<VersionDO> getDmpVersions(@RestPath String id) {
     log.debug("Return dmp versions for dmp with id: " + id);
     String personId = this.getPersonId();
     long dmpId = Long.parseLong(id);

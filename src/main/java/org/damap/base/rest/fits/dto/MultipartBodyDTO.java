@@ -2,9 +2,9 @@ package org.damap.base.rest.fits.dto;
 
 import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.core.MediaType;
-import java.io.InputStream;
-import org.jboss.resteasy.annotations.providers.multipart.PartFilename;
-import org.jboss.resteasy.annotations.providers.multipart.PartType;
+import java.io.File;
+import org.jboss.resteasy.reactive.PartFilename;
+import org.jboss.resteasy.reactive.PartType;
 
 /** MultipartBodyDTO class. */
 public class MultipartBodyDTO {
@@ -13,5 +13,5 @@ public class MultipartBodyDTO {
   @PartType(MediaType.APPLICATION_OCTET_STREAM)
   @PartFilename(
       "filename") // Adds filename to Content-Disposition header, because request fails without one
-  public InputStream file;
+  public File file;
 }

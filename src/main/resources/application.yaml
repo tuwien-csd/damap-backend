@@ -32,6 +32,10 @@ damap:
       query-value: 'ORCID'
       class-name: 'org.damap.base.rest.persons.orcid.ORCIDPersonServiceImpl'
 
+invenio:
+  disabled: true
+  shared-secret: "thisIsAVerySecretKeyOfAtLeast32Chars"
+
 # general config settings
 quarkus:
   http:

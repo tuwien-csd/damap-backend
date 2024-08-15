@@ -100,6 +100,22 @@ public class DmpService {
   }
 
   /**
+   * getDmpDOListByPersonId.
+   *
+   * @param personId a {@link java.lang.String} object
+   * @return a {@link java.util.List} object
+   */
+  @Transactional
+  public List<DmpDO> getDmpDOListByPersonId(String personId) {
+    List<Access> accessList = accessRepo.getAllDmpByUniversityId(personId);
+
+    List<DmpDO> dmpDOS = new ArrayList<>();
+    accessList.forEach(
+        access -> dmpDOS.add(DmpDOMapper.mapEntityToDO(access.getDmp(), new DmpDO())));
+    return dmpDOS;
+  }
+
+  /**
    * create.
    *
    * @param dmpDO a {@link org.damap.base.rest.dmp.domain.DmpDO} object

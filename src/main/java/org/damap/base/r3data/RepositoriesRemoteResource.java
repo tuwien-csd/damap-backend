@@ -1,14 +1,13 @@
 package org.damap.base.r3data;
 
-import generated.Repository;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import java.util.List;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
-import org.jboss.resteasy.annotations.jaxrs.PathParam;
-import org.jboss.resteasy.annotations.jaxrs.QueryParam;
+import org.jboss.resteasy.reactive.RestPath;
+import org.jboss.resteasy.reactive.RestQuery;
 import org.re3data.schema._2_2.Re3Data;
 
 /** RepositoriesRemoteResource interface. */
@@ -23,7 +22,7 @@ public interface RepositoriesRemoteResource {
    */
   @GET
   @Path("/v1/repositories")
-  List<Repository> getAll();
+  generated.List getAll();
 
   /**
    * getById.
@@ -33,7 +32,7 @@ public interface RepositoriesRemoteResource {
    */
   @GET
   @Path("/v1/repository/{id}")
-  Re3Data getById(@PathParam String id);
+  Re3Data getById(@RestPath String id);
 
   /**
    * search.
@@ -56,19 +55,19 @@ public interface RepositoriesRemoteResource {
    */
   @GET
   @Path("/beta/repositories")
-  List<Repository> search(
-      @QueryParam("subjects[]") List<String> subjects,
-      @QueryParam("contentTypes[]") List<String> contentTypes,
-      @QueryParam("countries[]") List<String> countries,
-      @QueryParam("certificates[]") List<String> certificates,
-      @QueryParam("pidSystems[]") List<String> pidSystems,
-      @QueryParam("aidSystems[]") List<String> aidSystems,
-      @QueryParam("repositoryAccess[]") List<String> repositoryAccess,
-      @QueryParam("dataAccess[]") List<String> dataAccess,
-      @QueryParam("dataUpload[]") List<String> dataUpload,
-      @QueryParam("dataLicenses[]") List<String> dataLicenses,
-      @QueryParam("repositoryTypes[]") List<String> repositoryTypes,
-      @QueryParam("institutionTypes[]") List<String> institutionTypes,
-      @QueryParam("versioning[]") List<String> versioning,
-      @QueryParam("metadataStandards[]") List<String> metadataStandards);
+  generated.List search(
+      @RestQuery("subjects[]") List<String> subjects,
+      @RestQuery("contentTypes[]") List<String> contentTypes,
+      @RestQuery("countries[]") List<String> countries,
+      @RestQuery("certificates[]") List<String> certificates,
+      @RestQuery("pidSystems[]") List<String> pidSystems,
+      @RestQuery("aidSystems[]") List<String> aidSystems,
+      @RestQuery("repositoryAccess[]") List<String> repositoryAccess,
+      @RestQuery("dataAccess[]") List<String> dataAccess,
+      @RestQuery("dataUpload[]") List<String> dataUpload,
+      @RestQuery("dataLicenses[]") List<String> dataLicenses,
+      @RestQuery("repositoryTypes[]") List<String> repositoryTypes,
+      @RestQuery("institutionTypes[]") List<String> institutionTypes,
+      @RestQuery("versioning[]") List<String> versioning,
+      @RestQuery("metadataStandards[]") List<String> metadataStandards);
 }

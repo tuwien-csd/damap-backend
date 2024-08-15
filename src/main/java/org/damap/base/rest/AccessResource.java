@@ -11,7 +11,6 @@ import org.damap.base.rest.access.domain.AccessDO;
 import org.damap.base.rest.access.service.AccessService;
 import org.damap.base.rest.dmp.domain.ContributorDO;
 import org.damap.base.validation.AccessValidator;
-import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
 /** AccessResource class. */
 @Path("/api/access")

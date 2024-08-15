@@ -9,7 +9,6 @@ import org.damap.base.rest.dmp.domain.DatasetDO;
 import org.damap.base.rest.dmp.domain.MultipartBodyDO;
 import org.damap.base.rest.dmp.mapper.DatasetDOMapper;
 import org.damap.base.rest.fits.service.FitsService;
-import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 /** FitsResource class. */
 @Path("/api/fits")
@@ -29,7 +28,7 @@ public class FitsResource {
    */
   @POST
   @Path("/examine")
-  public DatasetDO examine(@MultipartForm MultipartBodyDO data) {
+  public DatasetDO examine(MultipartBodyDO data) {
     log.info("Analyse file");
     return DatasetDOMapper.mapEntityToDO(fitsService.analyseFile(data), new DatasetDO());
   }

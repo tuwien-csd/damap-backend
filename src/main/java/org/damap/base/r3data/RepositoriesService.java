@@ -1,6 +1,5 @@
 package org.damap.base.r3data;
 
-import generated.Repository;
 import io.quarkus.cache.CacheResult;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -32,7 +31,7 @@ public class RepositoriesService {
    * @return a {@link java.util.List} object
    */
   @CacheResult(cacheName = "repositories")
-  public List<Repository> getAll() {
+  public generated.List getAll() {
     return repositoriesRemoteResource.getAll();
   }
 
@@ -78,7 +77,7 @@ public class RepositoriesService {
    * @param params a {@link jakarta.ws.rs.core.MultivaluedMap} object
    * @return a {@link java.util.List} object
    */
-  public List<Repository> search(MultivaluedMap<String, String> params) {
+  public generated.List search(MultivaluedMap<String, String> params) {
     List<String> subjects = params.get("subjects");
     List<String> contentTypes = params.get("contentTypes");
     List<String> certificates = params.get("certificates");

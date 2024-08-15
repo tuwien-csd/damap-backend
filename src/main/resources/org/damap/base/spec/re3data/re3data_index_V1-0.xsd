@@ -1,11 +1,27 @@
-<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.re3data.org/schema/3-0" id="re3data.org">
-    <xs:element name="repository">
-        <xs:complexType>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="list">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="repository" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
             <xs:sequence>
-                <xs:element type="xs:string" name="id"/>
-                <xs:element type="xs:string" name="name"/>
+              <xs:element type="xs:string" name="id"/>
+              <xs:element type="xs:string" name="doi"/>
+              <xs:element type="xs:string" name="name"/>
+              <xs:element name="link">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                      <xs:attribute type="xs:string" name="href" use="optional"/>
+                      <xs:attribute type="xs:string" name="rel" use="optional"/>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
             </xs:sequence>
-        </xs:complexType>
-    </xs:element>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
 </xs:schema>
-

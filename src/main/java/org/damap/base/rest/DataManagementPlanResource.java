@@ -15,7 +15,7 @@ import org.damap.base.rest.dmp.domain.DmpListItemDO;
 import org.damap.base.rest.dmp.service.DmpService;
 import org.damap.base.security.SecurityService;
 import org.damap.base.validation.AccessValidator;
-import org.jboss.resteasy.annotations.jaxrs.PathParam;
+import org.jboss.resteasy.reactive.RestPath;
 
 /** DataManagementPlanResource class. */
 @Path("/api/dmps")
@@ -52,7 +52,7 @@ public class DataManagementPlanResource {
   /*@GET
   @Path("/person/{personId}")
   @RolesAllowed("Damap Admin")
-  public List<DmpListItemDO> getDmpListByPerson(@PathParam String personId) {
+  public List<DmpListItemDO> getDmpListByPerson(@RestPath String personId) {
       log.info("Return dmp for person id: " + personId);
       return dmpService.getDmpListByPersonId(personId);
   }*/
@@ -92,7 +92,7 @@ public class DataManagementPlanResource {
    */
   @GET
   @Path("/{id}")
-  public DmpDO getDmpById(@PathParam String id) {
+  public DmpDO getDmpById(@RestPath String id) {
     log.info("Return dmp with id: " + id);
     String personId = this.getPersonId();
     long dmpId = Long.parseLong(id);
@@ -126,7 +126,7 @@ public class DataManagementPlanResource {
   @PUT
   @Path("/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
-  public DmpDO updateDmp(@PathParam String id, @Valid DmpDO dmpDO) {
+  public DmpDO updateDmp(@RestPath String id, @Valid DmpDO dmpDO) {
     log.info("Update dmp with id: " + id);
     String personId = this.getPersonId();
     long dmpId = Long.parseLong(id);
@@ -143,7 +143,7 @@ public class DataManagementPlanResource {
    */
   @DELETE
   @Path("/{id}")
-  public void deleteDmp(@PathParam String id) {
+  public void deleteDmp(@RestPath String id) {
     log.info("Delete dmp with id: " + id);
     String personId = this.getPersonId();
     long dmpId = Long.parseLong(id);
@@ -169,7 +169,7 @@ public class DataManagementPlanResource {
    */
   @GET
   @Path("/{id}/{revision}")
-  public DmpDO getDmpByIdAndRevision(@PathParam String id, @PathParam long revision) {
+  public DmpDO getDmpByIdAndRevision(@RestPath String id, @RestPath long revision) {
     log.info("Return dmp with id: " + id + " and revision number: " + revision);
     String personId = this.getPersonId();
     long dmpId = Long.parseLong(id);
