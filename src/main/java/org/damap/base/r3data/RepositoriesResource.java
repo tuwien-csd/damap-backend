@@ -1,6 +1,6 @@
 package org.damap.base.r3data;
 
-import generated.Repository;
+import generated.List.Repository;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -14,7 +14,7 @@ import java.util.List;
 import lombok.extern.jbosslog.JBossLog;
 import org.damap.base.r3data.dto.RepositoryDetails;
 import org.damap.base.r3data.mapper.RepositoryMapper;
-import org.jboss.resteasy.annotations.jaxrs.PathParam;
+import org.jboss.resteasy.reactive.RestPath;
 
 /** RepositoriesResource class. */
 @Path("/api/repositories")
@@ -33,7 +33,7 @@ public class RepositoriesResource {
   @GET
   public List<Repository> getAll() {
     log.info("Get all repositories");
-    return repositoriesService.getAll();
+    return repositoriesService.getAll().getRepository();
   }
 
   /**
@@ -56,7 +56,7 @@ public class RepositoriesResource {
    */
   @GET
   @Path("/{id}")
-  public RepositoryDetails getById(@PathParam String id) {
+  public RepositoryDetails getById(@RestPath String id) {
     log.info("Get repository with id: " + id);
     return RepositoryMapper.mapToRepositoryDetails(repositoriesService.getById(id), id);
   }
@@ -72,6 +72,6 @@ public class RepositoriesResource {
   public List<Repository> search(@Context UriInfo uriInfo) {
     log.info("Search repositories: " + uriInfo.getQueryParameters());
     MultivaluedMap<String, String> params = uriInfo.getQueryParameters();
-    return repositoriesService.search(params);
+    return repositoriesService.search(params).getRepository();
   }
 }

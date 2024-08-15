@@ -8,7 +8,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import org.damap.base.rest.fits.dto.MultipartBodyDTO;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
-import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 /** FitsRestService interface. */
 @RegisterRestClient(configKey = "rest.fits")
@@ -24,5 +23,5 @@ public interface FitsRestService {
    */
   @POST
   @Path("/examine")
-  Fits analyseFile(@MultipartForm MultipartBodyDTO datafile);
+  Fits analyseFile(MultipartBodyDTO datafile);
 }

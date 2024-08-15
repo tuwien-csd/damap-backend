@@ -10,7 +10,7 @@ import java.util.List;
 import lombok.extern.jbosslog.JBossLog;
 import org.damap.base.rest.storage.InternalStorageDO;
 import org.damap.base.rest.storage.InternalStorageService;
-import org.jboss.resteasy.annotations.jaxrs.PathParam;
+import org.jboss.resteasy.reactive.RestPath;
 
 /** InternalStorageResource class. */
 @Path("/api/storages")
@@ -29,7 +29,7 @@ public class InternalStorageResource {
    */
   @GET
   @Path("/{languageCode}")
-  public List<InternalStorageDO> getAllByLanguage(@PathParam String languageCode) {
+  public List<InternalStorageDO> getAllByLanguage(@RestPath String languageCode) {
     log.debug("Return all internal storage options for language " + languageCode);
     return internalStorageService.getAllByLanguage(languageCode);
   }
