@@ -2,6 +2,7 @@ package org.damap.base.rest.dmp.mapper;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import java.util.List;
 import lombok.extern.jbosslog.JBossLog;
 import org.damap.base.domain.*;
 import org.damap.base.r3data.RepositoriesService;
@@ -67,12 +68,17 @@ public class MapperService {
    * @return a {@link org.damap.base.rest.storage.InternalStorageDO} object
    */
   public InternalStorageDO getInternalStorageDOById(Long id, String languageCode) {
-    InternalStorageTranslation internalStorageTranslation =
-        internalStorageTranslationRepo.getInternalStorageById(id, languageCode);
-    if (internalStorageTranslation != null)
-      return InternalStorageDOMapper.mapEntityToDO(
-          internalStorageTranslation, new InternalStorageDO());
-    return null;
+
+    InternalStorage internalStorage = internalStorageRepo.findById(id);
+    if (internalStorage == null) {
+      return null;
+    }
+
+    List<InternalStorageTranslation> translations =
+        internalStorageTranslationRepo.getAllInternalStorageTranslationsByStorageId(id);
+
+    return InternalStorageDOMapper.mapEntityToDO(
+        internalStorage, new InternalStorageDO(), translations);
   }
 
   /**

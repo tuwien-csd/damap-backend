@@ -405,10 +405,19 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
         // written in section 5
         if (!distVar.toString().isEmpty()) {
           String storageDescription = "";
-          storageDescription =
-              internalStorageTranslationRepo
-                  .getInternalStorageById(((Storage) host).getInternalStorageId().id, "eng")
-                  .getDescription();
+          InternalStorageTranslation storageTranslation =
+              internalStorageTranslationRepo.getInternalStorageById(
+                  ((Storage) host).getInternalStorageId().id, "eng");
+
+          if (storageTranslation == null) {
+            storageTranslation =
+                internalStorageTranslationRepo
+                    .getAllInternalStorageTranslationsByStorageId(
+                        ((Storage) host).getInternalStorageId().id)
+                    .get(0);
+          }
+
+          storageDescription = storageTranslation.getDescription();
           storageVar =
               storageVar.concat(
                   distVar

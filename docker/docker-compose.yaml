@@ -56,3 +56,9 @@ services:
     depends_on:
       - damap-fe
       - damap-be
+
+# Uncomment the following block to persist postgres data.
+#    volumes:
+#      - damap-db-data:/var/lib/postgresql/data
+#volumes:
+#  damap-db-data:
