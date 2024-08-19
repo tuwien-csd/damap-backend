@@ -1,5 +1,6 @@
 package org.damap.base.rest.base.resource;
 
+import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
@@ -19,5 +20,5 @@ public interface ResourceUpdate<E, S> {
   @PUT
   @Path("/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
-  E update(@PathParam("id") String id, S data);
+  E update(@PathParam("id") String id, @Valid S data);
 }

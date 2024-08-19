@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ValidationException;
 import java.io.InputStream;
@@ -33,6 +34,7 @@ import org.damap.base.enums.ELicense;
 import org.damap.base.enums.ESecurityMeasure;
 import org.damap.base.repo.DmpRepo;
 import org.damap.base.repo.DmpVersionRepo;
+import org.damap.base.repo.InternalStorageRepo;
 import org.damap.base.repo.InternalStorageTranslationRepo;
 import org.damap.base.rest.dmp.domain.ContributorDO;
 import org.damap.base.rest.dmp.domain.CostDO;
@@ -59,11 +61,15 @@ public class TestDOFactory {
 
   @Inject InternalStorageTranslationRepo internalStorageTranslationRepo;
 
+  @Inject InternalStorageRepo internalStorageRepo;
+
   @Inject MockDmpService dmpService;
 
   @Inject VersionService versionService;
 
   @Inject DmpVersionRepo dmpVersionRepo;
+
+  @Inject EntityManager entityManager;
 
   private final String editorId = "012345";
 
@@ -361,14 +367,13 @@ public class TestDOFactory {
 
   /** prepareInternalStorageOption. */
   @Transactional
-  public void prepareInternalStorageOption() {
-
-    if (internalStorageTranslationRepo.listAll().size() > 0) return;
+  public Long prepareInternalStorageOption() {
 
     InternalStorage internalStorage = new InternalStorage();
     internalStorage.setUrl("test.url.com");
     internalStorage.setStorageLocation("AUT");
     internalStorage.setBackupLocation("AUT");
+    internalStorage.setActive(true);
     internalStorage.persist();
 
     InternalStorageTranslation internalStorageTranslation = new InternalStorageTranslation();
@@ -378,6 +383,77 @@ public class TestDOFactory {
         "Long winded yet brief description of the storage option");
     internalStorageTranslation.setLanguageCode("eng");
     internalStorageTranslation.persistAndFlush();
+
+    InternalStorage internalStorage2 = new InternalStorage();
+    internalStorage2.setUrl("test2.url.com");
+    internalStorage2.setStorageLocation("AUT");
+    internalStorage2.setBackupLocation("GER");
+    internalStorage2.setActive(false);
+    internalStorage2.persist();
+
+    InternalStorageTranslation internalStorageTranslation2 = new InternalStorageTranslation();
+    internalStorageTranslation2.setInternalStorageId(internalStorage2);
+    internalStorageTranslation2.setTitle("Test Storage Title");
+    internalStorageTranslation2.setDescription(
+        "Long winded yet brief description of the storage option");
+    internalStorageTranslation2.setLanguageCode("eng");
+    internalStorageTranslation2.persistAndFlush();
+
+    return internalStorage.id;
+  }
+
+  @Transactional
+  public Long prepareSpecialInternalStorageOption(String urlSuffix) {
+    InternalStorage internalStorage = new InternalStorage();
+    internalStorage.setUrl("special.url.com" + urlSuffix);
+    internalStorage.setStorageLocation("AUT");
+    internalStorage.setBackupLocation("AUT");
+    internalStorage.setActive(true);
+    internalStorage.persist();
+
+    InternalStorageTranslation internalStorageTranslation = new InternalStorageTranslation();
+    internalStorageTranslation.setInternalStorageId(internalStorage);
+    internalStorageTranslation.setTitle("Test Storage Title");
+    internalStorageTranslation.setDescription(
+        "Long winded yet brief description of the storage option");
+    internalStorageTranslation.setLanguageCode("eng");
+    internalStorageTranslation.persistAndFlush();
+
+    return internalStorage.id;
+  }
+
+  @Transactional
+  public List<Long> prepareInternalStorageTranslationOption(boolean generateTwo) {
+
+    InternalStorage internalStorage = new InternalStorage();
+    internalStorage.setUrl("test.url.com");
+    internalStorage.setStorageLocation("AUT");
+    internalStorage.setBackupLocation("AUT");
+    internalStorage.setActive(true);
+    internalStorage.persist();
+
+    InternalStorageTranslation internalStorageTranslation = new InternalStorageTranslation();
+    internalStorageTranslation.setInternalStorageId(internalStorage);
+    internalStorageTranslation.setTitle("Test Storage Title ENG");
+    internalStorageTranslation.setDescription(
+        "Long winded yet brief description of the storage option");
+    internalStorageTranslation.setLanguageCode("eng");
+    internalStorageTranslation.persistAndFlush();
+
+    if (generateTwo) {
+      InternalStorageTranslation internalStorageTranslation2 = new InternalStorageTranslation();
+      internalStorageTranslation2.setInternalStorageId(internalStorage);
+      internalStorageTranslation2.setTitle("Test Storage Title DEU");
+      internalStorageTranslation2.setDescription(
+          "Long winded yet brief description of the storage option");
+      internalStorageTranslation2.setLanguageCode("deu");
+      internalStorageTranslation2.persistAndFlush();
+
+      return List.of(
+          internalStorage.id, internalStorageTranslation.id, internalStorageTranslation2.id);
+    }
+
+    return List.of(internalStorage.id, internalStorageTranslation.id);
   }
 
   /**
