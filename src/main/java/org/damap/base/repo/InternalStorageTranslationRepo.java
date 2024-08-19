@@ -39,4 +39,20 @@ public class InternalStorageTranslationRepo
             Parameters.with("storageId", storageId).and("languageCode", languageCode))
         .firstResult();
   }
+
+  public List<InternalStorageTranslation> getAllInternalStorageTranslationsByStorageId(
+      Long storageId) {
+    return list(
+        "select storage from InternalStorageTranslation storage"
+            + " where storage.internalStorageId.id = :storageId ",
+        Parameters.with("storageId", storageId));
+  }
+
+  public boolean existsTranslationForStorageIdAndLanguageCode(Long storageId, String languageCode) {
+    return count("internalStorageId.id = ?1 and languageCode = ?2", storageId, languageCode) > 0;
+  }
+
+  public void deleteAllTranslationsForInternalStorage(Long storageId) {
+    delete("internalStorageId.id", storageId);
+  }
 }

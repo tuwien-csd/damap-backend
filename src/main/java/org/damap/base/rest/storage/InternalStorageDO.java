@@ -1,6 +1,9 @@
 package org.damap.base.rest.storage;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -10,12 +13,18 @@ import lombok.EqualsAndHashCode;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InternalStorageDO {
   private long id;
-  private String url;
-  private String backupFrequency;
-  private String storageLocation;
-  private String backupLocation;
+
+  @NotBlank(message = "name cannot be blank")
+  @NotNull(message = "name cannot be null") private String url;
+
+  @NotBlank(message = "storage location cannot be blank")
+  @NotNull(message = "storage location cannot be null") private String storageLocation;
+
+  @NotBlank(message = "backup location cannot be blank")
+  @NotNull(message = "backup location cannot be null") private String backupLocation;
+
+  @NotNull(message = "backup frequency cannot be null") private Boolean active;
+
   // the following information comes from the translation table
-  private String languageCode;
-  private String title;
-  private String description;
+  List<InternalStorageTranslationDO> translations;
 }

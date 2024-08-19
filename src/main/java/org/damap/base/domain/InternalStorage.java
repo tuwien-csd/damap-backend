@@ -29,4 +29,7 @@ public class InternalStorage extends PanacheEntity {
 
   @Column(name = "backup_location")
   private String backupLocation;
+
+  @Column(name = "active")
+  private boolean active;
 }

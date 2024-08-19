@@ -13,6 +13,7 @@ import org.damap.base.rest.dmp.domain.*;
 import org.damap.base.rest.dmp.mapper.MapperService;
 import org.damap.base.rest.madmp.dto.*;
 import org.damap.base.rest.storage.InternalStorageDO;
+import org.damap.base.rest.storage.InternalStorageTranslationDO;
 import org.re3data.schema._2_2.Certificates;
 import org.re3data.schema._2_2.PidSystems;
 import org.re3data.schema._2_2.Re3Data;
@@ -481,15 +482,32 @@ public class MaDmpMapper {
   public Host mapToMaDmpFromInternalStorage(InternalStorageDO internalStorageDO, Host host) {
 
     host.setAvailability(null);
-    host.setBackupFrequency(internalStorageDO.getBackupFrequency());
     host.setBackupType(null);
     host.setCertifiedWith(null);
-    host.setDescription(internalStorageDO.getDescription());
+
     host.setGeoLocation(null);
     host.setPidSystem(null);
     host.setStorageType(null);
     host.setSupportVersioning(null);
-    host.setTitle(internalStorageDO.getTitle());
+
+    List<InternalStorageTranslationDO> translations = internalStorageDO.getTranslations();
+    InternalStorageTranslationDO internalStorageTranslationDO = null;
+
+    if (!translations.isEmpty()) {
+      internalStorageTranslationDO = translations.get(0);
+    }
+
+    for (InternalStorageTranslationDO translationDO : translations) {
+      if (translationDO.getLanguageCode().equals(DEFAULT_LANGUAGE_CODE)) {
+        internalStorageTranslationDO = translationDO;
+        break;
+      }
+    }
+
+    host.setTitle(internalStorageTranslationDO.getTitle());
+    host.setDescription(internalStorageTranslationDO.getDescription());
+    host.setBackupFrequency(internalStorageTranslationDO.getBackupFrequency());
+
     if (internalStorageDO.getUrl() != null) host.setUrl(URI.create(internalStorageDO.getUrl()));
     return host;
   }

@@ -1,19 +1,31 @@
 package org.damap.base.rest.dmp.service;
 
+import jakarta.validation.ValidationException;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
+import lombok.extern.jbosslog.JBossLog;
+import org.damap.base.domain.*;
 import org.damap.base.enums.*;
+import org.damap.base.rest.base.ResultList;
 import org.damap.base.rest.dmp.domain.DatasetDO;
 import org.damap.base.rest.dmp.domain.DmpDO;
 import org.damap.base.rest.dmp.domain.HostDO;
+import org.damap.base.rest.dmp.domain.StorageDO;
+import org.damap.base.rest.storage.InternalStorageDO;
+import org.damap.base.rest.storage.InternalStorageService;
 
 /** DmpConsistencyUtility class. */
 @UtilityClass
+@JBossLog
 public class DmpConsistencyUtility {
+
+  private static final String STORAGE_NOT_ACTIVE = "Storage is not active";
 
   /**
    * Adapts a given DMP so that it's information is consistent.
@@ -43,6 +55,67 @@ public class DmpConsistencyUtility {
     // Set conditional info
     setConditionalDmpInfo(dmpDO);
     enforceDatasetConsistency(dmpDO);
+  }
+
+  public void enforceActiveStorage(
+      DmpDO newDmp, Dmp oldDmp, InternalStorageService internalStorageService)
+      throws ValidationException {
+
+    if (oldDmp == null) {
+      MultivaluedMap<String, String> queryParams = new MultivaluedHashMap<>();
+      List<String> ids =
+          newDmp.getStorage().stream()
+              .map(StorageDO::getInternalStorageId)
+              .map(String::valueOf)
+              .toList();
+      queryParams.put("id", ids);
+
+      if (ids.isEmpty()) {
+        return;
+      }
+
+      ResultList<InternalStorageDO> storagesDOResult = internalStorageService.search(queryParams);
+      List<InternalStorageDO> storages = storagesDOResult.getItems();
+
+      if (storages.size() != newDmp.getStorage().size()) {
+        throw new ValidationException(STORAGE_NOT_ACTIVE);
+      }
+
+      for (InternalStorageDO storageDO : storages) {
+        if (!storageDO.getActive()) {
+          throw new ValidationException(STORAGE_NOT_ACTIVE);
+        }
+      }
+
+      return;
+    }
+
+    // New DMP used storage IDs
+    List<Long> newDmpStorageIds = new ArrayList<>();
+    for (StorageDO storageDO : newDmp.getStorage()) {
+      newDmpStorageIds.add(storageDO.getInternalStorageId());
+    }
+
+    // Old DMP used storage IDs
+    List<Long> oldDmpStorageIds = new ArrayList<>();
+    for (Host host : oldDmp.getHostList()) {
+      if (host instanceof Storage storage) {
+        oldDmpStorageIds.add(storage.getInternalStorageId().id);
+      }
+    }
+
+    // Difference between new and old DMP storage IDs
+    newDmpStorageIds.removeAll(oldDmpStorageIds);
+
+    if (!newDmpStorageIds.isEmpty()) {
+      for (Long id : newDmpStorageIds) {
+        InternalStorage storage = InternalStorage.findById(id);
+        if (storage.isActive()) {
+          continue;
+        }
+        throw new ValidationException(STORAGE_NOT_ACTIVE);
+      }
+    }
   }
 
   /**

@@ -175,6 +175,7 @@ public class DmpDOMapper {
    * @return a {@link org.damap.base.domain.Dmp} object
    */
   public Dmp mapDOtoEntity(DmpDO dmpDO, Dmp dmp, MapperService mapperService) {
+
     if (dmpDO.getId() != null) dmp.id = dmpDO.getId();
     dmp.setTitle(dmpDO.getTitle());
     dmp.setDescription(dmpDO.getDescription());
