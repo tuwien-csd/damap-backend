@@ -1,0 +1,71 @@
+version: '3.3'
+
+services:
+  damap-db:
+    image: postgres:16
+    pull_policy: always
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: damap
+      POSTGRES_PASSWORD: pw4damap
+      POSTGRES_DB: damap
+    ports:
+      - "8088:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'"]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+
+  keycloak:
+    image: bitnami/keycloak:23
+    pull_policy: always
+    restart: unless-stopped
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+
+      KEYCLOAK_DATABASE_HOST: keycloak-db
+      KEYCLOAK_DATABASE_NAME: keycloak
+      KEYCLOAK_DATABASE_USER: keycloak
+      KEYCLOAK_DATABASE_PORT: 5432
+      KEYCLOAK_DATABASE_PASSWORD: keycloak
+
+      # Import realms found in /opt/bitnami/keycloak/data/import
+      KEYCLOAK_EXTRA_ARGS: "--import-realm"
+    ports:
+      - "8087:8080"
+    volumes:
+      - ./sample-damap-realm-export.json:/opt/bitnami/keycloak/data/import/sample-damap-realm-export.json
+
+  keycloak-db:
+   image: postgres:16
+   environment:
+     POSTGRES_USER: keycloak
+     POSTGRES_PASSWORD: keycloak
+     POSTGRES_DB: keycloak
+     DB_VENDOR: postgres
+
+  api-mock:
+    image: clue/json-server
+    pull_policy: always
+    restart: unless-stopped
+    command: db.json --routes routes.json
+    volumes:
+      - ./api-mock/data/db.json:/data/db.json
+      - ./api-mock/data/routes.json:/data/routes.json
+    ports:
+      - "8091:80"
+
+  fits-service:
+    image: islandora/fits:main
+    pull_policy: always
+    restart: unless-stopped
+    ports:
+      - "8089:8080"
+
+# Uncomment the following block to persist postgres data.
+#    volumes:
+#      - damap-db-data:/var/lib/postgresql/data
+#volumes:
+#  damap-db-data:
