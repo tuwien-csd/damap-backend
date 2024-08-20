@@ -18,7 +18,16 @@ To start up the cluster of components just issue the following command:
 
 ```shell
 cd docker
-docker-compose up -d
+docker compose up -d
+```
+
+For local development, it is often enough to only run the additional services,
+as the local development instances for backend and frontend are used.
+
+To only start the additional services, the following command can be issued:
+```shell
+cd docker
+docker compose -f docker-compose-services.yaml up -d
 ```
 
 See the documented sections in the [docker/docker-compose.yaml]() to make further
