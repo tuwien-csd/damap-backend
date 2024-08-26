@@ -56,16 +56,3 @@ services:
     depends_on:
       - damap-fe
       - damap-be
-
-  fits-service:
-    image: islandora/fits:main
-    pull_policy: always
-    restart: unless-stopped
-    ports:
-      - "8089:8080"
-
-# Uncomment the following block to persist postgres data.
-#    volumes:
-#      - damap-db-data:/var/lib/postgresql/data
-#volumes:
-#  damap-db-data:
