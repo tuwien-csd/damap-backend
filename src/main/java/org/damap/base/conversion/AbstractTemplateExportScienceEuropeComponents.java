@@ -1317,11 +1317,10 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
         }
 
         ArrayList<String> docVar = new ArrayList<>();
-        docVar.add(costList.get(i).getTitle());
-        if (costList.get(i).getType() != null) docVar.add(costList.get(i).getType().toString());
-        else docVar.add("");
-        docVar.add(costList.get(i).getDescription());
-        docVar.add(costList.get(i).getCurrencyCode());
+        docVar.add(Optional.ofNullable(costList.get(i).getTitle()).orElse(""));
+        docVar.add((costList.get(i).getType() != null) ? costList.get(i).getType().toString() : "");
+        docVar.add(Optional.ofNullable(costList.get(i).getDescription()).orElse(""));
+        docVar.add(Optional.ofNullable(costList.get(i).getCurrencyCode()).orElse("€"));
         if (costList.get(i).getValue() != null) {
           docVar.add(
               NumberFormat.getNumberInstance(Locale.GERMAN).format(costList.get(i).getValue()));
