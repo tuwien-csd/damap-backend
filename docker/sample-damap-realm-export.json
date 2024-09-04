@@ -2289,6 +2289,8 @@
   "users": [
     {
       "username": "user",
+      "firstName": "User",
+      "lastName": "DAMAP",
       "enabled": true,
       "credentials": [
         {
@@ -2305,6 +2307,8 @@
     },
     {
       "username": "admin",
+      "firstName": "Admin",
+      "lastName": "DAMAP",
       "enabled": true,
       "credentials": [
         {
