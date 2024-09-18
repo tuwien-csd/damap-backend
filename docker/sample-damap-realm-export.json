@@ -2291,6 +2291,7 @@
       "username": "user",
       "firstName": "User",
       "lastName": "DAMAP",
+      "email": "user@damap.org",
       "enabled": true,
       "credentials": [
         {
@@ -2309,6 +2310,7 @@
       "username": "admin",
       "firstName": "Admin",
       "lastName": "DAMAP",
+      "email": "admin@damap.org",
       "enabled": true,
       "credentials": [
         {
