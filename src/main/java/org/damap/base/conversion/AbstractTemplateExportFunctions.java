@@ -377,7 +377,11 @@ public abstract class AbstractTemplateExportFunctions {
                 .reverseOrder()); // reverse sort index to avoid missing index while deleting the
         // run
         for (Integer runIndex : removeRunIndex) {
-          xwpfParagraphs.get(xwpfParagraphs.indexOf(xwpfParagraph)).removeRun(runIndex);
+          try {
+            xwpfParagraphs.get(xwpfParagraphs.indexOf(xwpfParagraph)).removeRun(runIndex);
+          } catch (Exception e) {
+            log.error("Error while removing run: " + e.getMessage());
+          }
         }
         removeRunIndex.clear();
       }

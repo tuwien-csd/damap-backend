@@ -319,6 +319,32 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     if (dmp.getTargetAudience() != null)
       addReplacement(replacements, "[targetaudience]", dmp.getTargetAudience());
     else addReplacement(replacements, "[targetaudience]", "");
+
+    StringBuilder reusedDescription = new StringBuilder();
+    List<Dataset> reusedDatasets = getReusedDatasets();
+    for (int i = 0; i < reusedDatasets.size(); i++) {
+      Dataset dataset = reusedDatasets.get(i);
+      if (dataset.getDescription() != null && !dataset.getDescription().isEmpty()) {
+        reusedDescription.append("Description for \"");
+        reusedDescription.append(dataset.getTitle()).append("\": ;");
+        reusedDescription.append(dataset.getDescription()).append(";");
+      }
+    }
+
+    addReplacement(replacements, "[reuseddatadescription]", reusedDescription.toString());
+
+    StringBuilder newDescription = new StringBuilder();
+    List<Dataset> newDatasets = getNewDatasets();
+    for (int i = 0; i < newDatasets.size(); i++) {
+      Dataset dataset = newDatasets.get(i);
+      if (dataset.getDescription() != null && !dataset.getDescription().isEmpty()) {
+        newDescription.append("Description for \"");
+        newDescription.append(dataset.getTitle()).append("\": ;");
+        newDescription.append(dataset.getDescription()).append(";");
+      }
+    }
+
+    addReplacement(replacements, "[produceddatadescription]", newDescription.toString());
   }
 
   /** storageIntroInformation */
@@ -930,8 +956,6 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
           docVar.add("no");
         }
 
-        docVar.add(Optional.ofNullable(dataset.getDescription()).orElse(""));
-
         insertTableCells(xwpfTable, newRow, docVar);
       }
       xwpfTable.removeRow(xwpfTable.getRows().size() - 1);
@@ -1016,8 +1040,6 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
         } else {
           docVar.add("no");
         }
-
-        docVar.add(Optional.ofNullable(dataset.getDescription()).orElse(""));
 
         insertTableCells(xwpfTable, newRow, docVar);
       }
