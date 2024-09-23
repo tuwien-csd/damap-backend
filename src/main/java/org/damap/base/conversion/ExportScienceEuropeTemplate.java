@@ -29,6 +29,7 @@ public class ExportScienceEuropeTemplate extends AbstractTemplateExportScienceEu
           loadTemplate(templateFileBrokerService.loadScienceEuropeTemplate(), startChar, endChar);
     } catch (Exception e) {
       log.error("Template file not found!");
+      log.error(e.getMessage());
       return null;
     }
     xwpfParagraphs = document.getParagraphs();
