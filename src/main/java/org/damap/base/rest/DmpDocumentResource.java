@@ -14,6 +14,7 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.damap.base.conversion.ExportTemplateBroker;
 import org.damap.base.enums.ETemplateType;
 import org.damap.base.rest.dmp.service.DmpService;
+import org.damap.base.rest.document.service.DocumentService;
 import org.damap.base.security.SecurityService;
 import org.damap.base.validation.AccessValidator;
 
@@ -31,6 +32,8 @@ public class DmpDocumentResource {
   @Inject ExportTemplateBroker exportTemplateBroker;
 
   @Inject DmpService dmpService;
+
+  @Inject DocumentService documentService;
 
   /**
    * exportTemplate.
@@ -69,6 +72,49 @@ public class DmpDocumentResource {
         .header("Content-Disposition", "attachment;filename=" + filename + ".docx")
         .header("Access-Control-Expose-Headers", "Content-Disposition")
         .build();
+  }
+
+  @GET
+  @Path("/preview/{dmpId}")
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  public Response getPreviewPDF(
+      @PathParam("dmpId") long dmpId, @QueryParam("template") ETemplateType template) {
+
+    log.info("Returning DMP PDF file for DMP with id=" + dmpId);
+
+    String personId = this.getPersonId();
+    if (!accessValidator.canViewDmp(dmpId, personId)) {
+      throw new ForbiddenException("Not authorized to access dmp with id " + dmpId);
+    }
+
+    StreamingOutput pdfDocument;
+    try {
+      pdfDocument = documentService.getPreviewPDF(dmpId, template);
+    } catch (Exception e) {
+      log.error("Error creating PDF document", e);
+      return Response.serverError().entity("Error creating PDF document").build();
+    }
+
+    // Return the PDF file in the response
+    return Response.ok(pdfDocument)
+        .header("Content-Disposition", "attachment; filename=\"dmp_" + dmpId + ".pdf\"")
+        .header("Content-Type", "application/pdf") // Set the content type
+        .header("Access-Control-Expose-Headers", "Content-Disposition")
+        .build();
+  }
+
+  @GET
+  @Path("/template_type/{dmpId}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public ETemplateType getTemplateType(@PathParam("dmpId") long dmpId) {
+    log.info("Return template type for DMP with id=" + dmpId);
+
+    String personId = this.getPersonId();
+    if (!accessValidator.canViewDmp(dmpId, personId)) {
+      throw new ForbiddenException("Not authorized to access dmp with id " + dmpId);
+    }
+
+    return documentService.getTemplateType(dmpId);
   }
 
   private String getPersonId() {
