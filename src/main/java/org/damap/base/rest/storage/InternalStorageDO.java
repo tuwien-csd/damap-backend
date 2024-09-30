@@ -20,10 +20,9 @@ public class InternalStorageDO {
   @NotBlank(message = "storage location cannot be blank")
   @NotNull(message = "storage location cannot be null") private String storageLocation;
 
-  @NotBlank(message = "backup location cannot be blank")
-  @NotNull(message = "backup location cannot be null") private String backupLocation;
+  private String backupLocation;
 
-  @NotNull(message = "backup frequency cannot be null") private Boolean active;
+  @NotNull(message = "activation status cannot be null") private Boolean active;
 
   // the following information comes from the translation table
   List<InternalStorageTranslationDO> translations;

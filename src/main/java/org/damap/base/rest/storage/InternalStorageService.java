@@ -136,7 +136,7 @@ public class InternalStorageService
    */
   @Override
   @Transactional
-  public InternalStorageDO update(String id, InternalStorageDO data) throws NotFoundException {
+  public InternalStorageDO update(String id, InternalStorageDO data){
     InternalStorageValidator.validateForUpdate(id, internalStorageRepo);
 
     InternalStorage internalStorage = internalStorageRepo.findById(Long.parseLong(id));
