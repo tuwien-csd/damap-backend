@@ -127,7 +127,6 @@ public class InternalStorageResource
    */
   @Override
   @GET
-  @Path("/search")
   @Consumes(MediaType.APPLICATION_JSON)
   public ResultList<InternalStorageDO> search(@Context UriInfo uriInfo) {
     log.debug("Search internal storage options");

@@ -8,6 +8,13 @@ import java.util.Map;
 
 public interface RepoSearch<T> extends PanacheRepository<T> {
 
+  // TODO: Add pagination
+  /**
+   * Search by parameters.
+   * Automatically generates a query based on the parameters and values in the query parameters.
+   * @param queryParams a {@link jakarta.ws.rs.core.MultivaluedMap} object, containing the attribute as key and the values as values in an array
+   * @return a {@link java.util.List} object, containing the results
+   */
   default List<T> searchByParameters(MultivaluedMap<String, Object> queryParams) {
 
     StringBuilder query = new StringBuilder();
@@ -19,26 +26,24 @@ public interface RepoSearch<T> extends PanacheRepository<T> {
     for (Map.Entry<String, List<Object>> entry : queryParams.entrySet()) {
       String key = entry.getKey();
       List<Object> values = entry.getValue();
-      if (values.size() == 1) {
-        if (counter != 0) {
-          query.append(" AND ");
-        }
-        query.append(key).append(" = :").append(key);
-        params.put(key, values.get(0));
-      } else {
-        if (counter != 0) {
-          query.append(" AND ( ");
-        } else {
-          query.append(" ( ");
-        }
-        query.append(key).append(" = :").append(key).append("0");
-        params.put(key + "0", values.get(0));
-        for (int i = 1; i < values.size(); i++) {
-          query.append(" OR ").append(key).append(" = :").append(key).append(i);
-          params.put(key + i, values.get(i));
-        }
-        query.append(" )");
+
+      if (values.isEmpty()) {
+        continue;
       }
+
+      if (counter != 0) {
+        query.append(" AND ");
+      }
+
+      query.append(" ( ");
+
+      query.append(key).append(" = :").append(key).append("0");
+      params.put(key + "0", values.get(0));
+      for (int i = 1; i < values.size(); i++) {
+        query.append(" OR ").append(key).append(" = :").append(key).append(i);
+        params.put(key + i, values.get(i));
+      }
+      query.append(" )");
 
       counter++;
     }
