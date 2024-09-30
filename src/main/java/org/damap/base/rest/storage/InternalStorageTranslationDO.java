@@ -19,9 +19,7 @@ public class InternalStorageTranslationDO {
   @NotBlank(message = "title cannot be blank")
   @NotNull(message = "title cannot be null") private String title;
 
-  @NotBlank(message = "description cannot be blank")
-  @NotNull(message = "description cannot be null") private String description;
+  private String description;
 
-  @NotBlank(message = "backup frequency cannot be blank")
-  @NotNull(message = "backup frequency cannot be null") private String backupFrequency;
+  private String backupFrequency;
 }

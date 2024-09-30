@@ -14,8 +14,8 @@ import lombok.EqualsAndHashCode;
 public class InternalStorageDO {
   private long id;
 
-  @NotBlank(message = "name cannot be blank")
-  @NotNull(message = "name cannot be null") private String url;
+  @NotBlank(message = "url cannot be blank")
+  @NotNull(message = "url cannot be null") private String url;
 
   @NotBlank(message = "storage location cannot be blank")
   @NotNull(message = "storage location cannot be null") private String storageLocation;

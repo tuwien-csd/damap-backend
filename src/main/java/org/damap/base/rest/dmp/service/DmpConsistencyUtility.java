@@ -57,6 +57,19 @@ public class DmpConsistencyUtility {
     enforceDatasetConsistency(dmpDO);
   }
 
+  /**
+   * Validates that all internal storage used in the new DMP are active.
+   * If there is no old DMP, it retrieves the storage IDs from the new DMP and checks their active
+   * status using the {@link InternalStorageService}. If comparing with an old DMP, the method
+   * checks any new storage IDs added in the new DMP and ensures they are active. If any storage
+   * is inactive, a {@link ValidationException} is thrown.
+   * A storage that is already in the old DMP is not checked for active status.
+   *
+   * @param newDmp the new DMP
+   * @param oldDmp the old DMP
+   * @param internalStorageService the internal storage service
+   * @throws ValidationException if at least one storage is not active
+   */
   public void enforceActiveStorage(
       DmpDO newDmp, Dmp oldDmp, InternalStorageService internalStorageService)
       throws ValidationException {

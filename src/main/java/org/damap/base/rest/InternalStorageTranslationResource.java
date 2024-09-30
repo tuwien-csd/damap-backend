@@ -36,8 +36,6 @@ public class InternalStorageTranslationResource
 
     try {
       return internalStorageTranslationService.create(data);
-    } catch (NotFoundException e) {
-      throw e;
     } catch (ClientErrorException e) {
       throw new ClientErrorException(
           Response.status(Response.Status.BAD_REQUEST)

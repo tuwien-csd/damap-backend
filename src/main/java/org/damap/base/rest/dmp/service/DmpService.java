@@ -147,7 +147,7 @@ public class DmpService {
    * @return a {@link org.damap.base.rest.dmp.domain.DmpDO} object
    */
   @Transactional
-  public DmpDO update(@Valid DmpDO dmpDO) throws ClientErrorException {
+  public DmpDO update(@Valid DmpDO dmpDO) {
     log.info("Updating DMP with id " + dmpDO.getId());
     DmpConsistencyUtility.enforceDmpConsistency(dmpDO);
     Dmp dmp = dmpRepo.findById(dmpDO.getId());
