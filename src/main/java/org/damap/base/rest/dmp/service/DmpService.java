@@ -4,7 +4,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.ClientErrorException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;

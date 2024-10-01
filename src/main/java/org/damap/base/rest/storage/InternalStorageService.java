@@ -43,26 +43,6 @@ public class InternalStorageService
   @Inject StorageRepo storageRepo;
 
   /**
-   * getAllByLanguage.
-   *
-   * @param languageCode a {@link java.lang.String} object
-   * @return a {@link java.util.List} object
-   */
-  public List<InternalStorageDO> getAllByLanguage(String languageCode) {
-    List<InternalStorageDO> internalStorageDOList = new ArrayList<>();
-    internalStorageTranslationRepo
-        .getAllInternalStorageByLanguage(languageCode)
-        .forEach(
-            storageTranslation ->
-                internalStorageDOList.add(
-                    InternalStorageDOMapper.mapEntityToDO(
-                        storageTranslation.getInternalStorageId(),
-                        new InternalStorageDO(),
-                        List.of(storageTranslation))));
-    return internalStorageDOList;
-  }
-
-  /**
    * create a new internal storage option.
    *
    * @param data a {@link org.damap.base.rest.storage.InternalStorageDO} object
@@ -75,7 +55,7 @@ public class InternalStorageService
 
     InternalStorage internalStorage =
         InternalStorageDOMapper.mapDOToEntity(data, new InternalStorage());
-    internalStorage.persistAndFlush();
+    internalStorage.persist();
 
     for (InternalStorageTranslationDO translationDO : data.getTranslations()) {
       translationDO.setStorageId(internalStorage.id);
@@ -85,10 +65,10 @@ public class InternalStorageService
           InternalStorageTranslationDOMapper.mapDOToTranslationEntityForCreation(
               translationDO, internalStorage);
       translation.setInternalStorageId(internalStorage);
-      translation.persistAndFlush();
+      translation.persist();
     }
 
-    return getInternalStorageById(internalStorage.id);
+    return read(String.valueOf(internalStorage.id));
   }
 
   /**
@@ -136,14 +116,14 @@ public class InternalStorageService
    */
   @Override
   @Transactional
-  public InternalStorageDO update(String id, InternalStorageDO data){
+  public InternalStorageDO update(String id, InternalStorageDO data) {
     InternalStorageValidator.validateForUpdate(id, internalStorageRepo);
 
     InternalStorage internalStorage = internalStorageRepo.findById(Long.parseLong(id));
     InternalStorageDOMapper.mapDOToEntity(data, internalStorage);
     internalStorage.persistAndFlush();
 
-    return getInternalStorageById(internalStorage.id);
+    return read(String.valueOf(internalStorage.id));
   }
 
   /**
@@ -227,6 +207,7 @@ public class InternalStorageService
     return fields;
   }
 
+  /*
   @Transactional
   public InternalStorageDO getInternalStorageById(long internalStorageId) {
     return InternalStorageDOMapper.mapEntityToDO(
@@ -235,4 +216,5 @@ public class InternalStorageService
         internalStorageTranslationRepo.getAllInternalStorageTranslationsByStorageId(
             internalStorageId));
   }
+   */
 }

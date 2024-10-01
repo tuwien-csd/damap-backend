@@ -132,4 +132,8 @@ public class InternalStorageResource
     log.debug("Search internal storage options");
     return internalStorageService.search(uriInfo.getQueryParameters());
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 46a83b7 (Further changes for the PR conversation)

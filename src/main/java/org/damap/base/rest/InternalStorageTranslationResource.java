@@ -14,7 +14,7 @@ import org.damap.base.rest.base.resource.*;
 import org.damap.base.rest.storage.InternalStorageTranslationDO;
 import org.damap.base.rest.storage.InternalStorageTranslationService;
 
-@Path("/api/storages/translations")
+@Path("/api/storages/{storageId}/translations")
 @Authenticated
 @Produces(MediaType.APPLICATION_JSON)
 @JBossLog
@@ -95,8 +95,8 @@ public class InternalStorageTranslationResource
   }
 
   @GET
-  @Path("/all/{id}")
-  public List<InternalStorageTranslationDO> getAllByStorageId(@PathParam("id") String id) {
+  @Path("/all")
+  public List<InternalStorageTranslationDO> getAllByStorageId(@PathParam("storageId") String id) {
     log.info("getAll: " + id);
 
     return internalStorageTranslationService.getAllByStorageId(id);

@@ -24,19 +24,31 @@ class InternalStorageTranslationResourceTest {
   @Test
   @TestSecurity(user = "userJwt", roles = "user")
   void testPostEndpointAsUser_Unauthorized() {
-    given().contentType("application/json").when().post().then().statusCode(403);
+    given()
+        .pathParam("storageId", 1)
+        .contentType("application/json")
+        .when()
+        .post()
+        .then()
+        .statusCode(403);
   }
 
   @Test
   @TestSecurity(user = "userJwt", roles = "user")
   void testPutEndpointAsUser_Unauthorized() {
-    given().contentType("application/json").when().put("/1").then().statusCode(403);
+    given()
+        .pathParam("storageId", 1)
+        .contentType("application/json")
+        .when()
+        .put("/1")
+        .then()
+        .statusCode(403);
   }
 
   @Test
   @TestSecurity(user = "userJwt", roles = "user")
   void testDeleteEndpointAsUser_Unauthorized() {
-    given().when().delete("/1").then().statusCode(403);
+    given().pathParam("storageId", 1).when().delete("/1").then().statusCode(403);
   }
 
   // Get (by ID and all) tests
@@ -45,17 +57,20 @@ class InternalStorageTranslationResourceTest {
   void testGetByIdEndpointInvalidID_NotFound() {
     testDOFactory.prepareInternalStorageTranslationOption(false);
 
-    given().when().get("/-1").then().statusCode(404);
+    given().pathParam("storageId", -1).when().get("/-1").then().statusCode(404);
   }
 
   @Test
   @TestSecurity(user = "userJwt", roles = "user")
   void testGetByIdEndpointValidID_Valid() {
-    Long id = testDOFactory.prepareInternalStorageTranslationOption(false).get(1);
+    List<Long> ids = testDOFactory.prepareInternalStorageTranslationOption(false);
+    Long storageId = ids.get(0);
+    Long id = ids.get(1);
 
     InternalStorageTranslationDO response =
         given()
             .when()
+            .pathParam("storageId", storageId)
             .get("/" + id)
             .then()
             .statusCode(200)
@@ -69,7 +84,7 @@ class InternalStorageTranslationResourceTest {
   void testGetAllByStorageEndpointInvalidID_NotFound() {
     testDOFactory.prepareInternalStorageTranslationOption(false);
 
-    given().when().get("/all/-1").then().statusCode(404);
+    given().pathParam("storageId", -1).when().get("/all").then().statusCode(404);
   }
 
   @Test
@@ -78,7 +93,14 @@ class InternalStorageTranslationResourceTest {
     Long id = testDOFactory.prepareInternalStorageTranslationOption(false).get(0);
 
     List<InternalStorageTranslationDO> response =
-        given().when().get("/all/" + id).then().statusCode(200).extract().as(List.class);
+        given()
+            .pathParam("storageId", id)
+            .when()
+            .get("/all")
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(List.class);
     assertEquals(1, response.size());
   }
 
@@ -87,13 +109,20 @@ class InternalStorageTranslationResourceTest {
   @TestSecurity(user = "adminJwt", roles = "Damap Admin")
   void testCreateTranslationInvalidStorageID_NotFound() {
     InternalStorageTranslationDO data = new InternalStorageTranslationDO();
-    data.setStorageId(-1L);
+    data.setStorageId(-1);
     data.setTitle("Test Storage Title ENG");
     data.setDescription("Test Storage Description ENG");
     data.setLanguageCode("eng");
     data.setBackupFrequency("Test Storage Backup Frequency ENG");
 
-    given().contentType("application/json").body(data).when().post().then().statusCode(404);
+    given()
+        .pathParam("storageId", -1)
+        .contentType("application/json")
+        .body(data)
+        .when()
+        .post()
+        .then()
+        .statusCode(400);
   }
 
   @Test
@@ -110,7 +139,14 @@ class InternalStorageTranslationResourceTest {
     data.setDescription("Test Storage Description ENG");
 
     ValidatableResponse response =
-        given().contentType("application/json").body(data).when().post().then().statusCode(400);
+        given()
+            .pathParam("storageId", id)
+            .contentType("application/json")
+            .body(data)
+            .when()
+            .post()
+            .then()
+            .statusCode(400);
     response.body("message", startsWith("Translation for language code eng already exists"));
   }
 
@@ -126,8 +162,10 @@ class InternalStorageTranslationResourceTest {
     data.setLanguageCode("deu");
     data.setBackupFrequency("Test Storage Backup Frequency DEU");
 
+    // Correct the URL construction
     InternalStorageTranslationDO response =
         given()
+            .pathParam("storageId", id)
             .contentType("application/json")
             .body(data)
             .when()
@@ -136,10 +174,18 @@ class InternalStorageTranslationResourceTest {
             .statusCode(200)
             .extract()
             .as(InternalStorageTranslationDO.class);
+
     assertEquals("Test Storage Title DEU", response.getTitle());
 
     List<InternalStorageTranslationDO> response2 =
-        given().when().get("/all/" + id).then().statusCode(200).extract().as(List.class);
+        given()
+            .pathParam("storageId", id)
+            .when()
+            .get("/all")
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(List.class);
     assertEquals(2, response2.size());
   }
 
@@ -153,7 +199,14 @@ class InternalStorageTranslationResourceTest {
     data.setLanguageCode("eng");
     data.setBackupFrequency("Test Storage Backup Frequency ENG");
 
-    given().contentType("application/json").body(data).when().put("/-1").then().statusCode(404);
+    given()
+        .pathParam("storageId", -1)
+        .contentType("application/json")
+        .body(data)
+        .when()
+        .put("/-1")
+        .then()
+        .statusCode(404);
   }
 
   @Test
@@ -171,6 +224,7 @@ class InternalStorageTranslationResourceTest {
 
     InternalStorageTranslationDO response =
         given()
+            .pathParam("storageId", ids.get(0))
             .contentType("application/json")
             .body(data)
             .when()
@@ -183,6 +237,7 @@ class InternalStorageTranslationResourceTest {
 
     InternalStorageTranslationDO response2 =
         given()
+            .pathParam("storageId", ids.get(0))
             .when()
             .get("/" + ids.get(1))
             .then()
@@ -196,7 +251,7 @@ class InternalStorageTranslationResourceTest {
   @Test
   @TestSecurity(user = "adminJwt", roles = "Damap Admin")
   void testDeleteEndpointInvalidID_NotFound() {
-    given().when().delete("/-1").then().statusCode(404);
+    given().pathParam("storageId", -1).when().delete("/-1").then().statusCode(404);
   }
 
   @Test
@@ -204,7 +259,13 @@ class InternalStorageTranslationResourceTest {
   void testDeleteEndpointLastTranslation_BadRequest() {
     List<Long> ids = testDOFactory.prepareInternalStorageTranslationOption(false);
 
-    ValidatableResponse response = given().when().delete("/" + ids.get(1)).then().statusCode(400);
+    ValidatableResponse response =
+        given()
+            .pathParam("storageId", ids.get(0))
+            .when()
+            .delete("/" + ids.get(1))
+            .then()
+            .statusCode(400);
     response.body(
         "message", startsWith("Cannot delete the last translation for an internal storage"));
   }
@@ -212,10 +273,22 @@ class InternalStorageTranslationResourceTest {
   @Test
   @TestSecurity(user = "adminJwt", roles = "Damap Admin")
   void testDeleteEndpointValidID_Deleted() {
-    Long id = testDOFactory.prepareInternalStorageTranslationOption(true).get(2);
+    List<Long> id = testDOFactory.prepareInternalStorageTranslationOption(true);
+    Long translationId = id.get(2);
+    Long storageId = id.get(0);
 
-    given().when().delete("/" + id).then().statusCode(204);
+    given()
+        .pathParam("storageId", storageId)
+        .when()
+        .delete("/" + translationId)
+        .then()
+        .statusCode(204);
 
-    given().when().get("/" + id).then().statusCode(404);
+    given()
+        .pathParam("storageId", storageId)
+        .when()
+        .get("/" + translationId)
+        .then()
+        .statusCode(404);
   }
 }

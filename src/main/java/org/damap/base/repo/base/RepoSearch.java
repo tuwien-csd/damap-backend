@@ -10,9 +10,11 @@ public interface RepoSearch<T> extends PanacheRepository<T> {
 
   // TODO: Add pagination
   /**
-   * Search by parameters.
-   * Automatically generates a query based on the parameters and values in the query parameters.
-   * @param queryParams a {@link jakarta.ws.rs.core.MultivaluedMap} object, containing the attribute as key and the values as values in an array
+   * Search by parameters. Automatically generates a query based on the parameters and values in the
+   * query parameters.
+   *
+   * @param queryParams a {@link jakarta.ws.rs.core.MultivaluedMap} object, containing the attribute
+   *     as key and the values as values in an array
    * @return a {@link java.util.List} object, containing the results
    */
   default List<T> searchByParameters(MultivaluedMap<String, Object> queryParams) {

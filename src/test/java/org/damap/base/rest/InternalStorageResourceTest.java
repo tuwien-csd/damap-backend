@@ -51,14 +51,14 @@ class InternalStorageResourceTest {
 
   @Test
   void testGetAllByLanguageEndpoint_Invalid() {
-    given().when().get("/languageCode/eng").then().statusCode(401);
+    given().when().get("languageCode=eng").then().statusCode(401);
   }
 
   @Test
   @TestSecurity(user = "userJwt", roles = "user")
   void testGetAllByLanguageEndpoint_Valid() {
     testDOFactory.prepareInternalStorageOption();
-    given().when().get("/languageCode/eng").then().statusCode(200);
+    given().queryParam("languageCode", "eng").when().get().then().statusCode(200);
   }
 
   // Authorization tests
@@ -141,7 +141,7 @@ class InternalStorageResourceTest {
 
     response.body("exception", equalTo("ConstraintViolationException"));
     response.body("violations.size()", is(1));
-    response.body("violations[0].message", startsWith("name cannot be blank"));
+    response.body("violations[0].message", startsWith("url cannot be blank"));
   }
 
   @Test
@@ -237,8 +237,9 @@ class InternalStorageResourceTest {
     testDOFactory.prepareSpecialInternalStorageOption("1");
 
     given()
+        .queryParams("invalidParam", "1", "url", "special.url.com1")
         .when()
-        .get("/search?invalidParam=1&url=special.url.com1")
+        .get()
         .then()
         .statusCode(200)
         .body("items.size()", equalTo(1));
@@ -257,7 +258,7 @@ class InternalStorageResourceTest {
     given()
         .queryParams(queryParams)
         .when()
-        .get("/search")
+        .get()
         .then()
         .statusCode(200)
         .body("items.size()", equalTo(2));
@@ -276,7 +277,7 @@ class InternalStorageResourceTest {
     given()
         .queryParams(queryParams)
         .when()
-        .get("/search")
+        .get()
         .then()
         .statusCode(200)
         .body("items.size()", equalTo(0));
@@ -288,8 +289,9 @@ class InternalStorageResourceTest {
     testDOFactory.prepareSpecialInternalStorageOption("");
 
     given()
+        .queryParam("url", "special.url.com")
         .when()
-        .get("/search?url=special.url.com")
+        .get()
         .then()
         .statusCode(200)
         .body("items.size()", equalTo(1));
