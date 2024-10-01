@@ -15,7 +15,6 @@ import org.damap.base.rest.base.resource.ResourceSearch;
 import org.damap.base.rest.base.resource.ResourceUpdate;
 import org.damap.base.rest.storage.InternalStorageDO;
 import org.damap.base.rest.storage.InternalStorageService;
-import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
 /** InternalStorageResource class. */
 @Path("/api/storages")
@@ -97,7 +96,7 @@ public class InternalStorageResource
   @Path("/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @RolesAllowed("Damap Admin")
-  public InternalStorageDO update(@PathParam String id, @Valid InternalStorageDO data) {
+  public InternalStorageDO update(@PathParam("id") String id, @Valid InternalStorageDO data) {
     log.debug("Update internal storage option with id " + id);
     log.debug(data);
     return internalStorageService.update(id, data);
@@ -113,7 +112,7 @@ public class InternalStorageResource
   @DELETE
   @RolesAllowed("Damap Admin")
   @Path("/{id}")
-  public void delete(@PathParam String id) {
+  public void delete(@PathParam("id") String id) {
     log.debug("Delete internal storage option with id " + id);
     internalStorageService.delete(id);
   }
@@ -132,8 +131,4 @@ public class InternalStorageResource
     log.debug("Search internal storage options");
     return internalStorageService.search(uriInfo.getQueryParameters());
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 46a83b7 (Further changes for the PR conversation)

@@ -81,7 +81,10 @@ public class DmpConsistencyUtility {
     if (oldDmp != null) {
       for (Host host : oldDmp.getHostList()) {
         if (host instanceof Storage storage) {
-          oldDmpStorageIds.add(storage.getInternalStorageId().id);
+          InternalStorage internalStorage = storage.getInternalStorageId();
+          if (internalStorage != null) {
+            oldDmpStorageIds.add(internalStorage.id);
+          }
         }
       }
     }
@@ -91,6 +94,10 @@ public class DmpConsistencyUtility {
 
     if (!newDmpStorageIds.isEmpty()) {
       for (Long id : newDmpStorageIds) {
+        if (id == null) {
+          continue;
+        }
+
         InternalStorage storage = InternalStorage.findById(id);
         if (storage.isActive()) {
           continue;
