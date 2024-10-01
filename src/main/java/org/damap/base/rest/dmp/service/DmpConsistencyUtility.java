@@ -1,8 +1,6 @@
 package org.damap.base.rest.dmp.service;
 
 import jakarta.validation.ValidationException;
-import jakarta.ws.rs.core.MultivaluedHashMap;
-import jakarta.ws.rs.core.MultivaluedMap;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,12 +10,10 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.jbosslog.JBossLog;
 import org.damap.base.domain.*;
 import org.damap.base.enums.*;
-import org.damap.base.rest.base.ResultList;
 import org.damap.base.rest.dmp.domain.DatasetDO;
 import org.damap.base.rest.dmp.domain.DmpDO;
 import org.damap.base.rest.dmp.domain.HostDO;
 import org.damap.base.rest.dmp.domain.StorageDO;
-import org.damap.base.rest.storage.InternalStorageDO;
 import org.damap.base.rest.storage.InternalStorageService;
 
 /** DmpConsistencyUtility class. */
@@ -74,46 +70,19 @@ public class DmpConsistencyUtility {
       DmpDO newDmp, Dmp oldDmp, InternalStorageService internalStorageService)
       throws ValidationException {
 
-    if (oldDmp == null) {
-      MultivaluedMap<String, String> queryParams = new MultivaluedHashMap<>();
-      List<String> ids =
-          newDmp.getStorage().stream()
-              .map(StorageDO::getInternalStorageId)
-              .map(String::valueOf)
-              .toList();
-      queryParams.put("id", ids);
-
-      if (ids.isEmpty()) {
-        return;
-      }
-
-      ResultList<InternalStorageDO> storagesDOResult = internalStorageService.search(queryParams);
-      List<InternalStorageDO> storages = storagesDOResult.getItems();
-
-      if (storages.size() != newDmp.getStorage().size()) {
-        throw new ValidationException(STORAGE_NOT_ACTIVE);
-      }
-
-      for (InternalStorageDO storageDO : storages) {
-        if (!storageDO.getActive()) {
-          throw new ValidationException(STORAGE_NOT_ACTIVE);
-        }
-      }
-
-      return;
-    }
-
     // New DMP used storage IDs
     List<Long> newDmpStorageIds = new ArrayList<>();
     for (StorageDO storageDO : newDmp.getStorage()) {
       newDmpStorageIds.add(storageDO.getInternalStorageId());
     }
 
-    // Old DMP used storage IDs
+    // Old DMP used storage IDs or empty list if no old DMP
     List<Long> oldDmpStorageIds = new ArrayList<>();
-    for (Host host : oldDmp.getHostList()) {
-      if (host instanceof Storage storage) {
-        oldDmpStorageIds.add(storage.getInternalStorageId().id);
+    if (oldDmp != null) {
+      for (Host host : oldDmp.getHostList()) {
+        if (host instanceof Storage storage) {
+          oldDmpStorageIds.add(storage.getInternalStorageId().id);
+        }
       }
     }
 
