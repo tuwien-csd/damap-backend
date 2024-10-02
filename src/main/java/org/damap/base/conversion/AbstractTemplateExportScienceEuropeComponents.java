@@ -772,15 +772,23 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
           && !dmp.getDataRightsAndAccessControl().isEmpty()) {
         legalRestrictionText +=
             ";"
-                + dmp.getDataRightsAndAccessControl()
-                + " "
-                + loadResourceService.loadVariableFromResource(prop, "legalRights.contact");
+                + loadResourceService.loadVariableFromResource(prop, "legalRights.owners")
+                + ": "
+                + dmp.getDataRightsAndAccessControl();
       } else {
         legalRestrictionText +=
-            ";" + loadResourceService.loadVariableFromResource(prop, "legalRights.contact.default");
+            ";" + loadResourceService.loadVariableFromResource(prop, "legalRights.owners.no");
       }
     } else {
-      legalRestrictionText = loadResourceService.loadVariableFromResource(prop, "legal.no");
+      if (dmp.getDataRightsAndAccessControl() != null) {
+        legalRestrictionText =
+            loadResourceService.loadVariableFromResource(prop, "legalRights.owners")
+                + ": "
+                + dmp.getDataRightsAndAccessControl();
+      } else {
+        legalRestrictionText =
+            loadResourceService.loadVariableFromResource(prop, "legalRights.owners.no");
+      }
     }
     addReplacement(replacements, "[legalrestriction]", legalRestrictionText);
   }
