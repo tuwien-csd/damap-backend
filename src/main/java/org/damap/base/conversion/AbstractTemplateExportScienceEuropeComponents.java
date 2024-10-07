@@ -627,9 +627,24 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
         repoInformation + (repoInformation.isEmpty() ? "" : ";"));
   }
 
+  protected void closeAndRestrictedDataInformation() {
+    String closedReasons = "";
+    if (dmp.getClosedAccessInfo() != null && !dmp.getClosedAccessInfo().isBlank()) {
+      closedReasons = dmp.getClosedAccessInfo();
+    }
+    addReplacement(replacements, "[closeddatasetreasons]", closedReasons);
+
+    String restrictedReasons = "";
+    if (dmp.getRestrictedAccessInfo() != null && !dmp.getRestrictedAccessInfo().isBlank()) {
+      restrictedReasons = dmp.getRestrictedAccessInfo();
+    }
+    addReplacement(replacements, "[restricteddatasetreasons]", restrictedReasons);
+  }
+
   /** repoinfoAndToolsInformation. */
   public void repoinfoAndToolsInformation() {
     repoInformation();
+    closeAndRestrictedDataInformation();
 
     if (dmp.getTools() != null) {
       if (!Objects.equals(dmp.getTools(), "")) {
@@ -1203,7 +1218,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
             && !newDatasets.get(i).getDataAccess().equals(EDataAccessType.CLOSED)) {
 
           ELicense license = newDatasets.get(i).getLicense();
-          XWPFParagraph paragraph = newRow.getCell(6).getParagraphs().get(0);
+          XWPFParagraph paragraph = newRow.getCell(5).getParagraphs().get(0);
           turnRunIntoHyperlinkRun(paragraph.getRuns().get(0), license.getUrl());
           commitTableRows(xwpfTable);
         }
