@@ -624,12 +624,44 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     addReplacement(
         replacements,
         "[repoinformation]",
-        repoInformation + (repoInformation.isEmpty() ? "" : ";"));
+        (!repoInformation.isEmpty() ? "Repository description: ;" : "")
+            + repoInformation
+            + (!repoInformation.isEmpty() ? "" : ";"));
+  }
+
+  protected void closeAndRestrictedDataInformation() {
+    String closedRestrictedReasons = "";
+    if (dmp.getClosedAccessInfo() != null && !dmp.getClosedAccessInfo().isBlank()) {
+      closedRestrictedReasons =
+          loadResourceService.loadVariableFromResource(prop, "closeddatasetreasons.intro")
+              + ";"
+              + dmp.getClosedAccessInfo();
+    }
+
+    if (dmp.getRestrictedAccessInfo() != null && !dmp.getRestrictedAccessInfo().isBlank()) {
+      if (!closedRestrictedReasons.isEmpty()) {
+        closedRestrictedReasons += ";";
+      }
+
+      closedRestrictedReasons +=
+          loadResourceService.loadVariableFromResource(prop, "restricteddatasetreasons.intro")
+              + ";"
+              + dmp.getRestrictedAccessInfo();
+
+      closedRestrictedReasons += ";";
+    }
+
+    if (!closedRestrictedReasons.isEmpty()) {
+      closedRestrictedReasons += ";";
+    }
+
+    addReplacement(replacements, "[closedrestricteddatasetreasons]", closedRestrictedReasons);
   }
 
   /** repoinfoAndToolsInformation. */
   public void repoinfoAndToolsInformation() {
     repoInformation();
+    closeAndRestrictedDataInformation();
 
     if (dmp.getTools() != null) {
       if (!Objects.equals(dmp.getTools(), "")) {
@@ -1150,18 +1182,6 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
           docVar.add("");
         }
 
-        if (newDatasets.get(i).getLegalRestrictions() != null) {
-          if (Boolean.TRUE.equals(newDatasets.get(i).getLegalRestrictions())) {
-            if (dmp.getLegalRestrictionsComment() != null)
-              docVar.add(dmp.getLegalRestrictionsComment());
-            else docVar.add("");
-          } else {
-            docVar.add("");
-          }
-        } else {
-          docVar.add("");
-        }
-
         if (newDatasets.get(i).getDataAccess() == EDataAccessType.CLOSED) {
           docVar.add("");
         } else if (newDatasets.get(i).getStart() != null) {
@@ -1203,7 +1223,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
             && !newDatasets.get(i).getDataAccess().equals(EDataAccessType.CLOSED)) {
 
           ELicense license = newDatasets.get(i).getLicense();
-          XWPFParagraph paragraph = newRow.getCell(6).getParagraphs().get(0);
+          XWPFParagraph paragraph = newRow.getCell(5).getParagraphs().get(0);
           turnRunIntoHyperlinkRun(paragraph.getRuns().get(0), license.getUrl());
           commitTableRows(xwpfTable);
         }
