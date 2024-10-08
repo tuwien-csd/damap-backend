@@ -1173,18 +1173,6 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
           docVar.add("");
         }
 
-        if (newDatasets.get(i).getLegalRestrictions() != null) {
-          if (Boolean.TRUE.equals(newDatasets.get(i).getLegalRestrictions())) {
-            if (dmp.getLegalRestrictionsComment() != null)
-              docVar.add(dmp.getLegalRestrictionsComment());
-            else docVar.add("");
-          } else {
-            docVar.add("");
-          }
-        } else {
-          docVar.add("");
-        }
-
         if (newDatasets.get(i).getDataAccess() == EDataAccessType.CLOSED) {
           docVar.add("");
         } else if (newDatasets.get(i).getStart() != null) {
