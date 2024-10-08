@@ -624,19 +624,19 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     addReplacement(
         replacements,
         "[repoinformation]",
-        repoInformation + (repoInformation.isEmpty() ? "" : ";"));
+            (repoInformation.isEmpty() ? "Repository description: ;" : "") + repoInformation + (repoInformation.isEmpty() ? "" : ";"));
   }
 
   protected void closeAndRestrictedDataInformation() {
     String closedReasons = "";
     if (dmp.getClosedAccessInfo() != null && !dmp.getClosedAccessInfo().isBlank()) {
-      closedReasons = dmp.getClosedAccessInfo();
+      closedReasons = loadResourceService.loadVariableFromResource(prop, "closeddatasetreasons.intro") + ";" + dmp.getClosedAccessInfo();
     }
     addReplacement(replacements, "[closeddatasetreasons]", closedReasons);
 
     String restrictedReasons = "";
     if (dmp.getRestrictedAccessInfo() != null && !dmp.getRestrictedAccessInfo().isBlank()) {
-      restrictedReasons = dmp.getRestrictedAccessInfo();
+      restrictedReasons = loadResourceService.loadVariableFromResource(prop, "restricteddatasetreasons.intro") + ";" + dmp.getRestrictedAccessInfo();
     }
     addReplacement(replacements, "[restricteddatasetreasons]", restrictedReasons);
   }
