@@ -95,7 +95,6 @@ public class InternalStorageTranslationResource
   }
 
   @GET
-  @Path("/all")
   public List<InternalStorageTranslationDO> getAllByStorageId(@PathParam("storageId") String id) {
     log.info("getAll: " + id);
 

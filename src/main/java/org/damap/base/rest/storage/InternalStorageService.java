@@ -96,17 +96,6 @@ public class InternalStorageService
   }
 
   /**
-   * read a specific internal storage option with default language.
-   *
-   * @param id a {@link java.lang.String} object
-   * @return
-   */
-  @Override
-  public InternalStorageDO read(String id) {
-    return this.read(id, null);
-  }
-
-  /**
    * update a specific internal storage option.
    *
    * @param id a {@link java.lang.String} object
@@ -171,6 +160,9 @@ public class InternalStorageService
       String key = entry.getKey();
       List<String> values = entry.getValue();
       if (fields.containsKey(key)) {
+        if (values.contains("null")) {
+          continue;
+        }
         searchParams.addAll(
             key, values.stream().map(v -> convertValue(fields.getFirst(key), v)).toList());
       }
@@ -206,15 +198,4 @@ public class InternalStorageService
     fields.add("active", Boolean.class);
     return fields;
   }
-
-  /*
-  @Transactional
-  public InternalStorageDO getInternalStorageById(long internalStorageId) {
-    return InternalStorageDOMapper.mapEntityToDO(
-        internalStorageRepo.findById(internalStorageId),
-        new InternalStorageDO(),
-        internalStorageTranslationRepo.getAllInternalStorageTranslationsByStorageId(
-            internalStorageId));
-  }
-   */
 }

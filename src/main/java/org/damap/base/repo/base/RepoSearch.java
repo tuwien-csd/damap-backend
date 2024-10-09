@@ -42,7 +42,7 @@ public interface RepoSearch<T> extends PanacheRepository<T> {
       query.append(key).append(" = :").append(key).append("0");
       params.put(key + "0", values.get(0));
       for (int i = 1; i < values.size(); i++) {
-        query.append(" OR ").append(key).append(" = :").append(key).append(i);
+        query.append(" OR %s = :%s".formatted(key, key + i));
         params.put(key + i, values.get(i));
       }
       query.append(" )");

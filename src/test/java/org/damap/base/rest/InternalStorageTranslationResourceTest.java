@@ -84,7 +84,7 @@ class InternalStorageTranslationResourceTest {
   void testGetAllByStorageEndpointInvalidID_NotFound() {
     testDOFactory.prepareInternalStorageTranslationOption(false);
 
-    given().pathParam("storageId", -1).when().get("/all").then().statusCode(404);
+    given().pathParam("storageId", -1).when().get().then().statusCode(404);
   }
 
   @Test
@@ -96,7 +96,7 @@ class InternalStorageTranslationResourceTest {
         given()
             .pathParam("storageId", id)
             .when()
-            .get("/all")
+            .get()
             .then()
             .statusCode(200)
             .extract()
@@ -181,7 +181,7 @@ class InternalStorageTranslationResourceTest {
         given()
             .pathParam("storageId", id)
             .when()
-            .get("/all")
+            .get()
             .then()
             .statusCode(200)
             .extract()

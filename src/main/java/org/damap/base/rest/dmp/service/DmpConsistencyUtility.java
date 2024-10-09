@@ -4,6 +4,7 @@ import jakarta.validation.ValidationException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
@@ -92,18 +93,14 @@ public class DmpConsistencyUtility {
     // Difference between new and old DMP storage IDs
     newDmpStorageIds.removeAll(oldDmpStorageIds);
 
-    if (!newDmpStorageIds.isEmpty()) {
-      for (Long id : newDmpStorageIds) {
-        if (id == null) {
-          continue;
-        }
+    newDmpStorageIds.removeIf(Objects::isNull);
 
-        InternalStorage storage = InternalStorage.findById(id);
-        if (storage.isActive()) {
-          continue;
-        }
-        throw new ValidationException(STORAGE_NOT_ACTIVE);
+    for (Long id : newDmpStorageIds) {
+      InternalStorage storage = InternalStorage.findById(id);
+      if (storage.isActive()) {
+        continue;
       }
+      throw new ValidationException(STORAGE_NOT_ACTIVE);
     }
   }
 
