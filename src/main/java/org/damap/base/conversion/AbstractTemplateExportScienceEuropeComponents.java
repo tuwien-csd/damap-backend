@@ -127,7 +127,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
 
     if (personIdentifier != null) {
       String contactIdentifierId = personIdentifier.getIdentifier();
-      if (personIdentifier.getIdentifierType().toString().equals("orcid")) {
+      if (personIdentifier.getIdentifierType().equals(EIdentifierType.ORCID)) {
         identifier = "ORCID iD: " + contactIdentifierId;
       }
     }
@@ -141,7 +141,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
 
     if (affiliationIdentifier != null) {
       String contactAffiliationIdentifierId = affiliationIdentifier.getIdentifier();
-      if (affiliationIdentifier.getIdentifierType().toString().equals("ror")) {
+      if (affiliationIdentifier.getIdentifierType().equals(EIdentifierType.ROR)) {
         identifier = "ROR: " + contactAffiliationIdentifierId;
       }
     }
