@@ -9,12 +9,14 @@ databaseChangeLog:
                     - column:
                           name: active
                           type: boolean
+                          defaultValueBoolean: true
           - addColumn:
                 tableName: internal_storage_aud
                 columns:
                     - column:
                           name: active
                           type: boolean
+                          defaultValueBoolean: true
           - sqlFile:
                 dbms: "!h2"
                 comment: Update storage procedures
