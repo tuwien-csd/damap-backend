@@ -160,9 +160,6 @@ public class InternalStorageService
       String key = entry.getKey();
       List<String> values = entry.getValue();
       if (fields.containsKey(key)) {
-        if (values.contains("null")) {
-          continue;
-        }
         searchParams.addAll(
             key, values.stream().map(v -> convertValue(fields.getFirst(key), v)).toList());
       }
