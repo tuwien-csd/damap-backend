@@ -649,7 +649,6 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
               + dmp.getRestrictedAccessInfo();
 
       closedRestrictedReasons += ";";
-
     }
 
     if (!closedRestrictedReasons.isEmpty()) {
