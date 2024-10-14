@@ -624,29 +624,39 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     addReplacement(
         replacements,
         "[repoinformation]",
-        (repoInformation.isEmpty() ? "Repository description: ;" : "")
+        (!repoInformation.isEmpty() ? "Repository description: ;" : "")
             + repoInformation
-            + (repoInformation.isEmpty() ? "" : ";"));
+            + (!repoInformation.isEmpty() ? "" : ";"));
   }
 
   protected void closeAndRestrictedDataInformation() {
-    String closedReasons = "";
+    String closedRestrictedReasons = "";
     if (dmp.getClosedAccessInfo() != null && !dmp.getClosedAccessInfo().isBlank()) {
-      closedReasons =
+      closedRestrictedReasons =
           loadResourceService.loadVariableFromResource(prop, "closeddatasetreasons.intro")
               + ";"
               + dmp.getClosedAccessInfo();
     }
-    addReplacement(replacements, "[closeddatasetreasons]", closedReasons);
 
-    String restrictedReasons = "";
     if (dmp.getRestrictedAccessInfo() != null && !dmp.getRestrictedAccessInfo().isBlank()) {
-      restrictedReasons =
+      if (!closedRestrictedReasons.isEmpty()) {
+        closedRestrictedReasons += ";";
+      }
+
+      closedRestrictedReasons +=
           loadResourceService.loadVariableFromResource(prop, "restricteddatasetreasons.intro")
               + ";"
               + dmp.getRestrictedAccessInfo();
+
+      closedRestrictedReasons += ";";
+
     }
-    addReplacement(replacements, "[restricteddatasetreasons]", restrictedReasons);
+
+    if (!closedRestrictedReasons.isEmpty()) {
+      closedRestrictedReasons += ";";
+    }
+
+    addReplacement(replacements, "[closedrestricteddatasetreasons]", closedRestrictedReasons);
   }
 
   /** repoinfoAndToolsInformation. */
