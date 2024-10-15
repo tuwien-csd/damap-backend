@@ -51,6 +51,16 @@ public class InternalStorageTranslationValidator {
       throw new NotFoundException("No internal storage translation with ID " + id + " found");
     }
 
+    if (internalStorageTranslationRepo.existsTranslationForStorageIdAndLanguageCode(
+            internalStorageTranslationDO.getStorageId(),
+            internalStorageTranslationDO.getLanguageCode())) {
+      throw new ClientErrorException(
+              "Translation for language code "
+                      + internalStorageTranslationDO.getLanguageCode()
+                      + " already exists",
+              Response.Status.BAD_REQUEST);
+    }
+
     InternalStorageTranslationValidator.validationCommon(
         internalStorageTranslationDO, internalStorageRepo);
   }
