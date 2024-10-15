@@ -52,6 +52,16 @@ public class InternalStorageTranslationRepo
     return count("internalStorageId.id = ?1 and languageCode = ?2", storageId, languageCode) > 0;
   }
 
+  public boolean existsTranslationForStorageIdAndLanguageCodeExceptId(
+      Long storageId, String languageCode, Long id) {
+    return count(
+            "internalStorageId.id = ?1 and languageCode = ?2 and id != ?3",
+            storageId,
+            languageCode,
+            id)
+        > 0;
+  }
+
   public void deleteAllTranslationsForInternalStorage(Long storageId) {
     delete("internalStorageId.id", storageId);
   }
