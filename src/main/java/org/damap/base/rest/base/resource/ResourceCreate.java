@@ -1,5 +1,6 @@
 package org.damap.base.rest.base.resource;
 
+import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -17,5 +18,5 @@ public interface ResourceCreate<E, S> {
   @POST
   @Path("")
   @Consumes(MediaType.APPLICATION_JSON)
-  E create(S data);
+  E create(@Valid S data);
 }

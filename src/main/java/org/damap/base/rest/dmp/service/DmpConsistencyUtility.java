@@ -1,19 +1,28 @@
 package org.damap.base.rest.dmp.service;
 
+import jakarta.validation.ValidationException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
+import lombok.extern.jbosslog.JBossLog;
+import org.damap.base.domain.*;
 import org.damap.base.enums.*;
 import org.damap.base.rest.dmp.domain.DatasetDO;
 import org.damap.base.rest.dmp.domain.DmpDO;
 import org.damap.base.rest.dmp.domain.HostDO;
+import org.damap.base.rest.dmp.domain.StorageDO;
+import org.damap.base.rest.storage.InternalStorageService;
 
 /** DmpConsistencyUtility class. */
 @UtilityClass
+@JBossLog
 public class DmpConsistencyUtility {
+
+  private static final String STORAGE_NOT_ACTIVE = "Storage is not active";
 
   /**
    * Adapts a given DMP so that it's information is consistent.
@@ -43,6 +52,56 @@ public class DmpConsistencyUtility {
     // Set conditional info
     setConditionalDmpInfo(dmpDO);
     enforceDatasetConsistency(dmpDO);
+  }
+
+  /**
+   * Validates that all internal storage used in the new DMP are active. If there is no old DMP, it
+   * retrieves the storage IDs from the new DMP and checks their active status using the {@link
+   * InternalStorageService}. If comparing with an old DMP, the method checks any new storage IDs
+   * added in the new DMP and ensures they are active. If any storage is inactive, a {@link
+   * ValidationException} is thrown. A storage that is already in the old DMP is not checked for
+   * active status.
+   *
+   * @param newDmp the new DMP
+   * @param oldDmp the old DMP
+   * @param internalStorageService the internal storage service
+   * @throws ValidationException if at least one storage is not active
+   */
+  public void enforceActiveStorage(
+      DmpDO newDmp, Dmp oldDmp, InternalStorageService internalStorageService)
+      throws ValidationException {
+
+    // New DMP used storage IDs
+    List<Long> newDmpStorageIds = new ArrayList<>();
+    for (StorageDO storageDO : newDmp.getStorage()) {
+      newDmpStorageIds.add(storageDO.getInternalStorageId());
+    }
+
+    // Old DMP used storage IDs or empty list if no old DMP
+    List<Long> oldDmpStorageIds = new ArrayList<>();
+    if (oldDmp != null) {
+      for (Host host : oldDmp.getHostList()) {
+        if (host instanceof Storage storage) {
+          InternalStorage internalStorage = storage.getInternalStorageId();
+          if (internalStorage != null) {
+            oldDmpStorageIds.add(internalStorage.id);
+          }
+        }
+      }
+    }
+
+    // Difference between new and old DMP storage IDs
+    newDmpStorageIds.removeAll(oldDmpStorageIds);
+
+    newDmpStorageIds.removeIf(Objects::isNull);
+
+    for (Long id : newDmpStorageIds) {
+      InternalStorage storage = InternalStorage.findById(id);
+      if (storage.isActive()) {
+        continue;
+      }
+      throw new ValidationException(STORAGE_NOT_ACTIVE);
+    }
   }
 
   /**

@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: 15
+      author: Geoffrey Karnbach
+      changes:
+          - addColumn:
+                tableName: internal_storage
+                columns:
+                    - column:
+                          name: active
+                          type: boolean
+                          defaultValueBoolean: true
+          - addColumn:
+                tableName: internal_storage_aud
+                columns:
+                    - column:
+                          name: active
+                          type: boolean
+                          defaultValueBoolean: true
+          - sqlFile:
+                dbms: "!h2"
+                comment: Update storage procedures
+                splitStatements: false
+                stripComments: false
+                path: org/damap/base/db/changeLog-4.x/storage_procedures2.sql
+
+      rollback:
+          - dropColumn:
+                tableName: internal_storage
+                columnName: active
+          - dropColumn:
+                tableName: internal_storage_aud
+                columnName: active
+                rollback:

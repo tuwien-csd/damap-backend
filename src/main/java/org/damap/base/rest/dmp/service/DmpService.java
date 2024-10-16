@@ -19,10 +19,7 @@ import org.damap.base.enums.EFunctionRole;
 import org.damap.base.enums.EIdentifierType;
 import org.damap.base.repo.AccessRepo;
 import org.damap.base.repo.DmpRepo;
-import org.damap.base.rest.dmp.domain.ContributorDO;
-import org.damap.base.rest.dmp.domain.DmpDO;
-import org.damap.base.rest.dmp.domain.DmpListItemDO;
-import org.damap.base.rest.dmp.domain.ProjectDO;
+import org.damap.base.rest.dmp.domain.*;
 import org.damap.base.rest.dmp.mapper.ContributorDOMapper;
 import org.damap.base.rest.dmp.mapper.DmpDOMapper;
 import org.damap.base.rest.dmp.mapper.DmpListItemDOMapper;
@@ -31,6 +28,7 @@ import org.damap.base.rest.dmp.mapper.ProjectSupplementDOMapper;
 import org.damap.base.rest.persons.orcid.ORCIDPersonServiceImpl;
 import org.damap.base.rest.projects.ProjectService;
 import org.damap.base.rest.projects.ProjectSupplementDO;
+import org.damap.base.rest.storage.InternalStorageService;
 import org.damap.base.rest.version.VersionDO;
 import org.damap.base.rest.version.VersionService;
 import org.hibernate.envers.AuditReader;
@@ -52,6 +50,8 @@ public class DmpService {
   @Inject VersionService versionService;
 
   @Inject ORCIDPersonServiceImpl orcidPersonService;
+
+  @Inject InternalStorageService internalStorageService;
 
   /**
    * getAll.
@@ -126,6 +126,9 @@ public class DmpService {
   public DmpDO create(@Valid DmpDO dmpDO, String editedBy) {
     log.info("Creating new DMP");
     DmpConsistencyUtility.enforceDmpConsistency(dmpDO);
+
+    DmpConsistencyUtility.enforceActiveStorage(dmpDO, null, internalStorageService);
+
     Dmp dmp = DmpDOMapper.mapDOtoEntity(dmpDO, new Dmp(), mapperService);
     dmp.setCreated(new Date());
     fetchORCIDContributorInfo(dmp);
@@ -147,6 +150,9 @@ public class DmpService {
     log.info("Updating DMP with id " + dmpDO.getId());
     DmpConsistencyUtility.enforceDmpConsistency(dmpDO);
     Dmp dmp = dmpRepo.findById(dmpDO.getId());
+
+    DmpConsistencyUtility.enforceActiveStorage(dmpDO, dmp, internalStorageService);
+
     boolean projectSelectionChanged = projectSelectionChanged(dmp, dmpDO);
     DmpDOMapper.mapDOtoEntity(dmpDO, dmp, mapperService);
     dmp.setModified(new Date());
