@@ -2,6 +2,7 @@ package org.damap.base.rest.document.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.StreamingOutput;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,19 +28,29 @@ public class DocumentService {
 
   @Inject @RestClient GotenbergRestService gotenbergRestService;
 
-  public StreamingOutput getPreviewPDF(long dmpId, ETemplateType template) {
+  public StreamingOutput getExportDocument(
+      long dmpId, ETemplateType template, boolean download, String filetype) {
     // Fetch the document based on the template
     XWPFDocument document =
         (template != null)
             ? exportTemplateBroker.exportTemplateByType(dmpId, template)
             : exportTemplateBroker.exportTemplate(dmpId);
 
-    // Create a temporary Word document
+    if (filetype.equals("pdf")) {
+      return getPdfOf(document);
+    } else if (filetype.equals("docx")) {
+      return getWordDocumentOf(document);
+    }
+
+    throw new WebApplicationException("Invalid file type: " + filetype);
+  }
+
+  private StreamingOutput getPdfOf(XWPFDocument xwpfDocument) {
     File tempFile;
     try {
       tempFile = File.createTempFile("dmp", ".docx");
       try (FileOutputStream out = new FileOutputStream(tempFile)) {
-        document.write(out);
+        xwpfDocument.write(out);
       }
     } catch (IOException e) {
       log.error("Error creating temporary file", e);
@@ -68,6 +79,13 @@ public class DocumentService {
     return output -> {
       output.write(finalPdfBytes);
       output.flush();
+    };
+  }
+
+  private StreamingOutput getWordDocumentOf(XWPFDocument xwpfDocument) {
+    return os -> {
+      xwpfDocument.write(os);
+      xwpfDocument.close();
     };
   }
 

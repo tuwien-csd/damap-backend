@@ -10,7 +10,6 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.StreamingOutput;
 import java.io.*;
 import lombok.extern.jbosslog.JBossLog;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.damap.base.conversion.ExportTemplateBroker;
 import org.damap.base.enums.ETemplateType;
 import org.damap.base.rest.dmp.service.DmpService;
@@ -44,67 +43,64 @@ public class DmpDocumentResource {
    */
   @GET
   @Path("/{dmpId}")
+  @Deprecated(since = "4.3.0")
   public Response exportTemplate(
       @PathParam("dmpId") long dmpId, @QueryParam("template") ETemplateType template) {
     log.info("Return DMP document file for DMP with id=" + dmpId);
 
+    return this.export(dmpId, template, true, "docx");
+  }
+
+  @GET
+  @Path("/{dmpId}/export")
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  public Response export(
+      @PathParam("dmpId") long dmpId,
+      @QueryParam("template") ETemplateType template,
+      @QueryParam("download") Boolean download,
+      @QueryParam("filetype") String filetype) {
+
+    if (download == null) {
+      download = true;
+    }
+
+    if (filetype == null || (!filetype.equals("pdf") && !filetype.equals("docx"))) {
+      filetype = "docx";
+    }
+
+    log.info("Returning DMP document file for DMP with id=" + dmpId);
+
     String personId = this.getPersonId();
     if (!accessValidator.canViewDmp(dmpId, personId)) {
       throw new ForbiddenException("Not authorized to access dmp with id " + dmpId);
+    }
+
+    StreamingOutput document;
+    try {
+      document = documentService.getExportDocument(dmpId, template, download, filetype);
+    } catch (Exception e) {
+      log.error("Error exporting DMP document", e);
+      return Response.serverError().entity("Error exporting DMP document").build();
     }
 
     String filename = dmpService.getDefaultFileName(dmpId);
 
-    XWPFDocument document;
-    if (template != null) document = exportTemplateBroker.exportTemplateByType(dmpId, template);
-    else document = exportTemplateBroker.exportTemplate(dmpId);
-
-    StreamingOutput streamingOutput =
-        new StreamingOutput() {
-          @Override
-          public void write(OutputStream os) throws IOException, WebApplicationException {
-            document.write(os);
-            document.close();
-          }
-        };
-
-    return Response.ok(streamingOutput)
-        .header("Content-Disposition", "attachment;filename=" + filename + ".docx")
-        .header("Access-Control-Expose-Headers", "Content-Disposition")
-        .build();
-  }
-
-  @GET
-  @Path("/preview/{dmpId}")
-  @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  public Response getPreviewPDF(
-      @PathParam("dmpId") long dmpId, @QueryParam("template") ETemplateType template) {
-
-    log.info("Returning DMP PDF file for DMP with id=" + dmpId);
-
-    String personId = this.getPersonId();
-    if (!accessValidator.canViewDmp(dmpId, personId)) {
-      throw new ForbiddenException("Not authorized to access dmp with id " + dmpId);
-    }
-
-    StreamingOutput pdfDocument;
-    try {
-      pdfDocument = documentService.getPreviewPDF(dmpId, template);
-    } catch (Exception e) {
-      log.error("Error creating PDF document", e);
-      return Response.serverError().entity("Error creating PDF document").build();
-    }
-
     // Return the PDF file in the response
-    return Response.ok(pdfDocument)
-        .header("Content-Disposition", "attachment; filename=\"dmp_" + dmpId + ".pdf\"")
-        .header("Content-Type", "application/pdf") // Set the content type
-        .header("Access-Control-Expose-Headers", "Content-Disposition")
-        .build();
+    Response response =
+        Response.ok(document)
+            .header("Content-Disposition", "attachment;filename=" + filename + "." + filetype)
+            .header("Access-Control-Expose-Headers", "Content-Disposition")
+            .build();
+
+    if (filetype.equals("pdf")) {
+      response.getHeaders().add("Content-Type", "application/pdf");
+    }
+
+    return response;
   }
 
   @GET
-  @Path("/template_type/{dmpId}")
+  @Path("/{dmpId}/template_type")
   @Produces(MediaType.APPLICATION_JSON)
   public ETemplateType getTemplateType(@PathParam("dmpId") long dmpId) {
     log.info("Return template type for DMP with id=" + dmpId);
