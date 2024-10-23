@@ -301,6 +301,7 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
 
   /** costInformation. */
   public void costInformation() {
+    StringBuilder newDescription = new StringBuilder();
     if (Boolean.TRUE.equals(dmp.getCostsExist())) {
       addReplacement(
           replacements,
@@ -309,6 +310,16 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     } else {
       addReplacement(
           replacements, "[costs]", loadResourceService.loadVariableFromResource(prop, "costs.no"));
+    }
+    if (!costList.isEmpty()) {
+      for (Cost cost : costList) {
+        if (cost.getDescription().length() > 255) {
+          newDescription.append("Description for \"");
+          newDescription.append(cost.getTitle()).append("\": ");
+          newDescription.append(cost.getDescription()).append(";");
+        }
+        addReplacement(replacements, "[costsDescriptions]", newDescription.toString());
+      }
     }
   }
 
@@ -1363,22 +1374,23 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
    */
   public void composeTableCost(XWPFDocument xwpfDocument, XWPFTable xwpfTable) {
     log.debug("Export steps: Cost Table");
-
     Float totalCost = 0f;
     if (!costList.isEmpty()) {
       for (int i = 0; i < costList.size(); i++) {
         XWPFTableRow sourceTableRow = xwpfTable.getRow(2);
         XWPFTableRow newRow = new XWPFTableRow(sourceTableRow.getCtRow(), xwpfTable);
-
         try {
           newRow = insertNewTableRow(sourceTableRow, i + 2);
         } catch (Exception ignored) {
         }
-
         ArrayList<String> docVar = new ArrayList<>();
         docVar.add(Optional.ofNullable(costList.get(i).getTitle()).orElse(""));
         docVar.add((costList.get(i).getType() != null) ? costList.get(i).getType().toString() : "");
-        docVar.add(Optional.ofNullable(costList.get(i).getDescription()).orElse(""));
+        if (costList.get(i).getDescription().length() < 255) {
+          docVar.add(Optional.ofNullable(costList.get(i).getDescription()).orElse(""));
+        } else {
+          docVar.add("");
+        }
         docVar.add(Optional.ofNullable(costList.get(i).getCurrencyCode()).orElse("€"));
         if (costList.get(i).getValue() != null) {
           docVar.add(
@@ -1393,7 +1405,6 @@ public abstract class AbstractTemplateExportScienceEuropeComponents
     } else {
       removeTable(xwpfDocument, xwpfTable);
     }
-
     Optional<Cost> costCurrencyTotal =
         costList.stream().filter(cost -> cost.getCurrencyCode() != null).findFirst();
     addReplacement(
