@@ -57,7 +57,8 @@ public final class ProjectMapper {
   }
 
   /**
-   * Convert a DAMAP-specific project to the common standard.
+   * Converts a DAMAP-specific project to the common standard.
+   * Uses {@link #convertInto(ProjectDO, Project) convertInto} as a helper method for the conversion.
    *
    * @param project a DAMAP project
    * @return a common standard project
@@ -68,6 +69,13 @@ public final class ProjectMapper {
     return result;
   }
 
+  /**
+   * Converts a DAMAP-specific project to an RDA Common Standard compliant project.
+   * This method sets the following RDA fields: acronym, title, description, start, end, funding and projectId.
+   *
+   * @param project a DAMAP project
+   * @param result the resulting common standard project
+   */
   private void convertInto(ProjectDO project, Project result) {
     result.setAcronym(project.getAcronym());
     result.setTitle(
@@ -95,19 +103,19 @@ public final class ProjectMapper {
     }
   }
 
-  public DAMAPProject convertToDAMAPProject(ProjectDO project) {
-    var result = new DAMAPProject();
-    result.setId(String.valueOf(project.getId()));
-    convertInto(project, result);
-    return result;
-  }
-
+  /**
+   * Converts an RDA Common Standard compliant project to a DAMAP-specific project.
+   * Common standard fields which are set include: acronym, title, description, start, end, funding and projectId.
+   *
+   * @param project an RDA Common Standard compliant project object
+   * @return a DAMAP project object
+   */
   public ProjectDO convert(DAMAPProject project) {
     return convert(project, project.getId());
   }
 
   /**
-   * Convert a common standard project to the DAMAP-specific one.
+   * Converts an RDA Common Standard compliant project to a DAMAP project object.
    *
    * @param project a common standard project
    * @param projectId the ID of the project

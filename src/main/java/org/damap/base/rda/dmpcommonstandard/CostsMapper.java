@@ -30,6 +30,7 @@ public class CostsMapper extends AbstractMapper {
     super(strict);
   }
 
+  // --- RDA -> DAMAP (Import) ---
   public CostDO convert(Cost cost) {
     if (cost == null) {
       return null;
@@ -58,6 +59,7 @@ public class CostsMapper extends AbstractMapper {
     return result;
   }
 
+  // --- DAMAP -> RDA (Export) ---
   public Cost convert(CostDO costDO) {
     var result = new Cost();
     result.setDescription(costDO.getDescription());

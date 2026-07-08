@@ -39,6 +39,7 @@ public class ContributorMapper extends AbstractMapper {
     super(strict);
   }
 
+  // --- RDA -> DAMAP (Import) ---
   public ContributorDO convert(Contributor contributor) {
     var result = new ContributorDO();
     result.setPersonId(convertContributorID(contributor.getContributorId()));
@@ -95,6 +96,7 @@ public class ContributorMapper extends AbstractMapper {
     return role.replaceAll("_", " ").trim().replaceAll("\s+", " ").toLowerCase().trim();
   }
 
+  // --- DAMAP -> RDA (Export) ---
   public Contributor convert(ContributorDO contributorDO) {
     var result = new Contributor();
     if (contributorDO.getPersonId() != null
@@ -137,6 +139,7 @@ public class ContributorMapper extends AbstractMapper {
     return result;
   }
 
+  // --- DAMAP -> RDA (Export) ---
   public Contact convertToContact(ContributorDO contributorDO) {
     var result = new Contact();
     String name = convertName(contributorDO);
@@ -152,6 +155,7 @@ public class ContributorMapper extends AbstractMapper {
     return result;
   }
 
+  // --- RDA -> DAMAP (Import) ---
   public ContributorDO convertToContributor(Contact contact) {
     var result = new ContributorDO();
     result.setPersonId(convertContactID(contact.getContactId()));
@@ -193,6 +197,7 @@ public class ContributorMapper extends AbstractMapper {
     return "";
   }
 
+  // --- DAMAP -> RDA (Export) ---
   private ContributorID convertContributorID(IdentifierDO contributorId) {
     if (contributorId == null) return null;
     var result = new ContributorID();
@@ -206,6 +211,7 @@ public class ContributorMapper extends AbstractMapper {
     return result;
   }
 
+  // --- RDA -> DAMAP (Import) ---
   private IdentifierDO convertContributorID(ContributorID contributorId) {
     if (contributorId == null || contributorId.getType() == null) return null;
     var result = new IdentifierDO();
@@ -221,6 +227,7 @@ public class ContributorMapper extends AbstractMapper {
     return result;
   }
 
+  // --- DAMAP -> RDA (Export) ---
   private ContactID convertContactID(IdentifierDO contactID) {
     if (contactID == null) return null;
     var result = new ContactID();
@@ -233,6 +240,7 @@ public class ContributorMapper extends AbstractMapper {
     return result;
   }
 
+  // --- RDA -> DAMAP (Import) ---
   private IdentifierDO convertContactID(ContactID contactID) {
     if (contactID == null || contactID.getType() == null) return null;
     var result = new IdentifierDO();

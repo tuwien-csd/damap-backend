@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Stream;
+
+import lombok.extern.jbosslog.JBossLog;
 import org.damap.base.r3data.RepositoriesService;
 import org.damap.base.rda.dmpcommonstandard.Booleanish;
 import org.damap.base.rda.dmpcommonstandard.CommonStandardCompatibilityException;
@@ -33,6 +35,7 @@ import org.damap.base.security.SecurityService;
 import org.damap.base.validation.AccessValidator;
 
 @ApplicationScoped
+@JBossLog
 public class RdaDmpService {
 
   private final DMPMapper dmpMapper = new DMPMapper(false);
@@ -508,6 +511,7 @@ public class RdaDmpService {
     try {
       return dmpMapper.convert(dmp, repositoriesService);
     } catch (RuntimeException e) {
+      log.error("Could not convert DAMAP DMP with id " + dmp.getId() + " to RDA format", e);
       throw new InternalServerErrorException(
           "Could not convert DAMAP DMP with id " + dmp.getId() + " to RDA format", e);
     }

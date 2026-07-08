@@ -35,6 +35,7 @@ public class DatasetMapper extends AbstractMapper {
     super(strict);
   }
 
+  // --- DAMAP -> RDA (Export) ---
   public Dataset convert(DatasetDO datasetDO) {
     var result = new Dataset();
 
@@ -147,6 +148,7 @@ public class DatasetMapper extends AbstractMapper {
     return result;
   }
 
+  // --- RDA -> DAMAP (Import) ---
   public DatasetDO convert(Dataset dataset) {
     var result = new DatasetDO();
     result.setSource(EDataSource.NEW);

@@ -45,6 +45,7 @@ public final class FundingMapper extends AbstractMapper {
     return result;
   }
 
+  // --- RDA -> DAMAP (Import) ---
   public FundingDO convert(Funding funding) {
     if (funding == null) return null;
     var result = new FundingDO();
@@ -54,6 +55,7 @@ public final class FundingMapper extends AbstractMapper {
     return result;
   }
 
+  // --- RDA -> DAMAP (Import) ---
   private IdentifierDO convertFunderId(FunderID funderId) {
     if (funderId == null) return null;
     if ("fundref".equalsIgnoreCase(funderId.getType())) {
@@ -65,6 +67,7 @@ public final class FundingMapper extends AbstractMapper {
     return IdentifierMapper.getIdentifierDO(funderId.getIdentifier());
   }
 
+  // --- DAMAP -> RDA (Export) ---
   private FunderID convertFunderId(IdentifierDO identifier) {
     if (identifier == null) return null;
     var result = new FunderID();
@@ -77,6 +80,7 @@ public final class FundingMapper extends AbstractMapper {
     return result;
   }
 
+  // --- DAMAP -> RDA (Export) ---
   private FundingStatus convertFundingStatus(EFundingState fundingState) {
     if (fundingState == null) {
       return null;
@@ -90,6 +94,7 @@ public final class FundingMapper extends AbstractMapper {
     };
   }
 
+  // --- RDA -> DAMAP (Import) ---
   private EFundingState convertFundingState(FundingStatus fundingState) {
     if (fundingState == null) {
       return EFundingState.UNSPECIFIED;
@@ -102,6 +107,7 @@ public final class FundingMapper extends AbstractMapper {
     };
   }
 
+  // --- DAMAP -> RDA (Export) ---
   private GrantID convertGrantId(IdentifierDO identifier) {
     if (identifier == null
         || identifier.getIdentifier() == null
@@ -118,6 +124,7 @@ public final class FundingMapper extends AbstractMapper {
     return result;
   }
 
+  // --- RDA -> DAMAP (Import) ---
   private IdentifierDO convertGrantId(GrantID identifier) {
     if (identifier == null) {
       return null;
