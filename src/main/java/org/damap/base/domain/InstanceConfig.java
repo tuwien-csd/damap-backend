@@ -20,4 +20,7 @@ public class InstanceConfig extends PanacheEntity {
 
   @Column(name = "consent_form_enabled", nullable = false)
   private Boolean consentFormEnabled;
+
+  @Column(name = "footer_accessibility_url", length = 2048)
+  private String footerAccessibilityUrl;
 }

@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: 39
+      author: Laura Thaci
+      comment: Add footer_accessibility_url column to instance_config for admin-managed accessibility statement link
+      changes:
+        - addColumn:
+            tableName: instance_config
+            columns:
+              - column:
+                  name: footer_accessibility_url
+                  type: VARCHAR(2048)
+                  constraints:
+                    nullable: true
+
+      rollback:
+        - dropColumn:
+            tableName: instance_config
+            columnName: footer_accessibility_url
