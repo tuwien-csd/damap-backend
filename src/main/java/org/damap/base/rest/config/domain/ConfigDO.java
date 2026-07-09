@@ -36,6 +36,7 @@ public class ConfigDO {
   private List<ExportTemplateDO> templates;
   private boolean publicAvailable;
   private boolean consentFormEnabled;
+  private String footerAccessibilityUrl;
   private boolean multitenancyEnabled;
   private List<String> tenants;
 }
