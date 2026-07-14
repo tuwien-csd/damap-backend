@@ -304,7 +304,7 @@
                 <groupId>org.damap</groupId>
                 <artifactId>rda-dmp-common-standard</artifactId>
                 <artifactVersion>1.0.0</artifactVersion>
-                <artifactDescription>Auto-generated sources for the DAMAP integration for the RDA DMP common standard</artifactDescription>
+                <artifactDescription>Auto-generated sources for the DAMAP integration for the RDA DMP Common Standard</artifactDescription>
               </configOptions>
             </configuration>
           </execution>
@@ -391,7 +391,7 @@
                 <groupId>org.damap.integration</groupId>
                 <artifactId>generic</artifactId>
                 <artifactVersion>1.0.0</artifactVersion>
-                <artifactDescription>Auto-generated sources for the DAMAP REST API for CRIS integration using the RDA DMP common standard</artifactDescription>
+                <artifactDescription>Auto-generated sources for the DAMAP REST API for CRIS integration using the RDA DMP Common Standard</artifactDescription>
               </configOptions>
             </configuration>
           </execution>

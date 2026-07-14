@@ -6,11 +6,11 @@ import org.damap.base.rest.dmp.domain.FundingDO;
 import org.damap.base.rest.dmp.domain.IdentifierDO;
 
 /**
- * This class implements Funding conversion from and to the RDA DMP common standard. (See <a
+ * This class implements Funding conversion from and to the RDA DMP Common Standard. (See <a
  * href="https://github.com/RDA-DMP-Common/common-madmp-api">github.com/RDA-DMP-Common/common-madmp-api</a>
  * )
  *
- * <p>The conversion from the common standard into DAMAP objects is best-effort since not all data
+ * <p>The conversion from the Common Standard into DAMAP objects is best-effort since not all data
  * can be represented.
  */
 public final class FundingMapper extends AbstractMapper {
@@ -45,7 +45,7 @@ public final class FundingMapper extends AbstractMapper {
     return result;
   }
 
-  // --- RDA -> DAMAP (Import) ---
+  /** RDA to DAMAP (Import). * */
   public FundingDO convert(Funding funding) {
     if (funding == null) return null;
     var result = new FundingDO();
@@ -55,7 +55,7 @@ public final class FundingMapper extends AbstractMapper {
     return result;
   }
 
-  // --- RDA -> DAMAP (Import) ---
+  /** RDA to DAMAP (Import). * */
   private IdentifierDO convertFunderId(FunderID funderId) {
     if (funderId == null) return null;
     if ("fundref".equalsIgnoreCase(funderId.getType())) {
@@ -67,7 +67,7 @@ public final class FundingMapper extends AbstractMapper {
     return IdentifierMapper.getIdentifierDO(funderId.getIdentifier());
   }
 
-  // --- DAMAP -> RDA (Export) ---
+  /** DAMAP to RDA (Export). * */
   private FunderID convertFunderId(IdentifierDO identifier) {
     if (identifier == null) return null;
     var result = new FunderID();
@@ -80,7 +80,7 @@ public final class FundingMapper extends AbstractMapper {
     return result;
   }
 
-  // --- DAMAP -> RDA (Export) ---
+  /** DAMAP to RDA (Export). * */
   private FundingStatus convertFundingStatus(EFundingState fundingState) {
     if (fundingState == null) {
       return null;
@@ -94,7 +94,7 @@ public final class FundingMapper extends AbstractMapper {
     };
   }
 
-  // --- RDA -> DAMAP (Import) ---
+  /** RDA to DAMAP (Import). * */
   private EFundingState convertFundingState(FundingStatus fundingState) {
     if (fundingState == null) {
       return EFundingState.UNSPECIFIED;
@@ -107,7 +107,7 @@ public final class FundingMapper extends AbstractMapper {
     };
   }
 
-  // --- DAMAP -> RDA (Export) ---
+  /** DAMAP to RDA (Export). * */
   private GrantID convertGrantId(IdentifierDO identifier) {
     if (identifier == null
         || identifier.getIdentifier() == null
@@ -124,7 +124,7 @@ public final class FundingMapper extends AbstractMapper {
     return result;
   }
 
-  // --- RDA -> DAMAP (Import) ---
+  /** RDA to DAMAP (Import). * */
   private IdentifierDO convertGrantId(GrantID identifier) {
     if (identifier == null) {
       return null;

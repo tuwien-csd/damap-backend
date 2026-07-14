@@ -14,11 +14,11 @@ import org.damap.base.rest.dmp.domain.IdentifierDO;
 // This can be done by adapting DAMAPs data model or with libraries or a combination of the tqi
 
 /**
- * This class implements Contributor conversion from and to the RDA DMP common standard. (See <a
+ * This class implements Contributor conversion from and to the RDA DMP Common Standard. (See <a
  * href="https://github.com/RDA-DMP-Common/common-madmp-api">github.com/RDA-DMP-Common/common-madmp-api</a>
  * )
  *
- * <p>The conversion from the common standard into DAMAP objects is best-effort since not all data
+ * <p>The conversion from the Common Standard into DAMAP objects is best-effort since not all data
  * can be represented.
  */
 public class ContributorMapper extends AbstractMapper {
@@ -39,7 +39,15 @@ public class ContributorMapper extends AbstractMapper {
     super(strict);
   }
 
-  // --- RDA -> DAMAP (Import) ---
+  /**
+   * RDA to DAMAP (Import).
+   *
+   * <p>Converts an RDA standard Contributor object into a DAMAP ContributorDO. Maps contributor ID,
+   * email, name, normalized roles, and organizational affiliation.
+   *
+   * @param contributor the RDA standard contributor to map
+   * @return the mapped DAMAP contributor domain object
+   */
   public ContributorDO convert(Contributor contributor) {
     var result = new ContributorDO();
     result.setPersonId(convertContributorID(contributor.getContributorId()));
@@ -96,7 +104,16 @@ public class ContributorMapper extends AbstractMapper {
     return role.replaceAll("_", " ").trim().replaceAll("\s+", " ").toLowerCase().trim();
   }
 
-  // --- DAMAP -> RDA (Export) ---
+  /**
+   * DAMAP to RDA (Export).
+   *
+   * <p>Converts a DAMAP ContributorDO into an RDA standard Contributor object. Maps local ID,
+   * email, concatenated full name, roles, and affiliation details. Falls back to default values if
+   * required identifier fields are missing.
+   *
+   * @param contributorDO the DAMAP contributor domain object to map
+   * @return the mapped RDA standard contributor
+   */
   public Contributor convert(ContributorDO contributorDO) {
     var result = new Contributor();
     if (contributorDO.getPersonId() != null
@@ -139,7 +156,15 @@ public class ContributorMapper extends AbstractMapper {
     return result;
   }
 
-  // --- DAMAP -> RDA (Export) ---
+  /**
+   * DAMAP to RDA (Export).
+   *
+   * <p>Converts a DAMAP ContributorDO into an RDA standard Contact object. Used to specify the
+   * primary point of contact for the DMP.
+   *
+   * @param contributorDO the DAMAP contributor domain object to map
+   * @return the mapped RDA standard Contact
+   */
   public Contact convertToContact(ContributorDO contributorDO) {
     var result = new Contact();
     String name = convertName(contributorDO);
@@ -155,7 +180,15 @@ public class ContributorMapper extends AbstractMapper {
     return result;
   }
 
-  // --- RDA -> DAMAP (Import) ---
+  /**
+   * RDA to DAMAP (Import).
+   *
+   * <p>Converts an RDA standard Contact object into a DAMAP ContributorDO. Maps contact
+   * identifiers, email, and splits names into first and last names.
+   *
+   * @param contact the RDA standard contact to map
+   * @return the mapped DAMAP contributor domain object
+   */
   public ContributorDO convertToContributor(Contact contact) {
     var result = new ContributorDO();
     result.setPersonId(convertContactID(contact.getContactId()));
@@ -197,7 +230,7 @@ public class ContributorMapper extends AbstractMapper {
     return "";
   }
 
-  // --- DAMAP -> RDA (Export) ---
+  /** DAMAP to RDA (Export). * */
   private ContributorID convertContributorID(IdentifierDO contributorId) {
     if (contributorId == null) return null;
     var result = new ContributorID();
@@ -211,7 +244,7 @@ public class ContributorMapper extends AbstractMapper {
     return result;
   }
 
-  // --- RDA -> DAMAP (Import) ---
+  /** RDA to DAMAP (Import). * */
   private IdentifierDO convertContributorID(ContributorID contributorId) {
     if (contributorId == null || contributorId.getType() == null) return null;
     var result = new IdentifierDO();
@@ -227,7 +260,7 @@ public class ContributorMapper extends AbstractMapper {
     return result;
   }
 
-  // --- DAMAP -> RDA (Export) ---
+  /** DAMAP to RDA (Export). * */
   private ContactID convertContactID(IdentifierDO contactID) {
     if (contactID == null) return null;
     var result = new ContactID();
@@ -240,7 +273,7 @@ public class ContributorMapper extends AbstractMapper {
     return result;
   }
 
-  // --- RDA -> DAMAP (Import) ---
+  /** RDA to DAMAP (Import). * */
   private IdentifierDO convertContactID(ContactID contactID) {
     if (contactID == null || contactID.getType() == null) return null;
     var result = new IdentifierDO();

@@ -6,18 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.damap.base.enums.EDataKind;
-import org.damap.base.r3data.RepositoriesService;
 import org.damap.base.rest.dmp.domain.ContributorDO;
 import org.damap.base.rest.dmp.domain.DatasetDO;
 import org.damap.base.rest.dmp.domain.DmpDO;
 import org.damap.base.rest.dmp.domain.ProjectDO;
 
 /**
- * This class implements DMP conversion from and to the RDA DMP common standard. (See <a
+ * This class implements DMP conversion from and to the RDA DMP Common Standard. (See <a
  * href="https://github.com/RDA-DMP-Common/common-madmp-api">github.com/RDA-DMP-Common/common-madmp-api</a>
  * )
  *
- * <p>The conversion from the common standard into DAMAP objects is best-effort since not all data
+ * <p>The conversion from the Common Standard into DAMAP objects is best-effort since not all data
  * can be represented.
  */
 public final class DMPMapper extends AbstractMapper {
@@ -78,16 +77,13 @@ public final class DMPMapper extends AbstractMapper {
     this.hostsMapper = hostsMapper;
   }
 
-  // --- DAMAP -> RDA (Export) ---
-  public DMPWithID convert(
-          DmpDO dmp, RepositoriesService repositoriesService) {
-    return new DMPWithID()
-            .id(String.valueOf(dmp.getId()))
-            .dmp(convertData(dmp, repositoriesService));
+  /** DAMAP to RDA (Export). * */
+  public DMPWithID convert(DmpDO dmp) {
+    return new DMPWithID().id(String.valueOf(dmp.getId())).dmp(convertData(dmp));
   }
 
-  // Helper Method for DAMAP -> RDA (Export)
-  private DMPData convertData(DmpDO dmp, RepositoriesService repositoriesService) {
+  /** Helper method for DAMAP to RDA (Export). * */
+  private DMPData convertData(DmpDO dmp) {
     DMPData result = new DMPData();
     result.setTitle(dmp.getTitle() != null ? dmp.getTitle() : "Untitled DMP");
     result.setDescription(dmp.getDescription());
@@ -143,7 +139,7 @@ public final class DMPMapper extends AbstractMapper {
           Distribution baseDist = rdaDataset.getDistribution().get(0);
 
           List<Distribution> mappedDistributions =
-              hostsMapper.mapDistributions(dmp, datasetDO, baseDist, repositoriesService);
+              hostsMapper.mapDistributions(dmp, datasetDO, baseDist);
 
           rdaDataset.setDistribution(mappedDistributions);
         }
@@ -166,7 +162,7 @@ public final class DMPMapper extends AbstractMapper {
     return result;
   }
 
-  // --- RDA -> DAMAP (Import) ---
+  /** RDA to DAMAP (Import). * */
   public DmpDO convert(DMPWithID dmp) {
     var dmpDO = new DmpDO();
     dmpDO.setId(Long.valueOf(dmp.getId()));
@@ -178,7 +174,7 @@ public final class DMPMapper extends AbstractMapper {
     return dmpDO;
   }
 
-  // Helper Method for RDA -> DAMAP (Import)
+  /** RDA to DAMAP (Import). * */
   private void convertData(DMPData data, DmpDO target) {
     target.setTitle(data.getTitle());
     target.setDescription(data.getDescription());

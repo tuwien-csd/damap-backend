@@ -10,11 +10,12 @@ import org.damap.base.rest.dmp.domain.DatasetDO;
 import org.damap.base.rest.dmp.domain.IdentifierDO;
 
 /**
- * This class implements Dataset conversion from and to the RDA DMP common standard. (See <a
+ * This class implements Dataset conversion from and to the RDA DMP Common Standard. (See <a
  * href="https://github.com/RDA-DMP-Common/common-madmp-api">github.com/RDA-DMP-Common/common-madmp-api</a>
- * )
+ * ) Maps technical resources, metadata types, sensitive/personal classifications, data access
+ * levels, and license specifications.
  *
- * <p>The conversion from the common standard into DAMAP objects is best-effort since not all data
+ * <p>The conversion from the Common Standard into DAMAP objects is best-effort since not all data
  * can be represented.
  */
 public class DatasetMapper extends AbstractMapper {
@@ -35,7 +36,16 @@ public class DatasetMapper extends AbstractMapper {
     super(strict);
   }
 
-  // --- DAMAP -> RDA (Export) ---
+  /**
+   * DAMAP to RDA (Export).
+   *
+   * <p>Converts a DAMAP DatasetDO into an RDA standard Dataset object. Includes structural mappings
+   * for size, format, license URLs, start dates, data access level, technical resources, and flags
+   * for personal or sensitive data.
+   *
+   * @param datasetDO the DAMAP dataset domain object to map
+   * @return the mapped RDA standard dataset
+   */
   public Dataset convert(DatasetDO datasetDO) {
     var result = new Dataset();
 
@@ -148,7 +158,17 @@ public class DatasetMapper extends AbstractMapper {
     return result;
   }
 
-  // --- RDA -> DAMAP (Import) ---
+  /**
+   * RDA to DAMAP (Import).
+   *
+   * <p>Converts an RDA standard Dataset into a DAMAP DatasetDO. Maps distributions (format, byte
+   * size, data access, and licenses) and associated technical resources. Evaluates strict
+   * compatibility rules for quality assurance, reissue markers, and multiple license/format
+   * entries.
+   *
+   * @param dataset the RDA standard dataset to map
+   * @return the mapped DAMAP dataset domain object
+   */
   public DatasetDO convert(Dataset dataset) {
     var result = new DatasetDO();
     result.setSource(EDataSource.NEW);
@@ -284,7 +304,7 @@ public class DatasetMapper extends AbstractMapper {
       try {
         result.setType(List.of(EDataType.valueOf(dataset.getType().toUpperCase())));
       } catch (IllegalArgumentException e) {
-        // best-effort: DamapDO expects an array, but rda common standard provides string
+        // best-effort: DamapDO expects an array, but rda Common Standard provides string
       }
     }
 

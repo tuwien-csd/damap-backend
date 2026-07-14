@@ -5,11 +5,11 @@ import org.damap.base.enums.ECostType;
 import org.damap.base.rest.dmp.domain.CostDO;
 
 /**
- * This class implements Cost conversion from and to the RDA DMP common standard. (See <a
+ * This class implements Cost conversion from and to the RDA DMP Common Standard. (See <a
  * href="https://github.com/RDA-DMP-Common/common-madmp-api">github.com/RDA-DMP-Common/common-madmp-api</a>
  * )
  *
- * <p>The conversion from the common standard into DAMAP objects is best-effort since not all data
+ * <p>The conversion from the Common Standard into DAMAP objects is best-effort since not all data
  * can be represented.
  */
 public class CostsMapper extends AbstractMapper {
@@ -30,7 +30,15 @@ public class CostsMapper extends AbstractMapper {
     super(strict);
   }
 
-  // --- RDA -> DAMAP (Import) ---
+  /**
+   * RDA to DAMAP (Import).
+   *
+   * <p>Converts an RDA standard Cost object into a DAMAP CostDO. Maps currency code, monetary
+   * value, and description. Falls back to 'OTHER' if the incoming cost type cannot be parsed.
+   *
+   * @param cost the RDA standard cost to map
+   * @return the mapped DAMAP cost domain object
+   */
   public CostDO convert(Cost cost) {
     if (cost == null) {
       return null;
@@ -59,7 +67,15 @@ public class CostsMapper extends AbstractMapper {
     return result;
   }
 
-  // --- DAMAP -> RDA (Export) ---
+  /**
+   * DAMAP to RDA (Export).
+   *
+   * <p>Converts a DAMAP CostDO into an RDA standard Cost object. Establishes numeric precision for
+   * the value, matches ISO currency codes, and sets a title fallback if not explicitly defined.
+   *
+   * @param costDO the DAMAP cost domain object to map
+   * @return the mapped RDA standard cost
+   */
   public Cost convert(CostDO costDO) {
     var result = new Cost();
     result.setDescription(costDO.getDescription());
