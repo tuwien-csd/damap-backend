@@ -1,0 +1,76 @@
+databaseChangeLog:
+  - changeSet:
+      id: 39
+      author: Laura Thaci
+      comment: Add footer_accessibility_url column to instance_config for admin-managed accessibility statement link
+      changes:
+        - addColumn:
+            tableName: instance_config
+            columns:
+              - column:
+                  name: footer_accessibility_url
+                  type: VARCHAR(2048)
+                  constraints:
+                    nullable: true
+
+      rollback:
+        - dropColumn:
+            tableName: instance_config
+            columnName: footer_accessibility_url
+
+  - changeSet:
+      id: 40
+      author: Laura Thaci
+      comment: Insert translations for the configurable footer accessibility statement link for all languages
+      changes:
+        - sql: |
+            INSERT INTO translation (translation_key, language, default_value, active, version)
+            SELECT 'sidebar.footer.accessibility-statement.label', l.language, 'Accessibility Statement', l.active, 0
+            FROM (SELECT DISTINCT language, active FROM translation) l;
+        - sql: |
+            INSERT INTO translation (translation_key, language, default_value, active, version)
+            SELECT 'admin.instance-config.footer-accessibility-enabled', l.language, 'Accessibility statement link enabled', l.active, 0
+            FROM (SELECT DISTINCT language, active FROM translation) l;
+        - sql: |
+            INSERT INTO translation (translation_key, language, default_value, active, version)
+            SELECT 'admin.instance-config.footer-accessibility-enabled-on', l.language, 'The accessibility statement link is shown in the sidebar footer.', l.active, 0
+            FROM (SELECT DISTINCT language, active FROM translation) l;
+        - sql: |
+            INSERT INTO translation (translation_key, language, default_value, active, version)
+            SELECT 'admin.instance-config.footer-accessibility-enabled-off', l.language, 'The accessibility statement link is hidden in the sidebar footer.', l.active, 0
+            FROM (SELECT DISTINCT language, active FROM translation) l;
+        - sql: |
+            INSERT INTO translation (translation_key, language, default_value, active, version)
+            SELECT 'admin.instance-config.footer-accessibility-url', l.language, 'Footer accessibility statement URL', l.active, 0
+            FROM (SELECT DISTINCT language, active FROM translation) l;
+        - sql: |
+            INSERT INTO translation (translation_key, language, default_value, active, version)
+            SELECT 'admin.instance-config.footer-accessibility-save', l.language, 'Save', l.active, 0
+            FROM (SELECT DISTINCT language, active FROM translation) l;
+        - sql: |
+            INSERT INTO translation (translation_key, language, default_value, active, version)
+            SELECT 'admin.instance-config.footer-accessibility-remove', l.language, 'Remove', l.active, 0
+            FROM (SELECT DISTINCT language, active FROM translation) l;
+
+      rollback:
+        - delete:
+            tableName: translation
+            where: translation_key = 'sidebar.footer.accessibility-statement.label'
+        - delete:
+            tableName: translation
+            where: translation_key = 'admin.instance-config.footer-accessibility-enabled'
+        - delete:
+            tableName: translation
+            where: translation_key = 'admin.instance-config.footer-accessibility-enabled-on'
+        - delete:
+            tableName: translation
+            where: translation_key = 'admin.instance-config.footer-accessibility-enabled-off'
+        - delete:
+            tableName: translation
+            where: translation_key = 'admin.instance-config.footer-accessibility-url'
+        - delete:
+            tableName: translation
+            where: translation_key = 'admin.instance-config.footer-accessibility-save'
+        - delete:
+            tableName: translation
+            where: translation_key = 'admin.instance-config.footer-accessibility-remove'
