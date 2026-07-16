@@ -163,7 +163,7 @@ public class AdminResource {
   @PUT
   @Path("/instance-config")
   @RolesAllowed("${damap.auth.admin-role-name}")
-  public InstanceConfig updateInstanceConfig(InstanceConfig instanceConfig) {
+  public InstanceConfig updateInstanceConfig(@Valid InstanceConfig instanceConfig) {
     log.info("Updating instance config");
     return this.adminService.updateInstanceConfig(instanceConfig);
   }
