@@ -127,6 +127,7 @@ public class ConfigResource {
     InstanceConfig instanceConfig = instanceConfigRepo.getConfig();
     configDO.setPublicAvailable(instanceConfig.getPublicAvailable());
     configDO.setConsentFormEnabled(instanceConfig.getConsentFormEnabled());
+    configDO.setFooterAccessibilityUrl(instanceConfig.getFooterAccessibilityUrl());
 
     configDO.setMultitenancyEnabled(!tenantConfigResolver.isMultitenancyDisabled());
     configDO.setTenants(tenants.orElse(List.of()));

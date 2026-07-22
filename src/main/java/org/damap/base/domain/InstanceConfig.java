@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;
+import org.hibernate.validator.constraints.URL;
 
 @Data
 @Builder
@@ -20,4 +21,8 @@ public class InstanceConfig extends PanacheEntity {
 
   @Column(name = "consent_form_enabled", nullable = false)
   private Boolean consentFormEnabled;
+
+  @URL
+  @Column(name = "footer_accessibility_url", length = 2048)
+  private String footerAccessibilityUrl;
 }

@@ -78,6 +78,7 @@ public class AdminService {
 
     instanceConfig.setPublicAvailable(updatedInstanceConfig.getPublicAvailable());
     instanceConfig.setConsentFormEnabled(updatedInstanceConfig.getConsentFormEnabled());
+    instanceConfig.setFooterAccessibilityUrl(updatedInstanceConfig.getFooterAccessibilityUrl());
 
     return instanceConfig;
   }
