@@ -19,7 +19,6 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Stream;
 import lombok.extern.jbosslog.JBossLog;
-import org.damap.base.r3data.RepositoriesService;
 import org.damap.base.rda.dmpcommonstandard.Booleanish;
 import org.damap.base.rda.dmpcommonstandard.CommonStandardCompatibilityException;
 import org.damap.base.rda.dmpcommonstandard.DMPDocument;
@@ -46,8 +45,6 @@ public class RdaDmpService {
   @Inject SecurityService securityService;
 
   @Inject AccessValidator accessValidator;
-
-  @Inject RepositoriesService repositoriesService;
 
   public RdaDmpSearchParams createSearchParams(
       int offset,
@@ -148,6 +145,7 @@ public class RdaDmpService {
         | NullPointerException
         | IndexOutOfBoundsException
         | IllegalArgumentException e) {
+      log.error("Failed to import/create RDA DMP payload ", e);
       throw new BadRequestException("Invalid RDA DMP payload: " + e.getMessage(), e);
     }
   }
@@ -201,6 +199,7 @@ public class RdaDmpService {
         | NullPointerException
         | IndexOutOfBoundsException
         | IllegalArgumentException e) {
+      log.error("Failed to import/update RDA DMP payload for ID " + id, e);
       throw new BadRequestException("Invalid RDA DMP payload: " + e.getMessage(), e);
     }
   }
