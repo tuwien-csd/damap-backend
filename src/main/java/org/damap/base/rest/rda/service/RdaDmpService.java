@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Stream;
+
+import lombok.extern.jbosslog.JBossLog;
 import org.damap.base.rda.dmpcommonstandard.Booleanish;
 import org.damap.base.rda.dmpcommonstandard.CommonStandardCompatibilityException;
 import org.damap.base.rda.dmpcommonstandard.DMPDocument;
@@ -32,6 +34,7 @@ import org.damap.base.security.SecurityService;
 import org.damap.base.validation.AccessValidator;
 
 @ApplicationScoped
+@JBossLog
 public class RdaDmpService {
 
   private final DMPMapper dmpMapper = new DMPMapper(false);
@@ -143,6 +146,7 @@ public class RdaDmpService {
         | NullPointerException
         | IndexOutOfBoundsException
         | IllegalArgumentException e) {
+      log.error("Failed to import/create RDA DMP payload ", e);
       throw new BadRequestException("Invalid RDA DMP payload: " + e.getMessage(), e);
     }
   }
@@ -196,6 +200,7 @@ public class RdaDmpService {
         | NullPointerException
         | IndexOutOfBoundsException
         | IllegalArgumentException e) {
+      log.error("Failed to import/update RDA DMP payload for ID " + id, e);
       throw new BadRequestException("Invalid RDA DMP payload: " + e.getMessage(), e);
     }
   }

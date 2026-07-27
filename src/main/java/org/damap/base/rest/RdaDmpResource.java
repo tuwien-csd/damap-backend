@@ -107,6 +107,7 @@ public class RdaDmpResource {
   @POST
   public Response createDMP(DMPDocument rdaDmpDocument, @Context HttpHeaders headers) {
     if (rdaDmpDocument == null || rdaDmpDocument.getDmp() == null) {
+      log.warn("Create DMP request failed: Request body or DMP payload is missing");
       return Response.status(Response.Status.BAD_REQUEST)
           .entity(
               "{\"error_code\": \"bad_request\", \"error_message\": \"Request body must contain a dmp object\"}")
@@ -118,6 +119,7 @@ public class RdaDmpResource {
     Set<ConstraintViolation<DMPData>> violations = validator.validate(rdaDmpDocument.getDmp());
 
     if (data.getDataset() == null || data.getDataset().isEmpty()) {
+      log.warn("Create DMP validation failed: dataset must contain at least one item");
       return Response.status(400)
           .header("Content-Type", "application/json")
           .entity(
@@ -169,6 +171,7 @@ public class RdaDmpResource {
       @HeaderParam("If-Unmodified-Since") String ifUnmodifiedSince,
       @Context HttpHeaders headers) {
     if (rdaDmpDocument == null || rdaDmpDocument.getDmp() == null) {
+      log.warnv("Update DMP request failed for ID {0}: Request body or DMP payload is missing", id);
       return Response.status(Response.Status.BAD_REQUEST)
           .entity(
               "{\"error_code\": \"bad_request\", \"error_message\": \"Request body must contain a dmp object\"}")
@@ -180,6 +183,7 @@ public class RdaDmpResource {
     Set<ConstraintViolation<DMPData>> violations = validator.validate(data);
 
     if (data.getDataset() == null || data.getDataset().isEmpty()) {
+      log.warnv("Update DMP validation failed for ID {0}: dataset must contain at least one item", id);
       return Response.status(400)
           .header("Content-Type", "application/json")
           .entity(
@@ -253,6 +257,8 @@ public class RdaDmpResource {
             .map(v -> v.getPropertyPath() + " is required")
             .collect(java.util.stream.Collectors.joining(", "));
 
+    log.error("RDA DMP validation failed constraint checks: " + missingFields, exception);
+
     String jsonError =
         String.format(
             "{\"error_code\": \"dmp_invalid\", \"error_message\": \"Validation failed: %s\"}",
@@ -267,6 +273,8 @@ public class RdaDmpResource {
   @ServerExceptionMapper
   public Response mapBadRequestException(jakarta.ws.rs.BadRequestException exception) {
     String errorMessage = exception.getMessage() != null ? exception.getMessage() : "Bad Request";
+
+    log.error("RDA DMP REST resource received an invalid request", exception);
 
     String jsonError =
         String.format(

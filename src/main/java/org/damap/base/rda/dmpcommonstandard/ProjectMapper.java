@@ -132,7 +132,7 @@ public final class ProjectMapper {
       result.setEnd(Date.from(end.atStartOfDay(ZoneId.systemDefault()).toInstant()));
     }
     var fundings = project.getFunding();
-    if (fundings != null) {
+    if (fundings != null && !fundings.isEmpty()) {
       if (fundings.size() > 1 && strict) {
         throw new CommonStandardCompatibilityException(
             "more than one funding present for project " + project.getTitle());
