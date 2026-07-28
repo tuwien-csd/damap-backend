@@ -2,119 +2,34 @@ databaseChangeLog:
   - changeSet:
       id: 41
       author: Rafael dos Santos
-      comment: Change translation keys naming scheme for summary of specify data step and add admin language title key
+      comment: Add missing keys
       changes:
-        - delete:
-            tableName: translation
-            where: translation_key = 'dmp.steps.summary.data.specify.datasets.none.produced'
-        - delete:
-            tableName: translation
-            where: translation_key = 'dmp.steps.summary.data.specify.datasets.none.reused'
-        - delete:
-            tableName: translation
-            where: translation_key = 'dmp.steps.summary.data.specify.datasets.produced'
-        - delete:
-            tableName: translation
-            where: translation_key = 'dmp.steps.summary.data.specify.datasets.unknown.produced'
-        - delete:
-            tableName: translation
-            where: translation_key = 'dmp.steps.summary.data.specify.datasets.missingexplanation'
-        - delete:
-            tableName: translation
-            where: translation_key = 'dmp.steps.summary.data.specify.datasets.datageneration'
         - sql: |
             INSERT INTO translation (translation_key, language, default_value, active, version)
             SELECT 'admin.appTranslations.boldTitle', l.language, 'Languages', l.active, 0
             FROM (SELECT DISTINCT language, active FROM translation) l;
         - sql: |
             INSERT INTO translation (translation_key, language, default_value, active, version)
-            SELECT 'dmp.steps.summary.specifyData.datasets.none.produced', l.language, 'No data will be produced. ', l.active, 0
+            SELECT 'dmp.steps.summary.data.specify.datasets.reused', l.language, 'Reused datasets: ', l.active, 0
             FROM (SELECT DISTINCT language, active FROM translation) l;
         - sql: |
             INSERT INTO translation (translation_key, language, default_value, active, version)
-            SELECT 'dmp.steps.summary.specifyData.datasets.none.reused', l.language, 'No data will be reused. ', l.active, 0
+            SELECT 'dmp.steps.summary.data.specify.datasets.unknown.reused', l.language, 'Not yet known if data will be reused.', l.active, 0
             FROM (SELECT DISTINCT language, active FROM translation) l;
         - sql: |
             INSERT INTO translation (translation_key, language, default_value, active, version)
-            SELECT 'dmp.steps.summary.specifyData.datasets.reused', l.language, 'Reused datasets: ', l.active, 0
+            SELECT 'dmp.steps.summary.data.specify.datasets.unspecified', l.language, 'No research data specified.', l.active, 0
             FROM (SELECT DISTINCT language, active FROM translation) l;
-        - sql: |
-            INSERT INTO translation (translation_key, language, default_value, active, version)
-            SELECT 'dmp.steps.summary.specifyData.datasets.produced', l.language, 'Produced datasets: ', l.active, 0
-            FROM (SELECT DISTINCT language, active FROM translation) l;
-        - sql: |
-            INSERT INTO translation (translation_key, language, default_value, active, version)
-            SELECT 'dmp.steps.summary.specifyData.datasets.unknown.reused', l.language, 'Not yet known if data will be reused.', l.active, 0
-            FROM (SELECT DISTINCT language, active FROM translation) l;
-        - sql: |
-            INSERT INTO translation (translation_key, language, default_value, active, version)
-            SELECT 'dmp.steps.summary.specifyData.datasets.unknown.produced', l.language, 'Not yet known if data will be produced. ', l.active, 0
-            FROM (SELECT DISTINCT language, active FROM translation) l;
-        - sql: |
-            INSERT INTO translation (translation_key, language, default_value, active, version)
-            SELECT 'dmp.steps.summary.specifyData.missingExplanation', l.language, 'Explanation is missing.', l.active, 0
-            FROM (SELECT DISTINCT language, active FROM translation) l;
-        - sql: |
-            INSERT INTO translation (translation_key, language, default_value, active, version)
-            SELECT 'dmp.steps.summary.specifyData.missingSource', l.language, 'Data generation/reuse info missing.', l.active, 0
-            FROM (SELECT DISTINCT language, active FROM translation) l;
-        - sql: |
-            INSERT INTO translation (translation_key, language, default_value, active, version)
-            SELECT 'dmp.steps.summary.specifyData.newData.unspecified', l.language, 'Not specified whether new data will be generated or reused.', l.active, 0
-            FROM (SELECT DISTINCT language, active FROM translation) l;
-
       rollback:
-        - sql: |
-            INSERT INTO translation (translation_key, language, default_value, active, version)
-            SELECT 'dmp.steps.summary.data.specify.datasets.none.produced', l.language, 'No data will be produced.', l.active, 0
-            FROM (SELECT DISTINCT language, active FROM translation) l;
-        - sql: |
-            INSERT INTO translation (translation_key, language, default_value, active, version)
-            SELECT 'dmp.steps.summary.data.specify.datasets.none.reused', l.language, 'No data will be reused.', l.active, 0
-            FROM (SELECT DISTINCT language, active FROM translation) l;
-        - sql: |
-            INSERT INTO translation (translation_key, language, default_value, active, version)
-            SELECT 'dmp.steps.summary.data.specify.datasets.produced', l.language, 'Produced datasets: ', l.active, 0
-            FROM (SELECT DISTINCT language, active FROM translation) l;
-        - sql: |
-            INSERT INTO translation (translation_key, language, default_value, active, version)
-            SELECT 'dmp.steps.summary.data.specify.datasets.unknown.produced', l.language, 'Not yet known if data will be produced.', l.active, 0
-            FROM (SELECT DISTINCT language, active FROM translation) l;
-        - sql: |
-            INSERT INTO translation (translation_key, language, default_value, active, version)
-            SELECT 'dmp.steps.summary.data.specify.datasets.missingexplanation', l.language, 'Explanation is missing.', l.active, 0
-            FROM (SELECT DISTINCT language, active FROM translation) l;
-        - sql: |
-            INSERT INTO translation (translation_key, language, default_value, active, version)
-            SELECT 'dmp.steps.summary.data.specify.datasets.datageneration', l.language, 'Data generation/reuse info missing.', l.active, 0
-            FROM (SELECT DISTINCT language, active FROM translation) l;
         - delete:
             tableName: translation
             where: translation_key = 'admin.appTranslations.boldTitle'
         - delete:
             tableName: translation
-            where: translation_key = 'dmp.steps.summary.specifyData.datasets.none.produced'
+            where: translation_key = 'dmp.steps.summary.data.specify.datasets.reused'
         - delete:
             tableName: translation
-            where: translation_key = 'dmp.steps.summary.specifyData.datasets.none.reused'
+            where: translation_key = 'dmp.steps.summary.data.specify.datasets.unknown.reused'
         - delete:
             tableName: translation
-            where: translation_key = 'dmp.steps.summary.specifyData.datasets.reused'
-        - delete:
-            tableName: translation
-            where: translation_key = 'dmp.steps.summary.specifyData.datasets.produced'
-        - delete:
-            tableName: translation
-            where: translation_key = 'dmp.steps.summary.specifyData.datasets.unknown.reused'
-        - delete:
-            tableName: translation
-            where: translation_key = 'dmp.steps.summary.specifyData.datasets.unknown.produced'
-        - delete:
-            tableName: translation
-            where: translation_key = 'dmp.steps.summary.specifyData.missingExplanation'
-        - delete:
-            tableName: translation
-            where: translation_key = 'dmp.steps.summary.specifyData.missingSource'
-        - delete:
-            tableName: translation
-            where: translation_key = 'dmp.steps.summary.specifyData.newData.unspecified'
+            where: translation_key = 'dmp.steps.summary.data.specify.datasets.unspecified'
