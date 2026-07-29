@@ -165,7 +165,6 @@ public final class DMPMapper extends AbstractMapper {
   /** RDA to DAMAP (Import). * */
   public DmpDO convert(DMPWithID dmp) {
     var dmpDO = new DmpDO();
-    dmpDO.setId(Long.valueOf(dmp.getId()));
     var dmpData = dmp.getDmp();
     if (dmpData == null) {
       return dmpDO;
