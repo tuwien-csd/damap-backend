@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.jbosslog.JBossLog;
 import org.damap.base.domain.InternalStorage;
+import org.damap.base.enums.EErrorCode;
+import org.damap.base.exception.DamapApiException;
 import org.damap.base.r3data.RepositoriesService;
+import org.damap.base.r3data.dto.RepositoryDetails;
 import org.damap.base.rest.dmp.domain.DatasetDO;
 import org.damap.base.rest.dmp.domain.DmpDO;
 import org.damap.base.rest.dmp.domain.ExternalStorageDO;
@@ -197,7 +200,8 @@ public class HostsMapper extends AbstractMapper {
   private Host mapRepository(RepositoryDO repo) {
     String repoUrl = "https://google.com"; // Placeholder
     String repoTitle = repo.getTitle();
-    if (repo.getRepositoryId() != null && !repo.getRepositoryId().isBlank()) {
+    String r3dataId = repo.getRepositoryId();
+    if (r3dataId != null && !r3dataId.isBlank()) {
       try {
         RepositoriesService repositoriesService =
             Arc.container().instance(RepositoriesService.class).get();
@@ -214,24 +218,43 @@ public class HostsMapper extends AbstractMapper {
             repoTitle = firstRepo.getRepositoryName().getValue();
           }
         }
+      } catch (DamapApiException e) {
+        EErrorCode errorCode = e.getPayload().errorCode();
+        if (errorCode == EErrorCode.RE3DATA_NOT_FOUND) {
+          log.warnv("Repository registry ID {0} not found in re3data", r3dataId);
+        } else if (errorCode == EErrorCode.RE3DATA_NOT_AVAILABLE) {
+          log.errorv(
+              "re3data service not available when fetching metadata for ID {0}", r3dataId, e);
+        } else {
+          log.errorv("Unexpected API error retrieving repository metadata for ID {0}", r3dataId, e);
+        }
       } catch (Exception e) {
-        log.errorv(
-            "Failed to retrieve repository name for ID {0}, error: {1}",
-            repo.getRepositoryId(), e.getMessage());
+        log.errorv("Unexpected exception retrieving repository name for ID {0}", r3dataId, e);
       }
     }
 
     if (repoUrl == null || repoUrl.isBlank()) {
       log.warnv(
           "Repository '{0}' (ID: {1}) has no valid URL and will be skipped in the export.",
-          repoTitle, repo.getRepositoryId());
+          repoTitle, r3dataId);
       return null;
     }
 
     if (repoTitle == null || repoTitle.isBlank()) {
       repoTitle = "Repository";
     }
-    return new Host().title(repoTitle).url(repoUrl);
+
+    Host host = new Host().title(repoTitle).url(repoUrl);
+    if (r3dataId != null && !r3dataId.isBlank()) {
+      HostID hostId = new HostID();
+      hostId.setIdentifier(r3dataId);
+      hostId.setType("re3data");
+
+      List<HostID> hostIdList = new ArrayList<>();
+      hostIdList.add(hostId);
+      host.setHostId(hostIdList);
+    }
+    return host;
   }
 
   /**
@@ -311,26 +334,292 @@ public class HostsMapper extends AbstractMapper {
   /**
    * RDA to DAMAP (Import).
    *
-   * <p>Imports an RDA standard Host object and maps it back onto DAMAP's storage structures.
-   * Automatically reconstructs either an {@link ExternalStorageDO} (if an URL is present) or a
-   * {@link RepositoryDO} and links it via reference hash.
-   *
-   * <p>Note: The referenceHash is required during the import phase because datasets are transient
-   * at this stage and do not yet possess database IDs. The hash acts as a temporary identifier to
-   * maintain relationships.
+   * <ol>
+   *   <li>First checks ID, title, and URL against the re3data API. If there is a match, imports as
+   *       a repository.
+   *   <li>Then checks title and URL against Internal Storage. If there is a match, imports as an
+   *       internal storage.
+   *   <li>If no match is found, imports as an external storage.
+   * </ol>
    *
    * @param target the target DMP to import the host into
    * @param rdaHost the source RDA standard host
    * @param refHash the reference hash of the dataset linked to this host
    */
   public void importHost(DmpDO target, Host rdaHost, String refHash) {
-    String title = !rdaHost.getTitle().isBlank() ? rdaHost.getTitle() : "Imported Host";
-    String url = rdaHost.getUrl();
+    if (rdaHost == null) {
+      return;
+    }
+    String title =
+        rdaHost.getTitle() != null && !rdaHost.getTitle().isBlank()
+            ? rdaHost.getTitle()
+            : "Imported Host";
+    String url = rdaHost.getUrl() != null ? rdaHost.getUrl() : "";
 
-    if (!url.isBlank()) {
-      importAsExternalStorage(target, title, url, refHash, rdaHost);
+    // 1. Check against re3data API
+    RepositoryDO matchedRepo = findRe3dataMatch(rdaHost);
+    if (matchedRepo != null) {
+      importAsRepository(target, matchedRepo, refHash);
+      return;
+    }
+
+    // 2. Check against Internal Storage
+    InternalStorage matchedInternal = findInternalStorageMatch(title, url);
+    if (matchedInternal != null) {
+      importAsInternalStorage(target, matchedInternal, refHash);
+      return;
+    }
+
+    // 3. Fallback to External Storage
+    importAsExternalStorage(target, title, url, refHash, rdaHost);
+  }
+
+  /**
+   * Helper method to verify if an incoming RDA Host matches an entry in re3data.
+   *
+   * @param rdaHost the RDA standard host object to evaluate
+   * @return a matched RepositoryDO if found, otherwise null
+   */
+  private RepositoryDO findRe3dataMatch(Host rdaHost) {
+    String hostIdVal = null;
+    if (rdaHost.getHostId() != null && !rdaHost.getHostId().isEmpty()) {
+      hostIdVal = rdaHost.getHostId().get(0).getIdentifier();
+    }
+
+    RepositoriesService repositoriesService = null;
+    try {
+      repositoriesService = Arc.container().instance(RepositoriesService.class).get();
+    } catch (Exception e) {
+      log.debug("Could not obtain RepositoriesService from Arc container: " + e.getMessage());
+    }
+
+    if (repositoriesService == null) {
+      return null;
+    }
+
+    // A. Check if explicitly provided via HostID with type re3data
+    if (hostIdVal != null && !hostIdVal.isBlank()) {
+      try {
+        Re3Data re3Data = repositoriesService.getById(hostIdVal);
+        if (re3Data != null && !re3Data.getRepository().isEmpty()) {
+          var firstRepo = re3Data.getRepository().get(0);
+          RepositoryDO repoDO = new RepositoryDO();
+          repoDO.setRepositoryId(hostIdVal);
+          String title = "Repository";
+          if (firstRepo.getRepositoryName() != null
+              && firstRepo.getRepositoryName().getValue() != null) {
+            title = firstRepo.getRepositoryName().getValue();
+          } else if (rdaHost.getTitle() != null) {
+            title = rdaHost.getTitle();
+          }
+          repoDO.setTitle(title);
+          return repoDO;
+        }
+      } catch (DamapApiException e) {
+        EErrorCode errorCode = e.getPayload().errorCode();
+        if (errorCode == EErrorCode.RE3DATA_NOT_FOUND) {
+          log.warnv("Explicit hostId {0} not found in re3data registry during import", hostIdVal);
+        } else if (errorCode == EErrorCode.RE3DATA_NOT_AVAILABLE) {
+          log.warnv("re3data registry not available while checking explicit hostId {0}", hostIdVal);
+        } else {
+          log.errorv("Unexpected API error checking explicit hostId {0}", hostIdVal, e);
+        }
+      } catch (Exception e) {
+        log.errorv("Unexpected exception checking re3data by explicit hostId {0}", hostIdVal, e);
+      }
+    }
+
+    // B. Check match by URL patterns if pointing to re3data registry
+    String url = rdaHost.getUrl();
+    if (url != null && !url.isBlank()) {
+      if (url.contains("doi.org/10.17616/") || url.contains("re3data.org/repository/")) {
+        String extractedId = extractRe3dataId(url);
+        if (extractedId != null) {
+          try {
+            Re3Data re3Data = repositoriesService.getById(extractedId);
+            if (re3Data != null && !re3Data.getRepository().isEmpty()) {
+              var firstRepo = re3Data.getRepository().get(0);
+              RepositoryDO repoDO = new RepositoryDO();
+              repoDO.setRepositoryId(extractedId);
+              String title = "Repository";
+              if (firstRepo.getRepositoryName() != null
+                  && firstRepo.getRepositoryName().getValue() != null) {
+                title = firstRepo.getRepositoryName().getValue();
+              } else if (rdaHost.getTitle() != null) {
+                title = rdaHost.getTitle();
+              }
+              repoDO.setTitle(title);
+              return repoDO;
+            }
+          } catch (DamapApiException e) {
+            EErrorCode errorCode = e.getPayload().errorCode();
+            if (errorCode == EErrorCode.RE3DATA_NOT_FOUND) {
+              log.debugv("Extracted re3data ID {0} from URL not found in registry", extractedId);
+            } else if (errorCode == EErrorCode.RE3DATA_NOT_AVAILABLE) {
+              log.warnv(
+                  "re3data service not available during URL pattern import checks for ID {0}",
+                  extractedId);
+            } else {
+              log.errorv("Unexpected API error checking URL-extracted ID {0}", extractedId, e);
+            }
+          } catch (Exception e) {
+            log.errorv(
+                "Unexpected exception checking re3data by URL-extracted ID {0}", extractedId, e);
+          }
+        }
+      }
+    }
+
+    // C. Fallback: Search recommended repositories by Title or URL
+    try {
+      List<RepositoryDetails> recommendedList = repositoriesService.getRecommended();
+      if (recommendedList != null) {
+        for (RepositoryDetails recommended : recommendedList) {
+          boolean matchByTitle =
+              rdaHost.getTitle() != null
+                  && rdaHost.getTitle().equalsIgnoreCase(recommended.getName());
+          boolean matchByUrl =
+              rdaHost.getUrl() != null
+                  && !rdaHost.getUrl().isBlank()
+                  && rdaHost.getUrl().equalsIgnoreCase(recommended.getRepositoryURL());
+
+          if (matchByTitle || matchByUrl) {
+            RepositoryDO repoDO = new RepositoryDO();
+            repoDO.setRepositoryId(recommended.getId());
+            repoDO.setTitle(recommended.getName());
+            return repoDO;
+          }
+        }
+      }
+    } catch (DamapApiException e) {
+      EErrorCode errorCode = e.getPayload().errorCode();
+      if (errorCode == EErrorCode.RE3DATA_RECOMMENDED_NOT_FOUND) {
+        log.warn("Recommended repositories mapping metadata not found", e);
+      } else if (errorCode == EErrorCode.RE3DATA_RECOMMENDED_NOT_AVAILABLE) {
+        log.warn("re3data service temporarily unavailable during recommended fallback lookup", e);
+      } else {
+        log.error(
+            "Unexpected API error querying recommended repositories for import fallback match", e);
+      }
+    } catch (Exception e) {
+      log.error(
+          "Unexpected exception querying recommended repositories for import fallback match", e);
+    }
+
+    return null;
+  }
+
+  /**
+   * Extracts the re3data identifier from a given URL pattern.
+   *
+   * @param url the repository URL
+   * @return the extracted identifier or null if no pattern matches
+   */
+  private String extractRe3dataId(String url) {
+    if (url == null) return null;
+    int index = url.indexOf("r3d");
+    if (index != -1) {
+      String sub = url.substring(index);
+      int end = sub.indexOf('/');
+      if (end != -1) {
+        return sub.substring(0, end);
+      }
+      return sub;
+    }
+    return null;
+  }
+
+  /**
+   * Searches for a matching InternalStorage entity by comparing the host's title and URL against
+   * active storage and backup locations.
+   *
+   * @param title the title of the host
+   * @param url the URL of the host
+   * @return the matching InternalStorage entity, or null if no match is found
+   */
+  private InternalStorage findInternalStorageMatch(String title, String url) {
+    try {
+      List<InternalStorage> allStorages = InternalStorage.listAll();
+      for (InternalStorage storage : allStorages) {
+        if (title != null) {
+          if (title.equalsIgnoreCase(storage.getStorageLocation())
+              || title.equalsIgnoreCase(storage.getBackupLocation())) {
+            return storage;
+          }
+        }
+        if (url != null && !url.isBlank() && url.equalsIgnoreCase(storage.getUrl())) {
+          return storage;
+        }
+      }
+    } catch (Exception e) {
+      log.warn("Could not query InternalStorage entities: " + e.getMessage());
+    }
+    return null;
+  }
+
+  /**
+   * Helper method to import an RDA Host as an Internal Storage object. Reuses existing internal
+   * storage matches by title or appends a new one.
+   *
+   * @param target the target DMP
+   * @param internal the matching internal storage entity
+   * @param refHash the dataset's reference hash
+   */
+  private void importAsInternalStorage(DmpDO target, InternalStorage internal, String refHash) {
+    if (target.getStorage() == null) {
+      target.setStorage(new ArrayList<>());
+    }
+
+    StorageDO existingStore =
+        target.getStorage().stream()
+            .filter(store -> internal.id.equals(store.getInternalStorageId()))
+            .findFirst()
+            .orElse(null);
+
+    if (existingStore != null) {
+      if (!existingStore.getDatasets().contains(refHash)) {
+        existingStore.getDatasets().add(refHash);
+      }
     } else {
-      importAsRepository(target, title, refHash);
+      StorageDO storeDO = new StorageDO();
+      storeDO.setInternalStorageId(internal.id);
+      storeDO.setTitle(
+          internal.getStorageLocation() != null
+              ? internal.getStorageLocation()
+              : (internal.getBackupLocation() != null
+                  ? internal.getBackupLocation()
+                  : "Internal Storage"));
+      storeDO.setDatasets(new ArrayList<>(List.of(refHash)));
+      target.getStorage().add(storeDO);
+    }
+  }
+
+  /**
+   * Helper method to import an RDA Host as a DAMAP Repository object. Reuses existing repository
+   * matches by title or appends a new one.
+   *
+   * @param target the target DMP
+   * @param matchedRepo the matched repository domain object
+   * @param refHash the dataset's reference hash
+   */
+  private void importAsRepository(DmpDO target, RepositoryDO matchedRepo, String refHash) {
+    if (target.getRepositories() == null) {
+      target.setRepositories(new ArrayList<>());
+    }
+
+    RepositoryDO existingRepo =
+        target.getRepositories().stream()
+            .filter(repo -> matchedRepo.getRepositoryId().equals(repo.getRepositoryId()))
+            .findFirst()
+            .orElse(null);
+
+    if (existingRepo != null) {
+      if (!existingRepo.getDatasets().contains(refHash)) {
+        existingRepo.getDatasets().add(refHash);
+      }
+    } else {
+      matchedRepo.setDatasets(new ArrayList<>(List.of(refHash)));
+      target.getRepositories().add(matchedRepo);
     }
   }
 
@@ -368,37 +657,6 @@ public class HostsMapper extends AbstractMapper {
       newExt.setBackupFrequency(rdaHost.getBackupFrequency());
       newExt.setBackupLocation(rdaHost.getBackupType());
       target.getExternalStorage().add(newExt);
-    }
-  }
-
-  /**
-   * Helper method to import an RDA Host as a DAMAP Repository object. Reuses existing repository
-   * matches by title or appends a new one.
-   *
-   * @param target the target DMP
-   * @param title the host title
-   * @param refHash the dataset's reference hash
-   */
-  private void importAsRepository(DmpDO target, String title, String refHash) {
-    if (target.getRepositories() == null) {
-      target.setRepositories(new ArrayList<>());
-    }
-
-    RepositoryDO existingRepo =
-        target.getRepositories().stream()
-            .filter(repo -> title.equalsIgnoreCase(repo.getTitle()))
-            .findFirst()
-            .orElse(null);
-
-    if (existingRepo != null) {
-      if (!existingRepo.getDatasets().contains(refHash)) {
-        existingRepo.getDatasets().add(refHash);
-      }
-    } else {
-      var newRepo = new RepositoryDO();
-      newRepo.setTitle(title);
-      newRepo.setDatasets(new ArrayList<>(List.of(refHash)));
-      target.getRepositories().add(newRepo);
     }
   }
 }

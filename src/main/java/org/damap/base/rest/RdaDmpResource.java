@@ -183,7 +183,8 @@ public class RdaDmpResource {
     Set<ConstraintViolation<DMPData>> violations = validator.validate(data);
 
     if (data.getDataset() == null || data.getDataset().isEmpty()) {
-      log.warnv("Update DMP validation failed for ID {0}: dataset must contain at least one item", id);
+      log.warnv(
+          "Update DMP validation failed for ID {0}: dataset must contain at least one item", id);
       return Response.status(400)
           .header("Content-Type", "application/json")
           .entity(
