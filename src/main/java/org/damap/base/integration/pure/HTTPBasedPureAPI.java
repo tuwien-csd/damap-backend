@@ -17,7 +17,7 @@ import org.jboss.logging.Logger;
 @Path("")
 @Produces(MediaType.APPLICATION_JSON)
 @Typed(HTTPBasedPureAPI.class)
-@LookupIfProperty(name = "damap.elsevier-pure-backend", stringValue = "http")
+@LookupIfProperty(name = "damap.tenant-aware.elsevier-pure-backend", stringValue = "http")
 @Timeout(10000)
 @RegisterClientHeaders(PureAuthenticationHeaderFactory.class)
 interface HTTPBasedPureAPI extends PureAPI {
