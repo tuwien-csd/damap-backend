@@ -77,4 +77,9 @@ public class GenericProjectService implements ProjectServiceProvider {
         .findFirst()
         .orElse(null);
   }
+
+  @Override
+  public ResultList<ProjectDO> getRecommended(Search search) {
+    return search(search);
+  }
 }
