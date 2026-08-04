@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: 41
+      author: Rafael dos Santos
+      comment: Add missing keys
+      changes:
+        - sql: |
+            INSERT INTO translation (translation_key, language, default_value, active, version)
+            SELECT 'admin.appTranslations.boldTitle', l.language, 'Languages', l.active, 0
+            FROM (SELECT DISTINCT language, active FROM translation) l;
+        - sql: |
+            INSERT INTO translation (translation_key, language, default_value, active, version)
+            SELECT 'dmp.steps.summary.data.specify.datasets.reused', l.language, 'Reused datasets: ', l.active, 0
+            FROM (SELECT DISTINCT language, active FROM translation) l;
+        - sql: |
+            INSERT INTO translation (translation_key, language, default_value, active, version)
+            SELECT 'dmp.steps.summary.data.specify.datasets.unknown.reused', l.language, 'Not yet known if data will be reused.', l.active, 0
+            FROM (SELECT DISTINCT language, active FROM translation) l;
+        - sql: |
+            INSERT INTO translation (translation_key, language, default_value, active, version)
+            SELECT 'dmp.steps.summary.data.specify.datasets.unspecified', l.language, 'No research data specified.', l.active, 0
+            FROM (SELECT DISTINCT language, active FROM translation) l;
+      rollback:
+        - delete:
+            tableName: translation
+            where: translation_key = 'admin.appTranslations.boldTitle'
+        - delete:
+            tableName: translation
+            where: translation_key = 'dmp.steps.summary.data.specify.datasets.reused'
+        - delete:
+            tableName: translation
+            where: translation_key = 'dmp.steps.summary.data.specify.datasets.unknown.reused'
+        - delete:
+            tableName: translation
+            where: translation_key = 'dmp.steps.summary.data.specify.datasets.unspecified'
