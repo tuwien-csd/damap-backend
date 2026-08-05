@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.damap.base.enums.EDataKind;
+import org.damap.base.enums.EDataSource;
 import org.damap.base.rest.dmp.domain.ContributorDO;
 import org.damap.base.rest.dmp.domain.DatasetDO;
 import org.damap.base.rest.dmp.domain.DmpDO;
@@ -239,6 +240,9 @@ public final class DMPMapper extends AbstractMapper {
     var datasets = data.getDataset();
     if (datasets != null && !datasets.isEmpty()) {
       List<DatasetDO> damapDatasets = new ArrayList<>();
+      boolean hasNew = false;
+      boolean hasReused = false;
+
       for (var rdaDataset : datasets) {
         DatasetDO datasetDO = datasetMapper.convert(rdaDataset);
 
@@ -247,19 +251,24 @@ public final class DMPMapper extends AbstractMapper {
         }
         damapDatasets.add(datasetDO);
 
-        if (rdaDataset.getDistribution() != null) {
-          for (var distribution : rdaDataset.getDistribution()) {
-            var rdaHost = distribution.getHost();
-            if (rdaHost != null) {
-              hostsMapper.importHost(target, rdaHost, datasetDO.getReferenceHash());
-            }
+        if (datasetDO.getSource() == EDataSource.REUSED) {
+          hasReused = true;
+        } else {
+          hasNew = true;
+        }
+
+        if (rdaDataset.getDistribution() != null && !rdaDataset.getDistribution().isEmpty()) {
+          var distribution = rdaDataset.getDistribution().get(0);
+          var rdaHost = distribution.getHost();
+          if (rdaHost != null) {
+            hostsMapper.importHost(target, rdaHost, datasetDO.getReferenceHash());
           }
         }
       }
 
       target.setDatasets(damapDatasets);
-      target.setDataKind(EDataKind.SPECIFY);
-      target.setReusedDataKind(EDataKind.NONE);
+      target.setDataKind(hasNew ? EDataKind.SPECIFY : EDataKind.NONE);
+      target.setReusedDataKind(hasReused ? EDataKind.SPECIFY : EDataKind.NONE);
     } else {
       target.setDatasets(List.of());
       target.setDataKind(EDataKind.NONE);

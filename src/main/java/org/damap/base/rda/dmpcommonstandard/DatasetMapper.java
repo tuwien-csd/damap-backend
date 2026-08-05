@@ -49,6 +49,12 @@ public class DatasetMapper extends AbstractMapper {
   public Dataset convert(DatasetDO datasetDO) {
     var result = new Dataset();
 
+    if (datasetDO.getSource() != null) {
+      result.setIsReused(datasetDO.getSource() == EDataSource.REUSED);
+    } else {
+      result.setIsReused(false);
+    }
+
     var datasetId = datasetDO.getDatasetId();
     if (datasetId != null && datasetId.getIdentifier() != null) {
       DatasetID rdaDatasetId = new DatasetID().identifier(datasetId.getIdentifier());
@@ -171,7 +177,11 @@ public class DatasetMapper extends AbstractMapper {
    */
   public DatasetDO convert(Dataset dataset) {
     var result = new DatasetDO();
-    result.setSource(EDataSource.NEW);
+    if (dataset.getIsReused() != null) {
+      result.setSource(dataset.getIsReused() ? EDataSource.REUSED : EDataSource.NEW);
+    } else {
+      result.setSource(EDataSource.NEW);
+    }
     result.setTitle(dataset.getTitle());
 
     if (strict) {
@@ -179,10 +189,6 @@ public class DatasetMapper extends AbstractMapper {
           && !dataset.getDataQualityAssurance().isEmpty()) {
         throw new CommonStandardCompatibilityException(
             "Data quality assurance objects are not supported in DAMAP.");
-      }
-      if (dataset.getIsReused() != null) {
-        throw new CommonStandardCompatibilityException(
-            "Reused dataset markers are not supported in DAMAP.");
       }
       if (dataset.getIssued() != null) {
         throw new CommonStandardCompatibilityException(
