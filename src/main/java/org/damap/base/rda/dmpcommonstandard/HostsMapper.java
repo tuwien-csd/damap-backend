@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.jbosslog.JBossLog;
 import org.damap.base.domain.InternalStorage;
+import org.damap.base.domain.InternalStorageTranslation;
 import org.damap.base.enums.EErrorCode;
 import org.damap.base.exception.DamapApiException;
 import org.damap.base.r3data.RepositoriesService;
@@ -228,12 +229,14 @@ public class HostsMapper extends AbstractMapper {
         } else {
           log.errorv("Unexpected API error retrieving repository metadata for ID {0}", r3dataId, e);
         }
+        return null;
       } catch (Exception e) {
         log.errorv("Unexpected exception retrieving repository name for ID {0}", r3dataId, e);
+        return null;
       }
     }
 
-    if (repoUrl == null || repoUrl.isBlank()) {
+    if (repoUrl.isBlank()) {
       log.warnv(
           "Repository '{0}' (ID: {1}) has no valid URL and will be skipped in the export.",
           repoTitle, r3dataId);
@@ -350,11 +353,8 @@ public class HostsMapper extends AbstractMapper {
     if (rdaHost == null) {
       return;
     }
-    String title =
-        rdaHost.getTitle() != null && !rdaHost.getTitle().isBlank()
-            ? rdaHost.getTitle()
-            : "Imported Host";
-    String url = rdaHost.getUrl() != null ? rdaHost.getUrl() : "";
+    String title = !rdaHost.getTitle().isBlank() ? rdaHost.getTitle() : "Imported Host";
+    String url = rdaHost.getUrl();
 
     // 1. Check against re3data API
     RepositoryDO matchedRepo = findRe3dataMatch(rdaHost);
@@ -429,48 +429,7 @@ public class HostsMapper extends AbstractMapper {
       }
     }
 
-    // B. Check match by URL patterns if pointing to re3data registry
-    String url = rdaHost.getUrl();
-    if (url != null && !url.isBlank()) {
-      if (url.contains("doi.org/10.17616/") || url.contains("re3data.org/repository/")) {
-        String extractedId = extractRe3dataId(url);
-        if (extractedId != null) {
-          try {
-            Re3Data re3Data = repositoriesService.getById(extractedId);
-            if (re3Data != null && !re3Data.getRepository().isEmpty()) {
-              var firstRepo = re3Data.getRepository().get(0);
-              RepositoryDO repoDO = new RepositoryDO();
-              repoDO.setRepositoryId(extractedId);
-              String title = "Repository";
-              if (firstRepo.getRepositoryName() != null
-                  && firstRepo.getRepositoryName().getValue() != null) {
-                title = firstRepo.getRepositoryName().getValue();
-              } else if (rdaHost.getTitle() != null) {
-                title = rdaHost.getTitle();
-              }
-              repoDO.setTitle(title);
-              return repoDO;
-            }
-          } catch (DamapApiException e) {
-            EErrorCode errorCode = e.getPayload().errorCode();
-            if (errorCode == EErrorCode.RE3DATA_NOT_FOUND) {
-              log.debugv("Extracted re3data ID {0} from URL not found in registry", extractedId);
-            } else if (errorCode == EErrorCode.RE3DATA_NOT_AVAILABLE) {
-              log.warnv(
-                  "re3data service not available during URL pattern import checks for ID {0}",
-                  extractedId);
-            } else {
-              log.errorv("Unexpected API error checking URL-extracted ID {0}", extractedId, e);
-            }
-          } catch (Exception e) {
-            log.errorv(
-                "Unexpected exception checking re3data by URL-extracted ID {0}", extractedId, e);
-          }
-        }
-      }
-    }
-
-    // C. Fallback: Search recommended repositories by Title or URL
+    // B. Fallback: Search recommended repositories by Title or URL
     try {
       List<RepositoryDetails> recommendedList = repositoriesService.getRecommended();
       if (recommendedList != null) {
@@ -510,49 +469,38 @@ public class HostsMapper extends AbstractMapper {
   }
 
   /**
-   * Extracts the re3data identifier from a given URL pattern.
+   * Searches for a matching InternalStorage entity by comparing the host's title against active
+   * localized storage translations, and its URL against active storage URLs.
    *
-   * @param url the repository URL
-   * @return the extracted identifier or null if no pattern matches
-   */
-  private String extractRe3dataId(String url) {
-    if (url == null) return null;
-    int index = url.indexOf("r3d");
-    if (index != -1) {
-      String sub = url.substring(index);
-      int end = sub.indexOf('/');
-      if (end != -1) {
-        return sub.substring(0, end);
-      }
-      return sub;
-    }
-    return null;
-  }
-
-  /**
-   * Searches for a matching InternalStorage entity by comparing the host's title and URL against
-   * active storage and backup locations.
-   *
-   * @param title the title of the host
-   * @param url the URL of the host
-   * @return the matching InternalStorage entity, or null if no match is found
+   * @param title the title of the host /* @param url the URL of the host /* @return the matching
+   *     InternalStorage entity, or null if no match is found
    */
   private InternalStorage findInternalStorageMatch(String title, String url) {
     try {
-      List<InternalStorage> allStorages = InternalStorage.listAll();
-      for (InternalStorage storage : allStorages) {
-        if (title != null) {
-          if (title.equalsIgnoreCase(storage.getStorageLocation())
-              || title.equalsIgnoreCase(storage.getBackupLocation())) {
+      if (title != null && !title.isBlank()) {
+        // Query the inter_storage_translation table using the exact 'title' column
+        List<InternalStorageTranslation> translations =
+            InternalStorageTranslation.list("LOWER(title) = LOWER(?1)", title.trim());
+
+        for (InternalStorageTranslation translation : translations) {
+          InternalStorage storage = translation.getInternalStorageId();
+          if (storage != null && storage.isActive()) {
             return storage;
           }
         }
-        if (url != null && !url.isBlank() && url.equalsIgnoreCase(storage.getUrl())) {
-          return storage;
+      }
+
+      // 2. Fallback: Search active storages by homepage URL directly
+      if (url != null && !url.isBlank()) {
+        List<InternalStorage> activeStorages = InternalStorage.list("active", true);
+        for (InternalStorage storage : activeStorages) {
+          if (url.equalsIgnoreCase(storage.getUrl())) {
+            return storage;
+          }
         }
       }
     } catch (Exception e) {
-      log.warn("Could not query InternalStorage entities: " + e.getMessage());
+      log.warn("Could not query InternalStorage translations or entities: " + e.getMessage());
     }
     return null;
   }
