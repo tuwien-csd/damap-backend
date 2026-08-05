@@ -189,17 +189,41 @@ public final class DMPMapper extends AbstractMapper {
       }
     }
     List<ContributorDO> damapContributors = new ArrayList<>();
+
+    // 1. Process the primary Contact
+    ContributorDO contactDO = null;
     var contact = data.getContact();
     if (contact != null) {
-      ContributorDO contactDO = contributorMapper.convertToContributor(contact);
-      contactDO.setContact(true); // Flag this person as primary contact
+      contactDO = contributorMapper.convertToContributor(contact);
+      contactDO.setContact(true); // Flag this person as the primary contact
       damapContributors.add(contactDO);
     }
 
+    // 2. Process the Contributors
     var contributors = data.getContributor();
     if (contributors != null) {
-      damapContributors.addAll(
-          contributors.stream().map(contributorMapper::convert).collect(Collectors.toList()));
+      for (var rdaContributor : contributors) {
+        ContributorDO contributorDO = contributorMapper.convert(rdaContributor);
+
+        // Check if this contributor is the same person as the contact
+        if (contactDO != null && isSamePerson(contactDO, contributorDO)) {
+          // Merge roles into the contact DO instead of duplicating
+          if (contributorDO.getRoles() != null) {
+            contactDO.getRoles().addAll(contributorDO.getRoles());
+          }
+          continue; // Skip adding as a separate contributor
+        }
+
+        // Check if this contributor has already been added to avoid general duplicates
+        ContributorDO existing = findExistingContributor(damapContributors, contributorDO);
+        if (existing != null) {
+          if (contributorDO.getRoles() != null) {
+            existing.getRoles().addAll(contributorDO.getRoles());
+          }
+        } else {
+          damapContributors.add(contributorDO);
+        }
+      }
     }
 
     target.setContributors(damapContributors);
@@ -254,5 +278,45 @@ public final class DMPMapper extends AbstractMapper {
           case UNKNOWN -> null;
         });
     target.setEthicalIssuesReport(data.getEthicalIssuesReport());
+  }
+
+  /**
+   * Helper method to evaluate if two ContributorDO objects represent the same person using this
+   * matching chain: Person ID -> Email -> Full Name.
+   */
+  private boolean isSamePerson(ContributorDO a, ContributorDO b) {
+    // A. Match by Person ID
+    if (a.getPersonId() != null
+        && b.getPersonId() != null
+        && a.getPersonId().getIdentifier() != null
+        && a.getPersonId().getIdentifier().equalsIgnoreCase(b.getPersonId().getIdentifier())) {
+      return true;
+    }
+
+    // B. Match by Email (mbox)
+    if (a.getMbox() != null
+        && !a.getMbox().isBlank()
+        && b.getMbox() != null
+        && !b.getMbox().isBlank()
+        && a.getMbox().equalsIgnoreCase(b.getMbox())) {
+      return true;
+    }
+
+    // C. Match by First and Last Name
+    if (a.getFirstName() != null
+        && b.getFirstName() != null
+        && a.getLastName() != null
+        && b.getLastName() != null
+        && a.getFirstName().equalsIgnoreCase(b.getFirstName())
+        && a.getLastName().equalsIgnoreCase(b.getLastName())) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /** Helper method to search an active list of contributors for a duplicate record. */
+  private ContributorDO findExistingContributor(List<ContributorDO> list, ContributorDO target) {
+    return list.stream().filter(c -> isSamePerson(c, target)).findFirst().orElse(null);
   }
 }
