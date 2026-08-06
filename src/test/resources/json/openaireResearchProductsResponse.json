@@ -1,0 +1,44 @@
+{
+  "header": {
+    "numFound": 1,
+    "maxScore": 1.0,
+    "queryTime": 10,
+    "page": 1,
+    "pageSize": 1
+  },
+  "results": [
+    {
+      "id": "doi_dedup___::835edba66379fe26426851063c01c257",
+      "type": "other",
+      "mainTitle": "FIG. 12 in A survey of small mammals in the Volta Region of Ghana",
+      "descriptions": [
+        "Published as part of the related article.",
+        "Cyclops Roundleaf Bat from Shiare."
+      ],
+      "publicationDate": "2021-05-20",
+      "formats": ["image/jpeg"],
+      "bestAccessRight": {
+        "code": "c_abf2",
+        "label": "OPEN",
+        "scheme": "http://vocabularies.coar-repositories.org/documentation/access_rights/"
+      },
+      "size": "10129818",
+      "pids": [
+        {"scheme": "doi", "value": "10.5281/zenodo.4783814"}
+      ],
+      "instances": [
+        {
+          "license": "CC 0",
+          "accessRight": {
+            "code": "c_abf2",
+            "label": "OPEN"
+          },
+          "type": "Image",
+          "publicationDate": "2021-05-20",
+          "urls": ["https://dx.doi.org/10.5281/zenodo.4783814"]
+        }
+      ],
+      "authors": [{"fullName": "Decher, Jan"}]
+    }
+  ]
+}
