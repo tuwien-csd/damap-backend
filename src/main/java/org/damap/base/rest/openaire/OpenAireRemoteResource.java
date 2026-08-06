@@ -10,6 +10,7 @@ import jakarta.ws.rs.core.MediaType;
 import org.damap.base.enums.EErrorCode;
 import org.damap.base.exception.DamapApiException;
 import org.damap.base.exception.ErrorDto;
+import org.damap.base.rest.openaire.domain.OpenAireSearchResponse;
 import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
@@ -31,8 +32,22 @@ public interface OpenAireRemoteResource {
    */
   @GET
   @Fallback(fallbackMethod = "fallback", skipOn = DamapApiException.class)
-  @Path("/datasets")
+  @Path("/search/datasets")
   Response search(@QueryParam("doi") String doi);
+
+  /**
+   * Search the OpenAIRE Graph for a research product by persistent identifier.
+   *
+   * @param pid persistent identifier, normally a DOI
+   * @param pageSize maximum number of matching products to return
+   * @return an OpenAIRE Graph search response
+   */
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @Fallback(fallbackMethod = "fallbackResearchProducts", skipOn = DamapApiException.class)
+  @Path("/graph/v3/research-products")
+  OpenAireSearchResponse searchResearchProducts(
+      @QueryParam("pid") String pid, @QueryParam("pageSize") int pageSize);
 
   @ClientExceptionMapper
   static DamapApiException toException(jakarta.ws.rs.core.Response response) {
@@ -50,6 +65,11 @@ public interface OpenAireRemoteResource {
                   EErrorCode.OPENAIRE_NOT_AVAILABLE,
                   "OpenAire is currently not available, caused by " + response.getStatus()),
               jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR);
+      case 429 ->
+          new DamapApiException(
+              new ErrorDto(
+                  EErrorCode.OPENAIRE_NOT_AVAILABLE, "The OpenAire request limit has been reached"),
+              jakarta.ws.rs.core.Response.Status.TOO_MANY_REQUESTS);
       default ->
           new DamapApiException(
               new ErrorDto(
@@ -62,6 +82,15 @@ public interface OpenAireRemoteResource {
 
   default Response fallback(String doi) {
     log.info("The OpenAire API did not respond and timed out");
+    throw new DamapApiException(
+        new ErrorDto(
+            EErrorCode.OPENAIRE_NOT_AVAILABLE,
+            "OpenAire is currently not available, connection timed out"),
+        jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR);
+  }
+
+  default OpenAireSearchResponse fallbackResearchProducts(String pid, int pageSize) {
+    log.info("The OpenAire Graph API did not respond and timed out");
     throw new DamapApiException(
         new ErrorDto(
             EErrorCode.OPENAIRE_NOT_AVAILABLE,
