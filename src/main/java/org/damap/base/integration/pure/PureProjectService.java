@@ -76,7 +76,7 @@ public class PureProjectService implements ProjectServiceProvider {
                   pureRoleClassification.pureRoleUri().equals(participantAssociation.role.uri))
           .findFirst()
           .map(DamapTenantAwareConfig.PureRoleClassification::contributorRole)
-          .ifPresent(role -> contributor.setRoles(Set.of(role)));
+          .ifPresent(role -> contributor.setRoles(new HashSet<>(Set.of(role))));
     }
   }
 
