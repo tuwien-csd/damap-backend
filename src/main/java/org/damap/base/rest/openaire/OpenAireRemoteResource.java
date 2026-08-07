@@ -1,6 +1,5 @@
 package org.damap.base.rest.openaire;
 
-import generated.Response;
 import io.quarkus.rest.client.reactive.ClientExceptionMapper;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -18,22 +17,11 @@ import org.jboss.logging.Logger;
 
 /** OpenAireRemoteResource interface. */
 @RegisterRestClient(configKey = "rest.openaire")
-@Produces(MediaType.APPLICATION_XML)
+@Produces(MediaType.APPLICATION_JSON)
 @Timeout(10000)
 public interface OpenAireRemoteResource {
 
   Logger log = Logger.getLogger(OpenAireRemoteResource.class);
-
-  /**
-   * search.
-   *
-   * @param doi a {@link java.lang.String} object
-   * @return a {@link generated.Response} object
-   */
-  @GET
-  @Fallback(fallbackMethod = "fallback", skipOn = DamapApiException.class)
-  @Path("/search/datasets")
-  Response search(@QueryParam("doi") String doi);
 
   /**
    * Search the OpenAIRE Graph for a research product by persistent identifier.
@@ -43,7 +31,6 @@ public interface OpenAireRemoteResource {
    * @return an OpenAIRE Graph search response
    */
   @GET
-  @Produces(MediaType.APPLICATION_JSON)
   @Fallback(fallbackMethod = "fallbackResearchProducts", skipOn = DamapApiException.class)
   @Path("/graph/v3/research-products")
   OpenAireSearchResponse searchResearchProducts(
@@ -57,7 +44,8 @@ public interface OpenAireRemoteResource {
       case 404 ->
           new DamapApiException(
               new ErrorDto(
-                  EErrorCode.OPENAIRE_NOT_FOUND, "A dataset couldn't be found with OpenAire"),
+                  EErrorCode.OPENAIRE_NOT_FOUND,
+                  "A research product couldn't be found with OpenAire"),
               jakarta.ws.rs.core.Response.Status.NOT_FOUND);
       case 500, 502, 503, 504 ->
           new DamapApiException(
@@ -78,15 +66,6 @@ public interface OpenAireRemoteResource {
                       + response.getStatus()),
               jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR);
     };
-  }
-
-  default Response fallback(String doi) {
-    log.info("The OpenAire API did not respond and timed out");
-    throw new DamapApiException(
-        new ErrorDto(
-            EErrorCode.OPENAIRE_NOT_AVAILABLE,
-            "OpenAire is currently not available, connection timed out"),
-        jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR);
   }
 
   default OpenAireSearchResponse fallbackResearchProducts(String pid, int pageSize) {
