@@ -366,7 +366,7 @@ public class HostsMapper extends AbstractMapper {
     // 2. Check against Internal Storage
     InternalStorage matchedInternal = findInternalStorageMatch(title, url);
     if (matchedInternal != null) {
-      importAsInternalStorage(target, matchedInternal, refHash);
+      importAsInternalStorage(target, matchedInternal, title, refHash);
       return;
     }
 
@@ -511,9 +511,11 @@ public class HostsMapper extends AbstractMapper {
    *
    * @param target the target DMP
    * @param internal the matching internal storage entity
+   * @param title the title of the internal storage entity
    * @param refHash the dataset's reference hash
    */
-  private void importAsInternalStorage(DmpDO target, InternalStorage internal, String refHash) {
+  private void importAsInternalStorage(
+      DmpDO target, InternalStorage internal, String title, String refHash) {
     if (target.getStorage() == null) {
       target.setStorage(new ArrayList<>());
     }
@@ -531,12 +533,7 @@ public class HostsMapper extends AbstractMapper {
     } else {
       StorageDO storeDO = new StorageDO();
       storeDO.setInternalStorageId(internal.id);
-      storeDO.setTitle(
-          internal.getStorageLocation() != null
-              ? internal.getStorageLocation()
-              : (internal.getBackupLocation() != null
-                  ? internal.getBackupLocation()
-                  : "Internal Storage"));
+      storeDO.setTitle(title != null && !title.isBlank() ? title : "Internal Storage");
       storeDO.setDatasets(new ArrayList<>(List.of(refHash)));
       target.getStorage().add(storeDO);
     }
