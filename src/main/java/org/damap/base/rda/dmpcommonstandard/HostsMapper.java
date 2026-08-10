@@ -195,11 +195,15 @@ public class HostsMapper extends AbstractMapper {
    * <p>Converts a DAMAP Repository domain object to an RDA standard Host. Attempts to fetch the
    * official URL and Title from the re3data service when possible.
    *
+   * <p>Note: If a repository's URL cannot be resolved from re3data, this method logs a warning and
+   * returns {@code null} to skip exporting the repository host, rather than throwing a blocking
+   * error.
+   *
    * @param repo the DAMAP repository object
    * @return the mapped RDA standard Host or {@code null} if the repository URL is missing
    */
   private Host mapRepository(RepositoryDO repo) {
-    String repoUrl = "https://google.com"; // Placeholder
+    String repoUrl = null;
     String repoTitle = repo.getTitle();
     String r3dataId = repo.getRepositoryId();
     if (r3dataId != null && !r3dataId.isBlank()) {
@@ -236,7 +240,7 @@ public class HostsMapper extends AbstractMapper {
       }
     }
 
-    if (repoUrl.isBlank()) {
+    if (repoUrl == null || repoUrl.isBlank()) {
       log.warnv(
           "Repository '{0}' (ID: {1}) has no valid URL and will be skipped in the export.",
           repoTitle, r3dataId);
