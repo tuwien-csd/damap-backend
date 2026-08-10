@@ -234,8 +234,12 @@ public final class DMPMapper extends AbstractMapper {
           "DAMAP does not support importing non-English DMPs");
     }
     var costs = data.getCost();
-    if (costs != null) {
+    if (costs != null && !costs.isEmpty()) {
       target.setCosts(costs.stream().map(costsMapper::convert).toList());
+      target.setCostsExist(true);
+    } else {
+      target.setCosts(List.of());
+      target.setCostsExist(false);
     }
     var datasets = data.getDataset();
     if (datasets != null && !datasets.isEmpty()) {

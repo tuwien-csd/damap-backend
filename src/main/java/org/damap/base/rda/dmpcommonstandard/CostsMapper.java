@@ -1,9 +1,11 @@
 package org.damap.base.rda.dmpcommonstandard;
 
 import java.math.BigDecimal;
+import lombok.extern.jbosslog.JBossLog;
 import org.damap.base.enums.ECostType;
 import org.damap.base.rest.dmp.domain.CostDO;
 
+@JBossLog
 /**
  * This class implements Cost conversion from and to the RDA DMP Common Standard. (See <a
  * href="https://github.com/RDA-DMP-Common/common-madmp-api">github.com/RDA-DMP-Common/common-madmp-api</a>
@@ -44,12 +46,16 @@ public class CostsMapper extends AbstractMapper {
       return null;
     }
     var result = new CostDO();
-    if (cost.getType() != null) {
-      try {
-        result.setType(ECostType.valueOf(cost.getType().toUpperCase()));
-      } catch (IllegalArgumentException e) {
-        result.setType(ECostType.OTHER);
+    if (cost.getType() != null && !cost.getType().isBlank()) {
+      ECostType type = ECostType.getByValue(cost.getType());
+      if (type == null) {
+        try {
+          type = ECostType.valueOf(cost.getType().toUpperCase().trim());
+        } catch (IllegalArgumentException e) {
+          type = ECostType.OTHER;
+        }
       }
+      result.setType(type);
     } else {
       result.setType(ECostType.OTHER);
     }
@@ -63,7 +69,6 @@ public class CostsMapper extends AbstractMapper {
     if (currencyCode != null) {
       result.setCurrencyCode(currencyCode.getValue());
     }
-    result.setType(ECostType.OTHER);
     return result;
   }
 
@@ -83,12 +88,21 @@ public class CostsMapper extends AbstractMapper {
         costDO.getTitle() != null && !costDO.getTitle().isBlank()
             ? costDO.getTitle()
             : "Cost item");
-    var currencyCode = costDO.getCurrencyCode();
     if (costDO.getType() != null) {
       result.setType(costDO.getType().toString());
     }
-    if (currencyCode != null) {
-      result.setCurrencyCode(CurrencyCode.valueOf(currencyCode));
+    var currencyCode = costDO.getCurrencyCode();
+    if (currencyCode != null && !currencyCode.isBlank()) {
+      try {
+        result.setCurrencyCode(CurrencyCode.valueOf(currencyCode.toUpperCase().trim()));
+      } catch (IllegalArgumentException e) {
+        try {
+          result.setCurrencyCode(CurrencyCode.fromValue(currencyCode.trim()));
+        } catch (IllegalArgumentException ex) {
+          log.warnv(
+              "Could not map currency code '{0}' to a valid RDA CurrencyCode enum.", currencyCode);
+        }
+      }
     }
     var value = costDO.getValue();
     if (value != null) {
