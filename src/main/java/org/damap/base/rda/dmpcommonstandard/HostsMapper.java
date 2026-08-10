@@ -472,8 +472,9 @@ public class HostsMapper extends AbstractMapper {
    * Searches for a matching InternalStorage entity by comparing the host's title against active
    * localized storage translations, and its URL against active storage URLs.
    *
-   * @param title the title of the host /* @param url the URL of the host /* @return the matching
-   *     InternalStorage entity, or null if no match is found
+   * @param title the title of the host
+   * @param url the URL of the host
+   * @return the matching InternalStorage entity, or null if no match is found
    */
   private InternalStorage findInternalStorageMatch(String title, String url) {
     try {
@@ -506,8 +507,8 @@ public class HostsMapper extends AbstractMapper {
   }
 
   /**
-   * Helper method to import an RDA Host as an Internal Storage object. Reuses existing internal
-   * storage matches by title or appends a new one.
+   * Helper method to import an RDA Host as an Internal Storage object. Creates a dedicated
+   * StorageDO entry for each dataset link.
    *
    * @param target the target DMP
    * @param internal the matching internal storage entity
@@ -520,28 +521,16 @@ public class HostsMapper extends AbstractMapper {
       target.setStorage(new ArrayList<>());
     }
 
-    StorageDO existingStore =
-        target.getStorage().stream()
-            .filter(store -> internal.id.equals(store.getInternalStorageId()))
-            .findFirst()
-            .orElse(null);
-
-    if (existingStore != null) {
-      if (!existingStore.getDatasets().contains(refHash)) {
-        existingStore.getDatasets().add(refHash);
-      }
-    } else {
-      StorageDO storeDO = new StorageDO();
-      storeDO.setInternalStorageId(internal.id);
-      storeDO.setTitle(title != null && !title.isBlank() ? title : "Internal Storage");
-      storeDO.setDatasets(new ArrayList<>(List.of(refHash)));
-      target.getStorage().add(storeDO);
-    }
+    StorageDO storeDO = new StorageDO();
+    storeDO.setInternalStorageId(internal.id);
+    storeDO.setTitle(title != null && !title.isBlank() ? title : "Internal Storage");
+    storeDO.setDatasets(new ArrayList<>(List.of(refHash)));
+    target.getStorage().add(storeDO);
   }
 
   /**
-   * Helper method to import an RDA Host as a DAMAP Repository object. Reuses existing repository
-   * matches by title or appends a new one.
+   * Helper method to import an RDA Host as a DAMAP Repository object. Creates a dedicated
+   * RepositoryDO entry for each dataset link.
    *
    * @param target the target DMP
    * @param matchedRepo the matched repository domain object
@@ -552,25 +541,16 @@ public class HostsMapper extends AbstractMapper {
       target.setRepositories(new ArrayList<>());
     }
 
-    RepositoryDO existingRepo =
-        target.getRepositories().stream()
-            .filter(repo -> matchedRepo.getRepositoryId().equals(repo.getRepositoryId()))
-            .findFirst()
-            .orElse(null);
-
-    if (existingRepo != null) {
-      if (!existingRepo.getDatasets().contains(refHash)) {
-        existingRepo.getDatasets().add(refHash);
-      }
-    } else {
-      matchedRepo.setDatasets(new ArrayList<>(List.of(refHash)));
-      target.getRepositories().add(matchedRepo);
-    }
+    RepositoryDO repoDO = new RepositoryDO();
+    repoDO.setRepositoryId(matchedRepo.getRepositoryId());
+    repoDO.setTitle(matchedRepo.getTitle());
+    repoDO.setDatasets(new ArrayList<>(List.of(refHash)));
+    target.getRepositories().add(repoDO);
   }
 
   /**
-   * Helper method to import an RDA Host as a DAMAP External Storage object. Reuses existing
-   * external storage matches by title or appends a new one.
+   * Helper method to import an RDA Host as a DAMAP External Storage object. Creates a dedicated
+   * ExternalStorageDO entry for each dataset link.
    *
    * @param target the target DMP
    * @param title the host title
@@ -584,24 +564,12 @@ public class HostsMapper extends AbstractMapper {
       target.setExternalStorage(new ArrayList<>());
     }
 
-    ExternalStorageDO existingExt =
-        target.getExternalStorage().stream()
-            .filter(ext -> title.equalsIgnoreCase(ext.getTitle()))
-            .findFirst()
-            .orElse(null);
-
-    if (existingExt != null) {
-      if (!existingExt.getDatasets().contains(refHash)) {
-        existingExt.getDatasets().add(refHash);
-      }
-    } else {
-      var newExt = new ExternalStorageDO();
-      newExt.setTitle(title);
-      newExt.setUrl(url);
-      newExt.setDatasets(new ArrayList<>(List.of(refHash)));
-      newExt.setBackupFrequency(rdaHost.getBackupFrequency());
-      newExt.setBackupLocation(rdaHost.getBackupType());
-      target.getExternalStorage().add(newExt);
-    }
+    var newExt = new ExternalStorageDO();
+    newExt.setTitle(title);
+    newExt.setUrl(url);
+    newExt.setDatasets(new ArrayList<>(List.of(refHash)));
+    newExt.setBackupFrequency(rdaHost.getBackupFrequency());
+    newExt.setBackupLocation(rdaHost.getBackupType());
+    target.getExternalStorage().add(newExt);
   }
 }
