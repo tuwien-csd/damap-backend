@@ -7,10 +7,12 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.extern.jbosslog.JBossLog;
 import org.damap.base.enums.*;
 import org.damap.base.rest.dmp.domain.DatasetDO;
 import org.damap.base.rest.dmp.domain.IdentifierDO;
 
+@JBossLog
 /**
  * This class implements Dataset conversion from and to the RDA DMP Common Standard. (See <a
  * href="https://github.com/RDA-DMP-Common/common-madmp-api">github.com/RDA-DMP-Common/common-madmp-api</a>
@@ -262,13 +264,14 @@ public class DatasetMapper extends AbstractMapper {
         result.setFileFormat(format.get(0));
       }
       var license = distribution.getLicense();
-      var firstLicense = license.get(0);
-
-      if (firstLicense.getStartDate() != null) {
-        LocalDate startDate = firstLicense.getStartDate();
-        result.setStartDate(Date.from(startDate.atStartOfDay(ZoneOffset.UTC).toInstant()));
-      }
       if (license != null && !license.isEmpty()) {
+        var firstLicense = license.get(0);
+
+        if (firstLicense.getStartDate() != null) {
+          LocalDate startDate = firstLicense.getStartDate();
+          result.setStartDate(Date.from(startDate.atStartOfDay(ZoneOffset.UTC).toInstant()));
+        }
+
         String ref = license.get(0).getLicenseRef();
         ELicense eLicense = ELicense.getByAcronymOrUrl(ref);
         if (eLicense != null) {
@@ -304,9 +307,11 @@ public class DatasetMapper extends AbstractMapper {
 
     if (dataset.getType() != null) {
       try {
-        result.setType(List.of(EDataType.valueOf(dataset.getType().toUpperCase())));
+        String normalizedType =
+            dataset.getType().toUpperCase().trim().replace(" ", "_").replace("-", "_");
+        result.setType(List.of(EDataType.valueOf(normalizedType)));
       } catch (IllegalArgumentException e) {
-        // best-effort: DamapDO expects an array, but rda Common Standard provides string
+        log.warnv("Could not map dataset type '{0}' to a valid EDataType enum.", dataset.getType());
       }
     }
 
