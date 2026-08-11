@@ -2,7 +2,9 @@ package org.damap.base.rda.dmpcommonstandard;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.damap.base.enums.*;
@@ -123,7 +125,7 @@ public class DatasetMapper extends AbstractMapper {
           ref != null && !ref.isBlank() ? ref : "https://example.org/unknown-license");
       if (datasetDO.getStartDate() != null) {
         rdaLicense.setStartDate(
-            datasetDO.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            datasetDO.getStartDate().toInstant().atZone(ZoneOffset.UTC).toLocalDate());
       } else {
         rdaLicense.setStartDate(LocalDate.now());
       }
@@ -246,14 +248,6 @@ public class DatasetMapper extends AbstractMapper {
           throw new CommonStandardCompatibilityException(
               "Multiple licenses on distribution objects are not supported in DAMAP.");
         }
-        if (distribution.getLicense() != null
-            && !distribution.getLicense().isEmpty()
-            && distribution.getLicense().get(0).getStartDate() != null) {
-          // TODO this will always fail if there is a license since the start_date is a required
-          // field.
-          throw new CommonStandardCompatibilityException(
-              "DAMAP does not support recording the start date of licenses.");
-        }
         if (distribution.getFormat() != null && distribution.getFormat().size() > 1) {
           throw new CommonStandardCompatibilityException(
               "Multiple formats on distribution objects are not supported in DAMAP.");
@@ -268,6 +262,12 @@ public class DatasetMapper extends AbstractMapper {
         result.setFileFormat(format.get(0));
       }
       var license = distribution.getLicense();
+      var firstLicense = license.get(0);
+
+      if (firstLicense.getStartDate() != null) {
+        LocalDate startDate = firstLicense.getStartDate();
+        result.setStartDate(Date.from(startDate.atStartOfDay(ZoneOffset.UTC).toInstant()));
+      }
       if (license != null && !license.isEmpty()) {
         String ref = license.get(0).getLicenseRef();
         ELicense eLicense = ELicense.getByAcronymOrUrl(ref);
@@ -286,10 +286,6 @@ public class DatasetMapper extends AbstractMapper {
       }
       var dataAccess = distribution.getDataAccess();
       if (dataAccess != null) {
-        if (dataAccess == DataAccess.SHARED && strict) {
-          throw new CommonStandardCompatibilityException(
-              "DAMAP does not support the 'shared' data access");
-        }
         result.setDataAccess(
             switch (dataAccess) {
               case OPEN -> EDataAccessType.OPEN;
