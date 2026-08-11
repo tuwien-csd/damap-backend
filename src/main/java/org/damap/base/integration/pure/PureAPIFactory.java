@@ -13,6 +13,10 @@ import org.damap.base.rest.config.domain.TenantConfigResolver;
 import org.damap.base.security.SecurityService;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
+/**
+ * Factory responsible for producing the appropriate {@link PureAPI} implementation based on the
+ * tenant-specific configuration.
+ */
 @ApplicationScoped
 class PureAPIFactory {
   @Inject TenantConfigResolver tenantConfigResolver;
@@ -23,6 +27,13 @@ class PureAPIFactory {
 
   private final Map<String, HTTPBasedPureAPI> httpClients = new ConcurrentHashMap<>();
 
+  /**
+   * Creates a {@link PureAPI} implementation according to the configured backend type. Allowed
+   * values are file and http.
+   *
+   * @return the configured {@link PureAPI} implementation
+   * @throws IllegalArgumentException if the configured backend is not supported
+   */
   @Produces
   @RequestScoped
   @Priority(1)
@@ -35,6 +46,17 @@ class PureAPIFactory {
     };
   }
 
+  /**
+   * Returns a cached HTTP-based Pure API client for the current tenant.
+   *
+   * <p>If no client exists for the resolved tenant key, a new REST client is created using the
+   * configured Pure API endpoint and registered authentication provider.
+   *
+   * <p>The client needs to be created dynamically for multitenancy, since different clients need to
+   * be chosen at runtime, depending on which tenant tries to use the PureAPI.
+   *
+   * @return a tenant-specific {@link HTTPBasedPureAPI} client
+   */
   private HTTPBasedPureAPI getClient() {
     String aff = securityService.getAffiliation();
     if (aff == null || tenantConfigResolver.isMultitenancyDisabled()) {
