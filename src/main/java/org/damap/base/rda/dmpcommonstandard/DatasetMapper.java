@@ -300,10 +300,19 @@ public class DatasetMapper extends AbstractMapper {
     }
 
     if (dataset.getPersonalData() != null) {
-      result.setPersonalData(dataset.getPersonalData() == Dataset.PersonalDataEnum.YES);
+      switch (dataset.getPersonalData()) {
+        case YES -> result.setPersonalData(true);
+        case NO -> result.setPersonalData(false);
+        case UNKNOWN -> result.setPersonalData(null);
+      }
     }
+
     if (dataset.getSensitiveData() != null) {
-      result.setSensitiveData(dataset.getSensitiveData() == Dataset.SensitiveDataEnum.YES);
+      switch (dataset.getSensitiveData()) {
+        case YES -> result.setSensitiveData(true);
+        case NO -> result.setSensitiveData(false);
+        case UNKNOWN -> result.setSensitiveData(null);
+      }
     }
 
     if (dataset.getType() != null) {

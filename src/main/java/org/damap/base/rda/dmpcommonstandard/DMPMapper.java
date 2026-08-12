@@ -274,6 +274,16 @@ public final class DMPMapper extends AbstractMapper {
       target.setDatasets(damapDatasets);
       target.setDataKind(hasNew ? EDataKind.SPECIFY : EDataKind.NONE);
       target.setReusedDataKind(hasReused ? EDataKind.SPECIFY : EDataKind.NONE);
+
+      boolean anySensitive =
+          damapDatasets.stream()
+              .anyMatch(d -> d.getSensitiveData() != null && d.getSensitiveData());
+      boolean anyPersonal =
+          damapDatasets.stream().anyMatch(d -> d.getPersonalData() != null && d.getPersonalData());
+
+      target.setSensitiveData(anySensitive);
+      target.setPersonalData(anyPersonal);
+
     } else {
       target.setDatasets(List.of());
       target.setDataKind(EDataKind.NONE);
