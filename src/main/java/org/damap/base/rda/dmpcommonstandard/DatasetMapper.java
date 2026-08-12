@@ -313,10 +313,12 @@ public class DatasetMapper extends AbstractMapper {
         for (String rawType : rawTypes) {
           if (!rawType.isBlank()) {
             try {
-              String normalizedType = rawType.toUpperCase().trim().replace(" ", "_").replace("-", "_");
+              String normalizedType =
+                  rawType.toUpperCase().trim().replace(" ", "_").replace("-", "_");
               types.add(EDataType.valueOf(normalizedType));
             } catch (IllegalArgumentException e) {
-              log.warnv("Could not map dataset type '{0}' to a valid EDataType enum.", rawType.trim());
+              log.warnv(
+                  "Could not map dataset type '{0}' to a valid EDataType enum.", rawType.trim());
             }
           }
         }

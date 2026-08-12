@@ -262,10 +262,11 @@ public final class DMPMapper extends AbstractMapper {
         }
 
         if (rdaDataset.getDistribution() != null && !rdaDataset.getDistribution().isEmpty()) {
-          var distribution = rdaDataset.getDistribution().get(0);
-          var rdaHost = distribution.getHost();
-          if (rdaHost != null) {
-            hostsMapper.importHost(target, rdaHost, datasetDO.getReferenceHash());
+          for (var distribution : rdaDataset.getDistribution()) {
+            var rdaHost = distribution.getHost();
+            if (rdaHost != null) {
+              hostsMapper.importHost(target, rdaHost, datasetDO.getReferenceHash());
+            }
           }
         }
       }
