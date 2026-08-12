@@ -3,6 +3,7 @@ package org.damap.base.rda.dmpcommonstandard;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -307,9 +308,21 @@ public class DatasetMapper extends AbstractMapper {
 
     if (dataset.getType() != null) {
       try {
-        String normalizedType =
-            dataset.getType().toUpperCase().trim().replace(" ", "_").replace("-", "_");
-        result.setType(List.of(EDataType.valueOf(normalizedType)));
+        String[] rawTypes = dataset.getType().split(",");
+        List<EDataType> types = new ArrayList<>();
+        for (String rawType : rawTypes) {
+          if (!rawType.isBlank()) {
+            try {
+              String normalizedType = rawType.toUpperCase().trim().replace(" ", "_").replace("-", "_");
+              types.add(EDataType.valueOf(normalizedType));
+            } catch (IllegalArgumentException e) {
+              log.warnv("Could not map dataset type '{0}' to a valid EDataType enum.", rawType.trim());
+            }
+          }
+        }
+        if (!types.isEmpty()) {
+          result.setType(types);
+        }
       } catch (IllegalArgumentException e) {
         log.warnv("Could not map dataset type '{0}' to a valid EDataType enum.", dataset.getType());
       }
