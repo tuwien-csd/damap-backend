@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.damap.base.enums.EDataKind;
+import org.damap.base.enums.EDataQualityType;
 import org.damap.base.enums.EDataSource;
 import org.damap.base.rest.dmp.domain.ContributorDO;
 import org.damap.base.rest.dmp.domain.DatasetDO;
@@ -136,6 +137,26 @@ public final class DMPMapper extends AbstractMapper {
         DatasetDO datasetDO = dmp.getDatasets().get(i);
         Dataset rdaDataset = result.getDataset().get(i);
 
+        if (dmp.getDataQuality() != null && !dmp.getDataQuality().isEmpty()) {
+          rdaDataset.setDataQualityAssurance(
+              dmp.getDataQuality().stream()
+                  .map(EDataQualityType::getValue)
+                  .collect(Collectors.toList()));
+        }
+
+        if (dmp.getMetadata() != null && !dmp.getMetadata().isBlank()) {
+          org.damap.base.rda.dmpcommonstandard.Metadata rdaMetadata =
+              new org.damap.base.rda.dmpcommonstandard.Metadata();
+          rdaMetadata.setDescription(dmp.getMetadata());
+          rdaMetadata.setLanguage(LanguageCode.ENG);
+          MetadataStandardID standardId =
+              new MetadataStandardID()
+                  .identifier("not-provided")
+                  .type(MetadataStandardID.TypeEnum.OTHER);
+          rdaMetadata.setMetadataStandardId(standardId);
+          rdaDataset.setMetadata(List.of(rdaMetadata));
+        }
+
         if (rdaDataset.getDistribution() != null && !rdaDataset.getDistribution().isEmpty()) {
           Distribution baseDist = rdaDataset.getDistribution().get(0);
 
@@ -244,6 +265,8 @@ public final class DMPMapper extends AbstractMapper {
     var datasets = data.getDataset();
     if (datasets != null && !datasets.isEmpty()) {
       List<DatasetDO> damapDatasets = new ArrayList<>();
+      List<EDataQualityType> importedQuality = new ArrayList<>();
+      String importedMetadata = null;
       boolean hasNew = false;
       boolean hasReused = false;
 
@@ -254,6 +277,30 @@ public final class DMPMapper extends AbstractMapper {
           datasetDO.setReferenceHash(java.util.UUID.randomUUID().toString());
         }
         damapDatasets.add(datasetDO);
+
+        if (rdaDataset.getDataQualityAssurance() != null) {
+          for (String qStr : rdaDataset.getDataQualityAssurance()) {
+            EDataQualityType qType = EDataQualityType.getByValue(qStr);
+            if (qType != null && !importedQuality.contains(qType)) {
+              importedQuality.add(qType);
+            }
+          }
+        }
+        if (!importedQuality.isEmpty()) {
+          target.setDataQuality(importedQuality);
+        }
+
+        if (importedMetadata == null
+            && rdaDataset.getMetadata() != null
+            && !rdaDataset.getMetadata().isEmpty()) {
+          var firstMetadata = rdaDataset.getMetadata().get(0);
+          if (firstMetadata.getDescription() != null && !firstMetadata.getDescription().isBlank()) {
+            importedMetadata = firstMetadata.getDescription();
+          }
+        }
+        if (importedMetadata != null) {
+          target.setMetadata(importedMetadata);
+        }
 
         if (datasetDO.getSource() == EDataSource.REUSED) {
           hasReused = true;

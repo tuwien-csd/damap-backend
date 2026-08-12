@@ -190,11 +190,6 @@ public class DatasetMapper extends AbstractMapper {
     result.setTitle(dataset.getTitle());
 
     if (strict) {
-      if (dataset.getDataQualityAssurance() != null
-          && !dataset.getDataQualityAssurance().isEmpty()) {
-        throw new CommonStandardCompatibilityException(
-            "Data quality assurance objects are not supported in DAMAP.");
-      }
       if (dataset.getIssued() != null) {
         throw new CommonStandardCompatibilityException(
             "Dataset issued dates are not supported in DAMAP.");
