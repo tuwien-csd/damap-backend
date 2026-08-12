@@ -80,6 +80,10 @@ public class HostsMapper extends AbstractMapper {
       applySingleHostFallback(dmp, result, baseDist);
     }
 
+    if (result.isEmpty()) {
+      result.add(baseDist);
+    }
+
     return result;
   }
 
