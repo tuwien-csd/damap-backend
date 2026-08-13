@@ -2,9 +2,4 @@
   <jxb:bindings >
     <jxb:globalBindings typesafeEnumMaxMembers="2000"/>
   </jxb:bindings>
-  <jxb:bindings schemaLocation="../resources/org/damap/base/spec/oaf/oaf-1.0.xsd">
-    <jxb:schemaBindings>
-      <jxb:package name="eu.openaire.oaf"/>
-    </jxb:schemaBindings>
-  </jxb:bindings>
 </jxb:bindings>
