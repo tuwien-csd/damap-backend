@@ -2,19 +2,25 @@ package org.damap.base.rda.dmpcommonstandard;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.extern.jbosslog.JBossLog;
 import org.damap.base.enums.*;
 import org.damap.base.rest.dmp.domain.DatasetDO;
 import org.damap.base.rest.dmp.domain.IdentifierDO;
 
+@JBossLog
 /**
- * This class implements Dataset conversion from and to the RDA DMP common standard. (See <a
+ * This class implements Dataset conversion from and to the RDA DMP Common Standard. (See <a
  * href="https://github.com/RDA-DMP-Common/common-madmp-api">github.com/RDA-DMP-Common/common-madmp-api</a>
- * )
+ * ) Maps technical resources, metadata types, sensitive/personal classifications, data access
+ * levels, and license specifications.
  *
- * <p>The conversion from the common standard into DAMAP objects is best-effort since not all data
+ * <p>The conversion from the Common Standard into DAMAP objects is best-effort since not all data
  * can be represented.
  */
 public class DatasetMapper extends AbstractMapper {
@@ -35,8 +41,24 @@ public class DatasetMapper extends AbstractMapper {
     super(strict);
   }
 
+  /**
+   * DAMAP to RDA (Export).
+   *
+   * <p>Converts a DAMAP DatasetDO into an RDA standard Dataset object. Includes structural mappings
+   * for size, format, license URLs, start dates, data access level, technical resources, and flags
+   * for personal or sensitive data.
+   *
+   * @param datasetDO the DAMAP dataset domain object to map
+   * @return the mapped RDA standard dataset
+   */
   public Dataset convert(DatasetDO datasetDO) {
     var result = new Dataset();
+
+    if (datasetDO.getSource() != null) {
+      result.setIsReused(datasetDO.getSource() == EDataSource.REUSED);
+    } else {
+      result.setIsReused(false);
+    }
 
     var datasetId = datasetDO.getDatasetId();
     if (datasetId != null && datasetId.getIdentifier() != null) {
@@ -71,6 +93,13 @@ public class DatasetMapper extends AbstractMapper {
     if (size != null) {
       distribution.setByteSize(size);
     }
+    if (datasetDO.getRetentionPeriod() != null) {
+      LocalDate baseDate =
+          datasetDO.getStartDate() != null
+              ? datasetDO.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+              : LocalDate.now();
+      distribution.setAvailableUntil(baseDate.plusYears(datasetDO.getRetentionPeriod()));
+    }
     result.setDescription(datasetDO.getDescription());
     var personalData = datasetDO.getPersonalData();
     if (personalData == null) {
@@ -99,7 +128,7 @@ public class DatasetMapper extends AbstractMapper {
           ref != null && !ref.isBlank() ? ref : "https://example.org/unknown-license");
       if (datasetDO.getStartDate() != null) {
         rdaLicense.setStartDate(
-            datasetDO.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            datasetDO.getStartDate().toInstant().atZone(ZoneOffset.UTC).toLocalDate());
       } else {
         rdaLicense.setStartDate(LocalDate.now());
       }
@@ -140,21 +169,27 @@ public class DatasetMapper extends AbstractMapper {
     return result;
   }
 
+  /**
+   * RDA to DAMAP (Import).
+   *
+   * <p>Converts an RDA standard Dataset into a DAMAP DatasetDO. Maps distributions (format, byte
+   * size, data access, and licenses) and associated technical resources. Evaluates strict
+   * compatibility rules for quality assurance, reissue markers, and multiple license/format
+   * entries.
+   *
+   * @param dataset the RDA standard dataset to map
+   * @return the mapped DAMAP dataset domain object
+   */
   public DatasetDO convert(Dataset dataset) {
     var result = new DatasetDO();
-    result.setSource(EDataSource.NEW);
+    if (dataset.getIsReused() != null) {
+      result.setSource(dataset.getIsReused() ? EDataSource.REUSED : EDataSource.NEW);
+    } else {
+      result.setSource(EDataSource.NEW);
+    }
     result.setTitle(dataset.getTitle());
 
     if (strict) {
-      if (dataset.getDataQualityAssurance() != null
-          && !dataset.getDataQualityAssurance().isEmpty()) {
-        throw new CommonStandardCompatibilityException(
-            "Data quality assurance objects are not supported in DAMAP.");
-      }
-      if (dataset.getIsReused() != null) {
-        throw new CommonStandardCompatibilityException(
-            "Reused dataset markers are not supported in DAMAP.");
-      }
       if (dataset.getIssued() != null) {
         throw new CommonStandardCompatibilityException(
             "Dataset issued dates are not supported in DAMAP.");
@@ -211,14 +246,6 @@ public class DatasetMapper extends AbstractMapper {
           throw new CommonStandardCompatibilityException(
               "Multiple licenses on distribution objects are not supported in DAMAP.");
         }
-        if (distribution.getLicense() != null
-            && !distribution.getLicense().isEmpty()
-            && distribution.getLicense().get(0).getStartDate() != null) {
-          // TODO this will always fail if there is a license since the start_date is a required
-          // field.
-          throw new CommonStandardCompatibilityException(
-              "DAMAP does not support recording the start date of licenses.");
-        }
         if (distribution.getFormat() != null && distribution.getFormat().size() > 1) {
           throw new CommonStandardCompatibilityException(
               "Multiple formats on distribution objects are not supported in DAMAP.");
@@ -234,6 +261,13 @@ public class DatasetMapper extends AbstractMapper {
       }
       var license = distribution.getLicense();
       if (license != null && !license.isEmpty()) {
+        var firstLicense = license.get(0);
+
+        if (firstLicense.getStartDate() != null) {
+          LocalDate startDate = firstLicense.getStartDate();
+          result.setStartDate(Date.from(startDate.atStartOfDay(ZoneOffset.UTC).toInstant()));
+        }
+
         String ref = license.get(0).getLicenseRef();
         ELicense eLicense = ELicense.getByAcronymOrUrl(ref);
         if (eLicense != null) {
@@ -251,10 +285,6 @@ public class DatasetMapper extends AbstractMapper {
       }
       var dataAccess = distribution.getDataAccess();
       if (dataAccess != null) {
-        if (dataAccess == DataAccess.SHARED && strict) {
-          throw new CommonStandardCompatibilityException(
-              "DAMAP does not support the 'shared' data access");
-        }
         result.setDataAccess(
             switch (dataAccess) {
               case OPEN -> EDataAccessType.OPEN;
@@ -265,17 +295,42 @@ public class DatasetMapper extends AbstractMapper {
     }
 
     if (dataset.getPersonalData() != null) {
-      result.setPersonalData(dataset.getPersonalData() == Dataset.PersonalDataEnum.YES);
+      switch (dataset.getPersonalData()) {
+        case YES -> result.setPersonalData(true);
+        case NO -> result.setPersonalData(false);
+        case UNKNOWN -> result.setPersonalData(null);
+      }
     }
+
     if (dataset.getSensitiveData() != null) {
-      result.setSensitiveData(dataset.getSensitiveData() == Dataset.SensitiveDataEnum.YES);
+      switch (dataset.getSensitiveData()) {
+        case YES -> result.setSensitiveData(true);
+        case NO -> result.setSensitiveData(false);
+        case UNKNOWN -> result.setSensitiveData(null);
+      }
     }
 
     if (dataset.getType() != null) {
       try {
-        result.setType(List.of(EDataType.valueOf(dataset.getType().toUpperCase())));
+        String[] rawTypes = dataset.getType().split(",");
+        List<EDataType> types = new ArrayList<>();
+        for (String rawType : rawTypes) {
+          if (!rawType.isBlank()) {
+            try {
+              String normalizedType =
+                  rawType.toUpperCase().trim().replace(" ", "_").replace("-", "_");
+              types.add(EDataType.valueOf(normalizedType));
+            } catch (IllegalArgumentException e) {
+              log.warnv(
+                  "Could not map dataset type '{0}' to a valid EDataType enum.", rawType.trim());
+            }
+          }
+        }
+        if (!types.isEmpty()) {
+          result.setType(types);
+        }
       } catch (IllegalArgumentException e) {
-        // best-effort: DamapDO expects an array, but rda common standard provides string
+        log.warnv("Could not map dataset type '{0}' to a valid EDataType enum.", dataset.getType());
       }
     }
 

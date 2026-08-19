@@ -1,15 +1,17 @@
 package org.damap.base.rda.dmpcommonstandard;
 
 import java.math.BigDecimal;
+import lombok.extern.jbosslog.JBossLog;
 import org.damap.base.enums.ECostType;
 import org.damap.base.rest.dmp.domain.CostDO;
 
+@JBossLog
 /**
- * This class implements Cost conversion from and to the RDA DMP common standard. (See <a
+ * This class implements Cost conversion from and to the RDA DMP Common Standard. (See <a
  * href="https://github.com/RDA-DMP-Common/common-madmp-api">github.com/RDA-DMP-Common/common-madmp-api</a>
  * )
  *
- * <p>The conversion from the common standard into DAMAP objects is best-effort since not all data
+ * <p>The conversion from the Common Standard into DAMAP objects is best-effort since not all data
  * can be represented.
  */
 public class CostsMapper extends AbstractMapper {
@@ -30,17 +32,30 @@ public class CostsMapper extends AbstractMapper {
     super(strict);
   }
 
+  /**
+   * RDA to DAMAP (Import).
+   *
+   * <p>Converts an RDA standard Cost object into a DAMAP CostDO. Maps currency code, monetary
+   * value, and description. Falls back to 'OTHER' if the incoming cost type cannot be parsed.
+   *
+   * @param cost the RDA standard cost to map
+   * @return the mapped DAMAP cost domain object
+   */
   public CostDO convert(Cost cost) {
     if (cost == null) {
       return null;
     }
     var result = new CostDO();
-    if (cost.getType() != null) {
-      try {
-        result.setType(ECostType.valueOf(cost.getType().toUpperCase()));
-      } catch (IllegalArgumentException e) {
-        result.setType(ECostType.OTHER);
+    if (cost.getType() != null && !cost.getType().isBlank()) {
+      ECostType type = ECostType.getByValue(cost.getType());
+      if (type == null) {
+        try {
+          type = ECostType.valueOf(cost.getType().toUpperCase().trim());
+        } catch (IllegalArgumentException e) {
+          type = ECostType.OTHER;
+        }
       }
+      result.setType(type);
     } else {
       result.setType(ECostType.OTHER);
     }
@@ -54,10 +69,18 @@ public class CostsMapper extends AbstractMapper {
     if (currencyCode != null) {
       result.setCurrencyCode(currencyCode.getValue());
     }
-    result.setType(ECostType.OTHER);
     return result;
   }
 
+  /**
+   * DAMAP to RDA (Export).
+   *
+   * <p>Converts a DAMAP CostDO into an RDA standard Cost object. Establishes numeric precision for
+   * the value, matches ISO currency codes, and sets a title fallback if not explicitly defined.
+   *
+   * @param costDO the DAMAP cost domain object to map
+   * @return the mapped RDA standard cost
+   */
   public Cost convert(CostDO costDO) {
     var result = new Cost();
     result.setDescription(costDO.getDescription());
@@ -65,12 +88,21 @@ public class CostsMapper extends AbstractMapper {
         costDO.getTitle() != null && !costDO.getTitle().isBlank()
             ? costDO.getTitle()
             : "Cost item");
-    var currencyCode = costDO.getCurrencyCode();
     if (costDO.getType() != null) {
       result.setType(costDO.getType().toString());
     }
-    if (currencyCode != null) {
-      result.setCurrencyCode(CurrencyCode.valueOf(currencyCode));
+    var currencyCode = costDO.getCurrencyCode();
+    if (currencyCode != null && !currencyCode.isBlank()) {
+      try {
+        result.setCurrencyCode(CurrencyCode.valueOf(currencyCode.toUpperCase().trim()));
+      } catch (IllegalArgumentException e) {
+        try {
+          result.setCurrencyCode(CurrencyCode.fromValue(currencyCode.trim()));
+        } catch (IllegalArgumentException ex) {
+          log.warnv(
+              "Could not map currency code '{0}' to a valid RDA CurrencyCode enum.", currencyCode);
+        }
+      }
     }
     var value = costDO.getValue();
     if (value != null) {

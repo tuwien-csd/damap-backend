@@ -8,16 +8,16 @@ import org.damap.base.integration.generic.DAMAPProject;
 import org.damap.base.rest.dmp.domain.ProjectDO;
 
 /**
- * This class implements Project conversion from and to the RDA DMP common standard. (See <a
+ * This class implements Project conversion from and to the RDA DMP Common Standard. (See <a
  * href="https://github.com/RDA-DMP-Common/common-madmp-api">github.com/RDA-DMP-Common/common-madmp-api</a>
  * )
  *
- * <p>The conversion from the common standard into DAMAP objects is best-effort since not all data
+ * <p>The conversion from the Common Standard into DAMAP objects is best-effort since not all data
  * can be represented.
  */
 public final class ProjectMapper {
   /**
-   * Tolerate compatibility failures with the common standard and drop non-standard data. This flag
+   * Tolerate compatibility failures with the Common Standard and drop non-standard data. This flag
    * should never be used when importing DMP data, only for integrations.
    */
   private final boolean strict;
@@ -57,10 +57,13 @@ public final class ProjectMapper {
   }
 
   /**
-   * Convert a DAMAP-specific project to the common standard.
+   * DAMAP to RDA (Export).
+   *
+   * <p>Converts a DAMAP-specific project to the Common Standard. Uses {@link
+   * #convertInto(ProjectDO, Project) convertInto} as a helper method for the conversion.
    *
    * @param project a DAMAP project
-   * @return a common standard project
+   * @return a Common Standard project
    */
   public Project convert(ProjectDO project) {
     var result = new Project();
@@ -68,6 +71,15 @@ public final class ProjectMapper {
     return result;
   }
 
+  /**
+   * DAMAP to RDA (Export).
+   *
+   * <p>Converts a DAMAP-specific project to an RDA Common Standard compliant project. This method
+   * sets the following RDA fields: acronym, title, description, start, end, funding and projectId.
+   *
+   * @param project a DAMAP project
+   * @param result the resulting Common Standard project
+   */
   private void convertInto(ProjectDO project, Project result) {
     result.setAcronym(project.getAcronym());
     result.setTitle(
@@ -95,21 +107,26 @@ public final class ProjectMapper {
     }
   }
 
-  public DAMAPProject convertToDAMAPProject(ProjectDO project) {
-    var result = new DAMAPProject();
-    result.setId(String.valueOf(project.getId()));
-    convertInto(project, result);
-    return result;
-  }
-
+  /**
+   * RDA to DAMAP (Import).
+   *
+   * <p>Converts an RDA Common Standard compliant project to a DAMAP-specific project. Common
+   * standard fields which are set include: acronym, title, description, start, end, funding and
+   * projectId.
+   *
+   * @param project an RDA Common Standard compliant project object
+   * @return a DAMAP project object
+   */
   public ProjectDO convert(DAMAPProject project) {
     return convert(project, project.getId());
   }
 
   /**
-   * Convert a common standard project to the DAMAP-specific one.
+   * RDA to DAMAP (Import).
    *
-   * @param project a common standard project
+   * <p>Converts an RDA Common Standard compliant project to a DAMAP project object.
+   *
+   * @param project a Common Standard project
    * @param projectId the ID of the project
    * @return a DAMAP project
    */
@@ -132,7 +149,7 @@ public final class ProjectMapper {
       result.setEnd(Date.from(end.atStartOfDay(ZoneId.systemDefault()).toInstant()));
     }
     var fundings = project.getFunding();
-    if (fundings != null) {
+    if (fundings != null && !fundings.isEmpty()) {
       if (fundings.size() > 1 && strict) {
         throw new CommonStandardCompatibilityException(
             "more than one funding present for project " + project.getTitle());

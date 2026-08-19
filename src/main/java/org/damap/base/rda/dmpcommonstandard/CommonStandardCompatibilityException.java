@@ -5,6 +5,6 @@ public class CommonStandardCompatibilityException extends RuntimeException {
     super(
         "Cannot convert DMP to DAMAP format: "
             + message
-            + " (Note: DAMAP is not fully compliant with the common standard and cannot import all common standard objects correctly.");
+            + " (Note: DAMAP is not fully compliant with the Common Standard and cannot import all Common Standard objects correctly.");
   }
 }
