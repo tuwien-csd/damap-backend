@@ -46,7 +46,16 @@ public class PureProjectService implements ProjectServiceProvider {
 
   private ContributorDO getContributorDO(PureAPIParticipantAssociation participantAssociation) {
     if (participantAssociation instanceof PureAPIInternalParticipantAssociation internal) {
-      ContributorDO contributor = pureAPI.getPerson(internal.person.uuid).toContributor();
+      PureAPIPerson person = pureAPI.getPerson(internal.person.uuid);
+      ContributorDO contributor = person.toContributor();
+      if ((contributor.getMbox() == null || contributor.getMbox().isBlank())
+          && person.getUser() != null
+          && person.getUser().getUuid() != null) {
+        PureAPIUser user = pureAPI.getUser(person.getUser().getUuid());
+        if (user != null && user.getEmail() != null && !user.getEmail().isBlank()) {
+          contributor.setMbox(user.getEmail());
+        }
+      }
       convertContributorRoles(participantAssociation, contributor);
       return contributor;
     }

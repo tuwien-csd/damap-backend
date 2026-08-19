@@ -12,7 +12,13 @@
         "lastName": "Doe"
       },
       "orcid": "0000-0001-2345-6789",
-      "email": "jane.doe@example.com"
+      "staffOrganizationAssociations": [
+        {
+          "emails": [
+            { "value": "jane.doe@example.com" }
+          ]
+        }
+      ]
     },
     {
       "uuid": "72993125-c1b7-4b14-a111-c36a72d59da0",
@@ -21,7 +27,13 @@
         "lastName": "Doe"
       },
       "orcid": "0001-0001-2345-6789",
-      "email": "john.doe@example.com"
+      "staffOrganizationAssociations": [
+        {
+          "emails": [
+            { "value": "john.doe@example.com" }
+          ]
+        }
+      ]
     }
   ]
 }

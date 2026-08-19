@@ -249,8 +249,9 @@ public class PureServicesIntegrationTest {
             if (person.getOrcid() != null) {
               System.out.println("ORCID: " + person.getOrcid());
             }
-            if (person.getEmail() != null) {
-              System.out.println("Email: " + person.getEmail());
+            String email = person.firstAvailableAssociationEmail();
+            if (email != null) {
+              System.out.println("Email (from associations): " + email);
             }
           } else {
             System.out.println("Person details not accessible");
