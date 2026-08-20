@@ -31,7 +31,7 @@ public class PurePersonService implements PersonService {
     if (person == null) {
       return null;
     }
-    return person.toContributor();
+    return toContributorWithEmail(person);
   }
 
   /** {@inheritDoc} */
@@ -40,22 +40,46 @@ public class PurePersonService implements PersonService {
   public ResultList<ContributorDO> search(Search search) {
     ResultList<ContributorDO> result = new ResultList<>();
     result.setSearch(search);
-    Stream<ContributorDO> stream =
-        pureAPI.listAllPersons().stream().map(PureAPIPerson::toContributor);
+    Stream<PureAPIPerson> stream = pureAPI.listAllPersons().stream();
     String query = search.getQuery();
     if (query != null && !query.isEmpty()) {
-      stream =
-          stream.filter(
-              item ->
-                  item.getFirstName().toLowerCase().contains(query.toLowerCase())
-                      || item.getLastName().toLowerCase().contains(query.toLowerCase())
-                      || (item.getPersonId() != null
-                          && item.getPersonId()
-                              .getIdentifier()
-                              .toLowerCase()
-                              .contains(query.toLowerCase())));
+      String queryLower = query.toLowerCase();
+      stream = stream.filter(person -> matchesQuery(person, queryLower));
     }
-    result.setItems(stream.collect(Collectors.toList()));
+    result.setItems(stream.map(this::toContributorWithEmail).collect(Collectors.toList()));
     return result;
+  }
+
+  ContributorDO toContributorWithEmail(PureAPIPerson person) {
+    ContributorDO contributor = person.toContributor();
+    if ((contributor.getMbox() == null || contributor.getMbox().isBlank())
+        && person.getUser() != null
+        && person.getUser().getUuid() != null) {
+      PureAPIUser user = pureAPI.getUser(person.getUser().getUuid());
+      if (user != null && user.getEmail() != null && !user.getEmail().isBlank()) {
+        contributor.setMbox(user.getEmail());
+      }
+    }
+    return contributor;
+  }
+
+  private static boolean matchesQuery(PureAPIPerson person, String queryLower) {
+    if (person.getName() != null) {
+      String firstName = person.getName().getFirstName();
+      String lastName = person.getName().getLastName();
+      if (firstName != null && firstName.toLowerCase().contains(queryLower)) {
+        return true;
+      }
+      if (lastName != null && lastName.toLowerCase().contains(queryLower)) {
+        return true;
+      }
+    }
+    String identifier =
+        Boolean.TRUE.equals(person.getOrcidAuthenticated())
+                && person.getOrcid() != null
+                && !person.getOrcid().isEmpty()
+            ? person.getOrcid()
+            : person.getUuid();
+    return identifier != null && identifier.toLowerCase().contains(queryLower);
   }
 }

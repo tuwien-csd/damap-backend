@@ -27,6 +27,7 @@ import org.damap.base.security.SecurityService;
 public class PureProjectService implements ProjectServiceProvider {
 
   @Inject PureAPI pureAPI;
+  @Inject PurePersonService purePersonService;
   @Inject SecurityService securityService;
 
   @Inject TenantConfigResolver tenantConfigResolver;
@@ -46,15 +47,9 @@ public class PureProjectService implements ProjectServiceProvider {
 
   private ContributorDO getContributorDO(PureAPIParticipantAssociation participantAssociation) {
     if (participantAssociation instanceof PureAPIInternalParticipantAssociation internal) {
-      PureAPIPerson person = pureAPI.getPerson(internal.person.uuid);
-      ContributorDO contributor = person.toContributor();
-      if ((contributor.getMbox() == null || contributor.getMbox().isBlank())
-          && person.getUser() != null
-          && person.getUser().getUuid() != null) {
-        PureAPIUser user = pureAPI.getUser(person.getUser().getUuid());
-        if (user != null && user.getEmail() != null && !user.getEmail().isBlank()) {
-          contributor.setMbox(user.getEmail());
-        }
+      ContributorDO contributor = purePersonService.read(internal.person.uuid);
+      if (contributor == null) {
+        return null;
       }
       convertContributorRoles(participantAssociation, contributor);
       return contributor;
