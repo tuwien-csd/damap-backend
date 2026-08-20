@@ -22,6 +22,8 @@ class PureAPIPerson {
 
   @JsonProperty String orcid;
 
+  @JsonProperty Boolean orcidAuthenticated;
+
   @JsonProperty List<PureAPIPersonOrganizationAssociation> staffOrganizationAssociations;
 
   @JsonProperty List<PureAPIPersonOrganizationAssociation> studentOrganizationAssociations;
@@ -32,7 +34,7 @@ class PureAPIPerson {
     ContributorDO contributor = new ContributorDO();
 
     IdentifierDO identifier = new IdentifierDO();
-    if (orcid != null && !orcid.isEmpty()) {
+    if (Boolean.TRUE.equals(orcidAuthenticated) && orcid != null && !orcid.isEmpty()) {
       identifier.setIdentifier(orcid);
       identifier.setType(EIdentifierType.ORCID);
     } else {

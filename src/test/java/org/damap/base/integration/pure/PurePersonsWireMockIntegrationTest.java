@@ -188,6 +188,7 @@ public class PurePersonsWireMockIntegrationTest {
             "lastName": "Doe"
           },
           "orcid": "0000-0001-2345-6789",
+          "orcidAuthenticated": true,
           "staffOrganizationAssociations": [
             {
               "emails": [
