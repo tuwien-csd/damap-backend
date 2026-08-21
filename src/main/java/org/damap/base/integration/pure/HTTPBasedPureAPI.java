@@ -94,17 +94,27 @@ interface HTTPBasedPureAPI extends PureAPI {
   PureAPIPaginatedPersonsResponse listAllPersons(
       @QueryParam("size") Long size, @QueryParam("offset") Long offset);
 
-  /**
-   * Fetch a single person based on their ID.
-   *
-   * @param uuid the ID of the person to fetch.
-   * @return the person if found, or null if the person was not found.
-   */
+  // Pure returns only a minimal Person by default. We ask for the fields we actually consume
+  // (org association emails, user ref) via the fields query param.
   @GET
   @Path("/persons/{uuid}")
-  @Fallback(fallbackMethod = "getPersonFallback", skipOn = DamapApiException.class)
+  @Fallback(fallbackMethod = "getPersonWithFieldsFallback", skipOn = DamapApiException.class)
+  PureAPIPerson getPerson(@PathParam("uuid") String uuid, @QueryParam("fields") String fields);
+
+  /** Fetch one user by uuid. */
+  @GET
+  @Path("/users/{uuid}")
+  @Fallback(fallbackMethod = "getUserFallback", skipOn = DamapApiException.class)
   @Override
-  PureAPIPerson getPerson(@PathParam("uuid") String uuid);
+  PureAPIUser getUser(@PathParam("uuid") String uuid);
+
+  // Kept as a default so the fields list stays in one place.
+  @Override
+  default PureAPIPerson getPerson(String uuid) {
+    return getPerson(
+        uuid,
+        "uuid,name.*,orcid,staffOrganizationAssociations.emails.*,studentOrganizationAssociations.emails.*,user.uuid");
+  }
 
   @ClientExceptionMapper
   static DamapApiException toException(Response response) {
@@ -149,7 +159,11 @@ interface HTTPBasedPureAPI extends PureAPI {
     throw fallback();
   }
 
-  default PureAPIPerson getPersonFallback(String uuid) {
+  default PureAPIPerson getPersonWithFieldsFallback(String uuid, String fields) {
+    throw fallback();
+  }
+
+  default PureAPIUser getUserFallback(String uuid) {
     throw fallback();
   }
 

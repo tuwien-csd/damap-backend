@@ -44,6 +44,15 @@ interface PureAPI {
   PureAPIPerson getPerson(String uuid);
 
   /**
+   * Fetch a single user by ID. Used as a fallback when the person's org associations don't carry an
+   * email but the person has a linked user.
+   *
+   * @param uuid the ID of the user to fetch.
+   * @return the user if found, or null if not found.
+   */
+  PureAPIUser getUser(String uuid);
+
+  /**
    * Search projects using pagination.
    *
    * @param q query string, passed to Pure API {@code q} parameter

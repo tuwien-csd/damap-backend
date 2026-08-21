@@ -152,18 +152,19 @@ public class PurePersonsWireMockIntegrationTest {
             + " "
             + purePerson.getName().getLastName());
     System.out.println("Person ORCID: " + purePerson.getOrcid());
-    System.out.println("Person Email: " + purePerson.getEmail());
+    String email = purePerson.firstAvailableAssociationEmail();
+    System.out.println("Person Email (from associations): " + email);
 
     assertNotNull(purePerson.getName(), "Person should have a name");
     assertNotNull(purePerson.getName().getFirstName(), "Person should have first name");
     assertNotNull(purePerson.getName().getLastName(), "Person should have last name");
     assertNotNull(purePerson.getOrcid(), "Person should have ORCID");
-    assertNotNull(purePerson.getEmail(), "Person should have email");
+    assertNotNull(email, "Person should expose an email via a staff/student association");
 
     assertEquals("Jane", purePerson.getName().getFirstName());
     assertEquals("Doe", purePerson.getName().getLastName());
     assertEquals("0000-0001-2345-6789", purePerson.getOrcid());
-    assertEquals("jane.doe@example.com", purePerson.getEmail());
+    assertEquals("jane.doe@example.com", email);
   }
 
   private String createMockPersonsResponse() {
@@ -187,7 +188,14 @@ public class PurePersonsWireMockIntegrationTest {
             "lastName": "Doe"
           },
           "orcid": "0000-0001-2345-6789",
-          "email": "jane.doe@example.com"
+          "orcidAuthenticated": true,
+          "staffOrganizationAssociations": [
+            {
+              "emails": [
+                { "value": "jane.doe@example.com" }
+              ]
+            }
+          ]
         }""";
   }
 }

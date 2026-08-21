@@ -63,6 +63,12 @@ class FileBasedPureAPI implements PureAPI {
     return listAllPersons().stream().filter(p -> p.getUuid().equals(uuid)).findFirst().orElse(null);
   }
 
+  // No user store in the file backend — return null and let PureProjectService fall through.
+  @Override
+  public PureAPIUser getUser(String uuid) {
+    return null;
+  }
+
   private List<PureAPIProject> readAllProjectsFromFile() {
     try (InputStream in =
         tenantConfigResolver.getTenantAwareConfig().elsevierPureProjectsFile().openStream()) {
