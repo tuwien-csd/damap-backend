@@ -74,12 +74,11 @@ public class PurePersonService implements PersonService {
         return true;
       }
     }
-    String identifier =
-        Boolean.TRUE.equals(person.getOrcidAuthenticated())
-                && person.getOrcid() != null
-                && !person.getOrcid().isEmpty()
-            ? person.getOrcid()
-            : person.getUuid();
-    return identifier != null && identifier.toLowerCase().contains(queryLower);
+    if (person.getUuid() != null && person.getUuid().toLowerCase().contains(queryLower)) {
+      return true;
+    }
+    return Boolean.TRUE.equals(person.getOrcidAuthenticated())
+        && person.getOrcid() != null
+        && person.getOrcid().toLowerCase().contains(queryLower);
   }
 }
