@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] -
 
+## [5.0.1] - 2026-08-21
+
+### Added
+
+- Added feature that allows for configuring an external accessibility statement URL [#524](https://github.com/damap-org/damap-backend/pull/524)
+
+### Fixed
+
+- Solved an issue that caused maDMP export to fail when a dataset was larger than 2.2 GB [#522](https://github.com/damap-org/damap-backend/pull/522)
+- Added missing host to maDMP import/export and fixed bugs [#521](https://github.com/damap-org/damap-backend/pull/521)
+- Fixed a Pure bug where the email was not fetched correctly [#533](https://github.com/damap-org/damap-backend/pull/533)
+
+### Templates
+
+- Removed inconsistent spaces above produced datasets table and between reused table and reused descriptions in Science Europe template [#525](https://github.com/damap-org/damap-backend/pull/525)
+
+### Translations
+
+- Added missing keys "admin.appTranslations.boldTitle", "dmp.steps.summary.data.specify.datasets.reused", "dmp.steps.summary.data.specify.datasets.unknown.reused" and "dmp.steps.summary.data.specify.datasets.unspecified" [#526](https://github.com/damap-org/damap-backend/pull/526)
+
 ## [5.0.0] - 2026-06-05
 
 ### Added
